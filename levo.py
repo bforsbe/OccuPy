@@ -143,7 +143,7 @@ def main():
             c -= 1
             if a[c] <= fit[c] and fit[c] > 0.1:
                 break
-        occupancy_threshold = (b[c] - sol_param[1]) / (full_occ - sol_param[1])
+        occupancy_threshold = b[c] / full_occ
 
     print(f'Detected thresholds:', file=f_log)
     if c is not None:
