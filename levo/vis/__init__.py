@@ -1,1 +1,1 @@
-from vis import *
+from .vis import *

@@ -5,7 +5,6 @@ import os
 import sys
 import levo
 
-
 def main():
     # --------------- INPUT --------------------------------------------------------------------
     plt.ion()
@@ -33,13 +32,17 @@ def main():
     print(f'--------------------------------------------------------------\n', file=f_log)
 
     # ----- THRESHOLD SETTINGS ---------
-    solvent_threshold = None  # Set to None to estimate using solvent fitting
     occupancy_threshold = None  # Set to None to estimate using volume-limits
     estimate_occ_threshold = True  # This seems to be a better way than solvent masking to limit solvent boosting
 
     # ----- MASK SETTINGS ---------
-    solvent_mask = None
-    use_solvent_mask = False  # This does not seem to be a good ides to limit solvent boosting
+    if len(sys.argv) > 2:
+        solvent_mask_name = sys.argv[2] # 1 at solvent. Should be binary.
+        s_open = mf.open(solvent_mask_name)
+        s_data = np.copy(s_open.data)
+    else:
+        solvent_mask_name = None
+    save_sol_file=True
 
     # ----- LOW-PASS SETTINGS ---------
     use_lp_for_solvent = False
@@ -54,7 +57,6 @@ def main():
     # --------------- DIAGNOSTIC OUTPUT --------------------------------------------------------
     plot = True  # False
     save_occ_file = True
-    save_sol_file = True
     save_bst_map = False
 
     # --------------- SOLVENT ESTIMATION -------------------------------------------------------
@@ -64,55 +66,28 @@ def main():
         sol_data = np.copy(in_data)
 
     # ----- ESTIMATE THRESHOLD ------
-    if solvent_threshold is None:
-        # Estimate solvent paramters for mask
-        radius = int(0.95 * nd[0] / 2)
-        # print(radius)
-        mask = levo.map.create_circular_mask(nd[0], dim=3, radius=radius)  # TODO use mask radius in Å/nm
-        h_data = sol_data[mask].flatten()
-        sol_limits, sol_param = levo.solvent.fit_solvent_to_histogram(
-            h_data,
-            plot=plot,
-            n_lev=levels
-        )
 
-        if verbose:
-            print(f'--------------------------------------------------------------', file=f_log)
-            print(f'Detected data limits for solvent:', file=f_log)
-    else:
-        # Use provided solvent threshold to create a solvent mask
-        sol_limits = np.array([np.min(sol_data), -solvent_threshold, solvent_threshold, np.max(sol_data)])
-        if verbose:
-            print(f'Supplied (and assumed) data limits for solvent:', file=f_log)
+    # Estimate solvent paramters for mask
+    radius = int(0.95 * nd[0] / 2)
+    # print(radius)
+    mask = levo.map.create_circular_mask(nd[0], dim=3, radius=radius)  # TODO use mask radius in Å/nm
+    if solvent_mask_name is not None:
+        mask = np.array(mask).astype(int) + 1-s_data
+        mask = mask > 1.5
+
+    assert sol_data.shape == mask.shape
+    h_data = sol_data[mask].flatten()
+    sol_limits, sol_param = levo.solvent.fit_solvent_to_histogram(
+        h_data,
+        plot=plot,
+        n_lev=levels
+    )
+
     if verbose:
+        print(f'--------------------------------------------------------------', file=f_log)
+        print(f'Detected data limits for solvent:', file=f_log)
         print(f'{sol_limits[0]:.4f} : {sol_limits[1]:.4f} : {sol_limits[2]:.4f} : {sol_limits[3]:.4f}', file=f_log)
         print(f'--------------------------------------------------------------', file=f_log)
-
-    '''
-    # ----- CREATE MASK ------
-    if use_solvent_mask and solvent_mask is None:
-        # content_region = (lp_data < sol_limits[1]) + (lp_data > sol_limits[2])
-
-        content_region = (lp_data > sol_limits[2])
-
-        # TODO: this is heuristic
-        n_heurisitc = 2
-        for i in np.arange(n_heurisitc):
-            if verbose:
-                print(f' Heuristic solvent expansion round {i + 1} of {n_heurisitc}', end=' \r')
-            solvent_kernel = create_circular_mask(kernel_size, dim=3, soft=False)
-            content_region = ndimage.median_filter(content_region, footprint=solvent_kernel)
-            content_region = ndimage.maximum_filter(content_region, footprint=solvent_kernel)
-        if verbose:
-            print('\n Done heuristic solvent expansion')
-
-        solvent_mask = content_region
-        if (save_sol_file):
-            new_mrc(content_region.astype(np.float32), 'solvent_mask.mrc')
-    '''
-
-    if not use_solvent_mask:
-        solvent_mask = None
 
     global f, ax1, ax2
 
@@ -133,7 +108,6 @@ def main():
     occ, full_occ = levo.occupancy.get_map_occupancy(
         occ_data,
         occ_kernel=boost_kernel,
-        sol_mask=solvent_mask,
         sol_threshold=None,  # sol_limits[2],
         save_occ_map=save_occ_file,
         verbose=verbose
@@ -155,19 +129,31 @@ def main():
         if a[c] <= fit[c] and fit[c] > 0.1:
             break
 
+    c = None
     if estimate_occ_threshold and occupancy_threshold is None:
         # occupancy_threshold = (sol_limits[2]+sol_limits[3])/2 / full_occ
-        occupancy_threshold = b[c] / full_occ
+
+        content_fraction_all = np.divide((a + 0.01 - fit[:-1]), a + 0.01)
+        solvent_fraction_all = 1 - content_fraction_all
+
+        cond = fit[:-1] > a
+
+        c = len(b) - 2
+        while c > 0:
+            c -= 1
+            if a[c] <= fit[c] and fit[c] > 0.1:
+                break
+        occupancy_threshold = (b[c] - sol_param[1]) / (full_occ - sol_param[1])
 
     print(f'Detected thresholds:', file=f_log)
-    print(f'Solvent low : \t {b[c]:.3f}', file=f_log)
+    if c is not None:
+        print(f'Solvent low : \t {b[c]:.3f}', file=f_log)
     print(f'Solvent full: \t {full_occ:.3f}', file=f_log)
     print(f'Occupancy   : \t {occupancy_threshold:.3f}', file=f_log)
 
     boosted = levo.occupancy.boost_map_occupancy(
         bst_data,
         occ,
-        sol_mask=solvent_mask,
         occ_threshold=occupancy_threshold,
         save_bst_map=save_bst_map,
         verbose=verbose
@@ -184,7 +170,7 @@ def main():
     levo.map.new_mrc(rescaled.astype(np.float32), 'full' + new_name, parent=file_name, verbose=False)
     # print(f'A file with boosted components was written tp full{new_name}',file=f_log)
 
-    if save_occ_file or save_sol_file or save_bst_map:
+    if save_occ_file or save_bst_map:
         if verbose:
             print(f'-------------------------------------------------------------- \nAdditional files:', file=f_log)
     if save_occ_file:
@@ -193,8 +179,8 @@ def main():
             print(f'The occupancy was written to occ{new_name}', file=f_log)
         levo.map.change_voxel_size('occ' + new_name, parent=file_name)
 
-    if save_sol_file and solvent_mask is None and use_solvent_mask:
-        os.rename('solvent_mask.mrc', 'sol' + new_name)
+    if save_sol_file:
+
         if verbose:
             print(f'The estimated solvent mask was written to sol{new_name}', file=f_log)
         levo.map.change_voxel_size('sol' + new_name, parent=file_name)
@@ -205,7 +191,7 @@ def main():
             print(f'The estimated boosting was written to bst{new_name}', file=f_log)
         levo.map.change_voxel_size('bst' + new_name, parent=file_name)
 
-    levo.vis.chimX_viz(
+    levo.vis.chimx_viz(
         file_name,
         'full' + new_name,
         'occ' + new_name,
