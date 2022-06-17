@@ -1,6 +1,6 @@
-from levo import map
-from levo import occupancy
-from levo import vis
-from levo import solvent
+from . import map
+from . import occupancy
+from . import vis
+from . import solvent
 
 

@@ -3,7 +3,7 @@
 A fast and simple approach to estimate local scaling of cryo-EM maps, to approximate occupancy, and optionally to 
 also equalise the map according to occupancy while suppressing solvent amplification.
 
-![image](levo/resources/PhageTail.png)
+![image](resources/PhageTail.png)
 
 
 # Estimation of occupancy 
