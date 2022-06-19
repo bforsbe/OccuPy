@@ -1,7 +1,7 @@
 import numpy as np
 import pylab as plt
 from scipy import ndimage
-import levo.map as map
+import occupy.map as map
 
 def occupancy_map(data, kernel, mask=None, verbose=True):
     occu_map, map_val_at_full_occupancy = occupancy_map_percentile(data, kernel, mask, with_max=True)

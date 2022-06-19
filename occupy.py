@@ -3,7 +3,7 @@ import pylab as plt
 import mrcfile as mf
 import os
 import sys
-import levo
+import occupy
 
 def main():
     # --------------- INPUT --------------------------------------------------------------------
@@ -50,9 +50,9 @@ def main():
     use_lp_for_boosting = False
 
     if use_lp_for_solvent or use_lp_for_occupancy or use_lp_for_boosting:
-        lp_data = levo.map.lowpass_map(in_data, resol, f_open.voxel_size.x, keep_scale=False)
+        lp_data = occupy.map.lowpass_map(in_data, resol, f_open.voxel_size.x, keep_scale=False)
         # print(f'Using low-passed map for some processing, saving file lowpass.mrc.\n',file=f_log)
-        levo.map.new_mrc(lp_data, 'lowpass.mrc', parent=file_name, verbose=False)
+        occupy.map.new_mrc(lp_data, 'lowpass.mrc', parent=file_name, verbose=False)
 
     # --------------- DIAGNOSTIC OUTPUT --------------------------------------------------------
     plot = True  # False
@@ -70,14 +70,14 @@ def main():
     # Estimate solvent paramters for mask
     radius = int(0.95 * nd[0] / 2)
     # print(radius)
-    mask = levo.map.create_circular_mask(nd[0], dim=3, radius=radius)  # TODO use mask radius in Å/nm
+    mask = occupy.map.create_circular_mask(nd[0], dim=3, radius=radius)  # TODO use mask radius in Å/nm
     if solvent_mask_name is not None:
         mask = np.array(mask).astype(int) + 1-s_data
         mask = mask > 1.5
 
     assert sol_data.shape == mask.shape
     h_data = sol_data[mask].flatten()
-    sol_limits, sol_param = levo.solvent.fit_solvent_to_histogram(
+    sol_limits, sol_param = occupy.solvent.fit_solvent_to_histogram(
         h_data,
         plot=plot,
         n_lev=levels
@@ -103,9 +103,9 @@ def main():
     else:
         bst_data = np.copy(in_data)
 
-    boost_kernel = levo.map.create_circular_mask(kernel_size, dim=3, soft=False)
+    boost_kernel = occupy.map.create_circular_mask(kernel_size, dim=3, soft=False)
 
-    occ, full_occ = levo.occupancy.get_map_occupancy(
+    occ, full_occ = occupy.occupancy.get_map_occupancy(
         occ_data,
         occ_kernel=boost_kernel,
         sol_threshold=None,  # sol_limits[2],
@@ -120,7 +120,7 @@ def main():
         ax1.plot(b[:-1], a, 'r', label='high occ')
 
     # Find intersection of solvent model and content
-    solvent_model = levo.solvent.onecomponent_solvent(b, sol_param[0], sol_param[1], sol_param[2])
+    solvent_model = occupy.solvent.onecomponent_solvent(b, sol_param[0], sol_param[1], sol_param[2])
     fit = np.clip(solvent_model, 0.0, np.max(solvent_model))
     cond = fit[:-1] > a
     c = len(b) - 2
@@ -151,7 +151,7 @@ def main():
     print(f'Solvent full: \t {full_occ:.3f}', file=f_log)
     print(f'Occupancy   : \t {occupancy_threshold:.3f}', file=f_log)
 
-    boosted = levo.occupancy.boost_map_occupancy(
+    boosted = occupy.occupancy.boost_map_occupancy(
         bst_data,
         occ,
         occ_threshold=occupancy_threshold,
@@ -162,12 +162,12 @@ def main():
         ax1.legend()
 
     if filter_output is not None:
-        rescaled = levo.map.lowpass_map(boosted, filter_output, voxel_size, keep_scale=True)
+        rescaled = occupy.map.lowpass_map(boosted, filter_output, voxel_size, keep_scale=True)
     else:
         rescaled = boosted
 
     new_name = '_' + file_name
-    levo.map.new_mrc(rescaled.astype(np.float32), 'full' + new_name, parent=file_name, verbose=False)
+    occupy.map.new_mrc(rescaled.astype(np.float32), 'full' + new_name, parent=file_name, verbose=False)
     # print(f'A file with boosted components was written tp full{new_name}',file=f_log)
 
     if save_occ_file or save_bst_map:
@@ -177,21 +177,15 @@ def main():
         os.rename('occupancy.mrc', 'occ' + new_name)
         if verbose:
             print(f'The occupancy was written to occ{new_name}', file=f_log)
-        levo.map.change_voxel_size('occ' + new_name, parent=file_name)
-
-    if save_sol_file:
-
-        if verbose:
-            print(f'The estimated solvent mask was written to sol{new_name}', file=f_log)
-        levo.map.change_voxel_size('sol' + new_name, parent=file_name)
+        occupy.map.change_voxel_size('occ' + new_name, parent=file_name)
 
     if save_bst_map:
         os.rename('boosting.mrc', 'bst' + new_name)
         if verbose:
             print(f'The estimated boosting was written to bst{new_name}', file=f_log)
-        levo.map.change_voxel_size('bst' + new_name, parent=file_name)
+        occupy.map.change_voxel_size('bst' + new_name, parent=file_name)
 
-    levo.vis.chimx_viz(
+    occupy.vis.chimx_viz(
         file_name,
         'full' + new_name,
         'occ' + new_name,
