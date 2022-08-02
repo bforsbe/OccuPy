@@ -115,7 +115,7 @@ def boost_map(data, boosting):
     return np.multiply(data, np.abs(boosting))
 
 
-def boost_map_lambda(data, boosting, a=1):
+def boost_map_lambda(data, boosting, a=1, invert=False):
     occ = np.divide(1, boosting, where=boosting != 0)
     eff_occ = 1.0 - a + a * np.divide(1, occ, where=boosting != 0)
     return np.multiply(data, np.abs(eff_occ))
