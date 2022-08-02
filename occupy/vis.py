@@ -1,5 +1,11 @@
 from pathlib import Path
+import pylab as plt
 
+def save_fig(ori,extra_specifier=None):
+    file_name = 'solModel_' + Path(ori).stem + '.png'
+    if extra_specifier is not None:
+        file_name = f'solModel_{extra_specifier}_' + Path(ori).stem + '.png'
+    plt.savefig(file_name)
 
 def chimx_viz(
         ori,
