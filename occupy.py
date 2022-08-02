@@ -39,15 +39,15 @@ def main():
 
     # ----- MASK SETTINGS ---------
     if len(sys.argv) > 2:
-        solvent_mask_name = sys.argv[2] # 1 at solvent. Should be binary.
-        s_open = mf.open(solvent_mask_name)
-        s_data = np.copy(s_open.data)
+        solvent_definition_name = sys.argv[2]  # 1 at solvent. Should be binary.
+        s_open = mf.open(solvent_definition_name)
+        solvent_def_data = np.copy(s_open.data)
     else:
-        solvent_mask_name = None
-    save_sol_file=True
+        solvent_definition_name = None
+    save_sol_file = True
 
     # ----- LOW-PASS SETTINGS ---------
-    use_lp_for_solvent = False
+    use_lp_for_solvent = True
     use_lp_for_occupancy = True
     use_lp_for_boosting = False
 
