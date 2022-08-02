@@ -243,6 +243,7 @@ def boost_map_occupancy(
         sol_mask=None,
         occ_threshold=None,
         save_bst_map=False,
+        invert=False,
         verbose=True
 ):
     if occ_threshold is not None:
@@ -265,7 +266,7 @@ def boost_map_occupancy(
     '''
 
     # Boost map
-    boosted_map = boost_map_lambda(data, boosting, 1)
+    boosted_map = boost_map_lambda(data, boosting, 1, invert)
 
     if save_bst_map:
         map.new_mrc(boosting.astype(np.float32), 'boosting.mrc')

@@ -35,6 +35,7 @@ def main():
     # ----- THRESHOLD SETTINGS ---------
     occupancy_threshold = None  # Set to None to estimate using volume-limits
     estimate_occ_threshold = True  # This seems to be a better way than solvent masking to limit solvent boosting
+    invert=False #True
 
     # ----- MASK SETTINGS ---------
     if len(sys.argv) > 2:
@@ -163,7 +164,8 @@ def main():
         occ,
         occ_threshold=occupancy_threshold,
         save_bst_map=save_bst_map,
-        verbose=verbose
+        verbose=verbose,
+        invert=invert
     )
     if plot:
         ax1.legend()
