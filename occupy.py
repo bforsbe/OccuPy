@@ -3,11 +3,12 @@ import pylab as plt
 import mrcfile as mf
 import os
 import sys
+from pathlib import Path
 import occupy
 
 def main():
     # --------------- INPUT --------------------------------------------------------------------
-    plt.ion()
+    # plt.ion()
     file_name = sys.argv[1]
     f_open = mf.open(file_name)
     in_data = np.copy(f_open.data)
@@ -55,7 +56,12 @@ def main():
         occupy.map.new_mrc(lp_data, 'lowpass.mrc', parent=file_name, verbose=False)
 
     # --------------- DIAGNOSTIC OUTPUT --------------------------------------------------------
-    plot = True  # False
+    plot = False
+    interactive_plot = True
+    if plot:
+        global f, ax1, ax2
+        f = plt.figure()
+
     save_occ_file = True
     save_bst_map = False
 
@@ -147,9 +153,10 @@ def main():
 
     print(f'Detected thresholds:', file=f_log)
     if c is not None:
-        print(f'Solvent low : \t {b[c]:.3f}', file=f_log)
-    print(f'Solvent full: \t {full_occ:.3f}', file=f_log)
-    print(f'Occupancy   : \t {occupancy_threshold:.3f}', file=f_log)
+        print(f'Sol/Content intersection : \t {b[c]:.3f}', file=f_log)
+    print(f'Solvent peak             : \t {sol_param[1]:.3f}', file=f_log)
+    print(f'Solvent full             : \t {full_occ:.3f}', file=f_log)
+    print(f'Occupancy                : \t {occupancy_threshold:.3f}', file=f_log)
 
     boosted = occupy.occupancy.boost_map_occupancy(
         bst_data,
@@ -196,6 +203,18 @@ def main():
 
     f_open.close()
     f_log.close()
+
+    if plot:
+        save_nem = file_name
+        if solvent_definition_name is not None:
+            occupy.vis.save_fig(
+                file_name,
+                extra_specifier=Path(solvent_definition_name).stem)
+        else:
+             occupy.vis.save_fig(
+                file_name)
+        if interactive_plot:
+            plt.show()
 
 
 if __name__ == '__main__':

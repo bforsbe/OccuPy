@@ -63,7 +63,7 @@ def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_le
     high = np.max(data)
 
     # Estimate solvent distribution initial parameters (to be refined by fitting)
-    a, b = np.histogram(data, bins=n_lev)
+    a, b = np.histogram(data, bins=n_lev, density=True)
     d_domain = b[1] - b[0]
     solvent_peak_index = np.argmax(a)
     solvent_peak = b[solvent_peak_index]
@@ -102,28 +102,26 @@ def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_le
         guess = twocomponent_solvent(domain, p_guess[0], p_guess[1], p_guess[2], p_guess[3], p_guess[4], p_guess[5])
         solvent_model = twocomponent_solvent(domain, popt[0], popt[1], popt[2], popt[3], popt[4], popt[5])
 
-    fit = np.clip(solvent_model, tol ** 2, np.max(solvent_model))
+    fit = np.clip(solvent_model, tol**2, np.max(solvent_model))
     content_fraction_all = np.divide((a + tol - fit), a + tol)
     solvent_fraction_all = 1 - content_fraction_all
 
     if plot:
-        f = plt.figure()
+        f = plt.gcf()
         ax1 = f.add_subplot(2, 1, 1)
         ax1.plot(b[:-1], a, 'k-', label='data')
         ax1.plot(domain, guess, 'b-', label='solvent guess', alpha=0.3)
 
         ax1.plot(domain, fit, 'g-', label='solvent fit')
         ax1.legend()
-        ax1.set_ylim([1, solvent_scale * 1.1])
+        ax1.set_ylim([tol, solvent_scale * 1.1])
         plt.semilogy()
 
         ax2 = f.add_subplot(2, 1, 2)
 
         ax2.plot(domain, 100 * solvent_fraction_all, 'g-', label='solvent_fraction')
-        ax2.set_ylim([0.1, 110])
+        ax2.set_ylim([0, 110])
         ax2.legend()
-
-        plt.show()
 
     solvent_vol = np.sum(solvent_model)
     solvent_fraction = solvent_vol / vol
@@ -131,10 +129,12 @@ def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_le
 
     solvent_model_peak_index = np.argmax(solvent_model)
 
+    #TODO reevaluate these search methods
     threshold_high = n_lev - 1
-    while solvent_model[threshold_high] < 1 and threshold_high > 0:
+    while solvent_model[threshold_high] < tol**3 and threshold_high > 0:
         threshold_high -= 1
     if threshold_high == 0:
+        plt.savefig('Incomplete.png')
         raise ValueError('high threshold limit not found, solvent fitted as larger than data domain?')
 
     threshold_midhigh = n_lev - 1
