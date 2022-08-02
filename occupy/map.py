@@ -88,10 +88,13 @@ def match_to_range(change, reference):
     return change
 
 
-def uniscale_map(data):
+def uniscale_map(data, norm=False):
     param = [np.min(data), np.max(data)]
     data /= param[1] - param[0]
+    if norm:
+        data -= np.min(data)
     return data
+
 
 
 def lowpass_map_square(data, cutoff, voxel_size, resample=False, keep_scale=False):

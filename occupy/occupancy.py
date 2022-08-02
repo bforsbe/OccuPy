@@ -3,6 +3,7 @@ import pylab as plt
 from scipy import ndimage
 import occupy.map as map
 
+
 def occupancy_map(data, kernel, mask=None, verbose=True):
     occu_map, map_val_at_full_occupancy = occupancy_map_percentile(data, kernel, mask, with_max=True)
     return occu_map, map_val_at_full_occupancy
@@ -117,8 +118,11 @@ def boost_map(data, boosting):
 
 def boost_map_lambda(data, boosting, a=1, invert=False):
     occ = np.divide(1, boosting, where=boosting != 0)
-    eff_occ = 1.0 - a + a * np.divide(1, occ, where=boosting != 0)
-    return np.multiply(data, np.abs(eff_occ))
+    eff_occ = 1.0 - a + a * np.divide(1, occ, where=occ != 0)
+    if invert:
+        return np.divide(data, np.abs(eff_occ),where= np.abs(eff_occ)!=0 )
+    else:
+        return np.multiply(data, np.abs(eff_occ))
 
 
 def volume_limit_boost(occu_map, n_lev=30, plot=False, cutoff=False):
@@ -183,7 +187,7 @@ def volume_limit_boost(occu_map, n_lev=30, plot=False, cutoff=False):
 
     if plot:
         ax1.plot(levels[1:], occ_lim[:, 1], 'ro', label='vol-limited  occu')
-        ax2.hist(occ.flatten(), bins=levels[::-1], label='vol-limited occu', histtype='step')
+        ax2.hist(occ.flatten(), bins=levels[::-1], label='vol-limited occu', histtype='step', density=True)
         ax1.set_xlim([1, 0])
         ax2.set_xlim([1, 0])
         ax1.legend()
@@ -240,17 +244,23 @@ def get_map_occupancy(
 def boost_map_occupancy(
         data,
         occ_map,
+        confidence=None,
         sol_mask=None,
         occ_threshold=None,
         save_bst_map=False,
         invert=False,
         verbose=True
 ):
-    if occ_threshold is not None:
+    if confidence is not None:
+        thr_occu_map = threshold_occu_map(occ_map, 0)
+        boosting = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
+
+    elif occ_threshold is not None:
         # Use the supplied threshold hard
         if verbose:
             print(f'Applying strict occupancy threshold of {100 * occ_threshold:.1f}%.')
-        boosting = 1 / threshold_occu_map(occ_map, occ_threshold)
+        thr_occu_map = threshold_occu_map(occ_map, occ_threshold)
+        boosting = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
 
     if sol_mask is not None:  # TODO make possible to use on top of occ_threshold
         if verbose:
@@ -267,6 +277,9 @@ def boost_map_occupancy(
 
     # Boost map
     boosted_map = boost_map_lambda(data, boosting, 1, invert)
+
+    if confidence is not None:
+        boosted_map = np.multiply(boosted_map,confidence)
 
     if save_bst_map:
         map.new_mrc(boosting.astype(np.float32), 'boosting.mrc')
