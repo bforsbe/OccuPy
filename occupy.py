@@ -24,12 +24,12 @@ def main():
 
     kernel_size = ((int(np.ceil(resol / voxel_size)) // 2) * 2) + 1
     kernel_size = np.clip(kernel_size, 3, 7)
-    retain_solvent = False
+    retain_solvent = True
 
     method = 'percentile_max'
     verbose = False
     levels = 1000
-    f_log = open('log.txt', 'w+')
+    f_log = open(f'log_{new_name}.txt', 'w+')
     print(f'Input :\t\t {file_name}', file=f_log)
     print(f'Pixel :\t\t {voxel_size:.2f}', file=f_log)
     print(f'Box   :\t\t {nd}', file=f_log)
@@ -39,9 +39,9 @@ def main():
 
     # ----- THRESHOLD SETTINGS ---------
     occupancy_threshold = None  # Set to None to estimate using volume-limits
-    occupancy_threshold = None # 0.4
+    occupancy_threshold = None  # 0.4
     estimate_occ_threshold = True  # This seems to be a better way than solvent masking to limit solvent boosting
-    invert=False #True
+    invert = False  # True
 
     # ----- MASK SETTINGS ---------
     if len(sys.argv) > 2:
@@ -123,7 +123,6 @@ def main():
         verbose=verbose
     )
 
-
     a, b = np.histogram(occ_data, bins=levels, density=True)
 
     # Find intersection of solvent model and content
@@ -144,16 +143,16 @@ def main():
         content_fraction_all = np.divide((a + 0.01 - fit[:-1]), a + 0.01)
         solvent_fraction_all = 1 - content_fraction_all
 
-        #if solvent_definition_name is None:  # TODO always do either. sol_param subtraction needed for solvent definition
+        # if solvent_definition_name is None:  # TODO always do either. sol_param subtraction needed for solvent definition
         #    occupancy_threshold = b[c] / full_occ
-        #else:
-        #occupancy_threshold = (b[c] - sol_param[1]) / (full_occ - sol_param[1])
+        # else:
+        # occupancy_threshold = (b[c] - sol_param[1]) / (full_occ - sol_param[1])
 
         content_conf = np.copy(content_fraction_all)
-        for i in np.arange(np.size(content_conf)-2)+1:
-            content_conf[-i-2] = np.min(content_conf[-i-2:-i])
-            if content_conf[-i-3] < 0:
-                content_conf[:-i-2] = 0
+        for i in np.arange(np.size(content_conf) - 2) + 1:
+            content_conf[-i - 2] = np.min(content_conf[-i - 2:-i])
+            if content_conf[-i - 3] < 0:
+                content_conf[:-i - 2] = 0
                 break
         if plot:
             f = plt.gcf()
@@ -162,10 +161,10 @@ def main():
             ax1.plot(full_occ * np.ones(2), ax1.get_ylim(), 'r--', label='full occupancy')
             if solvent_definition_name is not None:
                 ax1.plot(b[:-1], a, 'gray', label='unmasked data')
-            ax1.plot(b[:-1], np.clip(content_conf,ax1.get_ylim()[0],1.0), 'r', label='confidence')
+            ax1.plot(b[:-1], np.clip(content_conf, ax1.get_ylim()[0], 1.0), 'r', label='confidence')
 
-        #indx = (occ * np.sum(b>0) + np.sum(b<0) - 2 ).astype(int)
-        indx = (occupy.map.uniscale_map(np.copy(occ_data), norm=True) * levels-1).astype(int)
+        # indx = (occ * np.sum(b>0) + np.sum(b<0) - 2 ).astype(int)
+        indx = (occupy.map.uniscale_map(np.copy(occ_data), norm=True) * levels - 1).astype(int)
         confidence = content_conf[indx]
         occupy.map.new_mrc(confidence.astype(np.float32), 'conf' + new_name, parent=file_name, verbose=False)
 
@@ -195,6 +194,8 @@ def main():
     else:
         rescaled = equalised
 
+    rescaled = occupy.map.clip_to_range(rescaled, occ_data)
+
     occupy.map.new_mrc(rescaled.astype(np.float32), 'full' + new_name, parent=file_name, verbose=False)
     # print(f'A file with boosted components was written tp full{new_name}',file=f_log)
 
@@ -218,7 +219,7 @@ def main():
         'full' + new_name,
         'occ' + new_name,
         threshold_ori=sol_limits[3],
-        #threshold_full=sol_limits[3],
+        # threshold_full=sol_limits[3],
         threshold_occ=occupancy_threshold
     )
 
@@ -232,7 +233,7 @@ def main():
                 file_name,
                 extra_specifier=Path(solvent_definition_name).stem)
         else:
-             occupy.vis.save_fig(
+            occupy.vis.save_fig(
                 file_name)
         if interactive_plot:
             plt.show()
