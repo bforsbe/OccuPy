@@ -27,7 +27,7 @@ def main():
     retain_solvent = False
 
     method = 'percentile_max'
-    verbose =  True
+    verbose = False
     levels = 1000
     f_log = open('log.txt', 'w+')
     print(f'Input :\t\t {file_name}', file=f_log)
@@ -64,7 +64,7 @@ def main():
 
     # --------------- DIAGNOSTIC OUTPUT --------------------------------------------------------
     plot = True
-    interactive_plot = True
+    interactive_plot = False
     if plot:
         global f, ax1, ax2
         f = plt.figure()

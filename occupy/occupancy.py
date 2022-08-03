@@ -274,10 +274,12 @@ def equalise_map_occupancy(
             print('Using confidence based on solvent model to limit amplification when equalising occupancy.')
         equalised_map = np.multiply(equalised_map,confidence)
         if retain_solvent:
-            print('Retaining solvent by inverse confidence')
-            equalised_map += np.multiply(data,1-confidence)
+           if verbose:
+               print('Retaining solvent by inverse confidence')
+               equalised_map += np.multiply(data,1-confidence)
         else:
-            print('Not retaining solvent, eliminating based on confidence')
+            if verbose:
+                print('Not retaining solvent, eliminating based on confidence')
 
     if save_bst_map:
         map.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
