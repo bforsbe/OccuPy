@@ -252,37 +252,32 @@ def equalise_map_occupancy(
         invert=False,
         verbose=True
 ):
-    if confidence is not None:
-        thr_occu_map = threshold_occu_map(occ_map, 0)
-        amplification = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
-
-    elif occ_threshold is not None:
-        # Use the supplied threshold hard
+    if occ_threshold is None:
+        occ_threshold = 0.05
         if verbose:
-            print(f'Applying strict occupancy threshold of {100 * occ_threshold:.1f}%.')
-        thr_occu_map = threshold_occu_map(occ_map, occ_threshold)
-        amplification = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
+            print(f'No occupancy threshold set, using {100 * occ_threshold:.1f}% to limit spurious over-amplification.')
+    elif verbose:
+        print(f'Applying provided strict occupancy threshold of {100 * occ_threshold:.1f}%.')
+    thr_occu_map = threshold_occu_map(occ_map, occ_threshold)
+    amplification = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
 
-    if sol_mask is not None:  # TODO make possible to use on top of occ_threshold
+    if sol_mask is not None:
         if verbose:
-            print('Using solvent mask when estimating occupancy.')
+            print('Using solvent mask when equalising occupancy.')
         amplification = (1 - sol_mask) + np.multiply(sol_mask, amplification)
 
-    # TODO make use of volume-limiting thresholding?
-    ''' 
-        # Estimate the occupancy threshold
-        if verbose:
-            print('Using volume-limited occupancy.')
-        boosting = volume_limit_boost(occ_map, plot=False, cutoff=True)
-    '''
-
-    # Boost map
+    # Equalise map
     equalised_map = equalise_map_lambda(data, amplification, 1, invert)
 
     if confidence is not None:
+        if verbose:
+            print('Using confidence based on solvent model to limit amplification when equalising occupancy.')
         equalised_map = np.multiply(equalised_map,confidence)
         if retain_solvent:
+            print('Retaining solvent by inverse confidence')
             equalised_map += np.multiply(data,1-confidence)
+        else:
+            print('Not retaining solvent, eliminating based on confidence')
 
     if save_bst_map:
         map.new_mrc(amplification.astype(np.float32), 'amplification.mrc')

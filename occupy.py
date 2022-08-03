@@ -27,7 +27,7 @@ def main():
     retain_solvent = False
 
     method = 'percentile_max'
-    verbose = False  # True
+    verbose =  True
     levels = 1000
     f_log = open('log.txt', 'w+')
     print(f'Input :\t\t {file_name}', file=f_log)
@@ -147,7 +147,7 @@ def main():
         #if solvent_definition_name is None:  # TODO always do either. sol_param subtraction needed for solvent definition
         #    occupancy_threshold = b[c] / full_occ
         #else:
-        occupancy_threshold = (b[c] - sol_param[1]) / (full_occ - sol_param[1])
+        #occupancy_threshold = (b[c] - sol_param[1]) / (full_occ - sol_param[1])
 
         content_conf = np.copy(content_fraction_all)
         for i in np.arange(np.size(content_conf)-2)+1:
@@ -158,7 +158,8 @@ def main():
         if plot:
             f = plt.gcf()
             ax1 = f.axes[0]
-            #ax1.plot(b[:-1], a, 'r', label='unmasked data')
+            if solvent_definition_name is not None:
+                ax1.plot(b[:-1], a, 'gray', label='unmasked data')
             ax1.plot(b[:-1], np.clip(content_conf,ax1.get_ylim()[0],1.0), 'r', label='confidence')
 
         #indx = (occ * np.sum(b>0) + np.sum(b<0) - 2 ).astype(int)
@@ -171,7 +172,8 @@ def main():
         print(f'Sol/Content intersection : \t {b[c]:.3f}', file=f_log)
     print(f'Solvent peak             : \t {sol_param[1]:.3f}', file=f_log)
     print(f'Solvent full             : \t {full_occ:.3f}', file=f_log)
-    print(f'Occupancy                : \t {occupancy_threshold:.3f}', file=f_log)
+    if occupancy_threshold is not None:
+        print(f'Occupancy                : \t {occupancy_threshold:.3f}', file=f_log)
 
     equalised = occupy.occupancy.equalise_map_occupancy(
         bst_data,
