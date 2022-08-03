@@ -157,7 +157,9 @@ def main():
                 break
         if plot:
             f = plt.gcf()
+            f.set_size_inches(20, 4)
             ax1 = f.axes[0]
+            ax1.plot(full_occ * np.ones(2), ax1.get_ylim(), 'r--', label='full occupancy')
             if solvent_definition_name is not None:
                 ax1.plot(b[:-1], a, 'gray', label='unmasked data')
             ax1.plot(b[:-1], np.clip(content_conf,ax1.get_ylim()[0],1.0), 'r', label='confidence')

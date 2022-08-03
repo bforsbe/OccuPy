@@ -108,20 +108,15 @@ def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_le
 
     if plot:
         f = plt.gcf()
-        ax1 = f.add_subplot(2, 1, 1)
+        ax1 = f.add_subplot(1, 1, 1)
         ax1.plot(b[:-1], a, 'k-', label='data')
         ax1.plot(domain, guess, 'b-', label='solvent guess', alpha=0.3)
 
         ax1.plot(domain, fit, 'g-', label='solvent fit')
         ax1.legend()
-        ax1.set_ylim([tol, solvent_scale * 1.1])
+        low_lim = np.min(a[a>0])
+        ax1.set_ylim([low_lim*0.5, solvent_scale * 1.1])
         plt.semilogy()
-
-        ax2 = f.add_subplot(2, 1, 2)
-
-        ax2.plot(domain, 100 * solvent_fraction_all, 'g-', label='solvent_fraction')
-        ax2.set_ylim([0, 110])
-        ax2.legend()
 
     solvent_vol = np.sum(solvent_model)
     solvent_fraction = solvent_vol / vol
@@ -144,7 +139,7 @@ def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_le
         raise ValueError('midhigh threshold limit not found, solvent fitted as larger than data domain?')
 
     threshold_midlow = 0
-    while solvent_fraction_all[threshold_midlow] > 0 and threshold_midlow < n_lev - 1:
+    while solvent_fraction_all[threshold_midlow] > 0.01 and threshold_midlow < n_lev - 1:
         threshold_midlow += 1
     if threshold_midlow == n_lev:
         raise ValueError('midlow threshold limit not found, solvent fitted as larger than data domain?')
@@ -171,11 +166,12 @@ def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_le
         print(f' Scale:  {popt[3]:.4f}')
         print(f' Volume: {content_vol:.2f}')
         '''
-    solvent_range = np.array([b[threshold_low], b[threshold_midlow], b[threshold_midhigh], b[threshold_high]])
+    solvent_range = np.array([b[threshold_low], b[threshold_midlow], b[threshold_midhigh+1], b[threshold_high]])
 
     if plot:
-        for i in np.arange(4):
-            ax1.plot(solvent_range[i] * np.ones(2), ax1.get_ylim(), 'k--')
-            ax2.plot(solvent_range[i] * np.ones(2), ax2.get_ylim(), 'k--')
+        #ax1.plot(solvent_range[0] * np.ones(2), ax1.get_ylim(), 'g--', label='solvent edge')
+        ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g:', label='solvent edge')
+        ax1.plot(solvent_range[2] * np.ones(2), ax1.get_ylim(), 'g--', label='content 1% of solvent')
+        #ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g--', label='ugh')
 
     return solvent_range, popt
