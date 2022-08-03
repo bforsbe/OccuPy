@@ -173,7 +173,7 @@ def main():
     print(f'Solvent full             : \t {full_occ:.3f}', file=f_log)
     print(f'Occupancy                : \t {occupancy_threshold:.3f}', file=f_log)
 
-    boosted = occupy.occupancy.boost_map_occupancy(
+    equalised = occupy.occupancy.equalise_map_occupancy(
         bst_data,
         occ,
         confidence,
@@ -187,10 +187,9 @@ def main():
         ax1.legend()
 
     if filter_output is not None:
-        rescaled = occupy.map.lowpass_map(boosted, filter_output, voxel_size, keep_scale=True)
+        rescaled = occupy.map.lowpass_map(equalised, filter_output, voxel_size, keep_scale=True)
     else:
-        rescaled = boosted
-
+        rescaled = equalised
 
     occupy.map.new_mrc(rescaled.astype(np.float32), 'full' + new_name, parent=file_name, verbose=False)
     # print(f'A file with boosted components was written tp full{new_name}',file=f_log)

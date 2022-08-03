@@ -112,12 +112,12 @@ def threshold_occu_map(occu_map, occ_threshold, mask=None):
     return t_occu_map
 
 
-def boost_map(data, boosting):
-    return np.multiply(data, np.abs(boosting))
+def equalise_map(data, amplification):
+    return np.multiply(data, np.abs(amplification))
 
 
-def boost_map_lambda(data, boosting, a=1, invert=False):
-    occ = np.divide(1, boosting, where=boosting != 0)
+def equalise_map_lambda(data, amplification, a=1, invert=False):
+    occ = np.divide(1, amplification, where=amplification != 0)
     eff_occ = 1.0 - a + a * np.divide(1, occ, where=occ != 0)
     if invert:
         return np.divide(data, np.abs(eff_occ),where= np.abs(eff_occ)!=0 )
@@ -125,7 +125,7 @@ def boost_map_lambda(data, boosting, a=1, invert=False):
         return np.multiply(data, np.abs(eff_occ))
 
 
-def volume_limit_boost(occu_map, n_lev=30, plot=False, cutoff=False):
+def volume_limit_amplification(occu_map, n_lev=30, plot=False, cutoff=False):
     global f, ax1, ax2
 
     mask = map.create_circular_mask(np.shape(occu_map)[0], dim=3)
@@ -241,7 +241,7 @@ def get_map_occupancy(
     return occ_map, map_val_at_full_occupancy
 
 
-def boost_map_occupancy(
+def equalise_map_occupancy(
         data,
         occ_map,
         confidence=None,
@@ -254,19 +254,19 @@ def boost_map_occupancy(
 ):
     if confidence is not None:
         thr_occu_map = threshold_occu_map(occ_map, 0)
-        boosting = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
+        amplification = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
 
     elif occ_threshold is not None:
         # Use the supplied threshold hard
         if verbose:
             print(f'Applying strict occupancy threshold of {100 * occ_threshold:.1f}%.')
         thr_occu_map = threshold_occu_map(occ_map, occ_threshold)
-        boosting = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
+        amplification = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
 
     if sol_mask is not None:  # TODO make possible to use on top of occ_threshold
         if verbose:
             print('Using solvent mask when estimating occupancy.')
-        boosting = (1 - sol_mask) + np.multiply(sol_mask, boosting)
+        amplification = (1 - sol_mask) + np.multiply(sol_mask, amplification)
 
     # TODO make use of volume-limiting thresholding?
     ''' 
@@ -277,13 +277,13 @@ def boost_map_occupancy(
     '''
 
     # Boost map
-    boosted_map = boost_map_lambda(data, boosting, 1, invert)
+    equalised_map = equalise_map_lambda(data, amplification, 1, invert)
 
     if confidence is not None:
-        boosted_map = np.multiply(boosted_map,confidence)
+        equalised_map = np.multiply(equalised_map,confidence)
         if retain_solvent:
-            boosted_map += np.multiply(data,1-confidence)
+            equalised_map += np.multiply(data,1-confidence)
 
     if save_bst_map:
-        map.new_mrc(boosting.astype(np.float32), 'boosting.mrc')
-    return boosted_map
+        map.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
+    return equalised_map
