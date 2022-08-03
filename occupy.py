@@ -24,6 +24,8 @@ def main():
 
     kernel_size = ((int(np.ceil(resol / voxel_size)) // 2) * 2) + 1
     kernel_size = np.clip(kernel_size, 3, 7)
+    retain_solvent = False
+
     method = 'percentile_max'
     verbose = False  # True
     levels = 1000
@@ -61,7 +63,7 @@ def main():
         occupy.map.new_mrc(lp_data, 'lowpass.mrc', parent=file_name, verbose=False)
 
     # --------------- DIAGNOSTIC OUTPUT --------------------------------------------------------
-    plot = False
+    plot = True
     interactive_plot = True
     if plot:
         global f, ax1, ax2
@@ -123,10 +125,6 @@ def main():
 
 
     a, b = np.histogram(occ_data, bins=levels, density=True)
-    if plot:
-        f = plt.gcf()
-        ax1 = f.axes[0]
-        ax1.plot(b[:-1], a, 'r', label='high occ')
 
     # Find intersection of solvent model and content
     solvent_model = occupy.solvent.onecomponent_solvent(b, sol_param[0], sol_param[1], sol_param[2])
@@ -157,6 +155,11 @@ def main():
             if content_conf[-i-3] < 0:
                 content_conf[:-i-2] = 0
                 break
+        if plot:
+            f = plt.gcf()
+            ax1 = f.axes[0]
+            #ax1.plot(b[:-1], a, 'r', label='unmasked data')
+            ax1.plot(b[:-1], np.clip(content_conf,ax1.get_ylim()[0],1.0), 'r', label='confidence')
 
         #indx = (occ * np.sum(b>0) + np.sum(b<0) - 2 ).astype(int)
         indx = (occupy.map.uniscale_map(np.copy(occ_data), norm=True) * levels-1).astype(int)
@@ -174,6 +177,7 @@ def main():
         bst_data,
         occ,
         confidence,
+        retain_solvent=retain_solvent,
         occ_threshold=occupancy_threshold,
         save_bst_map=save_bst_map,
         verbose=verbose,

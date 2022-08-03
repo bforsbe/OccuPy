@@ -245,6 +245,7 @@ def boost_map_occupancy(
         data,
         occ_map,
         confidence=None,
+        retain_solvent=True,
         sol_mask=None,
         occ_threshold=None,
         save_bst_map=False,
@@ -280,6 +281,8 @@ def boost_map_occupancy(
 
     if confidence is not None:
         boosted_map = np.multiply(boosted_map,confidence)
+        if retain_solvent:
+            boosted_map += np.multiply(data,1-confidence)
 
     if save_bst_map:
         map.new_mrc(boosting.astype(np.float32), 'boosting.mrc')
