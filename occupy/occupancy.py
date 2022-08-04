@@ -1,7 +1,6 @@
 import numpy as np
-import pylab as plt
 from scipy import ndimage
-import occupy.map as map
+import map_tools
 
 
 def occupancy_map(
@@ -194,7 +193,7 @@ def get_map_occupancy(
     # occ_map, _ = unity_map(occ_map)
 
     if save_occ_map:
-        map.new_mrc(np.clip(occ_map, 0, 1), 'occupancy.mrc', verbose=False)
+        map_tools.new_mrc(np.clip(occ_map, 0, 1), 'occupancy.mrc', verbose=False)
     return occ_map, map_val_at_full_occupancy
 
 
@@ -227,7 +226,7 @@ def equalise_map_occupancy(
         amplification = (1 - sol_mask) + np.multiply(sol_mask, amplification)
 
     if save_amp_map:
-        map.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
+        map_tools.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
 
     # Equalise map
     equalised_map = equalise_map_lambda(data, amplification, equalise_amount, invert)
