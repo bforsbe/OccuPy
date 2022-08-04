@@ -202,8 +202,6 @@ def equalise_map_occupancy(
         data: np.ndarray,
         occ_map: np.ndarray,
         equalise_amount: float = None,
-        confidence: np.ndarray = None,
-        retain_solvent: bool = True,
         sol_mask: np.ndarray = None,
         occ_threshold: float = None,
         save_amp_map: bool = False,
@@ -228,21 +226,10 @@ def equalise_map_occupancy(
             print('Using solvent mask when equalising occupancy.')
         amplification = (1 - sol_mask) + np.multiply(sol_mask, amplification)
 
+    if save_amp_map:
+        map.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
+
     # Equalise map
     equalised_map = equalise_map_lambda(data, amplification, equalise_amount, invert)
 
-    if confidence is not None:
-        if verbose:
-            print('Using confidence based on solvent model to limit amplification when equalising occupancy.')
-        equalised_map = np.multiply(equalised_map,confidence)
-        if retain_solvent:
-           if verbose:
-               print('Retaining solvent by inverse confidence')
-               equalised_map += np.multiply(data,1-confidence)
-        else:
-            if verbose:
-                print('Not retaining solvent, eliminating based on confidence')
-
-    if save_amp_map:
-        map.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
     return equalised_map

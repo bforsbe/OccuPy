@@ -10,20 +10,25 @@ import typer
 
 
 def main(
-        input_map: str = typer.Option(None,help="Map to estimate [.mrc NxNxN]"),
-        solvent_def: str = typer.Option(None,help="Mask that defines non-solvent, used to aid solvent model fitting. [.mrc NxNxN]"),
-        equalise: bool = typer.Option(False, help="Alter partial occupancies, to make more or less equal to full occupancy?"),
-        occupancy_threshold: float = typer.Option(0.05, help="Hard limit below which occupancy will be considered unconfident"),
-        equalise_amount: float = typer.Option(None, help="How to alter confident partial occupancies [-1,1]"),
-        relion_classes: str = typer.Option(None, help="File of classes to diversify by occupancy amplification [_model.star]"),
-        plot: bool = typer.Option(False,help="Plot a histogram showing solvent model fit and occupancy confidence?"),
-        retain_solvent: bool = typer.Option(True, help="Should Estimated solvent be eliminated [flattened to 0]?"),
+        input_map: str = typer.Option(...,"--input-map","-i",help="Map to estimate [.mrc NxNxN]"),
+        output_map: str = typer.Option('out_<input_file_name>',"--output_map","-o",help="Output map name"),
+        amplify: bool = typer.Option(False, help="Alter partial occupancies, to make more or less equal to full occupancy?"),
+        amplify_amount: float = typer.Option(1.0, help="How to alter confident partial occupancies [-1,1]"),
+        amplify_limit: float = typer.Option(0.05, help="Hard limit below which map scale/occupancy will be considered unreliable for amplification"),
+        exclude_solvent: bool = typer.Option(False, "--exclude-solvent/--retain-solvent", help="Should Estimated solvent be eliminated [flattened to 0]?"),
+        plot: bool = typer.Option(False, help="Plot a histogram showing solvent model fit and occupancy confidence?"),
+
         lowpass_input: float = typer.Option(None, help="Low-pass filter the input map to this resoution prior to scale estimation. Internal default is 6*pixel-size. [Å]"),
         lowpass_amplified: float = typer.Option(None, help="Optionally low-pass filter the amplified output to this resolution [Å]"),
         kernel_size: int = typer.Option(None,help="Size of the local occupancy estimation kernel [pixels]"),
+        hedge_confidence: int = typer.Option(None, help="Exponent order for confidence estimation, such that values > 1 are more careful when amplifying low occupancies"),
+        solvent_def: str = typer.Option(None, help="Mask that defines non-solvent, used to aid solvent model fitting. [.mrc NxNxN]"),
+
         save_all_maps: bool = typer.Option(False, help ="Save all maps used internally"),
         save_chimeraX: bool = typer.Option(True, help="Write a .cxc file that can be opened by chimeraX to show colored input/output maps"),
-        hedge_confidence: int = typer.Option(None, help="Exponent order for confidence estimation, such that values > 1 are more careful when amplifying low occupancies")
+        verbose: bool = typer.Option(False, "--verbose/--quiet", help="Let me know what's going on"),
+
+        relion_classes: str = typer.Option(None, help="File of classes to diversify by occupancy amplification [_model.star]")
 ):
     """
     OccuPy takes a cryo-EM reconstruction produced by averaging and estimates a self-normative local map scaling.
@@ -33,6 +38,10 @@ def main(
 
     if input_map is None:
        exit(1) #TODO surely a better way to do nothing with no options. Invoke help?
+
+    new_name = '_' + input_map
+    if output_map=='out_<input_file_name>':
+        output_map = 'out' + new_name
 
     if relion_classes is not None:
         print('Input using a relion model.star to diversiy classes is not yet implemented')
@@ -44,7 +53,7 @@ def main(
     nd = np.shape(in_data)
     voxel_size = f_open.voxel_size.x
 
-    new_name = '_' + input_map
+
 
     # --------------- SETTINGS -----------------------------------------------------------------
     if lowpass_input is None:
@@ -54,17 +63,16 @@ def main(
         kernel_size = ((int(np.ceil(lowpass_input / voxel_size)) // 2) * 2) + 1
         kernel_size = np.clip(kernel_size, 3, 7)
 
-    verbose = True
     levels = 1000
-    f_log = open(f'log{new_name}.txt', 'w+')
-    print(f'Input :\t\t {input_map}', file=f_log)
-    print(f'Pixel :\t\t {voxel_size:.2f}', file=f_log)
-    print(f'Box   :\t\t {nd}', file=f_log)
-    print(f'Kernel:\t\t {kernel_size}', file=f_log)
-    print(f'Filter:\t\t {lowpass_input}', file=f_log)
-    print(f'Occupancy limit:\t\t {occupancy_threshold:.3f}', file=f_log)
-
-    print(f'--------------------------------------------------------------\n', file=f_log)
+    log_name = f'log_{Path(input_map).stem}.txt'
+    f_log = open(log_name, 'w+')
+    print(f'\n-------------------------------------------------------I/O-------', file=f_log)
+    print(f'Input   :\t\t {input_map}', file=f_log)
+    print(f'Pixel   :\t\t {voxel_size:.2f}', file=f_log)
+    print(f'Box     :\t\t {nd}', file=f_log)
+    print(f'Kernel  :\t\t {kernel_size}', file=f_log)
+    print(f'Filter  :\t\t {lowpass_input}', file=f_log)
+    print(f'Amp. lim:\t\t {amplify_limit:.3f}', file=f_log)
 
     # ----- THRESHOLD SETTINGS ---------
     invert = False  # True #TODO inverting the equalization, to anti-boost? (Different from neg lambda, I think)
@@ -76,10 +84,6 @@ def main(
 
     if use_lp_for_solvent or use_lp_for_occupancy or use_lp_for_amplification:
         lp_data = occupy.map.lowpass_map(in_data, lowpass_input, f_open.voxel_size.x, keep_scale=False)
-        if save_all_maps:
-            occupy.map.new_mrc(lp_data, 'lowpass'+new_name, parent=input_map, verbose=False)
-            if verbose:
-                print(f'A map with the low-pass filtered input map was written as lowpass{new_name}', file=f_log)
 
     # --------------- DIAGNOSTIC OUTPUT --------------------------------------------------------
     if plot:
@@ -172,58 +176,79 @@ def main(
     if hedge_confidence is not None:
         content_conf = content_conf**hedge_confidence
     confidence = content_conf[indx]
-    if save_all_maps:
-        occupy.map.new_mrc(confidence.astype(np.float32), 'conf' + new_name, parent=input_map, verbose=False)
-        print(f'A map with the local confidence of non-solvent content was written as conf{new_name}', file=f_log)
 
-    print(f'Detected thresholds:', file=f_log)
-    if c is not None:
-        print(f'Sol/Content intersection : \t {b[c]:.3f}', file=f_log)
+    print(f'\n------------------------------------Detected thresholds-------', file=f_log)
+    #if c is not None:
+    #    print(f'Sol/Content intersection : \t {b[c]:.3f}', file=f_log)
     print(f'Content at 1% of solvent  : \t {sol_limits[2]:.3f}', file=f_log)
     print(f'Solvent drop to 0% (edge) : \t {sol_limits[3]:.3f}', file=f_log)
-    print(f'Solvent peak             : \t {sol_param[1]:.3f}', file=f_log)
-    print(f'Solvent full             : \t {full_occ:.3f}', file=f_log)
+    print(f'Solvent peak              : \t {sol_param[1]:.3f}', file=f_log)
+    print(f'Solvent full              : \t {full_occ:.3f}', file=f_log)
 
-    if equalise:
-        equalised = occupy.occupancy.equalise_map_occupancy(
-            amp_data,
-            occ,
-            equalise_amount,
-            confidence,
-            retain_solvent=retain_solvent,
-            occ_threshold=occupancy_threshold,
-            save_amp_map=save_all_maps,
-            verbose=verbose,
-            invert=invert
-        )
-        if plot:
-            ax1.legend()
+    print(f'\n------------------------------------Output files--------------', file=f_log)
+    logstring = ""
+    if amplify or exclude_solvent:
 
-        if lowpass_amplified is not None:
-            rescaled = occupy.map.lowpass_map(equalised, lowpass_amplified, voxel_size, keep_scale=True)
+        out_data = np.copy(amp_data)
+
+        if amplify:
+            logstring='Amplified partial scale & '
+            out_data = occupy.occupancy.equalise_map_occupancy(
+                amp_data,
+                occ,
+                amplify_amount,
+                occ_threshold=amplify_limit,
+                save_amp_map=save_all_maps,
+                verbose=verbose,
+                invert=invert
+            )
+
+            if lowpass_amplified is not None:
+                out_data = occupy.map.lowpass_map(out_data, lowpass_amplified, voxel_size, keep_scale=True)
+
+            out_data = occupy.map.clip_to_range(out_data, occ_data)
+
+        if verbose:
+            print('Using confidence based on solvent model to limit amplification when amplifying partial occupancy.')
+        out_data = np.multiply(out_data,confidence)
+
+
+        if exclude_solvent:
+            logstring = f'{logstring}Excluded solvent'
+            if verbose:
+                print('Not retaining solvent, eliminating based on confidence')
         else:
-            rescaled = equalised
+            logstring = f'{logstring}Retained solvent'
+            if verbose:
+                print('Retaining solvent by inverse confidence')
+            out_data += np.multiply(occ_data, 1 - confidence)
 
-        rescaled = occupy.map.clip_to_range(rescaled, occ_data)
+        occupy.map.new_mrc(out_data.astype(np.float32), output_map, parent=input_map, verbose=False)
+        print(f'Wrote {output_map}        \t: {logstring} ', file=f_log)
 
-        occupy.map.new_mrc(rescaled.astype(np.float32), 'full' + new_name, parent=input_map, verbose=False)
-        print(f'A map with amplified local scaling was written as full{new_name}',file=f_log)
 
-    os.rename('occupancy.mrc', 'occ' + new_name)
-    if verbose:
-        print(f'A map with the local scale was written as occ{new_name}', file=f_log)
+
+    os.rename('occupancy.mrc', 'scale' + new_name)
+    print(f'Wrote scale{new_name}     \t: Local estimated scale (occupancy)', file=f_log)
     occupy.map.change_voxel_size('occ' + new_name, parent=input_map)
 
-    if equalise and save_all_maps:
-        os.rename('amplification.mrc', 'amp' + new_name)
-        if verbose:
-            print(f'A map with the local amplification applied was written as amp{new_name}', file=f_log)
-        occupy.map.change_voxel_size('amp' + new_name, parent=input_map)
+    if save_all_maps:
+
+        occupy.map.new_mrc(lp_data, 'lowpass' + new_name, parent=input_map, verbose=False)
+        print(f'Wrote lowpass{new_name} \t: Low-pass filtered input map', file=f_log)
+
+        occupy.map.new_mrc(confidence.astype(np.float32), 'conf' + new_name, parent=input_map, verbose=False)
+        print(f'Wrote conf{new_name}     \t: Local confidence of non-solvent content', file=f_log)
+
+        if amplify:
+            os.rename('amplification.mrc', 'amp' + new_name)
+            print(f'Wrote amp{new_name}         \t: Local amplification applied', file=f_log)
+            occupy.map.change_voxel_size('amp' + new_name, parent=input_map)
 
     if save_chimeraX:
 
         full_name = None
-        if equalise:
+        if amplify:
             full_name = 'full' + new_name
 
         occupy.vis.chimx_viz(
@@ -232,11 +257,10 @@ def main(
             full_name,
             threshold_ori=sol_limits[3],
             # threshold_full=sol_limits[3],
-            threshold_occ=occupancy_threshold
+            threshold_occ=amplify_limit
         )
 
     f_open.close()
-    f_log.close()
 
     if plot:
         save_nem = input_map
@@ -250,6 +274,12 @@ def main(
         if interactive_plot:
             plt.show()
 
+
+    f_log.close()
+    if verbose:
+        f_log = open(log_name, 'r')
+        print(f_log.read())
+        f_log.close()
 
 if __name__ == '__main__':
     typer.run(main)
