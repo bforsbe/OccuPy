@@ -174,8 +174,8 @@ def fit_solvent_to_histogram(
 
     if plot:
         # ax1.plot(solvent_range[0] * np.ones(2), ax1.get_ylim(), 'g--', label='solvent edge')
-        ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g:', label='solvent edge')
-        ax1.plot(solvent_range[2] * np.ones(2), ax1.get_ylim(), 'g--', label='content 1% of solvent')
+        ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g:', label=f'{solvent_range[3]:.2f}: solvent edge')
+        ax1.plot(solvent_range[2] * np.ones(2), ax1.get_ylim(), 'g--', label=f'{solvent_range[2]:.2f}: content 1% of solvent')
         # ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g--', label='ugh')
 
     return solvent_range, popt
