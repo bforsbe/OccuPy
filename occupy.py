@@ -7,6 +7,8 @@ from pathlib import Path
 import occupy
 
 
+
+
 def main():
     # --------------- INPUT --------------------------------------------------------------------
     # plt.ion()
@@ -27,7 +29,7 @@ def main():
     retain_solvent = True
 
     method = 'percentile_max'
-    verbose = False
+    verbose = True
     levels = 1000
     f_log = open(f'log_{new_name}.txt', 'w+')
     print(f'Input :\t\t {file_name}', file=f_log)
@@ -64,7 +66,7 @@ def main():
 
     # --------------- DIAGNOSTIC OUTPUT --------------------------------------------------------
     plot = True
-    interactive_plot = False
+    interactive_plot = True
     if plot:
         global f, ax1, ax2
         f = plt.figure()

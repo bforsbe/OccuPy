@@ -4,12 +4,27 @@ from scipy import ndimage
 import occupy.map as map
 
 
-def occupancy_map(data, kernel, mask=None, verbose=True):
-    occu_map, map_val_at_full_occupancy = occupancy_map_percentile(data, kernel, mask, with_max=True)
+def occupancy_map(
+        data: np.ndarray,
+        kernel: np.ndarray,
+        mask: np.ndarray = None,
+        verbose: bool = True
+):
+    occu_map, map_val_at_full_occupancy = occupancy_map_percentile(data, kernel, mask)
     return occu_map, map_val_at_full_occupancy
 
 
-def percentile_filter_tiled(data, kernel, mask, n_tiles, tile_sz=None, per=0.4, with_max=False, verbose=False):
+def percentile_filter_tiled(
+        data: np.ndarray,
+        kernel: np.ndarray,
+        mask: np.ndarray,
+        n_tiles: int,
+        tile_sz: int = None,
+        per:float = 0.4,
+        verbose: bool = False
+):
+    assert (per>0 and per <=1)
+
     nd = np.array(np.shape(data))
     dim = len(nd)
 
@@ -91,15 +106,30 @@ def percentile_filter_tiled(data, kernel, mask, n_tiles, tile_sz=None, per=0.4, 
     return maxi, max_per
 
 
-def occupancy_map_maximum(data, kernel):
+def occupancy_map_maximum(
+        data: np.ndarray,
+        kernel: np.ndarray
+):
     return ndimage.maximum_filter(data, footprint=kernel)
 
 
-def occupancy_map_percentile(data, kernel, mask=None, per=0.95, tiles=12, tile_sz=5, with_max=False):
-    return percentile_filter_tiled(data, kernel, mask, n_tiles=tiles, tile_sz=tile_sz, per=per, with_max=with_max)
+def occupancy_map_percentile(
+        data: np.ndarray,
+        kernel: np.ndarray,
+        mask: np.ndarray = None,
+        per:float = 0.95,
+        tiles: int = 12,
+        tile_sz: int = 5
+):
+    assert (per > 0 and per <= 1)
+    return percentile_filter_tiled(data, kernel, mask, n_tiles=tiles, tile_sz=tile_sz, per=per)
 
 
-def threshold_occu_map(occu_map, occ_threshold, mask=None):
+def threshold_occu_map(
+        occu_map: np.ndarray,
+        occ_threshold: float,
+        mask: np.ndarray = None
+):
     if mask is None:
         mask = occu_map
     # Occupancy higher than threshold should be boosted inversely to occupancy
@@ -112,11 +142,19 @@ def threshold_occu_map(occu_map, occ_threshold, mask=None):
     return t_occu_map
 
 
-def equalise_map(data, amplification):
+def equalise_map(
+        data: np.ndarray,
+        amplification: np.ndarray
+):
     return np.multiply(data, np.abs(amplification))
 
 
-def equalise_map_lambda(data, amplification, a=1, invert=False):
+def equalise_map_lambda(
+        data: np.ndarray,
+        amplification: np.ndarray,
+        a: float = 1,
+        invert: bool = False
+):
     occ = np.divide(1, amplification, where=amplification != 0)
     eff_occ = 1.0 - a + a * np.divide(1, occ, where=occ != 0)
     if invert:
@@ -125,104 +163,23 @@ def equalise_map_lambda(data, amplification, a=1, invert=False):
         return np.multiply(data, np.abs(eff_occ))
 
 
-def volume_limit_amplification(occu_map, n_lev=30, plot=False, cutoff=False):
-    global f, ax1, ax2
-
-    mask = map.create_circular_mask(np.shape(occu_map)[0], dim=3)
-
-    print('Stepping through occupancy thresholds...')
-    m_min = np.min(occu_map)
-    m_max = np.max(occu_map)
-    levels = np.linspace(m_max, m_min, n_lev + 1)
-    occ = np.copy(occu_map) * 0.0
-    vtot = float(np.sum(mask))  # float(np.size(occu_map))
-    vcs = 0
-    occ_lim = np.zeros((n_lev, 2))
-    occ_lim[:, 0] = levels[1:]
-    occ_lim[:, 1] = levels[1:]
-    reset = False
-    clip_low = 0.0
-    clip_high = 1.0
-    if plot:
-        f = plt.gcf()
-        ax1 = f.add_subplot(2, 1, 1)
-        ax2 = f.add_subplot(2, 1, 2)
-        ax1.plot(levels[1:], occ_lim[:, 0], '--', label='estimated occu')
-        ax2.hist(occu_map.flatten(), bins=levels[::-1], label='estimated occu', histtype='step')
-
-    for i in np.arange(n_lev):
-        print('done ' + str(int(100 * (i + 1) / n_lev)) + '%', end='\r')
-        sel = np.logical_and(occu_map <= levels[i], occu_map > levels[i + 1])
-        v = float(np.sum(np.multiply(sel, mask)))
-        if v == 0:
-            # print('no elements in this occupancy range')
-            if reset:
-                # set new occupancy limit to the same value as previous occupancy range
-                occ_lim[i, 1] = occ_lim[i - 1, 1]
-        else:
-            #
-            vcs += v
-            min_occu = vcs / vtot
-            if min_occu > levels[i + 1]:
-                if reset:
-                    clip_low = min_occu
-                    clip_high = min_occu
-                    if cutoff:
-                        clip_low = 1.0
-                        clip_high = 1.0
-                    print(f'resetting occupancy level {levels[i + 1]:.2f} to {clip_low:.2f} ')
-                else:
-                    reset = True
-                    clip_low = np.max([levels[i + 1], min_occu])
-                    clip_high = np.max([levels[i], min_occu])
-                    print(f'resetting occupancy level {levels[i + 1]:.2f} to {clip_low:.2f} ')
-                occ_lim[i, 1] = clip_low
-            # print(levels[i+1],levels[i],min_occu,clip_low,clip_high)
-            occ_eff = np.multiply(sel, np.clip(occu_map, clip_low, clip_high))
-            # print(np.min(occ_eff),np.max(occ_eff))
-            occ += occ_eff
-
-    # Set all lover values to effectively 100% occupancy (don't boost)
-    occ += occ <= levels[-1]
-
-    if plot:
-        ax1.plot(levels[1:], occ_lim[:, 1], 'ro', label='vol-limited  occu')
-        ax2.hist(occ.flatten(), bins=levels[::-1], label='vol-limited occu', histtype='step', density=True)
-        ax1.set_xlim([1, 0])
-        ax2.set_xlim([1, 0])
-        ax1.legend()
-        ax2.legend()
-
-    # Hedge by restrict
-    # occ+=(1-occ)*restrict
-
-    # print(vtot,vcs,np.min(occ),np.max(occ))
-    return np.divide(1, occ, where=occ > 0)
-
-
-# -------------------------------------------OCCUPANCY WRAPPER-----------------
-
 def get_map_occupancy(
-        data,
-        occ_kernel,
-        sol_mask=None,
-        sol_threshold=None,
-        save_occ_map=False,
-        verbose=True
+        data: np.ndarray,
+        occ_kernel: np.ndarray,
+        sol_mask: np.ndarray = None,
+        sol_threshold: float = None,
+        save_occ_map: bool = False,
+        verbose: bool = True
 ):
-    '''
-    We have to limit the boosting somehow, by regulating areas of low occupancy (like solvent)
-    Either we
-    A) Use a solvent mask
-
-    B) use a boost threshold, so that occupancies<threshold are set to 1 (i.e. not boosted).
-       This works fine if you have a good threshold.
-
-    C) limit the occupancy by volume, so that the occupancy can never be lower than the
-       relative volume that has this occupancy. That is, if 20% of the box has 10% occupancy,
-       these regions are assigned an effective occupancy of 20% (boosted less).
-       :param sol_threshold:
-    '''
+    """
+        TODO
+        :param data
+        :param occ_kernel:
+        :param sol_mask:
+        :param sol_threshold:
+        :param save_occ_map:
+        :param verbose:
+    """
 
     occ_map, map_val_at_full_occupancy = occupancy_map(
         data,
@@ -242,15 +199,15 @@ def get_map_occupancy(
 
 
 def equalise_map_occupancy(
-        data,
-        occ_map,
-        confidence=None,
-        retain_solvent=True,
-        sol_mask=None,
-        occ_threshold=None,
-        save_bst_map=False,
-        invert=False,
-        verbose=True
+        data: np.ndarray,
+        occ_map: np.ndarray,
+        confidence: np.ndarray = None,
+        retain_solvent: bool = True,
+        sol_mask: np.ndarray = None,
+        occ_threshold: float = None,
+        save_bst_map: bool = False,
+        invert: bool = False,
+        verbose: bool = True
 ):
     if occ_threshold is None:
         occ_threshold = 0.05

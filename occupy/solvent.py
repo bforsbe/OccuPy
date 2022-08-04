@@ -3,21 +3,29 @@ import pylab as plt
 from scipy.optimize import curve_fit
 
 
-def component(x, c, mu, sigma):
+def onecomponent_solvent(
+        x: np.ndarray,
+        c: float,
+        mu: float,
+        sigma: float
+):
+    if sigma == 0:
+        sigma += 0.001  # TODO
     res = c * np.exp(- (x - mu) ** 2.0 / (2.0 * sigma ** 2.0))
     return res
 
 
-def onecomponent_solvent(x, c1, mu1, sigma1):
+def twocomponent_solvent(
+        x: np.ndarray,
+        c1: float,
+        mu1: float,
+        sigma1: float,
+        c2: float,
+        mu2: float,
+        sigma2: float
+):
     if sigma1 == 0:
-        sigma1 += 0.001
-    res = c1 * np.exp(- (x - mu1) ** 2.0 / (2.0 * sigma1 ** 2.0))
-    return res
-
-
-def twocomponent_solvent(x, c1, mu1, sigma1, c2, mu2, sigma2):
-    if sigma1 == 0:
-        sigma1 += 0.001
+        sigma1 += 0.001  # TODO
     if sigma2 == 0:
         sigma2 += 0.001
     res = c1 * np.exp(- (x - mu1) ** 2.0 / (2.0 * sigma1 ** 2.0)) \
@@ -25,7 +33,15 @@ def twocomponent_solvent(x, c1, mu1, sigma1, c2, mu2, sigma2):
     return res
 
 
-def log_nonzero_solvent_and_content(x, c1, mu1, sigma1, c2, mu2, sigma2):
+def log_nonzero_solvent_and_content(
+        x: np.ndarray,
+        c1: float,
+        mu1: float,
+        sigma1: float,
+        c2: float,
+        mu2: float,
+        sigma2: float
+):
     if sigma1 == 0:
         sigma1 += 0.001
     if sigma2 == 0:
@@ -35,27 +51,15 @@ def log_nonzero_solvent_and_content(x, c1, mu1, sigma1, c2, mu2, sigma2):
     return np.log(res, where=res > 0)
 
 
-def log_nonzero_solvent_and_unicontent(x, c1, mu1, sigma1, c2, mu2, sigma2, width2):
-    res = c1 * np.exp(- (x - mu1) ** 2.0 / (2.0 * sigma1 ** 2.0))
-    res += c1 / 10 * np.exp(- (x - mu1) ** 2.0 / (2.0 * sigma1 * 0.4 ** 2.0))
-    n = 11
-    nh = (n - 1) / 2
-    for i in width2 * (np.arange(n) - nh) / nh:
-        res += c2 * np.exp(- (x - mu2 + i) ** 2.0 / (2.0 * sigma2 ** 2.0))
-    return np.log(res, where=res > 0)
-
-
-def nonzero_solvent_and_unicontent(x, c1, mu1, sigma1, c2, mu2, sigma2, width2):
-    res = c1 * np.exp(- (x - mu1) ** 2.0 / (2.0 * sigma1 ** 2.0))
-    n = 11
-    nh = (n - 1) / 2
-    for i in width2 * (np.arange(n) - nh) / nh:
-        res += c2 * np.exp(- (x - mu2 + i) ** 2.0 / (2.0 * sigma2 ** 2.0))
-    return res
-
-
-def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_lev=1000):
-    tol = 0.001
+def fit_solvent_to_histogram(
+        data: np.ndarray,
+        verbose: bool = False,
+        plot: bool = False,
+        components: int = 1,
+        n_lev: int = 1000
+):
+    assert components == 1 or components == 2
+    tol = 0.001 #TODO make input?
     const_gauss = np.sqrt(2 * np.pi)
 
     vol = np.size(data)
@@ -102,7 +106,7 @@ def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_le
         guess = twocomponent_solvent(domain, p_guess[0], p_guess[1], p_guess[2], p_guess[3], p_guess[4], p_guess[5])
         solvent_model = twocomponent_solvent(domain, popt[0], popt[1], popt[2], popt[3], popt[4], popt[5])
 
-    fit = np.clip(solvent_model, tol**2, np.max(solvent_model))
+    fit = np.clip(solvent_model, tol ** 2, np.max(solvent_model))
     content_fraction_all = np.divide((a + tol - fit), a + tol)
     solvent_fraction_all = 1 - content_fraction_all
 
@@ -114,8 +118,8 @@ def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_le
 
         ax1.plot(domain, fit, 'g-', label='solvent fit')
         ax1.legend()
-        low_lim = np.min(a[a>0])
-        ax1.set_ylim([low_lim*0.5, solvent_scale * 1.1])
+        low_lim = np.min(a[a > 0])
+        ax1.set_ylim([low_lim * 0.5, solvent_scale * 1.1])
         plt.semilogy()
 
     solvent_vol = np.sum(solvent_model)
@@ -124,9 +128,9 @@ def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_le
 
     solvent_model_peak_index = np.argmax(solvent_model)
 
-    #TODO reevaluate these search methods
+    # TODO reevaluate these search methods
     threshold_high = n_lev - 1
-    while solvent_model[threshold_high] < tol**3 and threshold_high > 0:
+    while solvent_model[threshold_high] < tol ** 3 and threshold_high > 0:
         threshold_high -= 1
     if threshold_high == 0:
         plt.savefig('Incomplete.png')
@@ -166,12 +170,12 @@ def fit_solvent_to_histogram(data, verbose=False, plot=False, components=1, n_le
         print(f' Scale:  {popt[3]:.4f}')
         print(f' Volume: {content_vol:.2f}')
         '''
-    solvent_range = np.array([b[threshold_low], b[threshold_midlow], b[threshold_midhigh+1], b[threshold_high]])
+    solvent_range = np.array([b[threshold_low], b[threshold_midlow], b[threshold_midhigh + 1], b[threshold_high]])
 
     if plot:
-        #ax1.plot(solvent_range[0] * np.ones(2), ax1.get_ylim(), 'g--', label='solvent edge')
+        # ax1.plot(solvent_range[0] * np.ones(2), ax1.get_ylim(), 'g--', label='solvent edge')
         ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g:', label='solvent edge')
         ax1.plot(solvent_range[2] * np.ones(2), ax1.get_ylim(), 'g--', label='content 1% of solvent')
-        #ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g--', label='ugh')
+        # ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g--', label='ugh')
 
     return solvent_range, popt

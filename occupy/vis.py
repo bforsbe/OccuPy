@@ -1,20 +1,25 @@
 from pathlib import Path
+
+import numpy as np
 import pylab as plt
 
-def save_fig(ori,extra_specifier=None):
+def save_fig(
+        ori: str,
+        extra_specifier: str =None
+):
     file_name = 'solModel_' + Path(ori).stem + '.png'
     if extra_specifier is not None:
         file_name = f'solModel_{extra_specifier}_' + Path(ori).stem + '.png'
     plt.savefig(file_name)
 
 def chimx_viz(
-        ori,
-        full,
-        occ,
-        threshold_ori=None,
-        threshold_full=None,
-        threshold_occ=None,
-        extra_files=None):
+        ori: str,
+        full: np.ndarray,
+        occ: np.ndarray,
+        threshold_ori: float = None,
+        threshold_full: float = None,
+        threshold_occ: float = None
+):
     file_name = 'chimX_' + Path(ori).stem + '.cxc'
 
     with open(file_name, 'w') as the_file:

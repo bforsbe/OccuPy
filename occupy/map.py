@@ -2,7 +2,13 @@ import numpy as np
 import mrcfile as mf
 
 
-def create_circular_mask(s, dim, soft=False, center=None, radius=None):
+def create_circular_mask(
+        s: int,
+        dim: int,
+        soft: bool = False,
+        center: int = None,
+        radius: int = None
+):
     if center is None:  # use the middle of the image
         center = int(s / 2)
 
@@ -23,13 +29,19 @@ def create_circular_mask(s, dim, soft=False, center=None, radius=None):
         raise ValueError('Mask dimension is not 2 or 3 ')
 
     if soft:  # TODO fix
+        raise ValueError('Ah, poor implementation, do not use soft circular mask right now.')
         dist_from_center = np.divide(dist_from_center <= radius, dist_from_center, where=dist_from_center != 0)
 
     mask = (dist_from_center <= radius)
     return mask
 
 
-def new_mrc(data, file_name, parent=None, verbose=False):
+def new_mrc(
+        data: np.ndarray,
+        file_name: str,
+        parent: str = None,
+        verbose: bool = False
+):
     pix_size = 1.0
     if parent is not None:
         p = mf.open(parent)
@@ -44,7 +56,11 @@ def new_mrc(data, file_name, parent=None, verbose=False):
         print(f'Wrote new file {file_name}')
 
 
-def change_voxel_size(file, sz=None, parent=None):
+def change_voxel_size(
+        file: str,
+        sz: int = None,
+        parent: str = None
+):
     if (parent is None) and (sz is None):
         raise ValueError('Change to pixel size to what? (No parent or value provided)')
 
@@ -62,20 +78,28 @@ def change_voxel_size(file, sz=None, parent=None):
     f_mod.close()
 
 
-def unity_map(data):
+def unity_map(
+        data: np.ndarray
+):
     param = [np.min(data), np.max(data)]
     data /= param[1] - param[0]
     data -= param[0]
     return data, param
 
 
-def rescale_map(data, param):
+def rescale_map(
+        data: np.ndarray,
+        param: np.ndarray
+):
     data += param[0]
     data *= param[1] - param[0]
     return data
 
 
-def match_to_range(change, reference):
+def match_to_range(
+        change: np.ndarray,
+        reference: np.ndarray
+):
     rp = np.array([np.min(reference), np.max(reference)])
     cp = np.array([np.min(change), np.max(change)])
 
@@ -88,13 +112,19 @@ def match_to_range(change, reference):
     return change
 
 
-def clip_to_range(change, reference):
+def clip_to_range(
+        change: np.ndarray,
+        reference: np.ndarray
+):
     rp = np.array([np.min(reference), np.max(reference)])
     change = np.clip(change, rp[0], rp[1])
     return change
 
 
-def uniscale_map(data, norm=False):
+def uniscale_map(
+        data: np.ndarray,
+        norm: bool = False
+):
     param = [np.min(data), np.max(data)]
     data /= param[1] - param[0]
     if norm:
@@ -102,7 +132,13 @@ def uniscale_map(data, norm=False):
     return data
 
 
-def lowpass_map_square(data, cutoff, voxel_size, resample=False, keep_scale=False):
+def lowpass_map_square(
+        data: np.ndarray,
+        cutoff: float,
+        voxel_size: float,
+        resample: bool = False,
+        keep_scale: bool = False
+):
     n = np.shape(data)[0]
     ndim = len(np.shape(data))
     ref_scale = np.max(data)
@@ -126,7 +162,13 @@ def lowpass_map_square(data, cutoff, voxel_size, resample=False, keep_scale=Fals
     return r_data
 
 
-def lowpass_map(data, cutoff, voxel_size, resample=False, keep_scale=False):
+def lowpass_map(
+        data: np.ndarray,
+        cutoff: float,
+        voxel_size: float,
+        resample: bool = False,
+        keep_scale: bool = False
+):
     n = np.shape(data)[0]
     ndim = len(np.shape(data))
     ref_scale = np.max(data)
