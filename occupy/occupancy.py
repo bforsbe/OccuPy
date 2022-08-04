@@ -206,7 +206,7 @@ def equalise_map_occupancy(
         retain_solvent: bool = True,
         sol_mask: np.ndarray = None,
         occ_threshold: float = None,
-        save_bst_map: bool = False,
+        save_amp_map: bool = False,
         invert: bool = False,
         verbose: bool = True
 ):
@@ -243,6 +243,6 @@ def equalise_map_occupancy(
             if verbose:
                 print('Not retaining solvent, eliminating based on confidence')
 
-    if save_bst_map:
+    if save_amp_map:
         map.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
     return equalised_map
