@@ -15,7 +15,7 @@ def main(
         equalise: bool = typer.Option(False, help="Alter partial occupancies, to make more or less equal to full occupancy?"),
         occupancy_threshold: float = typer.Option(0.05, help="Hard limit below which occupancy will be considered unconfident"),
         equalise_amount: float = typer.Option(None, help="How to alter confident partial occupancies [-1,1]"),
-        relion_classes: str = typer.Option(None,help="File of classes to diversify by occupancy amplification [_model.star]"),
+        relion_classes: str = typer.Option(None, help="File of classes to diversify by occupancy amplification [_model.star]"),
         plot: bool = typer.Option(False,help="Plot a histogram showing solvent model fit and occupancy confidence?"),
         retain_solvent: bool = typer.Option(True, help="Should Estimated solvent be eliminated [flattened to 0]?"),
         lowpass_input: float = typer.Option(None, help="Low-pass filter the input map to this resoution prior to scale estimation. Internal default is 6*pixel-size. [Å]"),
@@ -29,11 +29,16 @@ def main(
     OccuPy takes a cryo-EM reconstruction produced by averaging and estimates a self-normative local map scaling.
     It can also locally alter confident partial occupancies.
     """
-    # --------------- INPUT --------------------------------------------------------------------
-    # plt.ion()
-    #file_name = sys.argv[1]
+
+
     if input_map is None:
        exit(1) #TODO surely a better way to do nothing with no options. Invoke help?
+
+    if relion_classes is not None:
+        print('Input using a relion model.star to diversiy classes is not yet implemented')
+        exit(0)
+
+    # --------------- READ INPUT ---------------------------------------------------------------
     f_open = mf.open(input_map)
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
@@ -82,8 +87,6 @@ def main(
         global f, ax1, ax2
         f = plt.figure()
 
-    save_occ_file = True
-
     # --------------- SOLVENT ESTIMATION -------------------------------------------------------
     if use_lp_for_solvent:
         sol_data = np.copy(lp_data)
@@ -127,7 +130,7 @@ def main(
         occ_data,
         occ_kernel=occ_kernel,
         sol_threshold=None,  # sol_limits[2],
-        save_occ_map=save_occ_file,
+        save_occ_map=True,
         verbose=verbose
     )
 
