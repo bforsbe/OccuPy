@@ -2,57 +2,67 @@ import numpy as np
 import pylab as plt
 import mrcfile as mf
 import os
-import sys
 from pathlib import Path
 import occupy
 
+import typer
 
 
 
-def main():
+def main(
+        input_map: str = typer.Option(None,help="Map to estimate [.mrc NxNxN]"),
+        solvent_def: str = typer.Option(None,help="Mask that defines non-solvent (as in classifcation/refinement), used to aid solvent model fitting. [.mrc NxNxN]"),
+        equalise: bool = typer.Option(False, help="Alter partial occupancies, to make more or less equal to full occupancy?"),
+        equalise_amount: str = typer.Option(None, help="How to alter confident partial occupancies ('Full/Inverted/-1<x<1')"),
+        relion_classes: str = typer.Option(None,help="File of classes to diversify by occupancy amplification [_model.star]"),
+        plot: bool = typer.Option(False,help="Plot a histogram showing solvent model fit and occupancy confidence?"),
+        retain_solvent: bool = typer.Option(True, help="Should Estimated solvent be eliminated [flattened to 0]?"),
+        lowpass_input: float = typer.Option(None, help="Low-pass filter the input map to this resoution prior to scale estimation. Internal default is 6*pixel-size. [Å]"),
+        lowpass_amplified: float = typer.Option(None, help="Optionally low-pass filter the amplified output to this resolution [Å]"),
+        kernel_size: int = typer.Option(None,help="Size of the local occupancy estimation kernel [pixels]"),
+        save_all_maps: bool = typer.Option(False, help ="Save all maps used internally"),
+        save_chimeraX: bool = typer.Option(True, help="Write a .cxc file that can be opened by chimeraX to show colored input/output maps")
+):
+    """
+    OccuPy takes a cryo-EM reconstruction produced by averaging and estimates a self-normative local map scaling.
+    It can also locally alter confident partial occupancies.
+    """
     # --------------- INPUT --------------------------------------------------------------------
     # plt.ion()
-    file_name = sys.argv[1]
-    f_open = mf.open(file_name)
+    #file_name = sys.argv[1]
+    if input_map is None:
+       exit(1) #TODO surely a better way to do nothing with no options. Invoke help?
+    f_open = mf.open(input_map)
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
     voxel_size = f_open.voxel_size.x
 
-    new_name = '_' + file_name
+    new_name = '_' + input_map
 
     # --------------- SETTINGS -----------------------------------------------------------------
-    resol = int(3 * 2 * voxel_size)  # Å
-    filter_output = None  # Å
+    if lowpass_input is None:
+        lowpass_input = int(3 * 2 * voxel_size)  # Å
 
-    kernel_size = ((int(np.ceil(resol / voxel_size)) // 2) * 2) + 1
-    kernel_size = np.clip(kernel_size, 3, 7)
-    retain_solvent = True
+    if kernel_size is None:
+        kernel_size = ((int(np.ceil(lowpass_input / voxel_size)) // 2) * 2) + 1
+        kernel_size = np.clip(kernel_size, 3, 7)
 
-    method = 'percentile_max'
     verbose = True
     levels = 1000
     f_log = open(f'log_{new_name}.txt', 'w+')
-    print(f'Input :\t\t {file_name}', file=f_log)
+    print(f'Input :\t\t {input_map}', file=f_log)
     print(f'Pixel :\t\t {voxel_size:.2f}', file=f_log)
     print(f'Box   :\t\t {nd}', file=f_log)
     print(f'Kernel:\t\t {kernel_size}', file=f_log)
-    print(f'Filter:\t\t {resol}', file=f_log)
+    print(f'Filter:\t\t {lowpass_input}', file=f_log)
     print(f'--------------------------------------------------------------\n', file=f_log)
 
     # ----- THRESHOLD SETTINGS ---------
-    occupancy_threshold = None  # Set to None to estimate using volume-limits
     occupancy_threshold = None  # 0.4
     estimate_occ_threshold = True  # This seems to be a better way than solvent masking to limit solvent boosting
     invert = False  # True
 
     # ----- MASK SETTINGS ---------
-    if len(sys.argv) > 2:
-        solvent_definition_name = sys.argv[2]  # 1 at solvent. Should be binary.
-        s_open = mf.open(solvent_definition_name)
-        solvent_def_data = np.copy(s_open.data)
-    else:
-        solvent_definition_name = None
-    save_sol_file = True
 
     # ----- LOW-PASS SETTINGS ---------
     use_lp_for_solvent = True
@@ -60,14 +70,13 @@ def main():
     use_lp_for_boosting = False
 
     if use_lp_for_solvent or use_lp_for_occupancy or use_lp_for_boosting:
-        lp_data = occupy.map.lowpass_map(in_data, resol, f_open.voxel_size.x, keep_scale=False)
+        lp_data = occupy.map.lowpass_map(in_data, lowpass_input, f_open.voxel_size.x, keep_scale=False)
         # print(f'Using low-passed map for some processing, saving file lowpass.mrc.\n',file=f_log)
-        occupy.map.new_mrc(lp_data, 'lowpass.mrc', parent=file_name, verbose=False)
+        occupy.map.new_mrc(lp_data, 'lowpass.mrc', parent=input_map, verbose=False)
 
     # --------------- DIAGNOSTIC OUTPUT --------------------------------------------------------
-    plot = True
-    interactive_plot = True
     if plot:
+        interactive_plot =True
         global f, ax1, ax2
         f = plt.figure()
 
@@ -85,7 +94,9 @@ def main():
     radius = int(0.95 * nd[0] / 2)
     # print(radius)
     mask = occupy.map.create_circular_mask(nd[0], dim=3, radius=radius)  # TODO use mask radius in Å/nm
-    if solvent_definition_name is not None:
+    if solvent_def is not None:
+        s_open = mf.open(solvent_def)
+        solvent_def_data = np.copy(s_open.data)
         mask = np.array(mask).astype(int) + 1 - solvent_def_data
         mask = mask > 1.5
 
@@ -168,7 +179,7 @@ def main():
         # indx = (occ * np.sum(b>0) + np.sum(b<0) - 2 ).astype(int)
         indx = (occupy.map.uniscale_map(np.copy(occ_data), norm=True) * levels - 1).astype(int)
         confidence = content_conf[indx]
-        occupy.map.new_mrc(confidence.astype(np.float32), 'conf' + new_name, parent=file_name, verbose=False)
+        occupy.map.new_mrc(confidence.astype(np.float32), 'conf' + new_name, parent=input_map, verbose=False)
 
     print(f'Detected thresholds:', file=f_log)
     if c is not None:
@@ -178,28 +189,30 @@ def main():
     if occupancy_threshold is not None:
         print(f'Occupancy                : \t {occupancy_threshold:.3f}', file=f_log)
 
-    equalised = occupy.occupancy.equalise_map_occupancy(
-        bst_data,
-        occ,
-        confidence,
-        retain_solvent=retain_solvent,
-        occ_threshold=occupancy_threshold,
-        save_bst_map=save_bst_map,
-        verbose=verbose,
-        invert=invert
-    )
-    if plot:
-        ax1.legend()
+    if equalise:
+        equalised = occupy.occupancy.equalise_map_occupancy(
+            bst_data,
+            occ,
+            equalise_amount,
+            confidence,
+            retain_solvent=retain_solvent,
+            occ_threshold=occupancy_threshold,
+            save_bst_map=save_bst_map,
+            verbose=verbose,
+            invert=invert
+        )
+        if plot:
+            ax1.legend()
 
-    if filter_output is not None:
-        rescaled = occupy.map.lowpass_map(equalised, filter_output, voxel_size, keep_scale=True)
-    else:
-        rescaled = equalised
+        if lowpass_amplified is not None:
+            rescaled = occupy.map.lowpass_map(equalised, lowpass_amplified, voxel_size, keep_scale=True)
+        else:
+            rescaled = equalised
 
-    rescaled = occupy.map.clip_to_range(rescaled, occ_data)
+        rescaled = occupy.map.clip_to_range(rescaled, occ_data)
 
-    occupy.map.new_mrc(rescaled.astype(np.float32), 'full' + new_name, parent=file_name, verbose=False)
-    # print(f'A file with boosted components was written tp full{new_name}',file=f_log)
+        occupy.map.new_mrc(rescaled.astype(np.float32), 'full' + new_name, parent=input_map, verbose=False)
+        # print(f'A file with boosted components was written tp full{new_name}',file=f_log)
 
     if save_occ_file or save_bst_map:
         if verbose:
@@ -208,38 +221,44 @@ def main():
         os.rename('occupancy.mrc', 'occ' + new_name)
         if verbose:
             print(f'The occupancy was written to occ{new_name}', file=f_log)
-        occupy.map.change_voxel_size('occ' + new_name, parent=file_name)
+        occupy.map.change_voxel_size('occ' + new_name, parent=input_map)
 
-    if save_bst_map:
+    if save_all_maps:
         os.rename('boosting.mrc', 'bst' + new_name)
         if verbose:
             print(f'The estimated boosting was written to bst{new_name}', file=f_log)
-        occupy.map.change_voxel_size('bst' + new_name, parent=file_name)
+        occupy.map.change_voxel_size('bst' + new_name, parent=input_map)
 
-    occupy.vis.chimx_viz(
-        file_name,
-        'full' + new_name,
-        'occ' + new_name,
-        threshold_ori=sol_limits[3],
-        # threshold_full=sol_limits[3],
-        threshold_occ=occupancy_threshold
-    )
+    if save_chimeraX:
+
+        full_name = None
+        if equalise:
+            full_name = 'full' + new_name
+
+        occupy.vis.chimx_viz(
+            input_map,
+            'occ' + new_name,
+            full_name,
+            threshold_ori=sol_limits[3],
+            # threshold_full=sol_limits[3],
+            threshold_occ=occupancy_threshold
+        )
 
     f_open.close()
     f_log.close()
 
     if plot:
-        save_nem = file_name
-        if solvent_definition_name is not None:
+        save_nem = input_map
+        if solvent_def is not None:
             occupy.vis.save_fig(
-                file_name,
-                extra_specifier=Path(solvent_definition_name).stem)
+                input_map,
+                extra_specifier=Path(solvent_def).stem)
         else:
             occupy.vis.save_fig(
-                file_name)
+                input_map)
         if interactive_plot:
             plt.show()
 
 
 if __name__ == '__main__':
-    main()
+    typer.run(main)

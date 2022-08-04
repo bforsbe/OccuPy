@@ -152,7 +152,7 @@ def equalise_map(
 def equalise_map_lambda(
         data: np.ndarray,
         amplification: np.ndarray,
-        a: float = 1,
+        a: float,
         invert: bool = False
 ):
     occ = np.divide(1, amplification, where=amplification != 0)
@@ -201,6 +201,7 @@ def get_map_occupancy(
 def equalise_map_occupancy(
         data: np.ndarray,
         occ_map: np.ndarray,
+        equalise_amount: float = None,
         confidence: np.ndarray = None,
         retain_solvent: bool = True,
         sol_mask: np.ndarray = None,
@@ -209,6 +210,10 @@ def equalise_map_occupancy(
         invert: bool = False,
         verbose: bool = True
 ):
+
+    if equalise_amount is None:
+        equalise_amount = 1
+
     if occ_threshold is None:
         occ_threshold = 0.05
         if verbose:
@@ -224,7 +229,7 @@ def equalise_map_occupancy(
         amplification = (1 - sol_mask) + np.multiply(sol_mask, amplification)
 
     # Equalise map
-    equalised_map = equalise_map_lambda(data, amplification, 1, invert)
+    equalised_map = equalise_map_lambda(data, amplification, equalise_amount, invert)
 
     if confidence is not None:
         if verbose:

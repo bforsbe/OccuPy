@@ -14,8 +14,8 @@ def save_fig(
 
 def chimx_viz(
         ori: str,
-        full: np.ndarray,
         occ: np.ndarray,
+        full: np.ndarray = None,
         threshold_ori: float = None,
         threshold_full: float = None,
         threshold_occ: float = None
@@ -23,18 +23,22 @@ def chimx_viz(
     file_name = 'chimX_' + Path(ori).stem + '.cxc'
 
     with open(file_name, 'w') as the_file:
+
         # -----MODELS --------------------------------------
         print(f'open {ori} ', file=the_file)
         if threshold_ori is not None:
             print(f'vol #1 level {threshold_ori}', file=the_file)
-        print(f'open {full} ', file=the_file)
-        if threshold_full is not None:
-            print(f'vol #2 level {threshold_full}', file=the_file)
+
         print(f'open {occ} ', file=the_file)
         if threshold_occ is None:
-            print(f'hide #3 ', file=the_file)
+            print(f'hide #2 ', file=the_file)
         else:
-            print(f'vol #3 level {threshold_occ}', file=the_file)
+            print(f'vol #2 level {threshold_occ}', file=the_file)
+
+        if full is not None:
+            print(f'open {full} ', file=the_file)
+            if threshold_full is not None:
+                print(f'vol #3 level {threshold_full}', file=the_file)
 
         # -----COLOR-----------------------------------------
         rainbow = 'rainbow'
@@ -48,10 +52,13 @@ def chimx_viz(
         print(f'alias occu_color color sample $1 map $2 palette {clr} range 0.2,1.0 \n', file=the_file)
 
         print(f'volume #1 color #d3d7cf \n', file=the_file)
-        print(f'occu_color #1 #3 \n', file=the_file)
-        print(f'occu_color #2 #3 \n', file=the_file)
-        print(f'volume #3 color #A7A7A750 \n', file=the_file)
-        print(f'volume #3 style mesh \n', file=the_file)
+
+        print(f'volume #2 color #A7A7A750 \n', file=the_file)
+        print(f'volume #2 style mesh \n', file=the_file)
+        print(f'occu_color #1 #2 \n', file=the_file)
+
+        if full is not None:
+            print(f'occu_color #3 #2 \n', file=the_file)
 
         print(f'key {clr} :0.2 :0.333 :0.467 :0.6 :0.733 :0.867 :1.0 size 0.5, 0.04 pos 0.25, 0.08 ticks true tickThickness 2 \n', file=the_file)
         #print(f'hide  #3 \n', file=the_file)
