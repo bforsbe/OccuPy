@@ -5,8 +5,15 @@ import os
 from pathlib import Path
 from . import map_tools, occupancy, solvent, vis
 
+from typing import Optional
 import typer
 
+__version__ = "0.1.1"
+
+def version_callback(value: bool):
+    if value:
+        print(f"OccuPy: {__version__}")
+        raise typer.Exit()
 
 def main(
         input_map: str = typer.Option(..., "--input-map", "-i", help="Map to estimate [.mrc NxNxN]"),
@@ -35,8 +42,8 @@ def main(
                                            help="Write a .cxc file that can be opened by chimeraX to show colored input/output maps"),
         verbose: bool = typer.Option(False, "--verbose/--quiet", help="Let me know what's going on"),
 
-        relion_classes: str = typer.Option(None,
-                                           help="File of classes to diversify by occupancy amplification [_model.star]")
+        relion_classes: str = typer.Option(None,  help="File of classes to diversify by occupancy amplification [_model.star]"),
+        version: Optional[bool] = typer.Option(None, "--version", callback=version_callback, is_eager=True, help="Print version info and exit")
 ):
     """
     OccuPy takes a cryo-EM reconstruction produced by averaging and estimates a self-normative local map scaling.
