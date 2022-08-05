@@ -111,7 +111,7 @@ occupy.occupancy.get_map_occupancy(
 
 ```
 
-# Exmaples of use 
+# Examples of use 
 
 In its basic form, `OccuPy` simply estimates the map scale, writes it out along with a chimeraX-command script to 
 visualise the results easily
