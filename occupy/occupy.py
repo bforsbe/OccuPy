@@ -3,7 +3,7 @@ import pylab as plt
 import mrcfile as mf
 import os
 from pathlib import Path
-import map_tools, occupancy, solvent, vis
+from . import map_tools, occupancy, solvent, vis
 
 import typer
 
@@ -271,7 +271,7 @@ def main(
                 input_map,
                 extra_specifier=Path(solvent_def).stem)
         else:
-           vis.save_fig(
+            vis.save_fig(
                 input_map)
         if interactive_plot:
             plt.show()
@@ -284,4 +284,8 @@ def main(
 
 
 if __name__ == '__main__':
+    typer.run(main)
+
+
+def app():
     typer.run(main)

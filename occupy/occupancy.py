@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import ndimage
-import map_tools
+from . import map_tools
 
 
 def occupancy_map(
