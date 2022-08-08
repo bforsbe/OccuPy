@@ -40,6 +40,7 @@ def main(
         save_all_maps: bool = typer.Option(False, help="Save all maps used internally"),
         save_chimeraX: bool = typer.Option(True,
                                            help="Write a .cxc file that can be opened by chimeraX to show colored input/output maps"),
+        min_vis_scale: float = typer.Option(0.2, help="Lower limit of map scale (occupancy) in chimeraX coloring & color-key"),
         verbose: bool = typer.Option(False, "--verbose/--quiet", help="Let me know what's going on"),
 
         relion_classes: str = typer.Option(None,  help="File of classes to diversify by occupancy amplification [_model.star]"),
@@ -262,11 +263,12 @@ def main(
 
         vis.chimx_viz(
             input_map,
-            'occ' + new_name,
-            full_name,
+            f'scale{new_name}',
+            output_map,
             threshold_ori=sol_limits[3],
             # threshold_full=sol_limits[3],
-            threshold_occ=amplify_limit
+            threshold_occ=amplify_limit,
+            min_occ=min_vis_scale,
         )
 
     f_open.close()
