@@ -148,14 +148,25 @@ def equalise_map(
     return np.multiply(data, np.abs(amplification))
 
 
-def equalise_map_lambda(
+def equalise_map_alpha(
         data: np.ndarray,
         amplification: np.ndarray,
         a: float,
+):
+    assert a <= 1, "Amplifying with more than 1 does not make sense"
+    assert a != 0, "Amplifying with 0 will not do anything"
+
+    return np.multiply(data, np.abs(amplification)**a)
+
+
+def equalise_map_lambda(
+        data: np.ndarray,
+        amplification: np.ndarray,
+        l: float,
         invert: bool = False
 ):
     occ = np.divide(1, amplification, where=amplification != 0)
-    eff_occ = 1.0 - a + a * np.divide(1, occ, where=occ != 0)
+    eff_occ = 1.0 - l + l * np.divide(1, occ, where=occ != 0)
     if invert:
         return np.divide(data, np.abs(eff_occ),where= np.abs(eff_occ)!=0 )
     else:
@@ -204,7 +215,7 @@ def amplify_map_occupancy(
         sol_mask: np.ndarray = None,
         occ_threshold: float = None,
         save_amp_map: bool = False,
-        invert: bool = False,
+        invert: bool = False, # used for lambda, not alpha
         verbose: bool = True
 ):
 
@@ -229,6 +240,6 @@ def amplify_map_occupancy(
         map_tools.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
 
     # Equalise map
-    equalised_map = equalise_map_lambda(data, amplification, equalise_amount, invert)
+    amplified_map = equalise_map_alpha(data, amplification, amplify_amount)
 
-    return equalised_map
+    return amplified_map
