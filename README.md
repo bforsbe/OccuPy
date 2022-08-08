@@ -18,7 +18,7 @@ depreciation.
 
 # Amplification of partial occupancies 
 `OccuPy` can also amplify confidently estimated partial occupancy (local scale) in the input map by adding the 
-`--amplify` option. By default this will set `--amplify-1mount 1`, meaning that regions of confident intermediate 
+`--amplify` option. By default this will set `--amplify-amount 1`, meaning that regions of confident intermediate 
 scale (occupancy)  are elevated up to the same nominal occupancy (100%). Values lower than 1 amplify intermediate 
 occupancies, but incompletely. These regions can equally be attenuated, by specifying an `--amplify maount` less 
 than 0, down to -1. This acts as an exponent on the amplification, such that further decreasing it (below -1) will 
