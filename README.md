@@ -17,10 +17,13 @@ map scale does not strictly represent occupancy, as `OccuPy` does not presently 
 depreciation.
 
 # Amplification of partial occupancies 
-`OccuPy` can also equalise confidently estimated partial occupancy (local scale) in the input map , such that 
-all regions of the output map are on the same nominal scale (100% occupancy). One can also specify an arbitrary 
-multiplier for the difference between the input and equalised output map. Values below 0 signify further decreasing low 
-occupancies, while maintaining higher occupancies. Values in the range [-1,1] are thus meaningful.
+`OccuPy` can also amplify confidently estimated partial occupancy (local scale) in the input map by adding the 
+`--amplify` option. By default this will set `--amplify-1mount 1`, meaning that regions of confident intermediate 
+scale (occupancy)  are elevated up to the same nominal occupancy (100%). Values lower than 1 amplify intermediate 
+occupancies, but incompletely. These regions can equally be attenuated, by specifying an `--amplify maount` less 
+than 0, down to -1. This acts as an exponent on the amplification, such that further decreasing it (below -1) will 
+further attenuate low occupancies, but this is not recommended or tested. Values in the range [-1,1] are thus 
+meaningful.
 
 # Solvent supression 
 Map scale amplification by inverse filtering would result in an extremely noisy output if solvent was permitted to 
