@@ -3,7 +3,8 @@ import pylab as plt
 import mrcfile as mf
 import os
 from pathlib import Path
-from . import map_tools, occupancy, solvent, vis
+import map_tools, occupancy, vis, solvent
+
 
 from typing import Optional
 import typer
@@ -16,8 +17,8 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 def main(
-        input_map: str = typer.Option(..., "--input-map", "-i", help="Map to estimate [.mrc NxNxN]"),
-        output_map: str = typer.Option('out_<input_file_name>', "--output_map", "-o", help="Output map name"),
+        input_map: str = typer.Option(None, "--input-map", "-i", help="Map to estimate [.mrc NxNxN]"),
+        output_map: str = typer.Option("out_<input_file_name>", "--output_map", "-o", help="Output map name"),
         amplify: bool = typer.Option(False,
                                      help="Alter partial occupancies, to make more or less equal to full occupancy?"),
         amplify_amount: float = typer.Option(1.0, help="How to alter confident partial occupancies [-1,1]"),
@@ -59,7 +60,7 @@ def main(
         output_map = 'out' + new_name
 
     if relion_classes is not None:
-        print('Input using a relion model.star to diversiy classes is not yet implemented')
+        print('Input using a relion model.star to diversify classes is not yet implemented')
         exit(0)
 
     # --------------- READ INPUT ---------------------------------------------------------------
