@@ -237,22 +237,22 @@ def main(
         map_tools.new_mrc(out_data.astype(np.float32), output_map, parent=input_map, verbose=False)
         print(f'Wrote {output_map}        \t: {logstring} ', file=f_log)
 
-    os.rename('occupancy.mrc', 'scale' + new_name)
+    os.rename('occupancy.mrc', f'scale{new_name}')
     print(f'Wrote scale{new_name}     \t: Local estimated scale (occupancy)', file=f_log)
-    map_tools.change_voxel_size('occ' + new_name, parent=input_map)
+    map_tools.change_voxel_size( f'scale{new_name}', parent=input_map)
 
     if save_all_maps:
 
-        map_tools.new_mrc(lp_data, 'lowpass' + new_name, parent=input_map, verbose=False)
+        map_tools.new_mrc(lp_data, f'lowpass{new_name}', parent=input_map, verbose=False)
         print(f'Wrote lowpass{new_name} \t: Low-pass filtered input map', file=f_log)
 
-        map_tools.new_mrc(confidence.astype(np.float32), 'conf' + new_name, parent=input_map, verbose=False)
+        map_tools.new_mrc(confidence.astype(np.float32), f'conf{ new_name}', parent=input_map, verbose=False)
         print(f'Wrote conf{new_name}     \t: Local confidence of non-solvent content', file=f_log)
 
         if amplify:
-            os.rename('amplification.mrc', 'amp' + new_name)
+            os.rename('amplification.mrc', f'amp{new_name}')
             print(f'Wrote amp{new_name}         \t: Local amplification applied', file=f_log)
-            map_tools.change_voxel_size('amp' + new_name, parent=input_map)
+            map_tools.change_voxel_size(f'amp{new_name}', parent=input_map)
 
     if save_chimeraX:
 
