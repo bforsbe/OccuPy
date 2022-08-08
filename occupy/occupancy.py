@@ -141,14 +141,14 @@ def threshold_occu_map(
     return t_occu_map
 
 
-def equalise_map(
+def amplify_map(
         data: np.ndarray,
         amplification: np.ndarray
 ):
     return np.multiply(data, np.abs(amplification))
 
 
-def equalise_map_alpha(
+def amplify_map_alpha(
         data: np.ndarray,
         amplification: np.ndarray,
         a: float,
@@ -159,7 +159,7 @@ def equalise_map_alpha(
     return np.multiply(data, np.abs(amplification)**a)
 
 
-def equalise_map_lambda(
+def amplify_map_lambda(
         data: np.ndarray,
         amplification: np.ndarray,
         l: float,
@@ -240,6 +240,6 @@ def amplify_map_occupancy(
         map_tools.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
 
     # Equalise map
-    amplified_map = equalise_map_alpha(data, amplification, amplify_amount)
+    amplified_map = amplify_map_alpha(data, amplification, amplify_amount)
 
     return amplified_map
