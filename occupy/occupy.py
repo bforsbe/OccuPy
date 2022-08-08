@@ -205,7 +205,7 @@ def main(
 
         if amplify:
             logstring = 'Amplified partial scale & '
-            out_data = occupancy.equalise_map_occupancy(
+            out_data = occupancy.amplify_map_occupancy(
                 amp_data,
                 occ,
                 amplify_amount,

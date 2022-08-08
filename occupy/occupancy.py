@@ -197,10 +197,10 @@ def get_map_occupancy(
     return occ_map, map_val_at_full_occupancy
 
 
-def equalise_map_occupancy(
+def amplify_map_occupancy(
         data: np.ndarray,
         occ_map: np.ndarray,
-        equalise_amount: float = None,
+        amplify_amount: float = None,
         sol_mask: np.ndarray = None,
         occ_threshold: float = None,
         save_amp_map: bool = False,
@@ -208,8 +208,8 @@ def equalise_map_occupancy(
         verbose: bool = True
 ):
 
-    if equalise_amount is None:
-        equalise_amount = 1
+    if amplify_amount is None:
+        amplify_amount = 1   # alpha or lambda, 1=equalise
 
     if occ_threshold is None:
         occ_threshold = 0.05
