@@ -1,4 +1,6 @@
-# OccuPy 
+<img >
+   <img width="200" src="resources/logo.png" />
+</img>
 
 A fast and simple python module and program to estimate local scaling of cryo-EM maps, to approximate 
 occupancy, and optionally also equalise the map according to occupancy while suppressing solvent amplification.
@@ -20,7 +22,7 @@ depreciation.
 `OccuPy` can also amplify confidently estimated partial occupancy (local scale) in the input map by adding the 
 `--amplify` option. By default this will set `--amplify-amount 1`, meaning that regions of confident intermediate 
 scale (occupancy)  are elevated up to the same nominal occupancy (100%). Values lower than 1 amplify intermediate 
-occupancies, but incompletely. These regions can equally be attenuated, by specifying an `--amplify maount` less 
+occupancies, but incompletely. These regions can equally be attenuated, by specifying an `--amplify-amount` less 
 than 0, down to -1. This acts as an exponent on the amplification, such that further decreasing it (below -1) will 
 further attenuate low occupancies, but this is not recommended or tested. Values in the range [-1,1] are thus 
 meaningful.
@@ -63,35 +65,40 @@ $ OccuPy --help
  Usage: OccuPy [OPTIONS]                                                                                                                                              
                                                                                                                                                                       
  OccuPy takes a cryo-EM reconstruction produced by averaging and estimates a self-normative local map scaling. It can also locally alter confident partial            
- occupancies.                                                                                                                                                         
+ occupancies.                                                                                                                                                                                                                                                                                                                  
                                                                                                                                                                       
 ╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ *  --input-map           -i                        TEXT     Map to estimate [.mrc NxNxN] [default: None] [required]                                                │
-│    --output_map          -o                        TEXT     Output map name [default: out_<input_file_name>]                                                       │
-│    --amplify                 --no-amplify                   Alter partial occupancies, to make more or less equal to full occupancy? [default: no-amplify]         │
-│    --amplify-amount                                FLOAT    How to alter confident partial occupancies [-1,1] [default: 1.0]                                       │
-│    --amplify-limit                                 FLOAT    Hard limit below which map scale/occupancy will be considered unreliable for amplification             │
-│                                                             [default: 0.05]                                                                                        │
-│    --exclude-solvent         --retain-solvent               Should Estimated solvent be eliminated [flattened to 0]? [default: retain-solvent]                     │
-│    --plot                    --no-plot                      Plot a histogram showing solvent model fit and occupancy confidence? [default: no-plot]                │
-│    --lowpass-input                                 FLOAT    Low-pass filter the input map to this resoution prior to scale estimation. Internal default is         │
-│                                                             6*pixel-size. [Å]                                                                                      │
-│                                                             [default: None]                                                                                        │
-│    --lowpass-amplified                             FLOAT    Optionally low-pass filter the amplified output to this resolution [Å] [default: None]                 │
-│    --kernel-size                                   INTEGER  Size of the local occupancy estimation kernel [pixels] [default: None]                                 │
-│    --hedge-confidence                              INTEGER  Exponent order for confidence estimation, such that values > 1 are more careful when amplifying low    │
-│                                                             occupancies                                                                                            │
-│                                                             [default: None]                                                                                        │
-│    --solvent-def                                   TEXT     Mask that defines non-solvent, used to aid solvent model fitting. [.mrc NxNxN] [default: None]         │
-│    --save-all-maps           --no-save-all-maps             Save all maps used internally [default: no-save-all-maps]                                              │
-│    --save-chimerax           --no-save-chimerax             Write a .cxc file that can be opened by chimeraX to show colored input/output maps                     │
-│                                                             [default: save-chimerax]                                                                               │
-│    --verbose                 --quiet                        Let me know what's going on [default: quiet]                                                           │
-│    --relion-classes                                TEXT     File of classes to diversify by occupancy amplification [_model.star] [default: None]                  │
-│    --install-completion                                     Install completion for the current shell.                                                              │
-│    --show-completion                                        Show completion for the current shell, to copy it or customize the installation.                       │
-│    --help                                                   Show this message and exit.                                                                            │
+│ --input-map           -i                         TEXT     Map to estimate [.mrc NxNxN] [default: None]                                                             │
+│ --output_map          -o                         TEXT     Output map name [default: out_<input_file_name>]                                                         │
+│ --resolution          -r                         TEXT     Resolution of input map [default: None]                                                                  │
+│ --amplify             -a                                  Alter partial occupancies, to make more or less equal to full occupancy?                                 │
+│ --amplify_amount      -am                        FLOAT    How to alter confident partial occupancies [-1,1] [default: 1.0]                                         │
+│ --amplify_limit       -al                        FLOAT    Hard limit below which map scale/occupancy will be considered unreliable for amplification               │
+│                                                           [default: 0.05]                                                                                          │
+│ --exclude-solvent          --retain-solvent               Should Estimated solvent be eliminated [flattened to 0]? [default: retain-solvent]                       │
+│ --plot                     --no-plot                      Plot a histogram showing solvent model fit and occupancy confidence? [default: no-plot]                  │
+│ --lowpass-input                                  FLOAT    Low-pass filter the input map to this resoution prior to scale estimation. Internal default is           │
+│                                                           6*pixel-size. [Å]                                                                                        │
+│                                                           [default: None]                                                                                          │
+│ --lowpass-amplified                              FLOAT    Optionally low-pass filter the amplified output to this resolution [Å] [default: None]                   │
+│ --kernel-size                                    INTEGER  Size of the local occupancy estimation kernel [pixels] [default: None]                                   │
+│ --hedge-confidence                               INTEGER  Exponent order for confidence estimation, such that values > 1 are more careful when amplifying low      │
+│                                                           occupancies                                                                                              │
+│                                                           [default: None]                                                                                          │
+│ --solvent-def                                    TEXT     Mask that defines non-solvent, used to aid solvent model fitting. [.mrc NxNxN] [default: None]           │
+│ --save-all-maps            --no-save-all-maps             Save all maps used internally [default: no-save-all-maps]                                                │
+│ --save-chimerax            --no-save-chimerax             Write a .cxc file that can be opened by chimeraX to show colored input/output maps                       │
+│                                                           [default: save-chimerax]                                                                                 │
+│ --min-vis-scale                                  FLOAT    Lower limit of map scale (occupancy) in chimeraX coloring & color-key [default: 0.2]                     │
+│ --verbose                  --quiet                        Let me know what is going on [default: quiet]                                                            │
+│ --relion-classes                                 TEXT     File of classes to diversify by occupancy amplification [_model.star] [default: None]                    │
+│ --version                                                 Print version info and exit                                                                              │
+│ --install-completion                                      Install completion for the current shell.                                                                │
+│ --show-completion                                         Show completion for the current shell, to copy it or customize the installation.                         │
+│ --help                                                    Show this message and exit.                                                                              │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
 
 ```
 
