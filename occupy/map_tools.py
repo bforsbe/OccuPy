@@ -35,6 +35,40 @@ def create_circular_mask(
     mask = (dist_from_center <= radius)
     return mask
 
+def mask_sphere(
+        input_data: np.ndarray,
+        soft: bool = False,
+        center: int = None,
+        radius: int = None
+):
+    dim = len(input_data.shape)
+    n = input_data.shape[0]
+
+    if center is None:  # use the middle of the image
+        center = int(n / 2)
+
+    if radius is None:
+        radius = center
+
+    if n % 2 == 0:
+        center -= 0.5
+        radius -= 0.5
+
+    if dim == 2:
+        x, y = np.ogrid[:n, :n]
+        dist_from_center = np.sqrt((x - center) ** 2 + (y - center) ** 2)
+    elif dim == 3:
+        x, y, z = np.ogrid[:n, :n, :n]
+        dist_from_center = np.sqrt((x - center) ** 2 + (y - center) ** 2 + (z - center) ** 2)
+    else:
+        raise ValueError('Mask dimension is not 2 or 3 ')
+
+    if soft:  # TODO fix
+        raise ValueError('Ah, poor implementation, do not use soft circular mask right now.')
+        dist_from_center = np.divide(dist_from_center <= radius, dist_from_center, where=dist_from_center != 0)
+
+    return input_data[(dist_from_center <= radius)]
+
 
 def new_mrc(
         data: np.ndarray,

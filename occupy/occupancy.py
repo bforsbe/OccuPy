@@ -177,7 +177,6 @@ def get_map_occupancy(
         data: np.ndarray,
         occ_kernel: np.ndarray,
         sol_mask: np.ndarray = None,
-        sol_threshold: float = None,
         save_occ_map: str = None,
         verbose: bool = True
 ):
@@ -197,14 +196,10 @@ def get_map_occupancy(
         mask=sol_mask,
         verbose=verbose)
 
-    if sol_threshold is not None:
-        occ_map = np.clip(occ_map / map_val_at_full_occupancy, sol_threshold / map_val_at_full_occupancy, 1)
-    else:
-        occ_map = np.clip(occ_map / map_val_at_full_occupancy, 0, 1)
-    # occ_map, _ = unity_map(occ_map)
+    occ_map = np.clip(occ_map / map_val_at_full_occupancy, 0, 1)
 
     if save_occ_map is not None:
-        map_tools.new_mrc(np.clip(occ_map, 0, 1), save_occ_map, verbose=False)
+        map_tools.new_mrc(occ_map, save_occ_map, verbose=False)
     return occ_map, map_val_at_full_occupancy
 
 

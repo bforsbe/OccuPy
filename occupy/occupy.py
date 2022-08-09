@@ -3,7 +3,7 @@ import pylab as plt
 import mrcfile as mf
 import os
 from pathlib import Path
-from occupy import map_tools, occupancy, vis, solvent
+import map_tools, occupancy, vis, solvent
 
 from typing import Optional
 import typer
@@ -60,6 +60,7 @@ def main(
 
     if input_map is None:
         exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
+    f_open = mf.open(input_map)
 
     new_name = '_' + input_map
 
@@ -75,7 +76,7 @@ def main(
         exit(0)
 
     # --------------- READ INPUT ---------------------------------------------------------------
-    f_open = mf.open(input_map)
+
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
     voxel_size = f_open.voxel_size.x
@@ -134,26 +135,21 @@ def main(
 
     # --------------- SOLVENT ESTIMATION -------------------------------------------------------
 
-    # Make the spherical mask for masking flattened solvent in the input map
-    mask = map_tools.create_circular_mask(
-        nd[0],
-        dim=3,
-        radius=radius
-    )
+    # Mask the flattened solvent in the input map
+    h_data = map_tools.mask_sphere(sol_data,radius=radius)
 
     # Apply the prided solvent definition as an additional mask
     if solvent_def is not None:
         s_open = mf.open(solvent_def)
         solvent_def_data = np.copy(s_open.data)
-        mask = np.array(mask).astype(int) + 1 - solvent_def_data
-        mask = mask > 1.5
+        assert sol_data.shape == solvent_def_data.shape
+        h_data = np.multiply(h_data,solvent_def_data)
 
-    assert sol_data.shape == mask.shape
-    h_data = sol_data[mask].flatten()
+    # Apply the prided solvent definition as an additional mask
 
     # Estimate the solvent model
     levels=1000
-    sol_limits, solvent_paramters = solvent.fit_solvent_to_histogram(
+    sol_limits, solvent_parameters = solvent.fit_solvent_to_histogram(
         h_data,
         plot=plot,
         n_lev=levels
@@ -166,8 +162,7 @@ def main(
     scale, max_val = occupancy.get_map_occupancy(
         scale_data,
         occ_kernel=scale_kernel,
-        sol_threshold=None,
-        save_occ_map=scale_map ,
+        save_occ_map=scale_map,
         verbose=verbose
     )
     map_tools.change_voxel_size(scale_map , parent=input_map)
@@ -177,7 +172,7 @@ def main(
 
     confidence, mapping = occupancy.estimate_confidence(
         scale_data,
-        solvent_paramters,
+        solvent_parameters,
         hedge_confidence=hedge_confidence,
         n_lev=levels
 )
@@ -306,7 +301,7 @@ def main(
     print(f'\n------------------------------------Detected thresholds-------', file=f_log)
     print(f'Content at 1% of solvent  : \t {sol_limits[2]:.3f}', file=f_log)
     print(f'Solvent drop to 0% (edge) : \t {sol_limits[3]:.3f}', file=f_log)
-    print(f'Solvent peak              : \t {solvent_paramters[1]:.3f}', file=f_log)
+    print(f'Solvent peak              : \t {solvent_parameters[1]:.3f}', file=f_log)
     print(f'Solvent full              : \t {max_val:.3f}', file=f_log)
     f_log.close()
     if verbose:
