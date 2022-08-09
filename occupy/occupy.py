@@ -36,7 +36,8 @@ def main(
         lowpass_amplified: float = typer.Option(None,
                                                 help="Optionally low-pass filter the amplified output to this resolution [Å]"),
         kernel_size: int = typer.Option(None, help="Size of the local occupancy estimation kernel [pixels]"),
-        max_box_dim: int = typer.Option(200, help="Input maps beyond this size will be down-sampled during estimation [pixels]"),
+        max_box_dim: int = typer.Option(200,
+                                        help="Input maps beyond this size will be down-sampled during estimation [pixels]"),
         hedge_confidence: int = typer.Option(None,
                                              help="Exponent order for confidence estimation, such that values > 1 are more careful when amplifying low occupancies"),
         solvent_def: str = typer.Option(None,
@@ -82,13 +83,14 @@ def main(
     voxel_size = f_open.voxel_size.x
 
     # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
+    factor = 1
     assert max_box_dim % 2 == 0
     downscale_processing = nd[0] > max_box_dim
     if downscale_processing:
         factor = nd[0] / max_box_dim
         in_data = map_tools.lowpass_map_square(
             in_data,
-            cutoff=voxel_size*factor,
+            cutoff=voxel_size * factor,
             voxel_size=voxel_size,
             resample=True)
         voxel_size = voxel_size * factor
@@ -180,7 +182,7 @@ def main(
         save_occ_map=scale_map,
         verbose=verbose
     )
-    map_tools.change_voxel_size(scale_map, parent=input_map)
+    map_tools.change_voxel_size(scale_map, sz=voxel_size)
 
     # --------------- CONFIDENCE ESTIMATION ------------------------------------------------------
 
@@ -236,7 +238,7 @@ def main(
         out_data = map_tools.clip_to_range(out_data, scale_data)
 
         if downscale_processing:
-                out_data = map_tools.lowpass_map_square(
+            out_data = map_tools.lowpass_map_square(
                 out_data,
                 cutoff=voxel_size / factor,
                 voxel_size=voxel_size,
@@ -256,7 +258,7 @@ def main(
         map_tools.new_mrc(
             confidence.astype(np.float32),
             f'conf{new_name}',
-            parent=input_map,
+            sz=voxel_size,
             verbose=verbose,
             log=f_log
         )
@@ -265,7 +267,7 @@ def main(
             map_tools.new_mrc(
                 lp_data,
                 f'lowpass{new_name}',
-                parent=input_map,
+                sz=voxel_size,
                 verbose=verbose,
                 log=f_log
             )
