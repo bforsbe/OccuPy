@@ -218,7 +218,7 @@ def amplify(
         verbose: bool = True
 ):
 
-    if amplify_amount is None or amplify_amount is 0:
+    if amplify_amount is None or amplify_amount == 0:
         return data
 
     if occ_threshold is None:

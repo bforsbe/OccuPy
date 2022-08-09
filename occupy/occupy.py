@@ -3,10 +3,11 @@ import pylab as plt
 import mrcfile as mf
 import os
 from pathlib import Path
-from occupy import map_tools, occupancy, vis, solvent
 
 from typing import Optional
 import typer
+
+from . import map_tools, occupancy, vis, solvent
 
 __version__ = "0.1.1"
 
@@ -17,6 +18,10 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 
+cli = typer.Typer(name='OccuPy', add_completion=False)
+
+
+@cli.command()
 def main(
         input_map: str = typer.Option(None, "--input-map", "-i", help="Map to estimate [.mrc NxNxN]"),
         output_map: str = typer.Option("out_<input_file_name>", "--output_map", "-o", help="Output map name"),
@@ -315,11 +320,3 @@ def main(
         f_log.close()
 
     return 0
-
-
-if __name__ == '__main__':
-    typer.run(main)
-
-
-def app():
-    typer.run(main)
