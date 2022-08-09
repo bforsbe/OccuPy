@@ -36,6 +36,7 @@ def main(
         lowpass_amplified: float = typer.Option(None,
                                                 help="Optionally low-pass filter the amplified output to this resolution [Å]"),
         kernel_size: int = typer.Option(None, help="Size of the local occupancy estimation kernel [pixels]"),
+        max_box_dim: int = typer.Option(200, help="Input maps beyond this size will be down-sampled during estimation [pixels]"),
         hedge_confidence: int = typer.Option(None,
                                              help="Exponent order for confidence estimation, such that values > 1 are more careful when amplifying low occupancies"),
         solvent_def: str = typer.Option(None,
@@ -79,6 +80,18 @@ def main(
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
     voxel_size = f_open.voxel_size.x
+
+    # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
+    assert max_box_dim % 2 == 0
+    downscale_processing = nd[0] > max_box_dim
+    if downscale_processing:
+        factor = nd[0] / max_box_dim
+        in_data = map_tools.lowpass_map_square(
+            in_data,
+            cutoff=voxel_size*factor,
+            voxel_size=voxel_size,
+            resample=True)
+        voxel_size = voxel_size * factor
 
     # --------------- SETTINGS -----------------------------------------------------------------
 
@@ -221,6 +234,13 @@ def main(
         # ruin the dynamic range compared to the input. This is mostly
         # aesthetic.
         out_data = map_tools.clip_to_range(out_data, scale_data)
+
+        if downscale_processing:
+                out_data = map_tools.lowpass_map_square(
+                out_data,
+                cutoff=voxel_size / factor,
+                voxel_size=voxel_size,
+                resample=True)
 
         # Save amplified and/or solvent-suppressed output.
         map_tools.new_mrc(

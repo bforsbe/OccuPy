@@ -88,7 +88,7 @@ def new_mrc(
     n_head = o_file.header['nlabl']
     if n_head < 10:
         o_file.header['label'][n_head] = f'Created using OccuPy {__version__}'
-        o_file.header['nlab'][n_head] = n_head+1
+        o_file.header['nlabl'] = n_head+1
     o_file.flush()
     o_file.validate()
     o_file.close()
@@ -190,14 +190,22 @@ def lowpass_map_square(
     f_data = np.fft.rfftn(data)
     f_data = np.fft.fftshift(f_data, axes=(0, 1))
     cutoff /= voxel_size
-    cutoff_level = int(np.floor(2 * (n / cutoff)))  # Keep this many of the lower frequencies
+    cutoff_level = int(np.floor((n / cutoff) / 2))  # Keep this many of the lower frequencies
     mid = int(n / 2)
-    if resample:
-        t = f_data[mid - cutoff_level:mid + cutoff_level, mid - cutoff_level:mid + cutoff_level, :cutoff_level + 1]
+    if 2*cutoff_level > n:
+        # Pad instead
+        if not resample:
+            return data
+        t = np.zeros((2*cutoff_level,2*cutoff_level,cutoff_level+1),dtype=np.complex)
+        edge = int((2*cutoff_level - n) / 2)
+        t[edge:edge+n,edge:edge+n,:-edge] = f_data
     else:
-        t = np.zeros(np.shape(f_data)).astype(np.complex)
-        t[mid - cutoff_level:mid + cutoff_level, mid - cutoff_level:mid + cutoff_level, :cutoff_level + 1] = \
-            f_data[mid - cutoff_level:mid + cutoff_level, mid - cutoff_level:mid + cutoff_level, :cutoff_level + 1]
+        if resample:
+            t = f_data[mid - cutoff_level:mid + cutoff_level, mid - cutoff_level:mid + cutoff_level, :cutoff_level + 1]
+        else:
+            t = np.zeros(np.shape(f_data)).astype(np.complex)
+            t[mid - cutoff_level:mid + cutoff_level, mid - cutoff_level:mid + cutoff_level, :cutoff_level + 1] = \
+                f_data[mid - cutoff_level:mid + cutoff_level, mid - cutoff_level:mid + cutoff_level, :cutoff_level + 1]
     f_data = np.fft.ifftshift(t, axes=(0, 1))
     r_data = np.fft.irfftn(f_data)
     if keep_scale:
