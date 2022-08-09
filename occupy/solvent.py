@@ -179,3 +179,24 @@ def fit_solvent_to_histogram(
         # ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g--', label='ugh')
 
     return solvent_range, popt
+
+def suppress(
+        in_data,
+        confidence,
+        exclude_solvent,
+        verbose=False
+):
+    if verbose:
+        print('Using confidence based on solvent model to limit amplification when amplifying partial occupancy.')
+    out_data = np.multiply(in_data, confidence)
+
+    if exclude_solvent:
+        if verbose:
+            print('Not retaining solvent, eliminating based on confidence')
+    else:
+        if verbose:
+            print('Retaining solvent by inverse confidence')
+        out_data += np.multiply(occ_data, 1 - confidence)
+
+    print(f'Wrote {output_map}        \t: {logstring} ', file=f_log)
+    return out_data

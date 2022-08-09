@@ -64,9 +64,6 @@ def chimx_viz(
         key_str = f'key {clr} '
         key_str = f'{key_str} {labels} size 0.5, 0.04 pos 0.25, 0.08 ticks true tickThickness 2 \n'
 
-
-
-        print(turbo_l)
         print(f'alias occu_color color sample $1 map $2 palette {clr} range {min_occ},1.0 \n', file=the_file)
 
         print(f'alias set_occu_color_range color sample $1 map $2 palette {clr} range {min_occ},1.0 \n', file=the_file)

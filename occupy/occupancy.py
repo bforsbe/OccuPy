@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import ndimage
-import map_tools
+from occupy import map_tools
 
 
 def occupancy_map(
@@ -208,19 +208,18 @@ def get_map_occupancy(
     return occ_map, map_val_at_full_occupancy
 
 
-def amplify_map_occupancy(
+def amplify(
         data: np.ndarray,
         occ_map: np.ndarray,
         amplify_amount: float = None,
         sol_mask: np.ndarray = None,
         occ_threshold: float = None,
         save_amp_map: bool = False,
-        invert: bool = False, # used for lambda, not alpha
         verbose: bool = True
 ):
 
-    if amplify_amount is None:
-        amplify_amount = 1   # alpha or lambda, 1=equalise
+    if amplify_amount is None or amplify_amount is 0:
+        return data
 
     if occ_threshold is None:
         occ_threshold = 0.05

@@ -40,7 +40,8 @@ def new_mrc(
         data: np.ndarray,
         file_name: str,
         parent: str = None,
-        verbose: bool = False
+        verbose: bool = False,
+        log=None
 ):
     pix_size = 1.0
     if parent is not None:
@@ -53,7 +54,10 @@ def new_mrc(
     o_file.flush()
     o_file.close()
     if verbose:
-        print(f'Wrote new file {file_name}')
+        if log is None:
+            print(f'Wrote new file {file_name}')
+        else:
+            print(f'Wrote {file_name}', file=log)
 
 
 def change_voxel_size(
@@ -164,11 +168,14 @@ def lowpass_map_square(
 
 def lowpass_map(
         data: np.ndarray,
-        cutoff: float,
-        voxel_size: float,
+        cutoff: float = None,
+        voxel_size: float = 1.0,
         resample: bool = False,
         keep_scale: bool = False
 ):
+    if cutoff is None:
+        return data
+
     n = np.shape(data)[0]
     ndim = len(np.shape(data))
     ref_scale = np.max(data)
