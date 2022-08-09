@@ -3,10 +3,11 @@ import pylab as plt
 import mrcfile as mf
 import os
 from pathlib import Path
-from occupy import map_tools, occupancy, vis, solvent
 
 from typing import Optional
 import typer
+
+from . import map_tools, occupancy, vis, solvent
 
 __version__ = "0.1.1"
 
