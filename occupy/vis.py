@@ -4,42 +4,42 @@ import numpy as np
 import pylab as plt
 
 def save_fig(
-        ori: str,
+        input: str,
         extra_specifier: str =None
 ):
-    file_name = 'solModel_' + Path(ori).stem + '.png'
+    file_name = 'solModel_' + Path(input).stem + '.png'
     if extra_specifier is not None:
-        file_name = f'solModel_{extra_specifier}_' + Path(ori).stem + '.png'
+        file_name = f'solModel_{extra_specifier}_' + Path(input).stem + '.png'
     plt.savefig(file_name)
 
 def chimx_viz(
-        ori: str,
+        input: str,
         scale: str,
         output: str = None,
-        threshold_ori: float = None,
-        threshold_full: float = None,
-        threshold_occ: float = None,
-        min_occ: float = 0.2
+        threshold_input: float = None,
+        threshold_scale: float = None,
+        threshold_output: float = None,
+        min_scale: float = 0.2
 ):
-    file_name = 'chimX_' + Path(ori).stem + '.cxc'
+    file_name = 'chimX_' + Path(input).stem + '.cxc'
 
     with open(file_name, 'w') as the_file:
 
         # -----MODELS --------------------------------------
-        print(f'open {ori} ', file=the_file)
-        if threshold_ori is not None:
-            print(f'vol #1 level {threshold_ori}', file=the_file)
+        print(f'open {input} ', file=the_file)
+        if threshold_input is not None:
+            print(f'vol #1 level {threshold_input}', file=the_file)
 
         print(f'open {scale} ', file=the_file)
-        if threshold_occ is None:
+        if threshold_scale is None:
             print(f'hide #2 ', file=the_file)
         else:
-            print(f'vol #2 level {threshold_occ}', file=the_file)
+            print(f'vol #2 level {threshold_scale}', file=the_file)
 
         if output is not None:
             print(f'open {output} ', file=the_file)
-            if threshold_full is not None:
-                print(f'vol #3 level {threshold_full}', file=the_file)
+            if threshold_output is not None:
+                print(f'vol #3 level {threshold_output}', file=the_file)
 
         # -----COLOR-----------------------------------------
         rainbow = 'rainbow'
@@ -52,7 +52,7 @@ def chimx_viz(
         n_colors=7
         turbo_l = ''
         labels = ''
-        vals=np.linspace(min_occ,1.0,n_colors)
+        vals=np.linspace(min_scale, 1.0, n_colors)
         for i in np.arange(n_colors):
             turbo_l = f'{turbo_l}{vals[i]:.2f},{turbo[i]}:'
             labels = f'{labels} :{vals[i]:.2f}'
@@ -64,9 +64,9 @@ def chimx_viz(
         key_str = f'key {clr} '
         key_str = f'{key_str} {labels} size 0.5, 0.04 pos 0.25, 0.08 ticks true tickThickness 2 \n'
 
-        print(f'alias occu_color color sample $1 map $2 palette {clr} range {min_occ},1.0 \n', file=the_file)
+        print(f'alias occu_color color sample $1 map $2 palette {clr} range {min_scale},1.0 \n', file=the_file)
 
-        print(f'alias set_occu_color_range color sample $1 map $2 palette {clr} range {min_occ},1.0 \n', file=the_file)
+        print(f'alias set_occu_color_range color sample $1 map $2 palette {clr} range {min_scale},1.0 \n', file=the_file)
 
         print(f'volume #1 color #d3d7cf \n', file=the_file)
 

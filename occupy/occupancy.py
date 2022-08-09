@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import ndimage
-from occupy import map_tools
+from occupy import map_tools, solvent
 
 
 def occupancy_map(
@@ -178,7 +178,7 @@ def get_map_occupancy(
         occ_kernel: np.ndarray,
         sol_mask: np.ndarray = None,
         sol_threshold: float = None,
-        save_occ_map: bool = False,
+        save_occ_map: str = None,
         verbose: bool = True
 ):
     """
@@ -203,8 +203,8 @@ def get_map_occupancy(
         occ_map = np.clip(occ_map / map_val_at_full_occupancy, 0, 1)
     # occ_map, _ = unity_map(occ_map)
 
-    if save_occ_map:
-        map_tools.new_mrc(np.clip(occ_map, 0, 1), 'occupancy.mrc', verbose=False)
+    if save_occ_map is not None:
+        map_tools.new_mrc(np.clip(occ_map, 0, 1), save_occ_map, verbose=False)
     return occ_map, map_val_at_full_occupancy
 
 
@@ -242,3 +242,49 @@ def amplify(
     amplified_map = amplify_map_alpha(data, amplification, amplify_amount)
 
     return amplified_map
+
+def estimate_confidence(
+        scale_data,
+        solvent_paramters,
+        hedge_confidence=None,
+        n_lev=1000
+):
+    # Establish histogram for the data without solvent masked
+    a, b = np.histogram(
+        scale_data,
+        bins=n_lev,
+        density=True
+    )
+
+    # Find intersection of solvent model and content
+    solvent_model = solvent.onecomponent_solvent(
+        b,
+        solvent_paramters[0],
+        solvent_paramters[1],
+        solvent_paramters[2]
+    )
+    fit = np.clip(solvent_model, 0.0, np.max(solvent_model))
+
+    c = len(b) - 2
+    while c > 0:
+        c -= 1
+        if a[c] <= fit[c] and fit[c] > 0.1:
+            break
+
+    content_fraction_all = np.divide((a + 0.01 - fit[:-1]), a + 0.01)
+
+    content_conf = np.copy(content_fraction_all)
+    for i in np.arange(np.size(content_conf) - 2) + 1:
+        content_conf[-i - 2] = np.min(content_conf[-i - 2:-i])
+        if content_conf[-i - 3] < 0:
+            content_conf[:-i - 2] = 0
+            break
+
+    indx = (map_tools.uniscale_map(np.copy(scale_data), norm=True) * n_lev - 1).astype(int)
+
+    if hedge_confidence is not None:
+        content_conf = content_conf ** hedge_confidence
+
+    confidence = content_conf[indx]
+
+    return confidence, content_conf

@@ -20,7 +20,7 @@ def version_callback(value: bool):
 def main(
         input_map: str = typer.Option(None, "--input-map", "-i", help="Map to estimate [.mrc NxNxN]"),
         output_map: str = typer.Option("out_<input_file_name>", "--output_map", "-o", help="Output map name"),
-        resolution: str = typer.Option("out_<input_file_name>", "--resolution", "-r", help="Resolution of input map"),
+        resolution: str = typer.Option(None, "--resolution", "-r", help="Resolution of input map"),
         amplify: bool = typer.Option(False, "--amplify", "-a",
                                      help="Alter partial occupancies, to make more or less equal to full occupancy?"),
         amplify_amount: float = typer.Option(1.0, "--amplify_amount", "-am",
@@ -42,7 +42,7 @@ def main(
                                         help="Mask that defines non-solvent, used to aid solvent model fitting. [.mrc NxNxN]"),
 
         save_all_maps: bool = typer.Option(False, help="Save all maps used internally"),
-        save_chimeraX: bool = typer.Option(True,
+        save_chimerax: bool = typer.Option(True,
                                            help="Write a .cxc file that can be opened by chimeraX to show colored input/output maps"),
         min_vis_scale: float = typer.Option(0.2,
                                             help="Lower limit of map scale (occupancy) in chimeraX coloring & color-key"),
@@ -62,8 +62,13 @@ def main(
         exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
 
     new_name = '_' + input_map
-    if output_map == 'out_<input_file_name>':
-        output_map = 'out' + new_name
+
+    if amplify or exclude_solvent:
+        if output_map == 'out_<input_file_name>':
+            output_map = 'out' + new_name
+    else:
+        output_map = None
+
 
     if relion_classes is not None:
         print('Input using a relion model.star to diversify classes is not yet implemented')
@@ -95,41 +100,48 @@ def main(
         # It should be larger than 1, and never needs to be bigger than 7 (7^3 pixels as sample size)
         kernel_size = np.clip(kernel_size, 3, 7)
 
+    # The radius of flattened solvent masking
+    radius = int(0.95 * nd[0] / 2)  # TODO add flag?
+
     log_name = f'log_{Path(input_map).stem}.txt'
     f_log = open(log_name, 'w+')
     print(f'\n---------------I/O AND CALCULATED SETTINGS-------', file=f_log)
     print(f'Input   :\t\t {input_map}', file=f_log)
     print(f'Pixel   :\t\t {voxel_size:.2f}', file=f_log)
     print(f'Box     :\t\t {nd}', file=f_log)
+    print(f'Radius  :\t\t {radius:.3f}', file=f_log)
     print(f'Kernel  :\t\t {kernel_size}', file=f_log)
     print(f'Filter  :\t\t {lowpass_input}', file=f_log)
     print(f'Amp. lim:\t\t {amplify_limit:.3f}', file=f_log)
 
     # ----- LOW-PASS SETTINGS ---------
-    use_lp_for_solvent = True
-    use_lp_for_occupancy = True  # TODO use the same for solvent estimation and confidence filter
-    use_lp_for_amplification = False
-
-    if use_lp_for_solvent or use_lp_for_occupancy or use_lp_for_amplification:
+    use_lp = False
+    if lowpass_input > 2.5*voxel_size:
+        use_lp = True
         lp_data = map_tools.lowpass_map(in_data, lowpass_input, f_open.voxel_size.x, keep_scale=False)
+        sol_data = np.copy(lp_data)
+    else:
+        sol_data = np.copy(in_data)
+    scale_data = np.copy(sol_data)
+    out_data = np.copy(in_data)
 
-    # --------------- DIAGNOSTIC OUTPUT --------------------------------------------------------
+
+    # --------------- PLOTTING STUFF--------------------------------------------------------
     if plot:
         interactive_plot = True  # TODO sort this in flags, or omit.
         global f, ax1, ax2
         f = plt.figure()
 
     # --------------- SOLVENT ESTIMATION -------------------------------------------------------
-    if use_lp_for_solvent:
-        sol_data = np.copy(lp_data)
-    else:
-        sol_data = np.copy(in_data)
 
-    # ----- ESTIMATE THRESHOLD ------
-    # Estimate solvent paramters for mask
-    radius = int(0.95 * nd[0] / 2)  # TODO add flag?
-    # print(radius)
-    mask = map_tools.create_circular_mask(nd[0], dim=3, radius=radius)  # TODO use mask radius in Å/nm
+    # Make the spherical mask for masking flattened solvent in the input map
+    mask = map_tools.create_circular_mask(
+        nd[0],
+        dim=3,
+        radius=radius
+    )
+
+    # Apply the prided solvent definition as an additional mask
     if solvent_def is not None:
         s_open = mf.open(solvent_def)
         solvent_def_data = np.copy(s_open.data)
@@ -139,87 +151,49 @@ def main(
     assert sol_data.shape == mask.shape
     h_data = sol_data[mask].flatten()
 
-    sol_limits, sol_param = solvent.fit_solvent_to_histogram(
+    # Estimate the solvent model
+    levels=1000
+    sol_limits, solvent_paramters = solvent.fit_solvent_to_histogram(
         h_data,
-        plot=plot
+        plot=plot,
+        n_lev=levels
     )
 
-    # --------------- OCCUPANCY AMPLIFICATION ------------------------------------------------------
-
-    if use_lp_for_occupancy:
-        occ_data = np.copy(lp_data)
-    else:
-        occ_data = np.copy(in_data)
-
-    if use_lp_for_amplification:
-        amp_data = np.copy(lp_data)
-    else:
-        amp_data = np.copy(in_data)
+    # --------------- OCCUPANCY ESTIMATION ------------------------------------------------------
 
     scale_kernel = map_tools.create_circular_mask(kernel_size, dim=3, soft=False)
-
-    scale, full_occ = occupancy.get_map_occupancy(
-        occ_data,
+    scale_map = f'scale{new_name}'
+    scale, max_val = occupancy.get_map_occupancy(
+        scale_data,
         occ_kernel=scale_kernel,
-        sol_threshold=None,  # sol_limits[2],
-        save_occ_map=True,
+        sol_threshold=None,
+        save_occ_map=scale_map ,
         verbose=verbose
     )
+    map_tools.change_voxel_size(scale_map , parent=input_map)
 
-    os.rename('occupancy.mrc', f'scale{new_name}')
-    map_tools.change_voxel_size(f'scale{new_name}', parent=input_map)
+    # --------------- CONFIDENCE ESTIMATION ------------------------------------------------------
 
-    a, b = np.histogram(occ_data, bins=levels, density=True)
 
-    # Find intersection of solvent model and content
-    solvent_model = solvent.onecomponent_solvent(b, sol_param[0], sol_param[1], sol_param[2])
-    fit = np.clip(solvent_model, 0.0, np.max(solvent_model))
+    confidence, mapping = occupancy.estimate_confidence(
+        scale_data,
+        solvent_paramters,
+        hedge_confidence=hedge_confidence,
+        n_lev=levels
+)
 
-    c = len(b) - 2
-    while c > 0:
-        c -= 1
-        if a[c] <= fit[c] and fit[c] > 0.1:
-            break
-
-    content_fraction_all = np.divide((a + 0.01 - fit[:-1]), a + 0.01)
-    # solvent_fraction_all = 1 - content_fraction_all
-
-    content_conf = np.copy(content_fraction_all)
-    for i in np.arange(np.size(content_conf) - 2) + 1:
-        content_conf[-i - 2] = np.min(content_conf[-i - 2:-i])
-        if content_conf[-i - 3] < 0:
-            content_conf[:-i - 2] = 0
-            break
-    if plot:
-        f = plt.gcf()
-        f.set_size_inches(20, 4)
-        ax1 = f.axes[0]
-        ax1.plot(full_occ * np.ones(2), ax1.get_ylim(), 'r--', label=f'{full_occ:.2f}: full occupancy')
-        if solvent_def is not None:
-            ax1.plot(b[:-1], a, 'gray', label='unmasked data')
-        ax1.plot(b[:-1], np.clip(content_conf, ax1.get_ylim()[0], 1.0), 'r', label='confidence')
-        # for i in np.arange(5):
-        #    ax1.plot(b[:-1], np.clip(content_conf, ax1.get_ylim()[0], 1.0)**(i+2), 'r', alpha=0.2)
-        ax1.legend()
-
-    # indx = (scale * np.sum(b>0) + np.sum(b<0) - 2 ).astype(int)
-    indx = (map_tools.uniscale_map(np.copy(occ_data), norm=True) * levels - 1).astype(int)
-    if hedge_confidence is not None:
-        content_conf = content_conf ** hedge_confidence
-    confidence = content_conf[indx]
+    # --------------- MODIFY INPUT MAP IF AMPLIFYING AND/OR SUPPRESSING SOLVENT ------------------
 
     if amplify or exclude_solvent:
 
         if not amplify:
             amplify_amount = None
 
-        out_data = np.copy(amp_data)
-
         # -- Amplify local scale --
         # The estimated scale is used to inverse-filter the data
         # The amplify_amount is the exponent of the scale.
         out_data = occupancy.amplify(
-            amp_data,
+            out_data,
             scale,
             amplify_amount,
             occ_threshold=amplify_limit,
@@ -232,6 +206,7 @@ def main(
         # Solvent is added back unless excluded
         out_data = solvent.suppress(
             out_data,
+            scale_data,
             confidence,
             exclude_solvent,
             verbose=verbose
@@ -249,7 +224,7 @@ def main(
         # inverse filtering can create a few spurious pixels that
         # ruin the dynamic range compared to the input. This is mostly
         # aesthetic.
-        out_data = map_tools.clip_to_range(out_data, occ_data)
+        out_data = map_tools.clip_to_range(out_data, scale_data)
 
         # Save amplified and/or solvent-suppressed output.
         map_tools.new_mrc(
@@ -259,15 +234,9 @@ def main(
             verbose=verbose
         )
 
-    if save_all_maps:
 
-        map_tools.new_mrc(
-            lp_data,
-            f'lowpass{new_name}',
-            parent=input_map,
-            verbose=verbose,
-            log=f_log
-        )
+    # ----------------OUTPUT FILES AND PLOTTING -------------------------------------------------
+    if save_all_maps:
 
         map_tools.new_mrc(
             confidence.astype(np.float32),
@@ -277,30 +246,50 @@ def main(
             log=f_log
         )
 
+        if use_lp:
+            map_tools.new_mrc(
+                lp_data,
+                f'lowpass{new_name}',
+                parent=input_map,
+                verbose=verbose,
+                log=f_log
+            )
+
         if amplify:
             os.rename('amplification.mrc', f'amp{new_name}')
             print(f'Wrote amp{new_name}         \t: Local amplification applied', file=f_log)
             map_tools.change_voxel_size(f'amp{new_name}', parent=input_map)
 
-    if save_chimeraX:
-
-        full_name = None
-        if amplify:
-            full_name = 'full' + new_name
+    if save_chimerax:
 
         vis.chimx_viz(
             input_map,
-            f'scale{new_name}',
+            scale_map ,
             output_map,
-            threshold_ori=sol_limits[3],
-            # threshold_full=sol_limits[3],
-            threshold_occ=amplify_limit,
-            min_occ=min_vis_scale,
+            threshold_input=sol_limits[3],
+            threshold_scale=sol_limits[3],
+            threshold_output=sol_limits[3],
+            min_scale=min_vis_scale,
         )
 
     f_open.close()
 
     if plot:
+        f = plt.gcf()
+        f.set_size_inches(20, 4)
+        ax1 = f.axes[0]
+        a, b = np.histogram(scale_data, bins=levels, density=True)
+
+        ax1.plot(max_val * np.ones(2), ax1.get_ylim(), 'r--', label=f'{max_val:.2f}: full occupancy')
+        if solvent_def is not None:
+            ax1.plot(b[:-1], a, 'gray', label='unmasked data')
+        ax1.plot(b[:-1], np.clip(mapping, ax1.get_ylim()[0], 1.0), 'r', label='confidence')
+        if hedge_confidence is not None:
+            ax1.plot(b[:-1], np.clip(mapping**hedge_confidence, ax1.get_ylim()[0], 1.0), ':r', label='hedged confidence')
+        # for i in np.arange(5):
+        #    ax1.plot(b[:-1], np.clip(content_conf, ax1.get_ylim()[0], 1.0)**(i+2), 'r', alpha=0.2)
+        ax1.legend()
+
         save_name = input_map
         has_solvent_def = None
         if solvent_def is not None:
@@ -317,13 +306,15 @@ def main(
     print(f'\n------------------------------------Detected thresholds-------', file=f_log)
     print(f'Content at 1% of solvent  : \t {sol_limits[2]:.3f}', file=f_log)
     print(f'Solvent drop to 0% (edge) : \t {sol_limits[3]:.3f}', file=f_log)
-    print(f'Solvent peak              : \t {sol_param[1]:.3f}', file=f_log)
-    print(f'Solvent full              : \t {full_occ:.3f}', file=f_log)
+    print(f'Solvent peak              : \t {solvent_paramters[1]:.3f}', file=f_log)
+    print(f'Solvent full              : \t {max_val:.3f}', file=f_log)
     f_log.close()
     if verbose:
         f_log = open(log_name, 'r')
         print(f_log.read())
         f_log.close()
+
+    return 0
 
 
 if __name__ == '__main__':
