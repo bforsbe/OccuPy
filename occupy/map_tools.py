@@ -1,6 +1,7 @@
 import numpy as np
 import mrcfile as mf
 
+__version__ = "0.1.2"
 
 def create_circular_mask(
         s: int,
@@ -81,18 +82,23 @@ def new_mrc(
     if parent is not None:
         p = mf.open(parent)
         pix_size = p.voxel_size
-        p.close()
     o_file = mf.new(file_name, overwrite=True)
     o_file.set_data(data.astype(np.float32))
     o_file.voxel_size = pix_size
+    n_head = o_file.header['nlabl']
+    if n_head < 10:
+        o_file.header['label'][n_head] = f'Created using OccuPy {__version__}'
+        o_file.header['nlab'][n_head] = n_head+1
     o_file.flush()
+    o_file.validate()
     o_file.close()
+    if parent is not None:
+        p.close()
     if verbose:
         if log is None:
             print(f'Wrote new file {file_name}')
         else:
             print(f'Wrote {file_name}', file=log)
-
 
 def change_voxel_size(
         file: str,

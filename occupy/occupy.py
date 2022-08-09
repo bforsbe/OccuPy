@@ -8,7 +8,7 @@ import map_tools, occupancy, vis, solvent
 from typing import Optional
 import typer
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 
 def version_callback(value: bool):
@@ -60,7 +60,6 @@ def main(
 
     if input_map is None:
         exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
-    f_open = mf.open(input_map)
 
     new_name = '_' + input_map
 
@@ -70,22 +69,24 @@ def main(
     else:
         output_map = None
 
-
     if relion_classes is not None:
         print('Input using a relion model.star to diversify classes is not yet implemented')
         exit(0)
 
     # --------------- READ INPUT ---------------------------------------------------------------
 
+    f_open = mf.open(input_map)
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
     voxel_size = f_open.voxel_size.x
 
     # --------------- SETTINGS -----------------------------------------------------------------
+
     # To make solvent more detectable, low-pass input.
     # If a lowpass is provided use it.
     # Otherwise, use double the provided resolution.
     # If a resolutions is not provided, use 3 times Nyquist.
+
     if lowpass_input is None:
         if resolution is not None:
             lowpass_input = int(2 * resolution)  # Å
@@ -116,8 +117,9 @@ def main(
     print(f'Amp. lim:\t\t {amplify_limit:.3f}', file=f_log)
 
     # ----- LOW-PASS SETTINGS ---------
+
     use_lp = False
-    if lowpass_input > 2.5*voxel_size:
+    if lowpass_input > 2.5 * voxel_size:
         use_lp = True
         lp_data = map_tools.lowpass_map(in_data, lowpass_input, f_open.voxel_size.x, keep_scale=False)
         sol_data = np.copy(lp_data)
@@ -126,8 +128,8 @@ def main(
     scale_data = np.copy(sol_data)
     out_data = np.copy(in_data)
 
+    # --------------- PLOTTING STUFF------------------------------------------------------------
 
-    # --------------- PLOTTING STUFF--------------------------------------------------------
     if plot:
         interactive_plot = True  # TODO sort this in flags, or omit.
         global f, ax1, ax2
@@ -136,19 +138,19 @@ def main(
     # --------------- SOLVENT ESTIMATION -------------------------------------------------------
 
     # Mask the flattened solvent in the input map
-    h_data = map_tools.mask_sphere(sol_data,radius=radius)
+    h_data = map_tools.mask_sphere(sol_data, radius=radius)
 
     # Apply the prided solvent definition as an additional mask
     if solvent_def is not None:
         s_open = mf.open(solvent_def)
         solvent_def_data = np.copy(s_open.data)
         assert sol_data.shape == solvent_def_data.shape
-        h_data = np.multiply(h_data,solvent_def_data)
+        h_data = np.multiply(h_data, solvent_def_data)
 
     # Apply the prided solvent definition as an additional mask
 
     # Estimate the solvent model
-    levels=1000
+    levels = 1000
     sol_limits, solvent_parameters = solvent.fit_solvent_to_histogram(
         h_data,
         plot=plot,
@@ -165,17 +167,16 @@ def main(
         save_occ_map=scale_map,
         verbose=verbose
     )
-    map_tools.change_voxel_size(scale_map , parent=input_map)
+    map_tools.change_voxel_size(scale_map, parent=input_map)
 
     # --------------- CONFIDENCE ESTIMATION ------------------------------------------------------
-
 
     confidence, mapping = occupancy.estimate_confidence(
         scale_data,
         solvent_parameters,
         hedge_confidence=hedge_confidence,
         n_lev=levels
-)
+    )
 
     # --------------- MODIFY INPUT MAP IF AMPLIFYING AND/OR SUPPRESSING SOLVENT ------------------
 
@@ -229,7 +230,6 @@ def main(
             verbose=verbose
         )
 
-
     # ----------------OUTPUT FILES AND PLOTTING -------------------------------------------------
     if save_all_maps:
 
@@ -256,10 +256,9 @@ def main(
             map_tools.change_voxel_size(f'amp{new_name}', parent=input_map)
 
     if save_chimerax:
-
         vis.chimx_viz(
             input_map,
-            scale_map ,
+            scale_map,
             output_map,
             threshold_input=sol_limits[3],
             threshold_scale=sol_limits[3],
@@ -280,7 +279,8 @@ def main(
             ax1.plot(b[:-1], a, 'gray', label='unmasked data')
         ax1.plot(b[:-1], np.clip(mapping, ax1.get_ylim()[0], 1.0), 'r', label='confidence')
         if hedge_confidence is not None:
-            ax1.plot(b[:-1], np.clip(mapping**hedge_confidence, ax1.get_ylim()[0], 1.0), ':r', label='hedged confidence')
+            ax1.plot(b[:-1], np.clip(mapping ** hedge_confidence, ax1.get_ylim()[0], 1.0), ':r',
+                     label='hedged confidence')
         # for i in np.arange(5):
         #    ax1.plot(b[:-1], np.clip(content_conf, ax1.get_ylim()[0], 1.0)**(i+2), 'r', alpha=0.2)
         ax1.legend()
