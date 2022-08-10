@@ -230,7 +230,7 @@ def amplify(
         amplification = (1 - sol_mask) + np.multiply(sol_mask, amplification)
 
     if save_amp_map:
-        map_tools.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
+        map_tools.new_mrc(amplification.astype(np.float32), 'amplification.mrc',sz=1)
 
     # Equalise map
     amplified_map = amplify_map_alpha(data, amplification, amplify_amount)

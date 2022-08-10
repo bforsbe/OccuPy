@@ -80,20 +80,30 @@ def main(
     f_open = mf.open(input_map)
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
-    voxel_size = f_open.voxel_size.x
+    voxel_size = np.copy(f_open.voxel_size.x)
 
     # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
-    factor = 1
     assert max_box_dim % 2 == 0
     downscale_processing = nd[0] > max_box_dim
     if downscale_processing:
         factor = nd[0] / max_box_dim
-        in_data = map_tools.lowpass_map_square(
+
+        # in_data = map_tools.lowpass_map_square(
+        #     in_data,
+        #     cutoff=voxel_size * factor,
+        #     voxel_size=voxel_size,
+        #     resample=True)
+        # voxel_size = voxel_size * factor
+
+        #testing this
+        in_data, voxel_size = map_tools.lowpass(
             in_data,
-            cutoff=voxel_size * factor,
-            voxel_size=voxel_size,
-            resample=True)
-        voxel_size = voxel_size * factor
+            pixels=max_box_dim,
+            voxel_size=f_open.voxel_size.x,
+            square=True,
+            resample=True
+        )
+
 
     # --------------- SETTINGS -----------------------------------------------------------------
 
@@ -134,9 +144,39 @@ def main(
     # ----- LOW-PASS SETTINGS ---------
 
     use_lp = False
-    if lowpass_input > 2.5 * voxel_size:
+    if lowpass_input > 2 * voxel_size:
         use_lp = True
-        lp_data = map_tools.lowpass_map(in_data, lowpass_input, f_open.voxel_size.x, keep_scale=False)
+
+        lp_data = map_tools.lowpass_map(
+            in_data,
+            lowpass_input,
+            f_open.voxel_size.x,
+            keep_scale=False
+        )
+
+        # map_tools.new_mrc(
+        #     lp_data.astype(np.float32),
+        #     "old_lp.mrc",
+        #     parent=input_map,
+        #     verbose=verbose,
+        #)
+
+        #testing this
+        lp_data, _ = map_tools.lowpass(
+            in_data,
+            lowpass_input,
+            voxel_size=f_open.voxel_size.x,
+            square=False,
+            resample=False
+        )
+
+        # map_tools.new_mrc(
+        #     lp_data.astype(np.float32),
+        #     "new_lp.mrc",
+        #     parent=input_map,
+        #     verbose=verbose,
+        #)
+
         sol_data = np.copy(lp_data)
     else:
         sol_data = np.copy(in_data)
@@ -235,21 +275,29 @@ def main(
         # inverse filtering can create a few spurious pixels that
         # ruin the dynamic range compared to the input. This is mostly
         # aesthetic.
-        out_data = map_tools.clip_to_range(out_data, scale_data)
+        out_data = map_tools.clip_to_range(out_data, in_data)
 
         if downscale_processing:
-            out_data = map_tools.lowpass_map_square(
+            # out_data = map_tools.lowpass_map_square(
+            #     out_data,
+            #     cutoff=voxel_size / factor,
+            #     voxel_size=voxel_size,
+            #     resample=True)
+
+            # testing this
+            out_data, _ = map_tools.lowpass(
                 out_data,
-                cutoff=voxel_size / factor,
-                voxel_size=voxel_size,
-                resample=True)
+                pixels=nd[0],
+                square=True,
+                resample=True
+            )
 
         # Save amplified and/or solvent-suppressed output.
         map_tools.new_mrc(
             out_data.astype(np.float32),
             output_map,
             parent=input_map,
-            verbose=verbose
+            verbose=verbose,
         )
 
     # ----------------OUTPUT FILES AND PLOTTING -------------------------------------------------
@@ -282,9 +330,9 @@ def main(
             input_map,
             scale_map,
             output_map,
-            threshold_input=sol_limits[3],
-            threshold_scale=sol_limits[3],
-            threshold_output=sol_limits[3],
+            threshold_input=None, #sol_limits[3],
+            threshold_scale=0.5,
+            threshold_output=None, #sol_limits[3],
             min_scale=min_vis_scale,
         )
 
