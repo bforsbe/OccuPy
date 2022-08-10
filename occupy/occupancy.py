@@ -19,10 +19,10 @@ def percentile_filter_tiled(
         mask: np.ndarray,
         n_tiles: int,
         tile_sz: int = None,
-        per:float = 0.4,
+        per: float = 0.4,
         verbose: bool = False
 ):
-    assert (per>0 and per <=1)
+    assert (per > 0 and per <= 1)
 
     nd = np.array(np.shape(data))
     dim = len(nd)
@@ -116,7 +116,7 @@ def occupancy_map_percentile(
         data: np.ndarray,
         kernel: np.ndarray,
         mask: np.ndarray = None,
-        per:float = 0.95,
+        per: float = 0.95,
         tiles: int = 12,
         tile_sz: int = 5
 ):
@@ -156,7 +156,7 @@ def amplify_map_alpha(
     assert a <= 1, "Amplifying with more than 1 does not make sense"
     assert a != 0, "Amplifying with 0 will not do anything"
 
-    return np.multiply(data, np.abs(amplification)**a)
+    return np.multiply(data, np.abs(amplification) ** a)
 
 
 def amplify_map_lambda(
@@ -168,7 +168,7 @@ def amplify_map_lambda(
     occ = np.divide(1, amplification, where=amplification != 0)
     eff_occ = 1.0 - l + l * np.divide(1, occ, where=occ != 0)
     if invert:
-        return np.divide(data, np.abs(eff_occ),where= np.abs(eff_occ)!=0 )
+        return np.divide(data, np.abs(eff_occ), where=np.abs(eff_occ) != 0)
     else:
         return np.multiply(data, np.abs(eff_occ))
 
@@ -199,7 +199,7 @@ def get_map_occupancy(
     occ_map = np.clip(occ_map / map_val_at_full_occupancy, 0, 1)
 
     if save_occ_map is not None:
-        map_tools.new_mrc(occ_map, save_occ_map, verbose=False)
+        map_tools.new_mrc(occ_map, save_occ_map, sz=1.0, verbose=False)
     return occ_map, map_val_at_full_occupancy
 
 
@@ -212,8 +212,7 @@ def amplify(
         save_amp_map: bool = False,
         verbose: bool = True
 ):
-
-    if amplify_amount is None or amplify_amount is 0:
+    if amplify_amount is None or amplify_amount == 0:
         return data
 
     if occ_threshold is None:
@@ -237,6 +236,7 @@ def amplify(
     amplified_map = amplify_map_alpha(data, amplification, amplify_amount)
 
     return amplified_map
+
 
 def estimate_confidence(
         scale_data,
