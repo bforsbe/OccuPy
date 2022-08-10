@@ -244,9 +244,9 @@ def main(
         # The estimated scale is used to inverse-filter the data
         # The amplify_amount is the exponent of the scale.
         out_data = occupancy.amplify(
-            out_data,
-            scale,
-            amplify_amount,
+            out_data,           # Amplify raw input data (no low-pass apart from down-scaling, if that)
+            scale,              # The estimated scale to use for amplification
+            amplify_amount,     # The exponent for amplification / attenuation
             scale_threshold=amplify_limit,
             save_amp_map=save_all_maps,
             verbose=verbose
@@ -256,10 +256,10 @@ def main(
         # Confidence-based mask of amplified content.
         # Solvent is added back unless excluded
         out_data = solvent.suppress(
-            out_data,
-            scale_data,
-            confidence,
-            exclude_solvent,
+            out_data,           # Supress the amplified output data
+            in_data,            # Add back solvent from raw input (full res)
+            confidence,         # The confidence mask to supress amplification
+            exclude_solvent,    # Only add back if not excluding solvent
             verbose=verbose
         )
 
