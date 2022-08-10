@@ -124,21 +124,21 @@ def occupancy_map_percentile(
     return percentile_filter_tiled(data, kernel, mask, n_tiles=tiles, tile_sz=tile_sz, per=per)
 
 
-def threshold_occu_map(
-        occu_map: np.ndarray,
-        occ_threshold: float,
+def threshold_scale_map(
+        scale_map: np.ndarray,
+        scale_threshold: float,
         mask: np.ndarray = None
 ):
     if mask is None:
-        mask = occu_map
+        mask = scale_map
     # Occupancy higher than threshold should be boosted inversely to occupancy
-    t_occu_map = np.multiply(occu_map, mask > occ_threshold)
+    out_map = np.multiply(scale_map, mask > scale_threshold)
 
     # Lower than threshold should be boosted as if full occupancy (do not touch),
     # but we set it to -1 for clarity and handle it during boosting
-    t_occu_map -= mask <= occ_threshold
+    out_map -= mask <= scale_threshold
 
-    return t_occu_map
+    return out_map
 
 
 def amplify_map(
@@ -208,21 +208,21 @@ def amplify(
         occ_map: np.ndarray,
         amplify_amount: float = None,
         sol_mask: np.ndarray = None,
-        occ_threshold: float = None,
+        scale_threshold: float = None,
         save_amp_map: bool = False,
         verbose: bool = True
 ):
     if amplify_amount is None or amplify_amount == 0:
         return data
 
-    if occ_threshold is None:
-        occ_threshold = 0.05
+    if scale_threshold is None:
+        scale_threshold = 0.05
         if verbose:
-            print(f'No occupancy threshold set, using {100 * occ_threshold:.1f}% to limit spurious over-amplification.')
+            print(f'No occupancy threshold set, using {100 * scale_threshold:.1f}% to limit spurious over-amplification.')
     elif verbose:
-        print(f'Applying provided strict occupancy threshold of {100 * occ_threshold:.1f}%.')
-    thr_occu_map = threshold_occu_map(occ_map, occ_threshold)
-    amplification = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
+        print(f'Applying provided strict occupancy threshold of {100 * scale_threshold:.1f}%.')
+    thresholded_scale_map = threshold_scale_map(occ_map, scale_threshold)
+    amplification = np.divide(1, thresholded_scale_map, where=thresholded_scale_map != 0)
 
     if sol_mask is not None:
         if verbose:

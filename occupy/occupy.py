@@ -207,7 +207,7 @@ def main(
             out_data,
             scale,
             amplify_amount,
-            occ_threshold=amplify_limit,
+            scale_threshold=amplify_limit,
             save_amp_map=save_all_maps,
             verbose=verbose
         )
