@@ -88,14 +88,6 @@ def main(
     if downscale_processing:
         factor = nd[0] / max_box_dim
 
-        # in_data = map_tools.lowpass_map_square(
-        #     in_data,
-        #     cutoff=voxel_size * factor,
-        #     voxel_size=voxel_size,
-        #     resample=True)
-        # voxel_size = voxel_size * factor
-
-        #testing this
         in_data, voxel_size = map_tools.lowpass(
             in_data,
             pixels=max_box_dim,
@@ -147,21 +139,6 @@ def main(
     if lowpass_input > 2 * voxel_size:
         use_lp = True
 
-        lp_data = map_tools.lowpass_map(
-            in_data,
-            lowpass_input,
-            f_open.voxel_size.x,
-            keep_scale=False
-        )
-
-        # map_tools.new_mrc(
-        #     lp_data.astype(np.float32),
-        #     "old_lp.mrc",
-        #     parent=input_map,
-        #     verbose=verbose,
-        #)
-
-        #testing this
         lp_data, _ = map_tools.lowpass(
             in_data,
             lowpass_input,
@@ -170,18 +147,16 @@ def main(
             resample=False
         )
 
-        # map_tools.new_mrc(
-        #     lp_data.astype(np.float32),
-        #     "new_lp.mrc",
-        #     parent=input_map,
-        #     verbose=verbose,
-        #)
-
         sol_data = np.copy(lp_data)
     else:
         sol_data = np.copy(in_data)
+
+    # Always ue the same data for scale estimation as for solvent model estimation
     scale_data = np.copy(sol_data)
-    out_data = np.copy(in_data)
+
+    # We apply any estimations or solvent operation on the raw input (possibly down-sized)
+    if amplify or exclude_solvent:
+        out_data = np.copy(in_data)
 
     # --------------- PLOTTING STUFF------------------------------------------------------------
 
@@ -277,14 +252,8 @@ def main(
         # aesthetic.
         out_data = map_tools.clip_to_range(out_data, in_data)
 
+        # If the input map was larger than the maximum processing size, we need to get back the bigger size as output
         if downscale_processing:
-            # out_data = map_tools.lowpass_map_square(
-            #     out_data,
-            #     cutoff=voxel_size / factor,
-            #     voxel_size=voxel_size,
-            #     resample=True)
-
-            # testing this
             out_data, _ = map_tools.lowpass(
                 out_data,
                 pixels=nd[0],
