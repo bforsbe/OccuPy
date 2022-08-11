@@ -86,7 +86,7 @@ def main(
     assert max_box_dim % 2 == 0
     downscale_processing = nd[0] > max_box_dim
     if downscale_processing:
-        factor = nd[0] / max_box_dim
+        factor = max_box_dim/nd[0]
 
         in_data, voxel_size = map_tools.lowpass(
             in_data,
@@ -97,7 +97,7 @@ def main(
             keep_scale=False
         )
 
-        #in_data *= 0.29308
+        in_data *= factor**3
 
         if save_all_maps:
             # Save downscaled processing map
@@ -265,6 +265,8 @@ def main(
                 square=True,
                 resample=True
             )
+
+        out_data *= (1/factor)**3
 
         # -- Match output range --
         # inverse filtering can create a few spurious pixels that
