@@ -195,16 +195,16 @@ def lowpass(
 ):
     # Test square
     n = np.shape(data)
-    assert (len(np.unique(np.shape(n))) == 1, "Input array to lowpass is not square")
-    assert (n[0] % 2 == 0, "Input array size is not even")
+    assert len(np.unique(np.shape(n))) == 1, "Input array to lowpass is not square"
+    assert n[0] % 2 == 0, "Input array size is not even"
 
     # Test dim
     ndim = len(n)
-    assert (ndim == 2 or ndim == 3, "Input array to lowpass is not 2 or 3 ")
+    assert ndim == 2 or ndim == 3, "Input array to lowpass is not 2 or 3 "
 
     # Test required input
-    assert (pixels is not None or voxel_size is not None, "Lowpass needs pixel size or number of pixels.")
-    assert (pixels is not None or resolution is not None, "Lowpass needs a cutoff resolution or number of pixels")
+    assert pixels is not None or voxel_size is not None, "Lowpass needs pixel size or number of pixels."
+    assert pixels is not None or resolution is not None, "Lowpass needs a cutoff resolution or number of pixels"
 
     # Refernce values
     n = np.shape(data)[0]
