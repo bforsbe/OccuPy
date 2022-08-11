@@ -266,7 +266,8 @@ def main(
                 resample=True
             )
 
-        out_data *= (1/factor)**3
+        if downscale_processing:
+            out_data *= (1/factor)**3
 
         # -- Match output range --
         # inverse filtering can create a few spurious pixels that
