@@ -3,7 +3,7 @@ import pylab as plt
 import mrcfile as mf
 import os
 from pathlib import Path
-import map_tools, occupancy, vis, solvent
+from occupy import map_tools, occupancy, vis, solvent
 
 from typing import Optional
 import typer
@@ -174,21 +174,22 @@ def main(
     # --------------- PLOTTING STUFF------------------------------------------------------------
 
     if plot:
-        interactive_plot = True  # TODO sort this in flags, or omit.
+        interactive_plot = False  # TODO sort this in flags, or omit.
         global f, ax1, ax2
         f = plt.figure()
 
     # --------------- SOLVENT ESTIMATION -------------------------------------------------------
 
-    # Mask the flattened solvent in the input map
-    h_data = map_tools.mask_sphere(sol_data, radius=radius)
 
-    # Apply the prided solvent definition as an additional mask
+    mask = map_tools.create_circular_mask(nd_processing, dim=3, radius=radius)  # TODO use mask radius in Å/nm
     if solvent_def is not None:
         s_open = mf.open(solvent_def)
         solvent_def_data = np.copy(s_open.data)
-        assert sol_data.shape == solvent_def_data.shape
-        h_data = np.multiply(h_data, solvent_def_data)
+        mask = np.array(mask).astype(int) + 1 - solvent_def_data
+        mask = mask > 1.5
+
+    assert sol_data.shape == mask.shape
+    h_data = sol_data[mask].flatten()
 
     # Estimate the solvent model
     levels = 1000

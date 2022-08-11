@@ -15,6 +15,19 @@ def onecomponent_solvent(
     return res
 
 
+def onecomponent_solvent_zeropeak(
+        x: np.ndarray,
+        c: float,
+        mu: float,
+        sigma: float
+):
+    if sigma == 0:
+        sigma += 0.001  # TODO
+    res = c * np.exp(- (x - mu) ** 2.0 / (2.0 * sigma ** 2.0))
+    penalty = mu * 1000
+    return res + penalty
+
+
 def twocomponent_solvent(
         x: np.ndarray,
         c1: float,
@@ -92,12 +105,27 @@ def fit_solvent_to_histogram(
     content_fraction = content_vol / vol
 
     domain = np.linspace(low, high, n_lev)
-    if components == 1:
-        p_guess = [solvent_scale, solvent_peak, solvent_width]
-        popt, pcov = curve_fit(onecomponent_solvent, domain, a, p0=p_guess)
-    else:
+    constrain_to_peak = False
+    if constrain_to_peak:
+        domain -= solvent_peak
+        solvent_peak = 0
+
+    if components == 2:
         p_guess = [solvent_scale, solvent_peak, solvent_width, content_scale, content_peak, content_width]
         popt, pcov = curve_fit(twocomponent_solvent, domain, a, p0=p_guess)
+    elif constrain_to_peak:
+        p_guess = [solvent_scale, 0, solvent_width]
+        popt, pcov = curve_fit(onecomponent_solvent_zeropeak, domain, a, p0=p_guess)
+    else:
+        p_guess = [solvent_scale, solvent_peak, solvent_width]
+        popt, pcov = curve_fit(onecomponent_solvent, domain, a, p0=p_guess)
+
+    if constrain_to_peak:
+        domain += content_peak
+        popt[1] = content_peak
+        p_guess[1] = content_peak
+        solvent_peak = content_peak
+
 
     if components == 1:
         guess = onecomponent_solvent(domain, p_guess[0], p_guess[1], p_guess[2])
