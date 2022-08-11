@@ -133,3 +133,4 @@ dmypy.json
 
 #Other
 *.token
+_version.py
