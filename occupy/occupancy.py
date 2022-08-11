@@ -19,10 +19,10 @@ def percentile_filter_tiled(
         mask: np.ndarray,
         n_tiles: int,
         tile_sz: int = None,
-        per:float = 0.4,
+        per: float = 0.4,
         verbose: bool = False
 ):
-    assert (per>0 and per <=1)
+    assert (per > 0 and per <= 1)
 
     nd = np.array(np.shape(data))
     dim = len(nd)
@@ -116,7 +116,7 @@ def occupancy_map_percentile(
         data: np.ndarray,
         kernel: np.ndarray,
         mask: np.ndarray = None,
-        per:float = 0.95,
+        per: float = 0.95,
         tiles: int = 12,
         tile_sz: int = 5
 ):
@@ -124,21 +124,21 @@ def occupancy_map_percentile(
     return percentile_filter_tiled(data, kernel, mask, n_tiles=tiles, tile_sz=tile_sz, per=per)
 
 
-def threshold_occu_map(
-        occu_map: np.ndarray,
-        occ_threshold: float,
+def threshold_scale_map(
+        scale_map: np.ndarray,
+        scale_threshold: float,
         mask: np.ndarray = None
 ):
     if mask is None:
-        mask = occu_map
+        mask = scale_map
     # Occupancy higher than threshold should be boosted inversely to occupancy
-    t_occu_map = np.multiply(occu_map, mask > occ_threshold)
+    out_map = np.multiply(scale_map, mask > scale_threshold)
 
     # Lower than threshold should be boosted as if full occupancy (do not touch),
     # but we set it to -1 for clarity and handle it during boosting
-    t_occu_map -= mask <= occ_threshold
+    out_map -= mask <= scale_threshold
 
-    return t_occu_map
+    return out_map
 
 
 def amplify_map(
@@ -156,7 +156,7 @@ def amplify_map_alpha(
     assert a <= 1, "Amplifying with more than 1 does not make sense"
     assert a != 0, "Amplifying with 0 will not do anything"
 
-    return np.multiply(data, np.abs(amplification)**a)
+    return np.multiply(data, np.abs(amplification) ** a)
 
 
 def amplify_map_lambda(
@@ -168,7 +168,7 @@ def amplify_map_lambda(
     occ = np.divide(1, amplification, where=amplification != 0)
     eff_occ = 1.0 - l + l * np.divide(1, occ, where=occ != 0)
     if invert:
-        return np.divide(data, np.abs(eff_occ),where= np.abs(eff_occ)!=0 )
+        return np.divide(data, np.abs(eff_occ), where=np.abs(eff_occ) != 0)
     else:
         return np.multiply(data, np.abs(eff_occ))
 
@@ -199,7 +199,7 @@ def get_map_occupancy(
     occ_map = np.clip(occ_map / map_val_at_full_occupancy, 0, 1)
 
     if save_occ_map is not None:
-        map_tools.new_mrc(occ_map, save_occ_map, verbose=False)
+        map_tools.new_mrc(occ_map, save_occ_map, sz=1.0, verbose=False)
     return occ_map, map_val_at_full_occupancy
 
 
@@ -208,22 +208,21 @@ def amplify(
         occ_map: np.ndarray,
         amplify_amount: float = None,
         sol_mask: np.ndarray = None,
-        occ_threshold: float = None,
+        scale_threshold: float = None,
         save_amp_map: bool = False,
         verbose: bool = True
 ):
-
-    if amplify_amount is None or amplify_amount is 0:
+    if amplify_amount is None or amplify_amount == 0:
         return data
 
-    if occ_threshold is None:
-        occ_threshold = 0.05
+    if scale_threshold is None:
+        scale_threshold = 0.05
         if verbose:
-            print(f'No occupancy threshold set, using {100 * occ_threshold:.1f}% to limit spurious over-amplification.')
+            print(f'No occupancy threshold set, using {100 * scale_threshold:.1f}% to limit spurious over-amplification.')
     elif verbose:
-        print(f'Applying provided strict occupancy threshold of {100 * occ_threshold:.1f}%.')
-    thr_occu_map = threshold_occu_map(occ_map, occ_threshold)
-    amplification = np.divide(1, thr_occu_map, where=thr_occu_map != 0)
+        print(f'Applying provided strict occupancy threshold of {100 * scale_threshold:.1f}%.')
+    thresholded_scale_map = threshold_scale_map(occ_map, scale_threshold)
+    amplification = np.divide(1, thresholded_scale_map, where=thresholded_scale_map != 0)
 
     if sol_mask is not None:
         if verbose:
@@ -231,12 +230,13 @@ def amplify(
         amplification = (1 - sol_mask) + np.multiply(sol_mask, amplification)
 
     if save_amp_map:
-        map_tools.new_mrc(amplification.astype(np.float32), 'amplification.mrc')
+        map_tools.new_mrc(amplification.astype(np.float32), 'amplification.mrc',sz=1)
 
     # Equalise map
     amplified_map = amplify_map_alpha(data, amplification, amplify_amount)
 
     return amplified_map
+
 
 def estimate_confidence(
         scale_data,
