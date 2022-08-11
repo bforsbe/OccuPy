@@ -93,9 +93,24 @@ def main(
             pixels=max_box_dim,
             voxel_size=f_open.voxel_size.x,
             square=True,
-            resample=True
+            resample=True,
+            keep_scale=False
         )
 
+        #in_data *= 0.29308
+
+        if save_all_maps:
+            # Save downscaled processing map
+            map_tools.new_mrc(
+                in_data.astype(np.float32),
+                "downscaled.mrc",
+                sz=voxel_size,
+                verbose=verbose,
+            )
+    nd_processing = np.shape(in_data)[0]
+
+    # The radius of flattened solvent masking
+    radius = int(0.95 * nd_processing / 2)  # TODO add flag?
 
     # --------------- SETTINGS -----------------------------------------------------------------
 
@@ -117,17 +132,15 @@ def main(
         # Make it an odd size
         kernel_size = ((kernel_size // 2) * 2) + 1
         # It should be larger than 1, and never needs to be bigger than 7 (7^3 pixels as sample size)
-        kernel_size = np.clip(kernel_size, 3, 7)
-
-    # The radius of flattened solvent masking
-    radius = int(0.95 * nd[0] / 2)  # TODO add flag?
+        kernel_size = np.clip(kernel_size, 5, 11)
 
     log_name = f'log_{Path(input_map).stem}.txt'
     f_log = open(log_name, 'w+')
     print(f'\n---------------I/O AND CALCULATED SETTINGS-------', file=f_log)
     print(f'Input   :\t\t {input_map}', file=f_log)
     print(f'Pixel   :\t\t {voxel_size:.2f}', file=f_log)
-    print(f'Box     :\t\t {nd}', file=f_log)
+    print(f'Box in  :\t\t {nd}', file=f_log)
+    print(f'Box proc:\t\t {nd_processing}', file=f_log)
     print(f'Radius  :\t\t {radius:.3f}', file=f_log)
     print(f'Kernel  :\t\t {kernel_size}', file=f_log)
     print(f'Filter  :\t\t {lowpass_input}', file=f_log)
@@ -142,7 +155,7 @@ def main(
         lp_data, _ = map_tools.lowpass(
             in_data,
             lowpass_input,
-            voxel_size=f_open.voxel_size.x,
+            voxel_size=voxel_size,
             square=False,
             resample=False
         )
@@ -176,8 +189,6 @@ def main(
         solvent_def_data = np.copy(s_open.data)
         assert sol_data.shape == solvent_def_data.shape
         h_data = np.multiply(h_data, solvent_def_data)
-
-    # Apply the prided solvent definition as an additional mask
 
     # Estimate the solvent model
     levels = 1000
@@ -219,9 +230,9 @@ def main(
         # The estimated scale is used to inverse-filter the data
         # The amplify_amount is the exponent of the scale.
         out_data = occupancy.amplify(
-            out_data,           # Amplify raw input data (no low-pass apart from down-scaling, if that)
-            scale,              # The estimated scale to use for amplification
-            amplify_amount,     # The exponent for amplification / attenuation
+            out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
+            scale,  # The estimated scale to use for amplification
+            amplify_amount,  # The exponent for amplification / attenuation
             scale_threshold=amplify_limit,
             save_amp_map=save_all_maps,
             verbose=verbose
@@ -231,10 +242,10 @@ def main(
         # Confidence-based mask of amplified content.
         # Solvent is added back unless excluded
         out_data = solvent.suppress(
-            out_data,           # Supress the amplified output data
-            in_data,            # Add back solvent from raw input (full res)
-            confidence,         # The confidence mask to supress amplification
-            exclude_solvent,    # Only add back if not excluding solvent
+            out_data,  # Supress the amplified output data
+            in_data,  # Add back solvent from raw input (full res)
+            confidence,  # The confidence mask to supress amplification
+            exclude_solvent,  # Only add back if not excluding solvent
             verbose=verbose
         )
 
@@ -246,12 +257,6 @@ def main(
             keep_scale=True
         )
 
-        # -- Match output range --
-        # inverse filtering can create a few spurious pixels that
-        # ruin the dynamic range compared to the input. This is mostly
-        # aesthetic.
-        out_data = map_tools.clip_to_range(out_data, in_data)
-
         # If the input map was larger than the maximum processing size, we need to get back the bigger size as output
         if downscale_processing:
             out_data, _ = map_tools.lowpass(
@@ -260,6 +265,15 @@ def main(
                 square=True,
                 resample=True
             )
+
+        # -- Match output range --
+        # inverse filtering can create a few spurious pixels that
+        # ruin the dynamic range compared to the input. This is mostly
+        # aesthetic.
+        # TODO Histogram matching?
+        # TODO Compare power spectrum of input out put to examine spectral effect
+        # TODO also check the average change in pixel value, anf how it relates to power spectral change
+        out_data = map_tools.clip_to_range(out_data, f_open.data)
 
         # Save amplified and/or solvent-suppressed output.
         map_tools.new_mrc(
@@ -299,9 +313,9 @@ def main(
             input_map,
             scale_map,
             output_map,
-            threshold_input=None, #sol_limits[3],
+            threshold_input=None,  # sol_limits[3],
             threshold_scale=0.5,
-            threshold_output=None, #sol_limits[3],
+            threshold_output=None,  # sol_limits[3],
             min_scale=min_vis_scale,
         )
 

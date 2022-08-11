@@ -211,7 +211,7 @@ def lowpass(
     ref_scale = np.max(data)
 
     # FFT forward
-    f_data = np.fft.rfftn(data)
+    f_data = np.fft.rfftn(data) #*2*np.pi/n
     f_data = np.fft.fftshift(f_data, axes=(0, 1))
 
     out_voxel_size = None
@@ -228,8 +228,6 @@ def lowpass(
     # If we are resampling, then we may be able to provide the output voxel size
     if resample and voxel_size is not None:
         out_voxel_size = voxel_size * n / (2 * keep_shells)
-
-    keep_shells *= 2
 
     # We are going to grab central information from the input and make it central in the output
     mid_in = int(n / 2)
@@ -261,14 +259,15 @@ def lowpass(
         f_data[mid_in - keep_shells:mid_in + keep_shells, :keep_shells + 1]
 
     if not square:
-        mask = create_circular_mask(2*mid_out, radius=keep_shells, dim=ndim)[..., mid_out-1:]
+        mask = create_circular_mask(2*mid_out, radius=keep_shells+1, dim=ndim)[..., mid_out-1:]
         t = np.multiply(t, mask)
 
-    f_data = np.fft.ifftshift(t, axes=(0, 1))
-    out_data = np.fft.irfftn(f_data)
-    if keep_scale:
-        m = np.mean(out_data)
-        out_data = (out_data - m) * (ref_scale / np.max(out_data)) + m
+    f_data2 = np.fft.ifftshift(t, axes=(0, 1))
+    out_data = np.fft.irfftn(f_data2) #* keep_shells / mid_in
+
+    #if keep_scale:
+    #    out_data /= np.mean(out_data)/np.mean(data)
+
     return out_data, out_voxel_size
 
 
