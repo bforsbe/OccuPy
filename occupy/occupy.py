@@ -112,6 +112,9 @@ def main(
     # The radius of flattened solvent masking
     radius = int(0.95 * nd_processing / 2)  # TODO add flag?
 
+    # Use raw (but downscaled) data for scale estimation
+    scale_data = np.copy(in_data)
+
     # --------------- SETTINGS -----------------------------------------------------------------
 
     # To make solvent more detectable, low-pass input.
@@ -164,9 +167,6 @@ def main(
     else:
         sol_data = np.copy(in_data)
 
-    # Always ue the same data for scale estimation as for solvent model estimation
-    scale_data = np.copy(sol_data)
-
     # We apply any estimations or solvent operation on the raw input (possibly down-sized)
     if amplify or exclude_solvent:
         out_data = np.copy(in_data)
@@ -213,7 +213,7 @@ def main(
     # --------------- CONFIDENCE ESTIMATION ------------------------------------------------------
 
     confidence, mapping = occupancy.estimate_confidence(
-        scale_data,
+        sol_data,
         solvent_parameters,
         hedge_confidence=hedge_confidence,
         n_lev=levels
@@ -327,9 +327,9 @@ def main(
         f = plt.gcf()
         f.set_size_inches(20, 4)
         ax1 = f.axes[0]
-        a, b = np.histogram(scale_data, bins=levels, density=True)
+        a, b = np.histogram(sol_data, bins=levels, density=True)
 
-        ax1.plot(max_val * np.ones(2), ax1.get_ylim(), 'r--', label=f'{max_val:.2f}: full occupancy')
+        #ax1.plot(max_val * np.ones(2), ax1.get_ylim(), 'r--', label=f'{max_val:.2f}: full occupancy')
         if solvent_def is not None:
             ax1.plot(b[:-1], a, 'gray', label='unmasked data')
         ax1.plot(b[:-1], np.clip(mapping, ax1.get_ylim()[0], 1.0), 'r', label='confidence')
@@ -357,7 +357,7 @@ def main(
     print(f'Content at 1% of solvent  : \t {sol_limits[2]:.3f}', file=f_log)
     print(f'Solvent drop to 0% (edge) : \t {sol_limits[3]:.3f}', file=f_log)
     print(f'Solvent peak              : \t {solvent_parameters[1]:.3f}', file=f_log)
-    print(f'Solvent full              : \t {max_val:.3f}', file=f_log)
+    print(f'Occupancy full            : \t {max_val:.3f}', file=f_log)
     f_log.close()
     if verbose:
         f_log = open(log_name, 'r')
