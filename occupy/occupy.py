@@ -184,12 +184,14 @@ def main(
     mask = map_tools.create_circular_mask(nd_processing, dim=3, radius=radius)  # TODO use mask radius in Å/nm
     if solvent_def is not None:
         s_open = mf.open(solvent_def)
-        solvent_def_data = np.copy(s_open.data)
-        mask = np.array(mask).astype(int) + 1 - solvent_def_data
-        mask = mask > 1.5
+        assert s_open.data == mask.shape
 
-    assert sol_data.shape == mask.shape
-    h_data = sol_data[mask].flatten()
+        mask_def = np.array(mask).astype(int) + 1 - s_open.data
+        mask_def = mask_def > 1.5
+        h_data = sol_data[mask_def].flatten()
+    else:
+        assert sol_data.shape == mask.shape
+        h_data = sol_data[mask].flatten()
 
     # Estimate the solvent model
     levels = 1000
@@ -204,7 +206,7 @@ def main(
     scale_kernel = map_tools.create_circular_mask(kernel_size, dim=3, soft=False)
     scale_map = f'scale{new_name}'
     scale, max_val = occupancy.get_map_occupancy(
-        scale_data,
+        np.multiply(scale_data,mask),
         occ_kernel=scale_kernel,
         save_occ_map=scale_map,
         verbose=verbose
