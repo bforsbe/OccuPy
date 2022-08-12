@@ -19,9 +19,11 @@ def chimx_viz(
         threshold_input: float = None,
         threshold_scale: float = None,
         threshold_output: float = None,
-        min_scale: float = 0.2
+        min_scale: float = 0.2,
+        silent: bool = False
 ):
-    file_name = 'chimX_' + Path(input).stem + '.cxc'
+    ident = Path(input).stem
+    file_name = 'chimX_' + ident + '.cxc'
 
     with open(file_name, 'w') as the_file:
 
@@ -82,7 +84,24 @@ def chimx_viz(
         # ------LIGHTING-------------------------------------
         print(f'lighting soft \n', file=the_file)
         print(f'set bgColor white', file=the_file)
-        print(f'camera ortho', file=the_file)
+        if silent:
+            w = 600
+            h = 600
+            if output is not None:
+                print(f'hide  #1', file=the_file)
+            print(f'hide  #2', file=the_file)
+
+            print(f'save {ident}_rot1.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            print(f'turn x', file=the_file)
+            print(f'save {ident}_rot1.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            print(f'turn y', file=the_file)
+            print(f'save {ident}_rot1.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            print(f'turn x', file=the_file)
+            print(f'save {ident}_rot1.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            print(f'exit', file=the_file)
+
+        else:
+            print(f'camera ortho', file=the_file)
 
     the_file.close()
 
