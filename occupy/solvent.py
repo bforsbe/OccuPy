@@ -3,6 +3,18 @@ import pylab as plt
 from scipy.optimize import curve_fit
 
 
+def cauchy(
+        x: np.ndarray,
+        c: float,
+        mu: float,
+        gamma: float
+):
+    if gamma == 0:
+        gamma += 0.001  # TODO
+    res = (1/(np.pi*gamma))*(gamma**2/((x-mu)**2 + gamma**2))
+    return res
+
+
 def onecomponent_solvent(
         x: np.ndarray,
         c: float,

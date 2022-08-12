@@ -268,18 +268,29 @@ def estimate_confidence(
 
     content_fraction_all = np.divide((a + 0.01 - fit[:-1]), a + 0.01)
 
-    content_conf = np.copy(content_fraction_all)
-    for i in np.arange(np.size(content_conf) - 2) + 1:
-        content_conf[-i - 2] = np.min(content_conf[-i - 2:-i])
-        if content_conf[-i - 3] < 0:
-            content_conf[:-i - 2] = 0
+    # Enforce monotonically decreasing confidence with decreasing map scale
+    out = np.copy(content_fraction_all)
+    dt = 0
+    for i in np.flip(np.arange(np.size(out)-1)):
+
+        # The out[i+1]-dt teem enforces monotonically decreasing *derivative* of confidence with decreasing map scale
+        a = [out[i],out[i+1],out[i+1]-dt]
+
+        out[i] = np.min(a)
+
+        # The current derivative
+        dt = out[i+1]-out[i]
+
+        # Lower map values should be left 0
+        if out[i-1] <= 0:
+            out[:i-1]=0
             break
 
     indx = (map_tools.uniscale_map(np.copy(scale_data), norm=True) * n_lev - 1).astype(int)
 
     if hedge_confidence is not None:
-        content_conf = content_conf ** hedge_confidence
+        out = out ** hedge_confidence
 
-    confidence = content_conf[indx]
+    confidence = out[indx]
 
-    return confidence, content_conf
+    return confidence, out
