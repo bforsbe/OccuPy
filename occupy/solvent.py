@@ -225,7 +225,6 @@ def suppress(
         unamplified_data,
         confidence,
         exclude_solvent,
-        fake_solvent=None,
         verbose=False
 ):
     if verbose:
@@ -238,9 +237,6 @@ def suppress(
     else:
         if verbose:
             print('Retaining solvent by inverse confidence')
-        #if fake_solvent is not None:
-        #    out_data += np.multiply(fake_solvent, 1 - confidence)
-        #else:
-            out_data += np.multiply(unamplified_data, 1 - confidence)
+        out_data += np.multiply(unamplified_data, 1-confidence)
 
     return out_data

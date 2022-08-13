@@ -260,7 +260,6 @@ def main(
             in_data,  # Add back solvent from raw input (full res)
             confidence,  # The confidence mask to supress amplification
             exclude_solvent,  # Only add back if not excluding solvent
-            fake_solvent=fake_solvent,
             verbose=verbose
         )
 
