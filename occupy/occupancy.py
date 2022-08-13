@@ -298,4 +298,6 @@ def estimate_confidence(
 
     confidence = out[indx]
 
+    confidence = np.clip(confidence,0.0,1.0)
+
     return confidence, out
