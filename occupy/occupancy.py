@@ -207,6 +207,7 @@ def amplify(
         data: np.ndarray,
         occ_map: np.ndarray,
         amplify_amount: float = None,
+        fake_solvent: np.ndarray = None,
         sol_mask: np.ndarray = None,
         scale_threshold: float = None,
         save_amp_map: bool = False,
@@ -229,11 +230,15 @@ def amplify(
             print('Using solvent mask when equalising occupancy.')
         amplification = (1 - sol_mask) + np.multiply(sol_mask, amplification)
 
-    if save_amp_map:
-        map_tools.new_mrc(amplification.astype(np.float32), 'amplification.mrc',sz=1)
-
-    # Equalise map
+    # Amplify or attenuate map
     amplified_map = amplify_map_alpha(data, amplification, amplify_amount)
+
+    if save_amp_map:
+        map_tools.new_mrc(np.multiply(data, np.abs(amplification) ** amplify_amount).astype(np.float32), 'amplification.mrc',sz=1)
+
+    if fake_solvent is not None:
+        # This is only active if attenuating, in which case the amplification is on [0,1]
+        amplified_map += np.multiply(fake_solvent, 1 - amplification)
 
     return amplified_map
 

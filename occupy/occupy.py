@@ -235,6 +235,11 @@ def main(
         if not amplify:
             amplify_amount = None
 
+        fake_solvent=None
+        if amplify_amount < 0 and not exclude_solvent:
+            fake_solvent = np.random.randn(nd_processing,nd_processing,nd_processing)
+            fake_solvent = solvent_parameters[1] + solvent_parameters[2]*fake_solvent
+
         # -- Amplify local scale --
         # The estimated scale is used to inverse-filter the data
         # The amplify_amount is the exponent of the scale.
@@ -242,15 +247,11 @@ def main(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
             amplify_amount,  # The exponent for amplification / attenuation
+            fake_solvent=fake_solvent,
             scale_threshold=amplify_limit,
             save_amp_map=save_all_maps,
             verbose=verbose
         )
-
-        fake_solvent=None
-        if amplify_amount < 0 and not exclude_solvent:
-            fake_solvent = np.random.randn(nd_processing,nd_processing,nd_processing)
-            fake_solvent = solvent_parameters[1] + solvent_parameters[2]*fake_solvent
 
         # -- Supress solvent amplification --
         # Confidence-based mask of amplified content.
