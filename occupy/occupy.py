@@ -247,6 +247,11 @@ def main(
             verbose=verbose
         )
 
+        fake_solvent=None
+        if amplify_amount < 0 and not exclude_solvent:
+            fake_solvent = np.random.randn(nd_processing,nd_processing,nd_processing)
+            fake_solvent = solvent_parameters[1] + solvent_parameters[2]*fake_solvent
+
         # -- Supress solvent amplification --
         # Confidence-based mask of amplified content.
         # Solvent is added back unless excluded
@@ -255,6 +260,7 @@ def main(
             in_data,  # Add back solvent from raw input (full res)
             confidence,  # The confidence mask to supress amplification
             exclude_solvent,  # Only add back if not excluding solvent
+            fake_solvent=fake_solvent,
             verbose=verbose
         )
 
