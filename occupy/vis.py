@@ -23,6 +23,9 @@ def chimx_viz(
         silent: bool = False
 ):
     ident = Path(input).stem
+    if silent:
+        ident = f'{ident}_silent'
+
     file_name = 'chimX_' + ident + '.cxc'
 
     with open(file_name, 'w') as the_file:
@@ -92,12 +95,15 @@ def chimx_viz(
             print(f'hide  #2', file=the_file)
 
             print(f'save {ident}_rot1.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
-            print(f'turn x', file=the_file)
-            print(f'save {ident}_rot1.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
-            print(f'turn y', file=the_file)
-            print(f'save {ident}_rot1.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
-            print(f'turn x', file=the_file)
-            print(f'save {ident}_rot1.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            print(f'turn x 75', file=the_file)
+            print(f'turn y 35', file=the_file)
+            print(f'save {ident}_rot2.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            print(f'turn x 75', file=the_file)
+            print(f'turn y 35', file=the_file)
+            print(f'save {ident}_rot3.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            print(f'turn x 75', file=the_file)
+            print(f'turn y 35', file=the_file)
+            print(f'save {ident}_rot4.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
             print(f'exit', file=the_file)
 
         else:

@@ -44,7 +44,9 @@ def main(
                                         help="Mask that defines non-solvent, used to aid solvent model fitting. [.mrc NxNxN]"),
 
         save_all_maps: bool = typer.Option(False, help="Save all maps used internally"),
-        save_chimerax: bool = typer.Option(True,
+        chimerax: bool = typer.Option(True,
+                                           help="Write a .cxc file that starts an interactive chimeraX session with colored input/output maps"),
+        chimerax_silent: bool = typer.Option(False,
                                            help="Write a .cxc file that can be opened by chimeraX to show colored input/output maps"),
         min_vis_scale: float = typer.Option(0.2,
                                             help="Lower limit of map scale (occupancy) in chimeraX coloring & color-key"),
@@ -314,7 +316,18 @@ def main(
             print(f'Wrote amp{new_name}         \t: Local amplification applied', file=f_log)
             map_tools.change_voxel_size(f'amp{new_name}', parent=input_map)
 
-    if save_chimerax:
+    if chimerax:
+        vis.chimx_viz(
+            input_map,
+            scale_map,
+            output_map,
+            threshold_input=None,  # sol_limits[3],
+            threshold_scale=0.5,
+            threshold_output=None,  # sol_limits[3],
+            min_scale=min_vis_scale
+        )
+
+    if chimerax_silent:
         vis.chimx_viz(
             input_map,
             scale_map,
@@ -323,6 +336,7 @@ def main(
             threshold_scale=0.5,
             threshold_output=None,  # sol_limits[3],
             min_scale=min_vis_scale,
+            silent=True
         )
 
     f_open.close()
