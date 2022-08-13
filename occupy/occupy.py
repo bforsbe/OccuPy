@@ -238,7 +238,7 @@ def main(
         fake_solvent=None
         if amplify_amount < 0 and not exclude_solvent:
             fake_solvent = np.random.randn(nd_processing,nd_processing,nd_processing)
-            fake_solvent = solvent_parameters[1] + solvent_parameters[2]*fake_solvent
+            fake_solvent = solvent_parameters[1] + solvent_parameters[2]*fake_solvent #TODO what is the correct scaling factor of the variance here????
 
         # -- Amplify local scale --
         # The estimated scale is used to inverse-filter the data

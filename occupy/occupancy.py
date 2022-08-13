@@ -238,7 +238,7 @@ def amplify(
 
     if fake_solvent is not None:
         # This is only active if attenuating, in which case the amplification is on [0,1]
-        amplified_map += np.multiply(fake_solvent, 1 - amplification)
+        amplified_map += np.multiply(fake_solvent, 1 - np.abs(amplification)**amplify_amount)
 
     return amplified_map
 
