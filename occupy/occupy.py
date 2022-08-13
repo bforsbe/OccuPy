@@ -4,6 +4,9 @@ import mrcfile as mf
 import os
 from pathlib import Path
 from occupy import map_tools, occupancy, vis, solvent
+import skimage
+from skimage import exposure
+from skimage.exposure import match_histograms
 
 from typing import Optional
 import typer
@@ -35,6 +38,7 @@ def main(
                                             help="Low-pass filter the input map to this resoution prior to scale estimation. Internal default is 6*pixel-size. [Å]"),
         lowpass_amplified: float = typer.Option(None,
                                                 help="Optionally low-pass filter the amplified output to this resolution [Å]"),
+        hist_match: bool = typer.Option(False, help="Histogram-match output (force equal greyscale)"),
         kernel_size: int = typer.Option(None, help="Size of the local occupancy estimation kernel [pixels]"),
         max_box_dim: int = typer.Option(200,
                                         help="Input maps beyond this size will be down-sampled during estimation [pixels]"),
@@ -278,10 +282,15 @@ def main(
         # inverse filtering can create a few spurious pixels that
         # ruin the dynamic range compared to the input. This is mostly
         # aesthetic.
-        # TODO Histogram matching?
         # TODO Compare power spectrum of input out put to examine spectral effect
         # TODO also check the average change in pixel value, anf how it relates to power spectral change
-        out_data = map_tools.clip_to_range(out_data, f_open.data)
+        if hist_match:
+            out_data = match_histograms(out_data,f_open.data) # Output is no longer input + stuff, i.e. good part is now something else.
+        else:
+            out_data = map_tools.clip_to_range(out_data, f_open.data)
+
+        # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
+        # TODO  -  If attenuating, replace with noise sampled from solvent model?
 
         # Save amplified and/or solvent-suppressed output.
         map_tools.new_mrc(
