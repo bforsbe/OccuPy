@@ -105,18 +105,19 @@ $ OccuPy --help
 but the tools used within it are available from within a python environment as well
 
 ```python
-In [1]: import occupy
+In[1]:
+import occupy
 
-In [2]: occupy.occupancy.get_map_occupancy?                                                                          
+In[2]: occupy.occupancy.get_map_scale?
 
 Signature:
-occupy.occupancy.get_map_occupancy(
+occupy.occupancy.get_map_scale(
     data: numpy.ndarray,
-    occ_kernel: numpy.ndarray,
-    sol_mask: numpy.ndarray = None,
-    sol_threshold: float = None,
-    save_occ_map: bool = False,
-    verbose: bool = True,
+occ_kernel: numpy.ndarray,
+sol_mask: numpy.ndarray = None,
+                          sol_threshold: float = None,
+                                                 save_occ_map: bool = False,
+                                                                      verbose: bool = True,
 )
 
 ```

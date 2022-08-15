@@ -153,11 +153,64 @@ def amplify_map_alpha(
         amplification: np.ndarray,
         a: float,
 ):
+    '''
+    This function amplifies by exponentiating the amplification by alpha
+    alpha = 0 is identity
+    alpha  = 1 is take everythin to 100%
+    alpha = -inf is kill everything except when occ=100%
+    '''
+
     assert a <= 1, "Amplifying with more than 1 does not make sense"
     assert a != 0, "Amplifying with 0 will not do anything"
 
     return np.multiply(data, np.abs(amplification) ** a)
 
+
+def amplify_map_beta(
+        data: np.ndarray,
+        scale: np.ndarray,
+        beta: float,
+        amplify_beta: bool=None,
+        attenuate_beta: bool=None
+):
+    '''
+    Consider the input map to be 100% everywhere, but scaled down by the
+    estimated scale 0<=S<=1:
+
+    A_input = A_100% * S_est    (Ai = A1 * S)
+
+    This function either
+
+    1)  Amplifies by exponentiating the current scale 1/b-1:
+        Ao = Ai * S ^ (1/b - 1) = ( A1 * S ) * S ^ (1/b -1) =  A1 * S ^ (1/b)
+        So that:
+            b = 0           not permitted
+            0 < b < 1       attentuate, so not permitted
+            b = 1           identity
+            b > 0           amplify
+            b = inf         amplify all occupancies to 100%
+
+    2)  Attenuates by exponentiating the current scale b-1:
+        Ao = Ai * S ^ (b - 1) = ( A1 * S ) * S ^ (b -1) =  A1 * S ^ b
+        So that:
+            b = 0           not permitted
+            0 < b < 1       amplify, so not permitted
+            b = 1           identity
+            b > 0           attenuate
+            b = inf         attenuate all occupancies to 0%, except those at 100%
+
+    '''
+
+    assert beta >= 1, "Beta-exponentiation of scale by less than 1 is not permitted"
+    assert beta > 1,  "Beta-exponentiation by 1 is unity operation"
+    assert amplify_beta is not None or attenuate_beta is not None, "Both amplify and attenuate are unset"
+    assert not amplify_beta==attenuate_beta, "Cannot both amplify and attenuate"
+
+    if amplify_beta or not attenuate_beta:
+        beta = 1 / beta - 1
+    else: #attenuate
+        beta = beta - 1
+    return np.abs(scale) ** beta
 
 def amplify_map_lambda(
         data: np.ndarray,
@@ -173,7 +226,7 @@ def amplify_map_lambda(
         return np.multiply(data, np.abs(eff_occ))
 
 
-def get_map_occupancy(
+def get_map_scale(
         data: np.ndarray,
         occ_kernel: np.ndarray,
         sol_mask: np.ndarray = None,
@@ -190,17 +243,17 @@ def get_map_occupancy(
         :param verbose:
     """
 
-    occ_map, map_val_at_full_occupancy = occupancy_map(
+    scale_map, map_val_at_full_scale = occupancy_map(
         data,
         occ_kernel,
         mask=sol_mask,
         verbose=verbose)
 
-    occ_map = np.clip(occ_map / map_val_at_full_occupancy, 0, 1)
+    scale_map = np.clip(scale_map / map_val_at_full_scale, 0, 1)
 
     if save_occ_map is not None:
-        map_tools.new_mrc(occ_map, save_occ_map, sz=1.0, verbose=False)
-    return occ_map, map_val_at_full_occupancy
+        map_tools.new_mrc(scale_map, save_occ_map, sz=1.0, verbose=False)
+    return scale_map, map_val_at_full_scale
 
 
 def amplify(
@@ -242,6 +295,52 @@ def amplify(
 
     return amplified_map
 
+def amplify_beta(
+        data: np.ndarray,
+        scale: np.ndarray,
+        beta: float = None,
+        fake_solvent: np.ndarray = None,
+        sol_mask: np.ndarray = None,
+        scale_threshold: float = None,
+        attenuate: bool = False,
+        save_amp_map: bool = False,
+        verbose: bool = True
+):
+    if beta is None or beta==1:
+        return data
+
+    if scale_threshold is None:
+        scale_threshold = 0.05
+        if verbose:
+            print(f'No occupancy threshold set, using {100 * scale_threshold:.1f}% to limit spurious over-amplification.')
+    elif verbose:
+        print(f'Applying provided strict occupancy threshold of {100 * scale_threshold:.1f}%.')
+    thresholded_scale_map = threshold_scale_map(scale, scale_threshold)
+
+    if sol_mask is not None:
+        if verbose:
+            print('Using solvent mask when equalising occupancy.')
+        thresholded_scale_map = (1 - sol_mask) + np.multiply(sol_mask, thresholded_scale_map)
+
+    # Construct modification as dependent on scaling and beta-coeff
+    amplification = amplify_map_beta(
+        scale,
+        thresholded_scale_map,
+        beta,
+        attenuate_beta=attenuate
+        )
+
+    # Amplify or attenuate map
+    amplified_map = np.multiply(data, amplification)
+
+    if save_amp_map:
+        map_tools.new_mrc(amplification.astype(np.float32), 'amplification.mrc',sz=1)
+
+    if fake_solvent is not None:
+        # This is only active if attenuating, in which case the amplification is on [0,1]
+        amplified_map += np.multiply(fake_solvent, 1 - amplification)
+
+    return amplified_map
 
 def estimate_confidence(
         scale_data,

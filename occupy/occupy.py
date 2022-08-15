@@ -3,7 +3,7 @@ import pylab as plt
 import mrcfile as mf
 import os
 from pathlib import Path
-from occupy import map_tools, occupancy, vis, solvent
+import map_tools, occupancy, vis, solvent
 import skimage
 from skimage import exposure
 from skimage.exposure import match_histograms
@@ -19,26 +19,47 @@ def version_callback(value: bool):
         print(f"OccuPy: {__version__}")
         raise typer.Exit()
 
+def validateOptions(opt1: bool,
+                    opt2: bool,
+                    report:str=None):
+    '''
+    Take two input bools and set one but not both to True, or both to False.
+    Input bools may be none, and will then be output False.
+    TODO test for this
+    '''
+    if opt1:
+        if opt2:
+            raise ValueError(f'Cannot set both {report}')
+        else:
+            opt2 = False
+    elif opt2:
+            opt1 = False
+    else:
+        opt1 = False
+        opt2 = False
+    return opt1, opt2
 
 def main(
         input_map: str = typer.Option(None, "--input-map", "-i", help="Map to estimate [.mrc NxNxN]"),
         output_map: str = typer.Option("out_<input_file_name>", "--output_map", "-o", help="Output map name"),
         resolution: str = typer.Option(None, "--resolution", "-r", help="Resolution of input map"),
-        amplify: bool = typer.Option(False, "--amplify", "-a",
+        amplify: bool = typer.Option(False, "--amplify", "-ap",
                                      help="Alter partial occupancies, to make more or less equal to full occupancy?"),
-        amplify_amount: float = typer.Option(1.0, "--amplify_amount", "-am",
-                                             help="How to alter confident partial occupancies [-1,1]"),
-        amplify_limit: float = typer.Option(0.05, "--amplify_limit", "-al",
-                                            help="Hard limit below which map scale/occupancy will be considered unreliable for amplification"),
+        attenuate: bool = typer.Option(False, "--attenuate", "-at",
+                                     help="Attenuate partial occupancies, to weaken lower occupancies"),
+        beta: float = typer.Option(None, "--beta", "-b",
+                                             help="How to alter confident partial occupancies >1"),
+        scale_limit: float = typer.Option(0.05, "--amplify_limit", "-al",
+                                          help="Hard limit below which map scale/occupancy will be considered unreliable for amplification"),
         exclude_solvent: bool = typer.Option(False, "--exclude-solvent/--retain-solvent",
                                              help="Should Estimated solvent be eliminated [flattened to 0]?"),
         plot: bool = typer.Option(False, help="Plot a histogram showing solvent model fit and occupancy confidence?"),
 
-        lowpass_input: float = typer.Option(None,
+        lowpass_input: float = typer.Option(None,"--lowpass-input","--lowpass",
                                             help="Low-pass filter the input map to this resoution prior to scale estimation. Internal default is 6*pixel-size. [Å]"),
-        lowpass_amplified: float = typer.Option(None,
-                                                help="Optionally low-pass filter the amplified output to this resolution [Å]"),
-        hist_match: bool = typer.Option(False, help="Histogram-match output (force equal greyscale)"),
+        lowpass_output: float = typer.Option(None, "--lowpass-output",
+                                             help="Optionally low-pass filter the amplified output to this resolution [Å]"),
+        hist_match: bool = typer.Option(False, help="Histogram-match output (force equal greyscale as input)"),
         kernel_size: int = typer.Option(None, help="Size of the local occupancy estimation kernel [pixels]"),
         max_box_dim: int = typer.Option(200,
                                         help="Input maps beyond this size will be down-sampled during estimation [pixels]"),
@@ -71,7 +92,17 @@ def main(
 
     new_name = '_' + input_map
 
-    if amplify or exclude_solvent:
+    amplify, attenuate = validateOptions(
+        amplify,
+        attenuate,
+        " amplify and attenuate.")
+
+    if amplify or attenuate:
+        if beta is None:
+            raise ValueError("--beta must be specified if attenuating or amplifying")
+
+    modify = amplify or attenuate or exclude_solvent
+    if modify:
         if output_map == 'out_<input_file_name>':
             output_map = 'out' + new_name
     else:
@@ -87,9 +118,10 @@ def main(
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
     voxel_size = np.copy(f_open.voxel_size.x)
-
-    # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
+    assert nd % 2 == 0
     assert max_box_dim % 2 == 0
+    # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
+
     downscale_processing = nd[0] > max_box_dim
     if downscale_processing:
         factor = max_box_dim/nd[0]
@@ -103,6 +135,7 @@ def main(
             keep_scale=False
         )
 
+        # The FFT must be normalized to preserve the greyscale during processing
         in_data *= factor**3
 
         if save_all_maps:
@@ -127,7 +160,6 @@ def main(
     # If a lowpass is provided use it.
     # Otherwise, use double the provided resolution.
     # If a resolutions is not provided, use 3 times Nyquist.
-
     if lowpass_input is None:
         if resolution is not None:
             lowpass_input = int(2 * resolution)  # Å
@@ -146,14 +178,14 @@ def main(
     log_name = f'log_{Path(input_map).stem}.txt'
     f_log = open(log_name, 'w+')
     print(f'\n---------------I/O AND CALCULATED SETTINGS-------', file=f_log)
-    print(f'Input   :\t\t {input_map}', file=f_log)
-    print(f'Pixel   :\t\t {voxel_size:.2f}', file=f_log)
-    print(f'Box in  :\t\t {nd}', file=f_log)
-    print(f'Box proc:\t\t {nd_processing}', file=f_log)
-    print(f'Radius  :\t\t {radius:.3f}', file=f_log)
-    print(f'Kernel  :\t\t {kernel_size}', file=f_log)
-    print(f'Filter  :\t\t {lowpass_input}', file=f_log)
-    print(f'Amp. lim:\t\t {amplify_limit:.3f}', file=f_log)
+    print(f'Input    :\t\t {input_map}', file=f_log)
+    print(f'Pixel    :\t\t {voxel_size:.2f}', file=f_log)
+    print(f'Box in   :\t\t {nd}', file=f_log)
+    print(f'Box proc :\t\t {nd_processing}', file=f_log)
+    print(f'Radius   :\t\t {radius:.3f}', file=f_log)
+    print(f'Kernel   :\t\t {kernel_size}', file=f_log)
+    print(f'Filter   :\t\t {lowpass_input}', file=f_log)
+    print(f'Scale lim:\t\t {scale_limit:.3f}', file=f_log)
 
     # ----- LOW-PASS SETTINGS ---------
 
@@ -174,7 +206,7 @@ def main(
         sol_data = np.copy(in_data)
 
     # We apply any estimations or solvent operation on the raw input (possibly down-sized)
-    if amplify or exclude_solvent:
+    if modify:
         out_data = np.copy(in_data)
 
     # --------------- PLOTTING STUFF------------------------------------------------------------
@@ -211,7 +243,7 @@ def main(
 
     scale_kernel = map_tools.create_circular_mask(kernel_size, dim=3, soft=False)
     scale_map = f'scale{new_name}'
-    scale, max_val = occupancy.get_map_occupancy(
+    scale, max_val = occupancy.get_map_scale(
         np.multiply(scale_data,mask),
         occ_kernel=scale_kernel,
         save_occ_map=scale_map,
@@ -230,25 +262,29 @@ def main(
 
     # --------------- MODIFY INPUT MAP IF AMPLIFYING AND/OR SUPPRESSING SOLVENT ------------------
 
-    if amplify or exclude_solvent:
+    if modify:
 
-        if not amplify:
-            amplify_amount = None
+        if not (amplify or attenuate):
+            beta = None
 
         fake_solvent=None
-        if amplify_amount < 0 and not exclude_solvent:
+        if attenuate and not exclude_solvent:
             fake_solvent = np.random.randn(nd_processing,nd_processing,nd_processing)
-            fake_solvent = solvent_parameters[1] + solvent_parameters[2]*fake_solvent #TODO what is the correct scaling factor of the variance here????
+            fake_solvent = solvent_parameters[1] + solvent_parameters[2]*fake_solvent
+            # TODO:
+            # what is the correct scaling factor of the variance here????
+            # also spectral properties
 
         # -- Amplify local scale --
         # The estimated scale is used to inverse-filter the data
         # The amplify_amount is the exponent of the scale.
-        out_data = occupancy.amplify(
+        out_data = occupancy.amplify_beta(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
-            amplify_amount,  # The exponent for amplification / attenuation
+            beta=beta,  # The exponent for amplification / attenuation
+            attenuate=attenuate, # False is amplifying or not doing anything
             fake_solvent=fake_solvent,
-            scale_threshold=amplify_limit,
+            scale_threshold=scale_limit,
             save_amp_map=save_all_maps,
             verbose=verbose
         )
@@ -267,7 +303,7 @@ def main(
         # -- Low-pass filter output --
         out_data = map_tools.lowpass_map(
             out_data,
-            lowpass_amplified,
+            lowpass_output,
             voxel_size,
             keep_scale=True
         )
@@ -282,6 +318,7 @@ def main(
             )
 
         if downscale_processing:
+            # The FFT must be normalized to preserve the greyscale as prior to downscaling
             out_data *= (1/factor)**3
 
         # -- Match output range --
@@ -296,7 +333,6 @@ def main(
             out_data = map_tools.clip_to_range(out_data, f_open.data)
 
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
-        # TODO  -  If attenuating, replace with noise sampled from solvent model?
 
         # Save amplified and/or solvent-suppressed output.
         map_tools.new_mrc(
@@ -362,15 +398,13 @@ def main(
         ax1 = f.axes[0]
         a, b = np.histogram(sol_data, bins=levels, density=True)
 
-        #ax1.plot(max_val * np.ones(2), ax1.get_ylim(), 'r--', label=f'{max_val:.2f}: full occupancy')
         if solvent_def is not None:
             ax1.plot(b[:-1], a, 'gray', label='unmasked data')
         ax1.plot(b[:-1], np.clip(mapping, ax1.get_ylim()[0], 1.0), 'r', label='confidence')
         if hedge_confidence is not None:
             ax1.plot(b[:-1], np.clip(mapping ** hedge_confidence, ax1.get_ylim()[0], 1.0), ':r',
                      label='hedged confidence')
-        # for i in np.arange(5):
-        #    ax1.plot(b[:-1], np.clip(content_conf, ax1.get_ylim()[0], 1.0)**(i+2), 'r', alpha=0.2)
+
         ax1.legend()
 
         save_name = input_map
