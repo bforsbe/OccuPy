@@ -91,6 +91,7 @@ def main(
         exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
 
     new_name = '_' + input_map
+    doc = ''
 
     # amplify, attenuate = validateOptions(
     #     amplify,
@@ -264,6 +265,7 @@ def main(
     # --------------- MODIFY INPUT MAP IF AMPLIFYING AND/OR SUPPRESSING SOLVENT ------------------
     if exclude_solvent:
         output_map = 'solExcl_' + Path(output_map).stem + '.mrc'
+        doc = 'Solvent exclusion '
 
     fake_solvent = None # Will not  add fake solvent during amplify
 
@@ -328,13 +330,16 @@ def main(
         # Save amplified and/or solvent-suppressed output.
         if amplify:
             ampl_map = f'ampl_{beta:.1f}_' + Path(output_map).stem + '.mrc'
+            ampl_doc = f'{doc} attenuation beta={beta:.2f}'
         else:
             ampl_map = output_map
+            ampl_doc = f'{doc}'
         map_tools.new_mrc(
             ampl.astype(np.float32),
             ampl_map,
             parent=input_map,
             verbose=verbose,
+            extra_header=ampl_doc
         )
 
     if attenuate:
@@ -405,11 +410,13 @@ def main(
 
         # Save amplified and/or solvent-suppressed output.
         attn_map = f'attn_{beta:.1f}_' + Path(output_map).stem + '.mrc'
+        attn_doc = f'{doc} attenuation beta={beta:.2f}'
         map_tools.new_mrc(
             attn.astype(np.float32),
             attn_map,
             parent=input_map,
             verbose=verbose,
+            extra_header=attn_doc
         )
 
     # ----------------OUTPUT FILES AND PLOTTING -------------------------------------------------

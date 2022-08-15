@@ -79,6 +79,7 @@ def new_mrc(
         parent: str = None,
         sz: int = None,
         verbose: bool = False,
+        extra_header = None,
         log=None
 ):
     pix_size = 1.0
@@ -94,7 +95,11 @@ def new_mrc(
     o_file.voxel_size = pix_size
     n_head = o_file.header['nlabl']
     if n_head < 10:
-        o_file.header['label'][n_head] = f'Created using OccuPy {__version__}'
+        o_file.header['label'][n_head] = f'Created using OccuPy {__version__}'.ljust(80)
+        o_file.header['nlabl'] = n_head + 1
+    n_head = o_file.header['nlabl']
+    if n_head < 10:
+        o_file.header['label'][n_head] = f'{extra_header}'.ljust(80)
         o_file.header['nlabl'] = n_head + 1
     o_file.flush()
     o_file.validate()
