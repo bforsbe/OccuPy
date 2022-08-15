@@ -3,7 +3,7 @@ import pylab as plt
 import mrcfile as mf
 import os
 from pathlib import Path
-import map_tools, occupancy, vis, solvent
+from occupy import map_tools, occupancy, vis, solvent
 import skimage
 from skimage import exposure
 from skimage.exposure import match_histograms
@@ -92,21 +92,22 @@ def main(
 
     new_name = '_' + input_map
 
-    amplify, attenuate = validateOptions(
-        amplify,
-        attenuate,
-        " amplify and attenuate.")
-
-    if amplify or attenuate:
-        if beta is None:
-            raise ValueError("--beta must be specified if attenuating or amplifying")
-
+    # amplify, attenuate = validateOptions(
+    #     amplify,
+    #     attenuate,
+    #     " amplify and attenuate.")
     modify = amplify or attenuate or exclude_solvent
     if modify:
         if output_map == 'out_<input_file_name>':
             output_map = 'out' + new_name
     else:
         output_map = None
+
+    if amplify or attenuate:
+        if beta is None:
+            raise ValueError("--beta must be specified if attenuating or amplifying")
+    else:
+        beta = None  # We might still do solvent exclusion
 
     if relion_classes is not None:
         print('Input using a relion model.star to diversify classes is not yet implemented')
@@ -118,7 +119,7 @@ def main(
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
     voxel_size = np.copy(f_open.voxel_size.x)
-    assert nd % 2 == 0
+    assert nd[0] % 2 == 0
     assert max_box_dim % 2 == 0
     # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
 
@@ -261,28 +262,17 @@ def main(
     )
 
     # --------------- MODIFY INPUT MAP IF AMPLIFYING AND/OR SUPPRESSING SOLVENT ------------------
+    if exclude_solvent:
+        output_map = 'solExcl_' + Path(output_map).stem + '.mrc'
 
-    if modify:
+    fake_solvent = None # Will not  add fake solvent during amplify
 
-        if not (amplify or attenuate):
-            beta = None
-
-        fake_solvent=None
-        if attenuate and not exclude_solvent:
-            fake_solvent = np.random.randn(nd_processing,nd_processing,nd_processing)
-            fake_solvent = solvent_parameters[1] + solvent_parameters[2]*fake_solvent
-            # TODO:
-            # what is the correct scaling factor of the variance here????
-            # also spectral properties
-
-        # -- Amplify local scale --
-        # The estimated scale is used to inverse-filter the data
-        # The amplify_amount is the exponent of the scale.
-        out_data = occupancy.amplify_beta(
+    if amplify or exclude_solvent:
+        ampl = occupancy.amplify_beta(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
             beta=beta,  # The exponent for amplification / attenuation
-            attenuate=attenuate, # False is amplifying or not doing anything
+            attenuate=False,  # False is amplifying or not doing anything
             fake_solvent=fake_solvent,
             scale_threshold=scale_limit,
             save_amp_map=save_all_maps,
@@ -292,8 +282,8 @@ def main(
         # -- Supress solvent amplification --
         # Confidence-based mask of amplified content.
         # Solvent is added back unless excluded
-        out_data = solvent.suppress(
-            out_data,  # Supress the amplified output data
+        ampl = solvent.suppress(
+            ampl,  # Supress the amplified output data
             in_data,  # Add back solvent from raw input (full res)
             confidence,  # The confidence mask to supress amplification
             exclude_solvent,  # Only add back if not excluding solvent
@@ -301,8 +291,8 @@ def main(
         )
 
         # -- Low-pass filter output --
-        out_data = map_tools.lowpass_map(
-            out_data,
+        ampl = map_tools.lowpass_map(
+            ampl,
             lowpass_output,
             voxel_size,
             keep_scale=True
@@ -310,8 +300,8 @@ def main(
 
         # If the input map was larger than the maximum processing size, we need to get back the bigger size as output
         if downscale_processing:
-            out_data, _ = map_tools.lowpass(
-                out_data,
+            ampl, _ = map_tools.lowpass(
+                ampl,
                 pixels=nd[0],
                 square=True,
                 resample=True
@@ -319,7 +309,7 @@ def main(
 
         if downscale_processing:
             # The FFT must be normalized to preserve the greyscale as prior to downscaling
-            out_data *= (1/factor)**3
+            ampl *= (1 / factor) ** 3
 
         # -- Match output range --
         # inverse filtering can create a few spurious pixels that
@@ -328,16 +318,96 @@ def main(
         # TODO Compare power spectrum of input out put to examine spectral effect
         # TODO also check the average change in pixel value, anf how it relates to power spectral change
         if hist_match:
-            out_data = match_histograms(out_data,f_open.data) # Output is no longer input + stuff, i.e. good part is now something else.
+            ampl = match_histograms(ampl,
+                                    f_open.data)  # Output is no longer input + stuff, i.e. good part is now something else.
         else:
-            out_data = map_tools.clip_to_range(out_data, f_open.data)
+            ampl = map_tools.clip_to_range(ampl, f_open.data)
 
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
 
         # Save amplified and/or solvent-suppressed output.
+        if amplify:
+            ampl_map = f'ampl_{beta:.1f}_' + Path(output_map).stem + '.mrc'
+        else:
+            ampl_map = output_map
         map_tools.new_mrc(
-            out_data.astype(np.float32),
-            output_map,
+            ampl.astype(np.float32),
+            ampl_map,
+            parent=input_map,
+            verbose=verbose,
+        )
+
+    if attenuate:
+        if not exclude_solvent:
+            # If we are not excluding solvent, then we will add some back when we attenuate
+            fake_solvent = np.random.randn(nd_processing,nd_processing,nd_processing)
+            fake_solvent = solvent_parameters[1] + solvent_parameters[2]*fake_solvent
+            # TODO:
+            # what is the correct scaling factor of the variance here????
+            # also spectral properties
+
+        attn = occupancy.amplify_beta(
+        out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
+        scale,  # The estimated scale to use for amplification
+        beta=beta,  # The exponent for amplification / attenuation
+        attenuate=True, # False is amplifying or not doing anything
+        fake_solvent=fake_solvent,
+        scale_threshold=scale_limit,
+        save_amp_map=save_all_maps,
+        verbose=verbose
+        )
+
+        # -- Supress solvent amplification --
+        # Confidence-based mask of amplified content.
+        # Solvent is added back unless excluded
+        attn = solvent.suppress(
+            attn,  # Supress the amplified output data
+            in_data,  # Add back solvent from raw input (full res)
+            confidence,  # The confidence mask to supress amplification
+            exclude_solvent,  # Only add back if not excluding solvent
+            verbose=verbose
+        )
+
+        # -- Low-pass filter output --
+        attn = map_tools.lowpass_map(
+            attn,
+            lowpass_output,
+            voxel_size,
+            keep_scale=True
+        )
+
+        # If the input map was larger than the maximum processing size, we need to get back the bigger size as output
+        if downscale_processing:
+            attn, _ = map_tools.lowpass(
+                attn,
+                pixels=nd[0],
+                square=True,
+                resample=True
+            )
+
+        if downscale_processing:
+        # The FFT must be normalized to preserve the greyscale as prior to downscaling
+            attn *= (1 / factor) ** 3
+
+        # -- Match output range --
+        # inverse filtering can create a few spurious pixels that
+        # ruin the dynamic range compared to the input. This is mostly
+        # aesthetic.
+        # TODO Compare power spectrum of input out put to examine spectral effect
+        # TODO also check the average change in pixel value, anf how it relates to power spectral change
+        if hist_match:
+            attn = match_histograms(attn,
+                                        f_open.data)  # Output is no longer input + stuff, i.e. good part is now something else.
+        else:
+            attn = map_tools.clip_to_range(attn, f_open.data)
+
+        # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
+
+        # Save amplified and/or solvent-suppressed output.
+        attn_map = f'attn_{beta:.1f}_' + Path(output_map).stem + '.mrc'
+        map_tools.new_mrc(
+            attn.astype(np.float32),
+            attn_map,
             parent=input_map,
             verbose=verbose,
         )
