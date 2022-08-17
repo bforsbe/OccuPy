@@ -1,5 +1,8 @@
 import numpy as np
 import mrcfile as mf
+import scipy as sp
+
+from scipy import fft as spfft
 
 __version__ = "0.1.2"
 
@@ -245,8 +248,8 @@ def lowpass(
     ref_scale = np.max(data)
 
     # FFT forward
-    f_data = np.fft.rfftn(data) #*2*np.pi/n
-    f_data = np.fft.fftshift(f_data, axes=(0, 1))
+    f_data = spfft.rfftn(data) #*2*np.pi/n
+    f_data = sp.fft.fftshift(f_data, axes=(0, 1))
 
     out_voxel_size = None
 
@@ -272,17 +275,17 @@ def lowpass(
         if not resample:
             # Padding without resampling is not possible
             return data
-        t = np.zeros((2 * keep_shells, 2 * keep_shells, keep_shells + 1), dtype=np.complex)
+        t = np.zeros((2 * keep_shells, 2 * keep_shells, keep_shells + 1), dtype=np.complex64)
         edge = int((2 * keep_shells - n) / 2)
         t[edge:edge + n, edge:edge + n, :-edge] = f_data
 
     if resample:
         mid_out = keep_shells
-        t = np.zeros((2 * keep_shells * np.ones(ndim).astype(int)), dtype=np.complex)
+        t = np.zeros((2 * keep_shells * np.ones(ndim).astype(int)), dtype=np.complex64)
         t = t[..., keep_shells-1:]
     else:
         mid_out = mid_in
-        t = np.zeros(np.shape(f_data)).astype(np.complex)
+        t = np.zeros(np.shape(f_data)).astype(np.complex64)
 
     keep_shells = int(np.min([keep_shells,n/2]))
     if ndim == 3:
@@ -297,7 +300,7 @@ def lowpass(
         t = np.multiply(t, mask)
 
     f_data2 = np.fft.ifftshift(t, axes=(0, 1))
-    out_data = np.fft.irfftn(f_data2) #* keep_shells / mid_in
+    out_data = spfft.irfftn(f_data2) #* keep_shells / mid_in
 
     #if keep_scale:
     #    out_data /= np.mean(out_data)/np.mean(data)
