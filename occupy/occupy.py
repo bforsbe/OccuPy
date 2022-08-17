@@ -269,6 +269,9 @@ def main(
 
     fake_solvent = None # Will not  add fake solvent during amplify
 
+    attn_map = None
+    ampl_map = None
+
     if amplify or exclude_solvent:
         ampl = occupancy.amplify_beta(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
@@ -334,6 +337,7 @@ def main(
         else:
             ampl_map = output_map
             ampl_doc = f'{doc}'
+
         map_tools.new_mrc(
             ampl.astype(np.float32),
             ampl_map,
@@ -439,19 +443,14 @@ def main(
                 log=f_log
             )
 
-        if amplify:
-            os.rename('amplification.mrc', f'amp{new_name}')
-            print(f'Wrote amp{new_name}         \t: Local amplification applied', file=f_log)
-            map_tools.change_voxel_size(f'amp{new_name}', parent=input_map)
-
     if chimerax:
         vis.chimx_viz(
             input_map,
             scale_map,
-            output_map,
+            ampl_map=ampl_map,
+            attn_map=attn_map,
             threshold_input=None,  # sol_limits[3],
             threshold_scale=0.5,
-            threshold_output=None,  # sol_limits[3],
             min_scale=min_vis_scale
         )
 
@@ -459,10 +458,10 @@ def main(
         vis.chimx_viz(
             input_map,
             scale_map,
-            output_map,
+            ampl_map=ampl_map,
+            attn_map=attn_map,
             threshold_input=None,  # sol_limits[3],
             threshold_scale=0.5,
-            threshold_output=None,  # sol_limits[3],
             min_scale=min_vis_scale,
             silent=True
         )

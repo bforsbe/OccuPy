@@ -15,10 +15,10 @@ def save_fig(
 def chimx_viz(
         input: str,
         scale: str,
-        output: str = None,
+        ampl_map: str = None,
+        attn_map: str = None,
         threshold_input: float = None,
         threshold_scale: float = None,
-        threshold_output: float = None,
         min_scale: float = 0.2,
         silent: bool = False
 ):
@@ -41,16 +41,12 @@ def chimx_viz(
         else:
             print(f'vol #2 level {threshold_scale}', file=the_file)
 
-        if output is not None:
-            print(f'open {output} ', file=the_file)
-            if threshold_output is not None:
-                print(f'vol #3 level {threshold_output}', file=the_file)
 
         # -----COLOR-----------------------------------------
         rainbow = 'rainbow'
         pLDDT_unity = '\'0,red:0.5,orange:0.7,yellow:0.9,cornflowerblue:1.0,blue\''
         pop = '\'0.0,#AAFF00:0.2,#FFAA00:0.4,#FF00AA:0.6,#AA00FF:0.8,#00AAFF\''
-        turbo =   '\'0.0,#7a0403:0.1667,#e5460b:0.3333,#faba39:0.5,#a3fd3d:0.6667,#1ae4b6:0.8333,#4686fa:1.0,#30123b\''
+        turbo = '\'0.0,#7a0403:0.1667,#e5460b:0.3333,#faba39:0.5,#a3fd3d:0.6667,#1ae4b6:0.8333,#4686fa:1.0,#30123b\''
         turbo = ['#d23105', '#fb8022','#edd03a','#a3fd3d','#31f199','#29bbec','#29bbec']
 
 
@@ -69,18 +65,29 @@ def chimx_viz(
         key_str = f'key {clr} '
         key_str = f'{key_str} {labels} size 0.5, 0.04 pos 0.25, 0.08 ticks true tickThickness 2 \n'
 
-        print(f'alias occu_color color sample $1 map $2 palette {clr} range {min_scale},1.0 \n', file=the_file)
+        print(f'alias scale_color color sample $1 map $2 palette {clr} range {min_scale},1.0 \n', file=the_file)
 
-        print(f'alias set_occu_color_range color sample $1 map $2 palette {clr} range {min_scale},1.0 \n', file=the_file)
+        print(f'alias set_scale_color_range color sample $1 map $2 palette {clr} range {min_scale},1.0 \n', file=the_file)
 
         print(f'volume #1 color #d3d7cf \n', file=the_file)
 
         print(f'volume #2 color #A7A7A750 \n', file=the_file)
         print(f'volume #2 style mesh \n', file=the_file)
-        print(f'occu_color #1 #2 \n', file=the_file)
+        print(f'scale_color #1 #2 \n', file=the_file)
 
-        if output is not None:
-            print(f'occu_color #3 #2 \n', file=the_file)
+        c = 2
+
+        if ampl_map is not None:
+            c += 1
+            print(f'open {ampl_map} ', file=the_file)
+            print(f'scale_color #{c} #2 \n', file=the_file)
+
+        if attn_map is not None:
+            c += 1
+            print(f'open {attn_map} ', file=the_file)
+            print(f'scale_color #{c} #2 \n', file=the_file)
+
+        output = ampl_map or attn_map
 
         print(key_str, file=the_file)
 
