@@ -3,20 +3,10 @@ from scipy import ndimage
 from occupy import map_tools, solvent
 
 
-def occupancy_map(
-        data: np.ndarray,
-        kernel: np.ndarray,
-        mask: np.ndarray = None,
-        verbose: bool = True
-):
-    occu_map, map_val_at_full_occupancy = occupancy_map_percentile(data, kernel, mask)
-    return occu_map, map_val_at_full_occupancy
-
 
 def percentile_filter_tiled(
         data: np.ndarray,
         kernel: np.ndarray,
-        mask: np.ndarray,
         n_tiles: int,
         tile_sz: int = None,
         per: float = 0.4,
@@ -89,9 +79,7 @@ def percentile_filter_tiled(
 
     max_per = np.max(out_tiles)
     # divide by max percentile, so that all voxels where the max-value is higher than this are >1
-    maxi = occupancy_map_maximum(data, kernel)
-    if mask is not None:
-        maxi = np.multiply(maxi, mask)
+    maxi = max_filter(data, kernel)
 
     '''
     maxi /= max_per
@@ -105,23 +93,30 @@ def percentile_filter_tiled(
     return maxi, max_per
 
 
-def occupancy_map_maximum(
+def max_filter(
         data: np.ndarray,
         kernel: np.ndarray
 ):
     return ndimage.maximum_filter(data, footprint=kernel)
 
 
-def occupancy_map_percentile(
+def percentile_filter(
         data: np.ndarray,
         kernel: np.ndarray,
-        mask: np.ndarray = None,
         per: float = 0.95,
         tiles: int = 12,
-        tile_sz: int = 5
+        tile_sz: int = 5,
+        verbose: bool = False
 ):
     assert (per > 0 and per <= 1)
-    return percentile_filter_tiled(data, kernel, mask, n_tiles=tiles, tile_sz=tile_sz, per=per)
+    return percentile_filter_tiled(
+        data,
+        kernel,
+        n_tiles=tiles,
+        tile_sz=tile_sz,
+        per=per,
+        verbose=verbose
+    )
 
 
 def threshold_scale_map(
@@ -225,34 +220,31 @@ def amplify_map_lambda(
     else:
         return np.multiply(data, np.abs(eff_occ))
 
-
 def get_map_scale(
         data: np.ndarray,
-        occ_kernel: np.ndarray,
-        sol_mask: np.ndarray = None,
+        scale_kernel: np.ndarray,
         save_occ_map: str = None,
         verbose: bool = True
 ):
     """
         TODO
         :param data
-        :param occ_kernel:
+        :param scale_kernel:
         :param sol_mask:
         :param sol_threshold:
         :param save_occ_map:
         :param verbose:
     """
 
-    scale_map, map_val_at_full_scale = occupancy_map(
+    scale_map, map_val_at_full_scale = percentile_filter(
         data,
-        occ_kernel,
-        mask=sol_mask,
+        scale_kernel,
         verbose=verbose)
 
     scale_map = np.clip(scale_map / map_val_at_full_scale, 0, 1)
 
     if save_occ_map is not None:
-        map_tools.new_mrc(scale_map, save_occ_map, sz=1.0, verbose=False)
+        map_tools.new_mrc(scale_map, save_occ_map, sz=1.0, verbose=verbose)
     return scale_map, map_val_at_full_scale
 
 

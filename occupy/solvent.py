@@ -228,15 +228,15 @@ def suppress(
         verbose=False
 ):
     if verbose:
-        print('Using confidence based on solvent model to limit amplification when amplifying partial occupancy.')
+        print('Using confidence based on solvent model to suppress modified solvent.')
     out_data = np.multiply(amplified_data, confidence)
 
     if exclude_solvent:
         if verbose:
-            print('Not retaining solvent, eliminating based on confidence')
+            print('Not retaining input solvent.')
     else:
         if verbose:
-            print('Retaining solvent by inverse confidence')
+            print('Retaining solvent from input.')
         out_data += np.multiply(unamplified_data, 1-confidence)
 
     return out_data

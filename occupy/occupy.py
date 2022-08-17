@@ -3,6 +3,7 @@ import pylab as plt
 import mrcfile as mf
 import os
 from pathlib import Path
+#import map_tools, occupancy, vis, solvent
 from occupy import map_tools, occupancy, vis, solvent
 import skimage
 from skimage import exposure
@@ -247,7 +248,7 @@ def main(
     scale_map = f'scale{new_name}'
     scale, max_val = occupancy.get_map_scale(
         np.multiply(scale_data,mask),
-        occ_kernel=scale_kernel,
+        scale_kernel=scale_kernel,
         save_occ_map=scale_map,
         verbose=verbose
     )
