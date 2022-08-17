@@ -145,7 +145,7 @@ def main(
             map_tools.new_mrc(
                 in_data.astype(np.float32),
                 "downscaled.mrc",
-                sz=voxel_size,
+                parent=input_map,
                 verbose=verbose,
             )
     nd_processing = np.shape(in_data)[0]
@@ -251,7 +251,7 @@ def main(
         save_occ_map=scale_map,
         verbose=verbose
     )
-    map_tools.change_voxel_size(scale_map, sz=voxel_size)
+    map_tools.adjust_to_parent(scale_map, parent=input_map)
 
     # --------------- CONFIDENCE ESTIMATION ------------------------------------------------------
 
@@ -283,6 +283,9 @@ def main(
             save_amp_map=save_all_maps,
             verbose=verbose
         )
+
+        if save_all_maps:
+            map_tools.adjust_to_parent('amplification.mrc', parent=input_map)
 
         # -- Supress solvent amplification --
         # Confidence-based mask of amplified content.
@@ -429,7 +432,7 @@ def main(
         map_tools.new_mrc(
             confidence.astype(np.float32),
             f'conf{new_name}',
-            sz=voxel_size,
+            parent=input_map,
             verbose=verbose,
             log=f_log
         )
@@ -438,7 +441,7 @@ def main(
             map_tools.new_mrc(
                 lp_data,
                 f'lowpass{new_name}',
-                sz=voxel_size,
+                parent=input_map,
                 verbose=verbose,
                 log=f_log
             )

@@ -287,7 +287,10 @@ def amplify(
     amplified_map = amplify_map_alpha(data, amplification, amplify_amount)
 
     if save_amp_map:
-        map_tools.new_mrc(np.multiply(data, np.abs(amplification) ** amplify_amount).astype(np.float32), 'amplification.mrc',sz=1)
+        map_tools.new_mrc(
+            np.multiply(data, np.abs(amplification) ** amplify_amount).astype(np.float32),
+            'amplification.mrc',
+            sz=1)
 
     if fake_solvent is not None:
         # This is only active if attenuating, in which case the amplification is on [0,1]

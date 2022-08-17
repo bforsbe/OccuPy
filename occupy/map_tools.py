@@ -82,17 +82,25 @@ def new_mrc(
         extra_header = None,
         log=None
 ):
-    pix_size = 1.0
+    offset = 0
+    factor = 1
+
+    o_file = mf.new(file_name, overwrite=True)
+    o_file.set_data(data.astype(np.float32))
+
     if parent is not None:
         p = mf.open(parent)
-        pix_size = p.voxel_size
+        offset = p.header['nxstart']
+        pix_size = p.voxel_size.x
+        factor = p.header['nx'] / data.shape[0]
     elif sz is not None:
         pix_size = sz
     else:
         raise ValueError('No parent or pixel-value provided for new mrc file')
-    o_file = mf.new(file_name, overwrite=True)
-    o_file.set_data(data.astype(np.float32))
-    o_file.voxel_size = pix_size
+
+    o_file.voxel_size = pix_size * factor
+    o_file.nstart = int(round(offset / factor))
+
     n_head = o_file.header['nlabl']
     if n_head < 10:
         o_file.header['label'][n_head] = f'Created using OccuPy {__version__}'.ljust(80)
@@ -104,6 +112,8 @@ def new_mrc(
     o_file.flush()
     o_file.validate()
     o_file.close()
+
+
     if parent is not None:
         p.close()
     if verbose:
@@ -112,6 +122,25 @@ def new_mrc(
         else:
             print(f'Wrote {file_name}', file=log)
 
+def adjust_to_parent(
+        file_name: str,
+        parent: str
+):
+
+    m = mf.open(file_name,'r+')
+    p = mf.open(parent)
+    offset_p = p.header['nxstart']
+    pix_size_p = p.voxel_size.x
+
+    factor = p.header['nx'] / m.header['nx']
+
+    m.voxel_size = pix_size_p * factor
+    m.nstart = int(round(offset_p / factor))
+
+    m.flush()
+
+    m.close()
+    p.close()
 
 def change_voxel_size(
         file: str,
