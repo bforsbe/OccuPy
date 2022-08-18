@@ -15,7 +15,7 @@ def create_circular_mask(
         radius: int = None
 ):
     if center is None:  # use the middle of the image
-        center = int(s / 2)
+        center = s / 2
 
     if radius is None:
         radius = center
@@ -24,12 +24,18 @@ def create_circular_mask(
         center -= 0.5
         radius -= 0.5
 
+    center = np.float32(center)
+    radius = np.float32(radius)
+
     if dim == 2:
-        x, y = np.ogrid[:s, :s]
+        # x, y = np.ogrid[:s, :s]
+        x, y = np.ix_(np.arange(s, dtype=np.int32), np.arange(s, dtype=np.int32))
         dist_from_center = np.sqrt((x - center) ** 2 + (y - center) ** 2)
     elif dim == 3:
-        x, y, z = np.ogrid[:s, :s, :s]
-        dist_from_center = np.sqrt((x - center) ** 2 + (y - center) ** 2 + (z - center) ** 2)
+        # x, y, z = np.ogrid[:s, :s, :s]
+        x, y, z = np.ix_(np.arange(s, dtype=np.int32), np.arange(s, dtype=np.int32), np.arange(s, dtype=np.int32))
+        dist_from_center = (x - center) ** 2 + (y - center) ** 2 + (z - center) ** 2
+        dist_from_center = np.sqrt(dist_from_center.astype(np.float32))
     else:
         raise ValueError('Mask dimension is not 2 or 3 ')
 
