@@ -58,6 +58,7 @@ def main(
                                              help="Optionally low-pass filter the amplified output to this resolution [Å]"),
         hist_match: bool = typer.Option(False, help="Histogram-match output (force equal greyscale as input)"),
         kernel_size: int = typer.Option(None, help="Size of the local occupancy estimation kernel [pixels]"),
+        tau: float = typer.Option(0.95, help="Percentile for scale-estimate normalization"),
         max_box_dim: int = typer.Option(200,
                                         help="Input maps beyond this size will be down-sampled during estimation [pixels]"),
         hedge_confidence: int = typer.Option(None,
@@ -83,11 +84,14 @@ def main(
     OccuPy takes a cryo-EM reconstruction produced by averaging and estimates a self-normative local map scaling.
     It can also locally alter confident partial occupancies.
     """
-    if plot:
-        import pylab as plt
 
     if input_map is None:
         exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
+
+    assert 0 < tau <= 1
+
+    if plot:
+        import pylab as plt
 
     new_name = '_' + input_map
     doc = ''
@@ -247,6 +251,7 @@ def main(
     scale, max_val = occupancy.get_map_scale(
         np.multiply(scale_data,mask),
         scale_kernel=scale_kernel,
+        tau=tau,
         save_occ_map=scale_map,
         verbose=verbose
     )

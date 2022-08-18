@@ -9,10 +9,10 @@ def percentile_filter_tiled(
         kernel: np.ndarray,
         n_tiles: int,
         tile_sz: int = None,
-        per: float = 0.4,
+        tau: float = 0.95,
         verbose: bool = False
 ):
-    assert (per > 0 and per <= 1)
+    assert 0 < tau <= 1
 
     nd = np.array(np.shape(data))
     dim = len(nd)
@@ -46,7 +46,7 @@ def percentile_filter_tiled(
         tile_sz = (tile_sz * np.ones(dim)).astype(int)
 
     tile_start = (nd / n_tiles).astype(int)
-    npick = int(np.floor(per * np.product(tile_sz)))
+    npick = int(np.floor(tau * np.product(tile_sz)))
     out_tiles = np.zeros(n_tiles * np.ones(dim).astype(int))
     if len(nd) == 2:
         for i in np.arange(tile_sz[0]):
@@ -103,18 +103,18 @@ def max_filter(
 def percentile_filter(
         data: np.ndarray,
         kernel: np.ndarray,
-        per: float = 0.95,
+        tau: float = None,
         tiles: int = 12,
         tile_sz: int = 5,
         verbose: bool = False
 ):
-    assert (per > 0 and per <= 1)
+    assert 0 < tau <= 1
     return percentile_filter_tiled(
         data,
         kernel,
         n_tiles=tiles,
         tile_sz=tile_sz,
-        per=per,
+        tau=tau,
         verbose=verbose
     )
 
@@ -223,6 +223,7 @@ def amplify_map_lambda(
 def get_map_scale(
         data: np.ndarray,
         scale_kernel: np.ndarray,
+        tau: float = None,
         save_occ_map: str = None,
         verbose: bool = True
 ):
@@ -239,6 +240,7 @@ def get_map_scale(
     scale_map, map_val_at_full_scale = percentile_filter(
         data,
         scale_kernel,
+        tau = tau,
         verbose=verbose)
 
     scale_map = np.clip(scale_map / map_val_at_full_scale, 0, 1)
