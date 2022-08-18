@@ -1,12 +1,8 @@
 import numpy as np
-import pylab as plt
 import mrcfile as mf
-import os
 from pathlib import Path
-#import map_tools, occupancy, vis, solvent
-from occupy import map_tools, occupancy, vis, solvent
-import skimage
-from skimage import exposure
+import map_tools, occupancy, vis, solvent
+#from occupy import map_tools, occupancy, vis, solvent
 from skimage.exposure import match_histograms
 
 from typing import Optional
@@ -87,6 +83,8 @@ def main(
     OccuPy takes a cryo-EM reconstruction produced by averaging and estimates a self-normative local map scaling.
     It can also locally alter confident partial occupancies.
     """
+    if plot:
+        import pylab as plt
 
     if input_map is None:
         exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
