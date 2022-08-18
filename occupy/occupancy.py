@@ -390,7 +390,7 @@ def estimate_confidence(
     if hedge_confidence is not None:
         out = out ** hedge_confidence
 
-    confidence = out[indx]
+    confidence = (out[indx]).astype(np.float32)
 
     confidence = np.clip(confidence,0.0,1.0)
 
