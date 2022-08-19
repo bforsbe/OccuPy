@@ -47,7 +47,7 @@ def percentile_filter_tiled(
 
     tile_start = (nd / n_tiles).astype(int)
     npick = int(np.floor(tau * np.product(tile_sz)))
-    out_tiles = np.zeros(n_tiles * np.ones(dim).astype(int))
+    out_tiles = np.zeros(n_tiles * np.ones(dim).astype(int), dtype=np.float32)
     if len(nd) == 2:
         for i in np.arange(tile_sz[0]):
             for j in np.arange(tile_sz[1]):

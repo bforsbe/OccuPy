@@ -291,7 +291,7 @@ def lowpass(
         t = t[..., keep_shells-1:]
     else:
         mid_out = mid_in
-        t = np.zeros(np.shape(f_data)).astype(np.complex64)
+        t = np.zeros(np.shape(f_data),dtype=np.complex64)
 
     keep_shells = int(np.min([keep_shells,n/2]))
     if ndim == 3:
