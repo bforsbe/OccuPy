@@ -15,14 +15,14 @@ def create_circular_mask(
         radius: int = None
 ):
     if center is None:  # use the middle of the image
-        center = s / 2
+        center = (s - 1) / 2
 
     if radius is None:
         radius = center
 
-    if s % 2 == 0:
-        center -= 0.5
-        radius -= 0.5
+    #if s % 2 == 0:
+    #    center += 0.5
+    #    radius += 0.5
 
     center = np.float32(center)
     radius = np.float32(radius)
