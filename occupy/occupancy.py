@@ -397,3 +397,23 @@ def estimate_confidence(
     confidence = np.clip(confidence,0.0,1.0)
 
     return confidence, out
+
+def set_tau(k):
+
+    k_i = int((k-1)/2)
+
+    assert k_i >= 0, "Positive kernel sizes please"
+
+    p = [
+        0.5,
+        0.7966,
+        0.9246,
+        0.9715,
+        0.9840,
+        0.9909
+        ]
+
+    if k_i > 5:
+        return 0.99
+    else:
+        return p[k_i]

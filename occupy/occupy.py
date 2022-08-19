@@ -58,7 +58,7 @@ def main(
                                              help="Optionally low-pass filter the amplified output to this resolution [Å]"),
         hist_match: bool = typer.Option(False, help="Histogram-match output (force equal greyscale as input)"),
         kernel_size: int = typer.Option(None, help="Size of the local occupancy estimation kernel [pixels]"),
-        tau: float = typer.Option(0.95, help="Percentile for scale-estimate normalization"),
+        tau: float = typer.Option(None, help="Percentile for scale-estimate normalization"),
         max_box_dim: int = typer.Option(200,
                                         help="Input maps beyond this size will be down-sampled during estimation [pixels]"),
         hedge_confidence: int = typer.Option(None,
@@ -88,7 +88,6 @@ def main(
     if input_map is None:
         exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
 
-    assert 0 < tau <= 1
 
     if plot:
         import pylab as plt
@@ -180,6 +179,13 @@ def main(
         # It should be larger than 1, and never needs to be bigger than 7 (7^3 pixels as sample size)
         kernel_size = np.clip(kernel_size, 5, 11)
 
+    tau_table = occupancy.set_tau(kernel_size)
+    if tau is None:
+        tau = tau_table
+    elif verbose:
+        print(f'Using provided tau value of {tau} instead of recommended {tau_table} for kernel size {kernel_size}')
+    assert 0 < tau <= 1
+
     log_name = f'log_{Path(input_map).stem}.txt'
     f_log = open(log_name, 'w+')
     print(f'\n---------------I/O AND CALCULATED SETTINGS-------', file=f_log)
@@ -187,9 +193,10 @@ def main(
     print(f'Pixel    :\t\t {voxel_size:.2f}', file=f_log)
     print(f'Box in   :\t\t {nd}', file=f_log)
     print(f'Box proc :\t\t {nd_processing}', file=f_log)
-    print(f'Radius   :\t\t {radius:.3f}', file=f_log)
+    print(f'Box radi :\t\t {radius:.3f}', file=f_log)
     print(f'Kernel   :\t\t {kernel_size}', file=f_log)
-    print(f'Filter   :\t\t {lowpass_input}', file=f_log)
+    print(f'Tau      :\t\t {tau:.3f}', file=f_log)
+    print(f'LP Filt. :\t\t {lowpass_input}', file=f_log)
     print(f'Scale lim:\t\t {scale_limit:.3f}', file=f_log)
 
     # ----- LOW-PASS SETTINGS ---------
