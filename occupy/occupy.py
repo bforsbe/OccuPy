@@ -179,11 +179,13 @@ def main(
         # It should be larger than 1, and never needs to be bigger than 7 (7^3 pixels as sample size)
         kernel_size = np.clip(kernel_size, 5, 11)
 
-    tau_table = occupancy.set_tau(kernel_size)
+    scale_kernel = map_tools.create_circular_mask(kernel_size, dim=3, soft=False)
+
+    tau_ana = occupancy.set_tau(n_v=np.sum(scale_kernel))
     if tau is None:
-        tau = tau_table
+        tau = tau_ana
     elif verbose:
-        print(f'Using provided tau value of {tau} instead of recommended {tau_table} for kernel size {kernel_size}')
+        print(f'Using provided tau value of {tau} instead of recommended {tau_ana} for kernel size {kernel_size}')
     assert 0 < tau <= 1
 
     log_name = f'log_{Path(input_map).stem}.txt'
@@ -253,7 +255,6 @@ def main(
 
     # --------------- OCCUPANCY ESTIMATION ------------------------------------------------------
 
-    scale_kernel = map_tools.create_circular_mask(kernel_size, dim=3, soft=False)
     scale_map = f'scale{new_name}'
     scale, max_val = occupancy.get_map_scale(
         np.multiply(scale_data,mask),

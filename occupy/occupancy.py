@@ -398,22 +398,29 @@ def estimate_confidence(
 
     return confidence, out
 
-def set_tau(k):
+def set_tau(kernel=None, n_v=None, kernel_size=k):
 
-    k_i = int((k-1)/2)
+    if kernel is not None and n_v is not None:
+        raise ValueError("Specify kernel OR n_v, not both")
+    if kernel is None and n_v is None:
+        raise ValueError("Specify kernel OR n_v, not both")
 
-    assert k_i >= 0, "Positive kernel sizes please"
+    if kernel is not None:
+        n_v = np.sum(kernel)
 
-    p = [
-        0.5,
-        0.7966,
-        0.9246,
-        0.9715,
-        0.9840,
-        0.9909
-        ]
+    # Solve for the only real and positive root of x^n = 1 - x
+    # which is the same as x^n + x -1 = 0
+    v=np.zeros(n_v+1)
+    v[0]  +=1
+    v[-2] +=1
+    v[-1] =-1
+    rt = np.roots(v)
+    rt = rt[rt.real>0]
 
-    if k_i > 5:
-        return 0.99
-    else:
-        return p[k_i]
+    #Select the root with the smallest imaginaryvalue, in case there's issues in precision
+    r = np.argsort(np.abs(rt.imag))
+
+    #Make sure it's real
+    tau = rt[r[0]].real
+
+    return tau
