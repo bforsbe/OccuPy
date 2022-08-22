@@ -50,6 +50,7 @@ def main(
 
         tau: float = typer.Option(
             None,
+            "--tau", "-t",
             help="Percentile for scale-estimate normalization"
         ),
         kernel_size: int = typer.Option(
@@ -86,7 +87,7 @@ def main(
         ),
         scale_limit: float = typer.Option(
             0.05,
-            "--scale_limit",
+            "--scale-limit",
             help="Hard limit below which map scale/occupancy will be considered unreliable for amplification"
         ),
         hist_match: bool = typer.Option(
@@ -98,7 +99,7 @@ def main(
 
         output_map: str = typer.Option(
             "out_<input_file_name>",
-            "--output_map", "-o",
+            "--output-map", "-o",
             help="Output map name"
         ),
         plot: bool = typer.Option(
@@ -325,7 +326,7 @@ def main(
 
     scale_map = f'scale{new_name}'
     scale, max_val = occupancy.get_map_scale(
-        np.multiply(scale_data, mask),
+        scale_data,
         scale_kernel=scale_kernel,
         tau=tau,
         save_occ_map=scale_map,
