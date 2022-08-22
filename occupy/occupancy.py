@@ -398,7 +398,7 @@ def estimate_confidence(
 
     return confidence, out
 
-def set_tau(kernel=None, n_v=None, kernel_size=k):
+def set_tau(kernel=None, n_v=None):
 
     if kernel is not None and n_v is not None:
         raise ValueError("Specify kernel OR n_v, not both")
@@ -424,3 +424,19 @@ def set_tau(kernel=None, n_v=None, kernel_size=k):
     tau = rt[r[0]].real
 
     return tau
+
+def spherical_kernel(size, radius=None):
+
+    assert size % 2 == 1, f'Please make odd-sizes kernels, not size={size}'
+    assert radius <= (size+2)/2.0, f'This radius ({radius}) requires a bigger odd-size kernel than {size}'
+
+    kernel = map_tools.create_circular_mask(
+        size,
+        dim=3,
+        radius=radius,  # pixels
+        soft=False
+    )
+
+    tau = set_tau(kernel)
+
+    return kernel, tau

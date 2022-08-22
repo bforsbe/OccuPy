@@ -12,7 +12,7 @@ def create_circular_mask(
         dim: int,
         soft: bool = False,
         center: int = None,
-        radius: int = None
+        radius: float = None
 ):
     if center is None:  # use the middle of the image
         center = (s - 1) / 2

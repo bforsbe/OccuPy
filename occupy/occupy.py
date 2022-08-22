@@ -39,7 +39,7 @@ def validateOptions(opt1: bool,
 def main(
         input_map: str = typer.Option(None, "--input-map", "-i", help="Map to estimate [.mrc NxNxN]"),
         output_map: str = typer.Option("out_<input_file_name>", "--output_map", "-o", help="Output map name"),
-        resolution: str = typer.Option(None, "--resolution", "-r", help="Resolution of input map"),
+        resolution: float = typer.Option(None, "--resolution", "-r", help="Resolution of input map"),
         amplify: bool = typer.Option(False, "--amplify", "-ap",
                                      help="Alter partial occupancies, to make more or less equal to full occupancy?"),
         attenuate: bool = typer.Option(False, "--attenuate", "-at",
@@ -166,40 +166,49 @@ def main(
     # If a resolutions is not provided, use 3 times Nyquist.
     if lowpass_input is None:
         if resolution is not None:
-            lowpass_input = int(2 * resolution)  # Å
+            lowpass_input = 2 * resolution # Å
         else:
-            lowpass_input = int(2 * voxel_size * 3)  # Å
+            lowpass_input = (2 * voxel_size * 3).astype(np.float32)  # Å
 
     # The size of the scale-estimation kernel.
     if kernel_size is None:
         # How many pixels do we fit into the significant highest frequency?
-        kernel_size = int(np.ceil(lowpass_input / voxel_size))
+        kernel_size = int(np.floor(lowpass_input / voxel_size))
         # Make it an odd size
         kernel_size = ((kernel_size // 2) * 2) + 1
-        # It should be larger than 1, and never needs to be bigger than 7 (7^3 pixels as sample size)
-        kernel_size = np.clip(kernel_size, 5, 11)
+        # It should be larger than 1, and never needs to be bigger than 9.
+        kernel_size = np.clip(kernel_size, 3, 9)
 
-    scale_kernel = map_tools.create_circular_mask(kernel_size, dim=3, soft=False)
+    # Make a kernel (morphological structuring element) for max-filter (greyscale dilation).
+    kernel_radius = lowpass_input/(2*voxel_size)
+    scale_kernel,  tau_ana = occupancy.spherical_kernel(kernel_size,radius=kernel_radius)
 
-    tau_ana = occupancy.set_tau(n_v=np.sum(scale_kernel))
+    own_tau = False
+    n_v = int(np.sum(scale_kernel))
+    tau_ana = occupancy.set_tau(n_v=n_v)
     if tau is None:
         tau = tau_ana
     elif verbose:
+        own_tau = True
         print(f'Using provided tau value of {tau} instead of recommended {tau_ana} for kernel size {kernel_size}')
     assert 0 < tau <= 1
 
     log_name = f'log_{Path(input_map).stem}.txt'
     f_log = open(log_name, 'w+')
     print(f'\n---------------I/O AND CALCULATED SETTINGS-------', file=f_log)
-    print(f'Input    :\t\t {input_map}', file=f_log)
-    print(f'Pixel    :\t\t {voxel_size:.2f}', file=f_log)
-    print(f'Box in   :\t\t {nd}', file=f_log)
-    print(f'Box proc :\t\t {nd_processing}', file=f_log)
-    print(f'Box radi :\t\t {radius:.3f}', file=f_log)
-    print(f'Kernel   :\t\t {kernel_size}', file=f_log)
-    print(f'Tau      :\t\t {tau:.3f}', file=f_log)
-    print(f'LP Filt. :\t\t {lowpass_input}', file=f_log)
-    print(f'Scale lim:\t\t {scale_limit:.3f}', file=f_log)
+    print(f'Input    :\t     \t {input_map}', file=f_log)
+    print(f'Pixel    :\t[A]  \t {voxel_size:.2f}', file=f_log)
+    print(f'Box in   :\t[pix]\t {nd}', file=f_log)
+    print(f'Box proc :\t[pix]\t {nd_processing}', file=f_log)
+    print(f'Box radi :\t[pix]\t {radius:.3f}', file=f_log)
+    print(f'Kernel s :\t[pix]\t {kernel_size}', file=f_log)
+    print(f'Kernel r :\t[pix]\t {kernel_radius:.2f}', file=f_log)
+    print(f'Kernel nv:\t[pix]\t {n_v}', file=f_log)
+    print(f'Tau      :\t[0,1]\t {tau:.3f}', file=f_log)
+    if own_tau:
+        print(f'Tau(rec).:\t[0,1]\t {tau_ana:.3f}', file=f_log)
+    print(f'LP Filt. :\t[A]  \t {lowpass_input:.2f}', file=f_log)
+    print(f'Scale lim:\t[0,1]\t {scale_limit:.3f}', file=f_log)
 
     # ----- LOW-PASS SETTINGS ---------
 
