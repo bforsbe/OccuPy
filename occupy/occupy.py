@@ -10,75 +10,134 @@ import typer
 
 __version__ = "0.1.2"
 
-
 def version_callback(value: bool):
     if value:
         print(f"OccuPy: {__version__}")
         raise typer.Exit()
 
-def validateOptions(opt1: bool,
-                    opt2: bool,
-                    report:str=None):
-    '''
-    Take two input bools and set one but not both to True, or both to False.
-    Input bools may be none, and will then be output False.
-    TODO test for this
-    '''
-    if opt1:
-        if opt2:
-            raise ValueError(f'Cannot set both {report}')
-        else:
-            opt2 = False
-    elif opt2:
-            opt1 = False
-    else:
-        opt1 = False
-        opt2 = False
-    return opt1, opt2
-
 def main(
-        input_map: str = typer.Option(None, "--input-map", "-i", help="Map to estimate [.mrc NxNxN]"),
-        output_map: str = typer.Option("out_<input_file_name>", "--output_map", "-o", help="Output map name"),
-        resolution: float = typer.Option(None, "--resolution", "-r", help="Resolution of input map"),
-        amplify: bool = typer.Option(False, "--amplify", "-ap",
-                                     help="Alter partial occupancies, to make more or less equal to full occupancy?"),
-        attenuate: bool = typer.Option(False, "--attenuate", "-at",
-                                     help="Attenuate partial occupancies, to weaken lower occupancies"),
-        beta: float = typer.Option(None, "--beta", "-b",
-                                             help="How to alter confident partial occupancies >1"),
-        scale_limit: float = typer.Option(0.05, "--amplify_limit", "-al",
-                                          help="Hard limit below which map scale/occupancy will be considered unreliable for amplification"),
-        exclude_solvent: bool = typer.Option(False, "--exclude-solvent/--retain-solvent",
-                                             help="Should Estimated solvent be eliminated [flattened to 0]?"),
-        plot: bool = typer.Option(False, help="Plot a histogram showing solvent model fit and occupancy confidence?"),
+        # Basic input --------------------------------------------------------------------------------------------------
 
-        lowpass_input: float = typer.Option(None,"--lowpass-input","--lowpass",
-                                            help="Low-pass filter the input map to this resoution prior to scale estimation. Internal default is 6*pixel-size. [Å]"),
-        lowpass_output: float = typer.Option(None, "--lowpass-output",
-                                             help="Optionally low-pass filter the amplified output to this resolution [Å]"),
-        hist_match: bool = typer.Option(False, help="Histogram-match output (force equal greyscale as input)"),
-        kernel_size: int = typer.Option(None, help="Size of the local occupancy estimation kernel [pixels]"),
-        tau: float = typer.Option(None, help="Percentile for scale-estimate normalization"),
-        max_box_dim: int = typer.Option(200,
-                                        help="Input maps beyond this size will be down-sampled during estimation [pixels]"),
-        hedge_confidence: int = typer.Option(None,
-                                             help="Exponent order for confidence estimation, such that values > 1 are more careful when amplifying low occupancies"),
-        solvent_def: str = typer.Option(None,
-                                        help="Mask that defines non-solvent, used to aid solvent model fitting. [.mrc NxNxN]"),
+        input_map: str = typer.Option(
+            None,
+            "--input-map", "-i",
+            help="Map to estimate [.mrc NxNxN]"
+        ),
+        resolution: float = typer.Option(
+            None,
+            "--resolution", "-r",
+            help="Resolution of input map"
+        ),
+        amplify: bool = typer.Option(
+            False,
+            "--amplify", "-ap",
+            help="Alter partial occupancies, to make more or less equal to full occupancy?"
+        ),
+        attenuate: bool = typer.Option(
+            False,
+            "--attenuate", "-at",
+            help="Attenuate partial occupancies, to weaken lower occupancies"
+        ),
+        beta: float = typer.Option(
+            None,
+            "--beta", "-b",
+            help="How to alter confident partial occupancies >1"
+        ),
 
-        save_all_maps: bool = typer.Option(False, help="Save all maps used internally"),
-        chimerax: bool = typer.Option(True,
-                                           help="Write a .cxc file that starts an interactive chimeraX session with colored input/output maps"),
-        chimerax_silent: bool = typer.Option(False,
-                                           help="Write a .cxc file that can be opened by chimeraX to show colored input/output maps"),
-        min_vis_scale: float = typer.Option(0.2,
-                                            help="Lower limit of map scale (occupancy) in chimeraX coloring & color-key"),
-        verbose: bool = typer.Option(False, "--verbose/--quiet", help="Let me know what's going on"),
+        # Specific control ---------------------------------------------------------------------------------------------
 
-        relion_classes: str = typer.Option(None,
-                                           help="File of classes to diversify by occupancy amplification [_model.star]"),
-        version: Optional[bool] = typer.Option(None, "--version", callback=version_callback, is_eager=True,
-                                               help="Print version info and exit")
+        tau: float = typer.Option(
+            None,
+            help="Percentile for scale-estimate normalization"
+        ),
+        kernel_size: int = typer.Option(
+            None,
+            "--kernel", "-k",
+            help="Size of the local occupancy estimation kernel [pixels]"
+        ),
+        lowpass_input: float = typer.Option(
+            None,
+            "--lowpass","-lp",
+            help="Low-pass filter the input map to this resoution prior to scale estimation. Internal default is 6*pixel-size. [Å]"
+        ),
+        lowpass_output: float = typer.Option(
+            None,
+            "--lowpass-output",
+            help="Optionally low-pass filter the amplified output to this resolution [Å]"
+        ),
+        exclude_solvent: bool = typer.Option(
+            False,
+            "--exclude-solvent/--retain-solvent",
+            help="Should Estimated solvent be eliminated [flattened to 0]?"
+        ),
+        max_box_dim: int = typer.Option(
+            200,
+            help="Input maps beyond this size will be down-sampled during estimation [pixels]"
+        ),
+        hedge_confidence: int = typer.Option(
+            None,
+            help="Exponent order for confidence estimation, such that values > 1 are more careful when amplifying low occupancies"
+        ),
+        solvent_def: str = typer.Option(
+            None,
+            help="Mask that defines non-solvent, used to aid solvent model fitting. [.mrc NxNxN]"
+        ),
+        scale_limit: float = typer.Option(
+            0.05,
+            "--scale_limit",
+            help="Hard limit below which map scale/occupancy will be considered unreliable for amplification"
+        ),
+        hist_match: bool = typer.Option(
+            False,
+            help="Histogram-match output (force equal greyscale as input)"
+        ),
+
+        # Output control -----------------------------------------------------------------------------------------------
+
+        output_map: str = typer.Option(
+            "out_<input_file_name>",
+            "--output_map", "-o",
+            help="Output map name"
+        ),
+        plot: bool = typer.Option(
+            False,
+            help="Plot a histogram showing solvent model fit and occupancy confidence?"
+        ),
+        save_all_maps: bool = typer.Option(
+            False,
+            help="Save all maps used internally"
+        ),
+        chimerax: bool = typer.Option(
+            True,
+            help="Write a .cxc file that starts an interactive chimeraX session with colored input/output maps"
+        ),
+        chimerax_silent: bool = typer.Option(
+            False,
+            help="Write a .cxc file that can be opened by chimeraX to show colored input/output maps"
+        ),
+        min_vis_scale: float = typer.Option(
+            0.2,
+            help="Lower limit of map scale (occupancy) in chimeraX coloring & color-key"
+        ),
+
+        # Extra  -------------------------------------------------------------------------------------------------------
+
+        verbose: bool = typer.Option(
+            False,
+            "--verbose/--quiet",
+            help="Let me know what's going on"
+        ),
+        relion_classes: str = typer.Option(
+            None,
+            help="File of classes to diversify by occupancy amplification [_model.star]"
+        ),
+        version: Optional[bool] = typer.Option(
+            None,
+            "--version",
+            callback=version_callback,
+            is_eager=True,
+            help="Print version info and exit"
+        )
 ):
     """
     OccuPy takes a cryo-EM reconstruction produced by averaging and estimates a self-normative local map scaling.
@@ -88,17 +147,12 @@ def main(
     if input_map is None:
         exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
 
-
     if plot:
         import pylab as plt
 
     new_name = '_' + input_map
     doc = ''
 
-    # amplify, attenuate = validateOptions(
-    #     amplify,
-    #     attenuate,
-    #     " amplify and attenuate.")
     modify = amplify or attenuate or exclude_solvent
     if modify:
         if output_map == 'out_<input_file_name>':
