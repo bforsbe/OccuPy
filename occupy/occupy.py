@@ -1,14 +1,14 @@
 import numpy as np
 import mrcfile as mf
 from pathlib import Path
-import map_tools, occupancy, vis, solvent
-#from occupy import map_tools, occupancy, vis, solvent
+#import map_tools, occupancy, vis, solvent
+from occupy import map_tools, occupancy, vis, solvent
 from skimage.exposure import match_histograms
 
 from typing import Optional
 import typer
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 
 def version_callback(value: bool):

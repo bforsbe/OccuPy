@@ -4,7 +4,7 @@ import scipy as sp
 
 from scipy import fft as spfft
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 
 def create_circular_mask(
