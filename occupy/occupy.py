@@ -10,10 +10,12 @@ import typer
 
 __version__ = "0.1.2"
 
+
 def version_callback(value: bool):
     if value:
         print(f"OccuPy: {__version__}")
         raise typer.Exit()
+
 
 def main(
         # Basic input --------------------------------------------------------------------------------------------------
@@ -57,7 +59,7 @@ def main(
         ),
         lowpass_input: float = typer.Option(
             None,
-            "--lowpass","-lp",
+            "--lowpass", "-lp",
             help="Low-pass filter the input map to this resoution prior to scale estimation. Internal default is 6*pixel-size. [Å]"
         ),
         lowpass_output: float = typer.Option(
@@ -182,7 +184,7 @@ def main(
 
     downscale_processing = nd[0] > max_box_dim
     if downscale_processing:
-        factor = max_box_dim/nd[0]
+        factor = max_box_dim / nd[0]
 
         in_data, voxel_size = map_tools.lowpass(
             in_data,
@@ -194,7 +196,7 @@ def main(
         )
 
         # The FFT must be normalized to preserve the greyscale during processing
-        in_data *= factor**3
+        in_data *= factor ** 3
 
         if save_all_maps:
             # Save downscaled processing map
@@ -220,7 +222,7 @@ def main(
     # If a resolutions is not provided, use 3 times Nyquist.
     if lowpass_input is None:
         if resolution is not None:
-            lowpass_input = 2 * resolution # Å
+            lowpass_input = 2 * resolution  # Å
         else:
             lowpass_input = (2 * voxel_size * 3).astype(np.float32)  # Å
 
@@ -234,8 +236,11 @@ def main(
         kernel_size = np.clip(kernel_size, 3, 9)
 
     # Make a kernel (morphological structuring element) for max-filter (greyscale dilation).
-    kernel_radius = lowpass_input/(2*voxel_size)
-    scale_kernel,  tau_ana = occupancy.spherical_kernel(kernel_size,radius=kernel_radius)
+    kernel_radius = lowpass_input / (2 * voxel_size)
+    scale_kernel, tau_ana = occupancy.spherical_kernel(
+        kernel_size,
+        radius=kernel_radius
+    )
 
     own_tau = False
     n_v = int(np.sum(scale_kernel))
@@ -253,7 +258,7 @@ def main(
     print(f'Input    :\t     \t {input_map}', file=f_log)
     print(f'Pixel    :\t[A]  \t {voxel_size:.2f}', file=f_log)
     print(f'Box in   :\t[pix]\t {nd}', file=f_log)
-    print(f'Box proc :\t[pix]\t {nd_processing}', file=f_log)
+    print(f'Box proc :\t[pix]\t {np.shape(in_data)}', file=f_log)
     print(f'Box radi :\t[pix]\t {radius:.3f}', file=f_log)
     print(f'Kernel s :\t[pix]\t {kernel_size}', file=f_log)
     print(f'Kernel r :\t[pix]\t {kernel_radius:.2f}', file=f_log)
@@ -320,7 +325,7 @@ def main(
 
     scale_map = f'scale{new_name}'
     scale, max_val = occupancy.get_map_scale(
-        np.multiply(scale_data,mask),
+        np.multiply(scale_data, mask),
         scale_kernel=scale_kernel,
         tau=tau,
         save_occ_map=scale_map,
@@ -342,7 +347,7 @@ def main(
         output_map = 'solExcl_' + Path(output_map).stem + '.mrc'
         doc = 'Solvent exclusion '
 
-    fake_solvent = None # Will not  add fake solvent during amplify
+    fake_solvent = None  # Will not  add fake solvent during amplify
 
     attn_map = None
     ampl_map = None
@@ -427,21 +432,21 @@ def main(
     if attenuate:
         if not exclude_solvent:
             # If we are not excluding solvent, then we will add some back when we attenuate
-            fake_solvent = np.random.randn(nd_processing,nd_processing,nd_processing)
-            fake_solvent = solvent_parameters[1] + solvent_parameters[2]*fake_solvent
+            fake_solvent = np.random.randn(nd_processing, nd_processing, nd_processing)
+            fake_solvent = solvent_parameters[1] + solvent_parameters[2] * fake_solvent
             # TODO:
             # what is the correct scaling factor of the variance here????
             # also spectral properties
 
         attn = occupancy.amplify_beta(
-        out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
-        scale,  # The estimated scale to use for amplification
-        beta=beta,  # The exponent for amplification / attenuation
-        attenuate=True, # False is amplifying or not doing anything
-        fake_solvent=fake_solvent,
-        scale_threshold=scale_limit,
-        save_amp_map=save_all_maps,
-        verbose=verbose
+            out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
+            scale,  # The estimated scale to use for amplification
+            beta=beta,  # The exponent for amplification / attenuation
+            attenuate=True,  # False is amplifying or not doing anything
+            fake_solvent=fake_solvent,
+            scale_threshold=scale_limit,
+            save_amp_map=save_all_maps,
+            verbose=verbose
         )
 
         # -- Supress solvent amplification --
@@ -473,7 +478,7 @@ def main(
             )
 
         if downscale_processing:
-        # The FFT must be normalized to preserve the greyscale as prior to downscaling
+            # The FFT must be normalized to preserve the greyscale as prior to downscaling
             attn *= (1 / factor) ** 3
 
         # -- Match output range --
@@ -484,7 +489,7 @@ def main(
         # TODO also check the average change in pixel value, anf how it relates to power spectral change
         if hist_match:
             attn = match_histograms(attn,
-                                        f_open.data)  # Output is no longer input + stuff, i.e. good part is now something else.
+                                    f_open.data)  # Output is no longer input + stuff, i.e. good part is now something else.
         else:
             attn = map_tools.clip_to_range(attn, f_open.data)
 
@@ -579,6 +584,7 @@ def main(
     print(f'Solvent drop to 0% (edge) : \t {sol_limits[3]:.3f}', file=f_log)
     print(f'Solvent peak              : \t {solvent_parameters[1]:.3f}', file=f_log)
     print(f'Occupancy full            : \t {max_val:.3f}', file=f_log)
+
     f_log.close()
     if verbose:
         f_log = open(log_name, 'r')
