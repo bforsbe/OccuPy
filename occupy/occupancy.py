@@ -246,7 +246,7 @@ def get_map_scale(
     scale_map = np.clip(scale_map / map_val_at_full_scale, 0, 1)
 
     if save_occ_map is not None:
-        map_tools.new_mrc(scale_map, save_occ_map, sz=1.0, verbose=verbose)
+        map_tools.new_mrc(scale_map, save_occ_map, vox_sz=1.0, verbose=verbose)
     return scale_map, map_val_at_full_scale
 
 
@@ -387,7 +387,7 @@ def estimate_confidence(
             out[:i-1]=0
             break
 
-    indx = (map_tools.uniscale_map(np.copy(scale_data), norm=True) * n_lev - 1).astype(int)
+    indx = (map_tools.uniscale_map(np.copy(scale_data), move=True) * n_lev - 1).astype(int)
 
     if hedge_confidence is not None:
         out = out ** hedge_confidence
@@ -430,11 +430,10 @@ def spherical_kernel(size, radius=None):
     assert size % 2 == 1, f'Please make odd-sizes kernels, not size={size}'
     assert radius <= (size+2)/2.0, f'This radius ({radius}) requires a bigger odd-size kernel than {size}'
 
-    kernel = map_tools.create_circular_mask(
+    kernel = map_tools.create_radial_mask(
         size,
         dim=3,
-        radius=radius,  # pixels
-        soft=False
+        radius=radius  # pixels
     )
 
     tau = set_tau(kernel)

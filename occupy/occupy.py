@@ -191,15 +191,11 @@ def main(
 
         in_data, voxel_size = map_tools.lowpass(
             in_data,
-            pixels=max_box_dim,
+            output_size=max_box_dim,
             voxel_size=f_open.voxel_size.x,
             square=True,
-            resample=True,
-            keep_scale=False
+            resample=True
         )
-
-        # The FFT must be normalized to preserve the greyscale during processing
-        in_data *= factor ** 3
 
         if save_all_maps:
             # Save downscaled processing map
@@ -303,8 +299,7 @@ def main(
 
     # --------------- SOLVENT ESTIMATION -------------------------------------------------------
 
-
-    mask = map_tools.create_circular_mask(nd_processing, dim=3, radius=radius)  # TODO use mask radius in Å/nm
+    mask = map_tools.create_radial_mask(nd_processing, dim=3, radius=radius)
     if solvent_def is not None:
         s_open = mf.open(solvent_def)
         assert s_open.data == mask.shape
@@ -334,7 +329,7 @@ def main(
         save_occ_map=scale_map,
         verbose=verbose
     )
-    map_tools.adjust_to_parent(scale_map, parent=input_map)
+    map_tools.adjust_to_parent(file_name=scale_map, parent=input_map)
 
     # --------------- CONFIDENCE ESTIMATION ------------------------------------------------------
 
@@ -368,7 +363,7 @@ def main(
         )
 
         if save_all_maps:
-            map_tools.adjust_to_parent('amplification.mrc', parent=input_map)
+            map_tools.adjust_to_parent(file_name='amplification.mrc', parent=input_map)
 
         # -- Supress solvent amplification --
         # Confidence-based mask of amplified content.
@@ -393,14 +388,10 @@ def main(
         if downscale_processing:
             ampl, _ = map_tools.lowpass(
                 ampl,
-                pixels=nd[0],
+                output_size=nd[0],
                 square=True,
                 resample=True
             )
-
-        if downscale_processing:
-            # The FFT must be normalized to preserve the greyscale as prior to downscaling
-            ampl *= (1 / factor) ** 3
 
         # -- Match output range --
         # inverse filtering can create a few spurious pixels that
@@ -475,14 +466,10 @@ def main(
         if downscale_processing:
             attn, _ = map_tools.lowpass(
                 attn,
-                pixels=nd[0],
+                output_size=nd[0],
                 square=True,
                 resample=True
             )
-
-        if downscale_processing:
-            # The FFT must be normalized to preserve the greyscale as prior to downscaling
-            attn *= (1 / factor) ** 3
 
         # -- Match output range --
         # inverse filtering can create a few spurious pixels that
