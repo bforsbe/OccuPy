@@ -261,7 +261,7 @@ def lowpass(
     :param square:          use a square (not radial) window
     :param resample:        allow output to be cropped/padded
     
-    :return:    low-passed array
+    :return:                low-passed array
     """
 
     # Test square
@@ -338,7 +338,7 @@ def lowpass(
         t = np.multiply(t, mask)
 
     f_data2 = np.fft.ifftshift(t, axes=(0, 1))
-    out_data = spfft.irfftn(f_data2)  # * keep_shells / mid_in
+    out_data = spfft.irfftn(f_data2)
 
     # The FFT must be normalized
     if resample:

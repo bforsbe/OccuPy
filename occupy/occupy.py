@@ -351,7 +351,7 @@ def main(
     ampl_map = None
 
     if amplify or exclude_solvent:
-        ampl = occupancy.amplify_beta(
+        ampl = occupancy.modify_beta(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
             beta=beta,  # The exponent for amplification / attenuation
@@ -432,7 +432,7 @@ def main(
             # what is the correct scaling factor of the variance here????
             # also spectral properties
 
-        attn = occupancy.amplify_beta(
+        attn = occupancy.modify_beta(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
             beta=beta,  # The exponent for amplification / attenuation

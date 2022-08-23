@@ -83,72 +83,68 @@ def fit_solvent_to_histogram(
         components: int = 1,
         n_lev: int = 1000
 ):
-    assert components == 1 or components == 2
-    tol = 0.001 #TODO make input?
-    const_gauss = np.sqrt(2 * np.pi)
+    """
+    Fit a single gaussian to the main peak of the array histogram
 
+    :param data:        input data
+    :param verbose:     be verbose
+    :param plot:        plot output
+    :param n_lev:       number of bins for histogram
+    :return:
+    """
+
+    assert components == 1 or components == 2
+
+    # Set a tolerance for numerical stability
+    tol = 0.001 #TODO make input?
+
+    # Some constants
     vol = np.size(data)
     low = np.min(data)
     high = np.max(data)
 
     # Estimate solvent distribution initial parameters (to be refined by fitting)
     a, b = np.histogram(data, bins=n_lev, density=True)
+
+    # step
     d_domain = b[1] - b[0]
+
+    # guess peak as most common bin
     solvent_peak_index = np.argmax(a)
     solvent_peak = b[solvent_peak_index]
+
+    # guess scale as height at peak
     solvent_scale = a[solvent_peak_index]
     c = solvent_peak_index
+
+    # estimate width as 1/e drop in bin height
     while a[c] >= solvent_scale * 1 / np.exp(1):
         c += 1
     solvent_width = (c - solvent_peak_index) * d_domain
-    solvent_vol = solvent_scale * (solvent_width / d_domain) * const_gauss  # area under initial guess
-    solvent_fraction = solvent_vol / vol
-
-    # Gaussian = 1/ (sigma * sqrt(2pi)) * exp ()
 
     # Estimate content distribution initial parameters (to be refined by fitting)
     n_sigma = 20.0
     content_width = (high - low)
-    content_peak = solvent_peak  # low + (content_width / 2)
     content_width /= n_sigma
-    content_peak_index = int(np.floor((content_peak - low) / d_domain))
-    content_scale = a[content_peak_index]
-    content_vol = content_scale * (content_width / d_domain) * const_gauss  # area under curve
-    content_fraction = content_vol / vol
 
+    # Set the domain
     domain = np.linspace(low, high, n_lev)
-    constrain_to_peak = False
-    if constrain_to_peak:
-        domain -= solvent_peak
-        solvent_peak = 0
 
-    if components == 2:
-        p_guess = [solvent_scale, solvent_peak, solvent_width, content_scale, content_peak, content_width]
-        popt, pcov = curve_fit(twocomponent_solvent, domain, a, p0=p_guess)
-    elif constrain_to_peak:
-        p_guess = [solvent_scale, 0, solvent_width]
-        popt, pcov = curve_fit(onecomponent_solvent_zeropeak, domain, a, p0=p_guess)
-    else:
-        p_guess = [solvent_scale, solvent_peak, solvent_width]
-        popt, pcov = curve_fit(onecomponent_solvent, domain, a, p0=p_guess)
+    # Define the guess and optimize fit
+    p_guess = [solvent_scale, solvent_peak, solvent_width]
+    popt, pcov = curve_fit(onecomponent_solvent, domain, a, p0=p_guess)
 
-    if constrain_to_peak:
-        domain += content_peak
-        popt[1] = content_peak
-        p_guess[1] = content_peak
-        solvent_peak = content_peak
+    # calculate the guess and fitted model at each domain point
+    guess = onecomponent_solvent(domain, p_guess[0], p_guess[1], p_guess[2])
+    solvent_model = onecomponent_solvent(domain, popt[0], popt[1], popt[2])
 
-
-    if components == 1:
-        guess = onecomponent_solvent(domain, p_guess[0], p_guess[1], p_guess[2])
-        solvent_model = onecomponent_solvent(domain, popt[0], popt[1], popt[2])
-    else:
-        guess = twocomponent_solvent(domain, p_guess[0], p_guess[1], p_guess[2], p_guess[3], p_guess[4], p_guess[5])
-        solvent_model = twocomponent_solvent(domain, popt[0], popt[1], popt[2], popt[3], popt[4], popt[5])
-
+    # clip very low values of the model
     fit = np.clip(solvent_model, tol ** 2, np.max(solvent_model))
+
+    # calculate the fraction of solvent and content at each bin value
     content_fraction_all = np.divide((a + tol - fit), a + tol)
     solvent_fraction_all = 1 - content_fraction_all
+
 
     if plot:
         f = plt.gcf()
@@ -162,12 +158,7 @@ def fit_solvent_to_histogram(
         ax1.set_ylim([low_lim * 0.5, solvent_scale * 1.1])
         plt.semilogy()
 
-    solvent_vol = np.sum(solvent_model)
-    solvent_fraction = solvent_vol / vol
-    content_fraction = 1 - solvent_fraction
-
-    solvent_model_peak_index = np.argmax(solvent_model)
-
+    # Estimate some cutoffs that might be interesting, but which we do not use at the moment
     # TODO reevaluate these search methods
     threshold_high = n_lev - 1
     while solvent_model[threshold_high] < tol ** 3 and threshold_high > 0:
@@ -194,42 +185,36 @@ def fit_solvent_to_histogram(
     if threshold_low == n_lev:
         raise ValueError('low threshold limit not found, solvent fitted as larger than data domain?')
 
-    if verbose:
-        print(f'Revised estimate is {100 * solvent_fraction:.1f}% solvent and {100 * content_fraction:.1f}% content')
-        '''
-        print(f'Solvent limits are {b[threshold_low]:.4f} to {b[threshold_high]:.4f}. The latter is a recommended threshold. ')
-
-        print('--SOLVENT--------------------------------------------')
-        print(f' Peak:   {popt[1]:.4f}')
-        print(f' Width:  {popt[2]:.4f} ({popt[2] / d_domain:.4f} bins)')
-        print(f' Scale:  {popt[0]:.4f}')
-        print(f' Volume: {solvent_vol:.2f}')
-        print('--CONTENT--------------------------------------------')
-        print(f' Peak:   {popt[4]:.4f}')
-        print(f' Width:  {popt[5]:.4f} ({popt[5] / d_domain:.4f} bins)')
-        print(f' Scale:  {popt[3]:.4f}')
-        print(f' Volume: {content_vol:.2f}')
-        '''
     solvent_range = np.array([b[threshold_low], b[threshold_midlow], b[threshold_midhigh + 1], b[threshold_high]])
 
     if plot:
-        # ax1.plot(solvent_range[0] * np.ones(2), ax1.get_ylim(), 'g--', label='solvent edge')
         ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g:', label=f'{solvent_range[3]:.2f}: solvent edge')
         ax1.plot(solvent_range[2] * np.ones(2), ax1.get_ylim(), 'g--', label=f'{solvent_range[2]:.2f}: content 1% of solvent')
-        # ax1.plot(solvent_range[3] * np.ones(2), ax1.get_ylim(), 'g--', label='ugh')
 
     return solvent_range, popt
 
 def suppress(
-        amplified_data,
-        unamplified_data,
+        modified_data,
+        unmodified_data,
         confidence,
-        exclude_solvent,
+        exclude_solvent=False,
         verbose=False
 ):
+    """
+    Supress modification of data outside the confidence, and re-introduce original solvent unless explicitly excluded
+
+    :param modified_data:
+    :param unmodified_data:
+    :param confidence:
+    :param exclude_solvent:
+    :param verbose:
+    :return:
+    """
     if verbose:
         print('Using confidence based on solvent model to suppress modified solvent.')
-    out_data = np.multiply(amplified_data, confidence)
+
+    # Apply confidence to supress solvent modification
+    out_data = np.multiply(modified_data, confidence)
 
     if exclude_solvent:
         if verbose:
@@ -237,6 +222,8 @@ def suppress(
     else:
         if verbose:
             print('Retaining solvent from input.')
-        out_data += np.multiply(unamplified_data, 1-confidence)
+
+        # Add back the unmodified solvent
+        out_data += np.multiply(unmodified_data, 1 - confidence)
 
     return out_data
