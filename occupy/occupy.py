@@ -302,7 +302,7 @@ def main(
     mask = map_tools.create_radial_mask(nd_processing, dim=3, radius=radius)
     if solvent_def is not None:
         s_open = mf.open(solvent_def)
-        assert s_open.data == mask.shape
+        assert s_open.data.shape == mask.shape
 
         mask_def = np.array(mask).astype(int) + 1 - s_open.data
         mask_def = mask_def > 1.5

@@ -361,7 +361,7 @@ def modify_beta(
 
     # Optional output with --save-all-maps
     if save_amp_map:
-        map_tools.new_mrc(modification.astype(np.float32), 'modification.mrc', sz=1)
+        map_tools.new_mrc(modification.astype(np.float32), 'modification.mrc', vox_sz=1)
 
     # Fake solvent is drawn from solvent model distribution
     # Fake solvent is None if amplifying
