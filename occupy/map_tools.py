@@ -4,8 +4,8 @@ import scipy as sp
 
 from scipy import fft as spfft
 
-__version__ = "0.1.3"
-
+from pkg_resources import get_distribution
+__version__ =  get_distribution("occupy").version
 
 def create_circular_mask(
         s: int,

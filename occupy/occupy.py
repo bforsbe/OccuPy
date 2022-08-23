@@ -8,7 +8,9 @@ from skimage.exposure import match_histograms
 from typing import Optional
 import typer
 
-__version__ = "0.1.3"
+
+from pkg_resources import get_distribution
+__version__ =  get_distribution("occupy").version
 
 
 def version_callback(value: bool):
