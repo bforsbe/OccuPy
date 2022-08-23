@@ -208,7 +208,7 @@ def main(
     nd_processing = np.shape(in_data)[0]
 
     # The radius of flattened solvent masking
-    radius = int(0.95 * nd_processing / 2)  # TODO add flag?
+    radius = int(nd_processing // 2)
 
     # Use raw (but downscaled) data for scale estimation
     scale_data = np.copy(in_data)
