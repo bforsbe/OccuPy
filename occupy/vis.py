@@ -19,6 +19,8 @@ def chimx_viz(
         attn_map: str = None,
         threshold_input: float = None,
         threshold_scale: float = None,
+        threshold_ampl: float = None,
+        threshold_attn: float = None,
         min_scale: float = 0.2,
         silent: bool = False
 ):
@@ -36,11 +38,9 @@ def chimx_viz(
             print(f'vol #1 level {threshold_input}', file=the_file)
 
         print(f'open {scale} ', file=the_file)
-        if threshold_scale is None:
-            print(f'hide #2 ', file=the_file)
-        else:
+        if threshold_scale is not None:
             print(f'vol #2 level {threshold_scale}', file=the_file)
-
+        print(f'hide #2 ', file=the_file)
 
         # -----COLOR-----------------------------------------
         rainbow = 'rainbow'
@@ -81,11 +81,15 @@ def chimx_viz(
             c += 1
             print(f'open {ampl_map} ', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
+            if threshold_ampl is not None:
+                print(f'vol #{c} level {threshold_ampl}', file=the_file)
 
         if attn_map is not None:
             c += 1
             print(f'open {attn_map} ', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
+            if threshold_attn is not None:
+                print(f'vol #{c} level {threshold_attn}', file=the_file)
 
         output = ampl_map or attn_map
 
