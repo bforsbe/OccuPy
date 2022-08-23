@@ -153,7 +153,7 @@ def main(
         exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
 
     if plot:
-        import pylab as plt
+        import matplotlib.pyplot as plt
 
     new_name = '_' + input_map
     doc = ''

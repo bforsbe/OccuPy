@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 
 def save_fig(
         input: str,
