@@ -46,20 +46,24 @@ things, but does not need it.
 ```shell
 pip install occupy
 ```
+But one may also pip install from the cloned repo
+
+```shell
+$ git clone https://github.com/bforsbe/OccuPy.git
+$ cd occupy 
+$ pip install -e . 
+```
 
 ## Usage
 
 `OccuPy` is a command-line tool 
 
 ```shell
-$ OccuPy --help
-
+$ OccuPy --version
 OccuPy: 0.1.4
-
-$
 ```
 
-but the tools used within it are available from within a python environment as well
+but the tools and functions are available from within a python environment as well
 
 ```python
 In[1]: import occupy
@@ -75,7 +79,7 @@ occupy.occupancy.estimate_confidence(
 Docstring:
 Estimate the confidence of each voxel, given the data and the solvent model
 
-The estiamte is based on the relative probability of each voxel value pertaining to non-solvent or solvenr model
+The estimate is based on the relative probability of each voxel value pertaining to non-solvent or solvenr model
 
 :param data:                input array
 :param solvent_paramters:   solvent model parameters, gaussian (scale, mean, var)
@@ -89,7 +93,8 @@ In[3]:
 
 ```
 
-# Examples of use 
+# Examples of use
+## Estimating and modifying local map scale 
 
 In its basic form, `OccuPy` simply estimates the map scale, writes it out along with a chimeraX-command script to 
 visualise the results easily
@@ -111,11 +116,37 @@ map.mrc    scale_map.mrc    ampl_4.0_map.mrc    chimX_map.cxc
 
 To supress (flatten) solvent content use `--exclude-solvent`
 ```shell
-$ OccuPy -i map.mrc -o no_solvent.mrc --exclude-solvent 
+$ OccuPy -i map.mrc --exclude-solvent 
 $ ls  
 map.mrc    scale_map.mrc    solExcl_map.mrc    chimX_map.cxc
-
-
 ```
+These can also be combined, of course
+```shell
+$ OccuPy -i map.mrc --exclude-solvent --attenuate --amplify --beta 4
+$ ls  
+map.mrc    scale_map.mrc    ampl_4.0_solExcl_map.mrc   attn_4.0_solExcl_map.mrc    chimX_map.cxc
+```
+## Visualising the local scale
+The easiest method of visualizing the estimated local scale is to use the chimeraX commad script output by `OccuPy`. 
+This will 
+1. Color the input (and any output) map by the estimated scale
+2. Provide a color key
+3. Provide two useful commands within the chimeraX-session:
+   1. `scale_color < color this map > < by this value >`    to color one  map by the values of another according to 
+      the color key. To re-color according to scale, use `scale_color <map> #2` since the .cxc always defines the 
+      scale estimate as `#2`. This is useful after introducing clipping planes.
+   2. `occupy_level < level >`  to set the input and output maps on the same level for easy comparison of how 
+      modification affected the input map.
 
+
+# Troubleshooting
+### The modification is similar to the input
+1. The modification is effected by the power given to `--beta `, where values larger than 1 mean to modify. Larger 
+   values mean to modify more, and typically values between 2 and 10 are useful. 
+2. The modification is supressed if the estimated solvent model decreases confidence in partial occupancies. If 
+   there isn't enough solvent for the fitting of the solvent model, it will typically be too wide and prevent 
+   modification of lower-scale components. You can check this by using the `--plot` option and inspecting the output.
+   You can also use `--solvent-def <mask.mrc>` where the mask covers the *non*-solvent parts, which will allow these 
+   regions to be omitted during solvent fitting. _This mask does not need to be perfect, and does not limit the 
+   modification to areas inside it_. 
 
