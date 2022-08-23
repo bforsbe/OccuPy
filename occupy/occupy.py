@@ -75,8 +75,8 @@ def main(
             "--exclude-solvent/--retain-solvent",
             help="Should Estimated solvent be eliminated [flattened to 0]?"
         ),
-        max_box_dim: int = typer.Option(
-            200,
+        max_box: int = typer.Option(
+            256,
             help="Input maps beyond this size will be down-sampled during estimation [pixels]"
         ),
         hedge_confidence: int = typer.Option(
@@ -182,16 +182,16 @@ def main(
     nd = np.shape(in_data)
     voxel_size = np.copy(f_open.voxel_size.x)
     assert nd[0] % 2 == 0
-    assert max_box_dim % 2 == 0
+    assert max_box % 2 == 0
     # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
 
-    downscale_processing = nd[0] > max_box_dim
+    downscale_processing = nd[0] > max_box
     if downscale_processing:
-        factor = max_box_dim / nd[0]
+        factor = max_box / nd[0]
 
         in_data, voxel_size = map_tools.lowpass(
             in_data,
-            output_size=max_box_dim,
+            output_size=max_box,
             voxel_size=f_open.voxel_size.x,
             square=True,
             resample=True
