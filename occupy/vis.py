@@ -22,7 +22,8 @@ def chimx_viz(
         threshold_ampl: float = None,
         threshold_attn: float = None,
         min_scale: float = 0.2,
-        silent: bool = False
+        silent: bool = False,
+        warnings: str = None
 ):
     ident = Path(input).stem
     if silent:
@@ -125,6 +126,9 @@ def chimx_viz(
 
         else:
             print(f'camera ortho', file=the_file)
+
+        if warnings is not None:
+            print(f'2dlab text "{warnings}" color red size 24 x .3 y .5', file=the_file)
 
     the_file.close()
 

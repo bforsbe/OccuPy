@@ -391,6 +391,7 @@ def estimate_confidence(
     :return:
 
     """
+
     # Establish histogram for the data without solvent masked
     a, b = np.histogram(
         data,

@@ -1,8 +1,8 @@
 import numpy as np
 import mrcfile as mf
 from pathlib import Path
-#import map_tools, occupancy, vis, solvent
-from occupy import map_tools, occupancy, vis, solvent
+import map_tools, occupancy, vis, solvent
+#from occupy import map_tools, occupancy, vis, solvent
 from skimage.exposure import match_histograms
 
 from typing import Optional
@@ -340,6 +340,13 @@ def main(
         n_lev=levels
     )
 
+
+    lowest_confident_scale = np.min(scale[confidence > 0.99])
+    if lowest_confident_scale < 0.5:
+        warnings = "Solvent model fit is likely bad. "
+        if not plot:
+            warnings = f'{warnings} Run with  --plot and check output .png'
+
     # --------------- MODIFY INPUT MAP IF AMPLIFYING AND/OR SUPPRESSING SOLVENT ------------------
     if exclude_solvent:
         output_map = 'solExcl_' + Path(output_map).stem + '.mrc'
@@ -526,7 +533,8 @@ def main(
             threshold_scale=0.5,
             threshold_ampl=(max_val + sol_limits[3]) / 2.0,
             threshold_attn=(max_val + sol_limits[3]) / 2.0,
-            min_scale=min_vis_scale
+            min_scale=min_vis_scale,
+            warnings=warnings
         )
 
     if chimerax_silent:
