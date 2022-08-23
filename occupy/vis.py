@@ -128,7 +128,7 @@ def chimx_viz(
             print(f'camera ortho', file=the_file)
 
         if warnings is not None:
-            print(f'2dlab text "{warnings}" color red size 24 x .3 y .5', file=the_file)
+            print(f'2dlab text "{warnings}" color red size 20 x .05 y .5', file=the_file)
 
     the_file.close()
 

@@ -340,12 +340,21 @@ def main(
         n_lev=levels
     )
 
+    warnings=None
 
-    lowest_confident_scale = np.min(scale[confidence > 0.99])
-    if lowest_confident_scale < 0.5:
-        warnings = "Solvent model fit is likely bad. "
-        if not plot:
-            warnings = f'{warnings} Run with  --plot and check output .png'
+    # Dirty check on the solvent model, could be more rigorous
+    if modify:
+
+        # A high value of lowest confident scale means a wide solvent model compared to the overall histogram
+        lowest_confident_scale = sol_limits[3] / max_val
+
+        if lowest_confident_scale > 0.5:
+            warnings = "Solvent model fit is likely bad. Check terminal output and"
+            if not plot:
+                warnings = f'{warnings} run with --plot and check solModel*.png'
+            else:
+                warnings = f'{warnings} check the output solModel*.png '
+            solvent.warn_bad(file=f_log,verbose=verbose)
 
     # --------------- MODIFY INPUT MAP IF AMPLIFYING AND/OR SUPPRESSING SOLVENT ------------------
     if exclude_solvent:

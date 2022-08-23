@@ -2,6 +2,16 @@ import numpy as np
 import pylab as plt
 from scipy.optimize import curve_fit
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 def cauchy(
         x: np.ndarray,
@@ -227,3 +237,13 @@ def suppress(
         out_data += np.multiply(unmodified_data, 1 - confidence)
 
     return out_data
+
+def warn_bad(file=None,verbose=False):
+    if file is not None and verbose:
+        print(f"\n{bcolors.WARNING}Warning: Potentially bad solvent model {bcolors.ENDC}", file=file)
+        print(f"{bcolors.WARNING}consider using --plot and check solModel*.png {bcolors.ENDC}", file=file)
+        print(f"{bcolors.WARNING}consider using --solvent-def <solvent_mask.mrc> {bcolors.ENDC}\n", file=file)
+    else:
+        print(f"\n{bcolors.WARNING}Warning: Potentially bad solvent model {bcolors.ENDC}")
+        print(f"{bcolors.WARNING}consider using --plot and check solModel*.png {bcolors.ENDC}")
+        print(f"{bcolors.WARNING}consider using --solvent-def <solvent_mask.mrc> {bcolors.ENDC}\n")
