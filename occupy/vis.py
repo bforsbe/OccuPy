@@ -91,6 +91,12 @@ def chimx_viz(
             if threshold_attn is not None:
                 print(f'vol #{c} level {threshold_attn}', file=the_file)
 
+        setstr = '#1'
+        for i in np.arange(c-2)+3:
+            setstr = f'{setstr},{i}'
+
+        print(f'alias occupy_level vol {setstr} level $1 \n',file=the_file)
+
         output = ampl_map or attn_map
 
         print(key_str, file=the_file)
