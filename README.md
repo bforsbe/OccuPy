@@ -1,7 +1,3 @@
-<img >
-   <img width="200" src="resources/logo.png" />
-</img>
-
 A fast and simple python module and program to estimate local scaling of cryo-EM maps, to approximate 
 occupancy, and optionally also equalise the map according to occupancy while suppressing solvent amplification.
 
@@ -25,11 +21,11 @@ of the modification. `--beta 1` means to do nothing, and higher values signify s
 case of amplification is full occupancy at all non-solvent points. The limiting case for attenuation is 0 
 occupancy at all point where occupancy was less than 100%.
 
-# Solvent supression 
+# Solvent suppression 
 Map scale amplification by inverse filtering would result in an extremely noisy output if solvent was permitted to 
 be amplified. To mitigate this, `OccuPy` estimates a solvent model which limits the amplification of regions where 
 the map scale is estimated as near-solvent. One can aid this estimation by providing a mask that covers non-solvent, 
-permitting `OccuPy` to better identify solvent. This need not be prcise or accurate, and `OccuPy` will amplify map 
+permitting `OccuPy` to better identify solvent. This need not be precise or accurate, and `OccuPy` will amplify map 
 scale outside this region if it is confident about the scale in such a region . This is thus *not* a solvent mask in 
 the traditional sense, but rather a solvent definition. Additionally, the estimation of the solvent model does NOT 
 affect the estimated map scaling in any way, only the optional amplification.
@@ -58,7 +54,7 @@ pip install occupy
 ```shell
 $ OccuPy --help
 
-OccuPy: 0.1.4.dev7+g6cc3641.d20220823
+OccuPy: 0.1.4
 
 $
 ```
@@ -104,13 +100,13 @@ $ ls
 map.mrc    scale_map.mrc    chimX_map.cxc
 ```
 
-To modify all confident partial scales regions (local partial occupancy), use `--amplify` and/or  `--attenuate` 
-along with `--beta` as described above. Becuase the input is modified and not just estimated, there is now additional 
+To modify all confident partial scale regions (local partial occupancy), use `--amplify` and/or  `--attenuate` 
+along with `--beta` as described above. Because the input is modified and not just estimated, there is now additional 
 output map(s). 
 ```shell
 $ OccuPy -i map.mrc  --amplify --beta 4 
 $ ls  
-map.mrc    scale_map.mrc    attn_4.0_map.mrc    chimX_map.cxc
+map.mrc    scale_map.mrc    ampl_4.0_map.mrc    chimX_map.cxc
 ```
 
 To supress (flatten) solvent content use `--exclude-solvent`
