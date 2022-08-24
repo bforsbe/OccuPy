@@ -166,6 +166,11 @@ def adjust_to_parent(
     file_handle.voxel_size = pix_size_p * factor
     file_handle.nstart = int(round(offset_p / factor))
 
+    # Ensure axis ordering
+    file_handle.header['mapc'] = parent_handle.header['mapc']
+    file_handle.header['mapr'] = parent_handle.header['mapr']
+    file_handle.header['maps'] = parent_handle.header['maps']
+
     # Flush to be sure
     file_handle.flush()
 
