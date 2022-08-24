@@ -105,33 +105,50 @@ def chimx_viz(
         # ------LIGHTING-------------------------------------
         print(f'lighting soft \n', file=the_file)
         print(f'set bgColor white', file=the_file)
+
+
+        if warnings is not None:
+            size = 20
+            pos = 'x .05 y .3'
+            if silent:
+                size = 4
+                pos = 'x .05 y .95'
+            print(f'2dlab text "{warnings}" color black size {size} {pos} bold true', file=the_file)
+            print(f'2dlab text "X" color black size {20*size} x .4 y .3 bold true', file=the_file)
+
         if silent:
             w = 600
             h = 600
+            transparent_bg = False
+            supersample = 3
+
             if output is not None:
                 print(f'hide  #1', file=the_file)
             print(f'hide  #2', file=the_file)
 
-            print(f'save {ident}_rot1.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            do_transparent=''
+            if transparent_bg:
+                do_transparent='transparentBackground true'
+
+            print(f'save {ident}_rot1.png supersample {supersample} width {w} height {h} {do_transparent}', file=the_file)
             print(f'turn x 75', file=the_file)
             print(f'turn y 35', file=the_file)
             print(f'view', file=the_file)
-            print(f'save {ident}_rot2.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            print(f'save {ident}_rot2.png supersample {supersample} width {w} height {h} {do_transparent}', file=the_file)
             print(f'turn x 75', file=the_file)
             print(f'turn y 35', file=the_file)
             print(f'view', file=the_file)
-            print(f'save {ident}_rot3.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            print(f'save {ident}_rot3.png supersample {supersample} width {w} height {h} {do_transparent}', file=the_file)
             print(f'turn x 75', file=the_file)
             print(f'turn y 35', file=the_file)
             print(f'view', file=the_file)
-            print(f'save {ident}_rot4.png supersample 3 width {w} height {h} transparentBackground true', file=the_file)
+            print(f'save {ident}_rot4.png supersample {supersample} width {w} height {h} {do_transparent}', file=the_file)
             print(f'exit', file=the_file)
 
         else:
             print(f'camera ortho', file=the_file)
 
-        if warnings is not None:
-            print(f'2dlab text "{warnings}" color red size 20 x .05 y .5', file=the_file)
+
 
     the_file.close()
 

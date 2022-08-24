@@ -555,7 +555,8 @@ def main(
             threshold_input=None,  # sol_limits[3],
             threshold_scale=0.5,
             min_scale=min_vis_scale,
-            silent=True
+            silent=True,
+            warnings=warnings
         )
 
     f_open.close()
