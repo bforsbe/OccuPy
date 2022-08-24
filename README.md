@@ -143,10 +143,21 @@ This will
 ### The modification is similar to the input
 1. The modification is effected by the power given to `--beta `, where values larger than 1 mean to modify. Larger 
    values mean to modify more, and typically values between 2 and 10 are useful. 
-2. The modification is supressed if the estimated solvent model decreases confidence in partial occupancies. If 
+2. The modification is suppressed if the estimated solvent model decreases confidence in partial occupancies. If 
    there isn't enough solvent for the fitting of the solvent model, it will typically be too wide and prevent 
    modification of lower-scale components. You can check this by using the `--plot` option and inspecting the output.
    You can also use `--solvent-def <mask.mrc>` where the mask covers the *non*-solvent parts, which will allow these 
    regions to be omitted during solvent fitting. _This mask does not need to be perfect, and does not limit the 
    modification to areas inside it_. 
+### There is a sphere of noise surrounding the amplified map
+1. If the confidence is over-estimated, low-scale components will be permitted to be amplified. You can hedge the 
+   confidence by using `--hedge-confidence < val >`, where `< val >` is a power, meaning that higher values hedge 
+   more. 10 is a reasonable value to try.
+2. Another possible reason for the confidence being over-estimated is that the solvent model mean and/or variance is 
+   under-estimated. A typical reason for this is that the solvent has been flattened, such that the solvent is not 
+   gaussian. `OccuPy` was not designed for this type of reconstruction, since such flattening is typically enforced 
+   using a mask which has thus already delineated solvent vs non-solvent. 
+3. If the map is not solvent-flattened, and confidence-hedging does not alleviate solvent-amplification surrounding 
+   the main map component, use `--solvent-def <mask.mrc>` where the mask covers the *non*-solvent parts, which will 
+   allow these regions to be omitted during solvent fitting.
 
