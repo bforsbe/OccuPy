@@ -204,11 +204,11 @@ def fit_solvent_to_histogram(
     return solvent_range, popt
 
 def suppress(
-        modified_data,
-        unmodified_data,
-        confidence,
-        exclude_solvent=False,
-        verbose=False
+        modified_data: np.ndarray,
+        unmodified_data: np.ndarray,
+        confidence: np.ndarray,
+        exclude_solvent: bool = False,
+        verbose: bool = False
 ):
     """
     Supress modification of data outside the confidence, and re-introduce original solvent unless explicitly excluded
@@ -247,3 +247,36 @@ def warn_bad(file=None,verbose=False):
         print(f"\n{bcolors.WARNING}Warning: Potentially bad solvent model {bcolors.ENDC}")
         print(f"{bcolors.WARNING}consider using --plot and check solModel*.png {bcolors.ENDC}")
         print(f"{bcolors.WARNING}consider using --solvent-def <solvent_mask.mrc> {bcolors.ENDC}\n")
+
+def smallest_variance_region(
+        data: np.ndarray,
+        region: np.ndarray,
+        consider: np.array
+):
+    """
+    Binarize a mask and invert if the things inside the mask have larger variance than the outside.
+    :param data:
+    :param region:
+    :return:
+    """
+
+    # Threshold in case it's not a binary map
+    region = region > 0.9
+
+    # Only consider some data and regions
+    data_in   = np.multiply(data,consider)
+    region = np.multiply(region,consider)
+    region_inv = np.multiply(1-region,consider).astype(bool)
+
+    # Variance inside region
+    region_var = np.var(data_in[region])
+
+    # Variance inside region
+    region_inv_var = np.var(data_in[region_inv])
+
+    if region_var < region_inv_var:
+        # Solvent will have smaller variance, so we return the region covering the solvent, i.e. out_var
+        return region
+    else:
+        # The opposite
+        return region_inv

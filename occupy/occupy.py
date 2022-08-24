@@ -304,9 +304,15 @@ def main(
         s_open = mf.open(solvent_def)
         assert s_open.data.shape == mask.shape
 
-        mask_def = np.array(mask).astype(int) + 1 - s_open.data
-        mask_def = mask_def > 1.5
-        h_data = sol_data[mask_def].flatten()
+        # Make a mask from the solvent definition.
+        # People might provide a mask that covers the solvent or content, we will use it as makes most sense
+        solvent_region = solvent.smallest_variance_region(
+            sol_data,       # data
+            s_open.data,    # solvent def
+            mask            # radial mask
+        )
+
+        h_data = sol_data[solvent_region].flatten()
     else:
         assert sol_data.shape == mask.shape
         h_data = sol_data[mask].flatten()
