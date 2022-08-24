@@ -507,7 +507,7 @@ def spherical_kernel(
     :return:
     """
     assert size % 2 == 1, f'Please make odd-sizes kernels, not size={size}'
-    assert radius <= (size + 2) / 2.0, f'This radius ({radius}) requires a bigger odd-size kernel than {size}'
+    #assert radius <= (size + 2) / 2.0, f'This radius ({radius}) requires a bigger odd-size kernel than {size}'
 
     # Construct the kernel
     kernel = map_tools.create_radial_mask(
