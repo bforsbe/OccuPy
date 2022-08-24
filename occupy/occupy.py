@@ -379,7 +379,7 @@ def main(
         )
 
         if save_all_maps:
-            map_tools.adjust_to_parent(file_name='amplification.mrc', parent=input_map)
+            map_tools.adjust_to_parent(file_name='modification.mrc', parent=input_map)
 
         # -- Supress solvent amplification --
         # Confidence-based mask of amplified content.
