@@ -34,7 +34,7 @@ def main(
         ),
         amplify: bool = typer.Option(
             False,
-            "--amplify", "-ap",
+            "--amplify", "-am",
             help="Alter partial occupancies, to make more or less equal to full occupancy?"
         ),
         attenuate: bool = typer.Option(
