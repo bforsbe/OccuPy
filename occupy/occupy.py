@@ -246,9 +246,10 @@ def main(
     tau_ana = occupancy.set_tau(n_v=n_v)
     if tau is None:
         tau = tau_ana
-    elif verbose:
+    else:
         own_tau = True
-        print(f'Using provided tau value of {tau} instead of recommended {tau_ana} for kernel size {kernel_size}')
+        if verbose:
+            print(f'Using provided tau value of {tau} instead of recommended {tau_ana} for kernel size {kernel_size}')
     assert 0 < tau <= 1
 
     log_name = f'log_{Path(input_map).stem}.txt'
