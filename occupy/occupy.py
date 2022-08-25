@@ -326,7 +326,7 @@ def main(
         n_lev=levels
     )
 
-    # --------------- OCCUPANCY ESTIMATION ------------------------------------------------------
+    # --------------- SCALE ESTIMATION ------------------------------------------------------
 
     scale_map = f'scale{new_name}'
     scale, max_val = occupancy.get_map_scale(
@@ -550,8 +550,8 @@ def main(
             scale_map,
             ampl_map=ampl_map,
             attn_map=attn_map,
-            threshold_input=(max_val+sol_limits[3])/2.0,
-            threshold_scale=0.5,
+            threshold_input=(max_val+sol_limits[3]) / 2.0,
+            threshold_scale=variability_limit,
             threshold_ampl=(max_val + sol_limits[3]) / 2.0,
             threshold_attn=(max_val + sol_limits[3]) / 2.0,
             min_scale=min_vis_scale,
@@ -564,8 +564,8 @@ def main(
             scale_map,
             ampl_map=ampl_map,
             attn_map=attn_map,
-            threshold_input=(max_val+sol_limits[3])/2.0,
-            threshold_scale=0.5,
+            threshold_input=(max_val+sol_limits[3]) / 2.0,
+            threshold_scale=variability_limit,
             threshold_ampl=(max_val + sol_limits[3]) / 2.0,
             threshold_attn=(max_val + sol_limits[3]) / 2.0,
             min_scale=min_vis_scale,
