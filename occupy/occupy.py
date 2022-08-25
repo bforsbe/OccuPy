@@ -558,8 +558,10 @@ def main(
             scale_map,
             ampl_map=ampl_map,
             attn_map=attn_map,
-            threshold_input=None,  # sol_limits[3],
+            threshold_input=(max_val+sol_limits[3])/2.0,
             threshold_scale=0.5,
+            threshold_ampl=(max_val + sol_limits[3]) / 2.0,
+            threshold_attn=(max_val + sol_limits[3]) / 2.0,
             min_scale=min_vis_scale,
             silent=True,
             warnings=warnings
