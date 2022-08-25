@@ -136,6 +136,9 @@ def percentile_filter_tiled(
     # Establish s_max
     max_per = np.max(s_tau_tiles)
 
+    # Poor defintion in paper
+    #max_per = tau * np.max(data)
+
     # Establish s_i
     maxi = ndimage.maximum_filter(data, footprint=kernel)
 
