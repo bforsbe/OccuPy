@@ -338,6 +338,11 @@ def main(
     )
     map_tools.adjust_to_parent(file_name=scale_map, parent=input_map)
 
+    # Get the average pixel value across all regions with full scale
+    # This is an estimate of the density, which we can convert back to a scale,
+    # which in turn signifies the expected scale at full occupancy and full variability/flex
+    variability_limit = np.mean(scale_data[scale==1]) / max_val
+
     # --------------- CONFIDENCE ESTIMATION ------------------------------------------------------
 
     confidence, mapping = occupancy.estimate_confidence(
@@ -598,11 +603,12 @@ def main(
         if interactive_plot:
             plt.show()
 
-    print(f'\n------------------------------------Detected thresholds-------', file=f_log)
+    print(f'\n------------------------------------Detected limits-------', file=f_log)
     print(f'Content at 1% of solvent  : \t {sol_limits[2]:.3f}', file=f_log)
     print(f'Solvent drop to 0% (edge) : \t {sol_limits[3]:.3f}', file=f_log)
     print(f'Solvent peak              : \t {solvent_parameters[1]:.3f}', file=f_log)
     print(f'Occupancy full            : \t {max_val:.3f}', file=f_log)
+    print(f'Variability_limit         : \t {variability_limit:.3f}', file=f_log)
 
     f_log.close()
     if verbose:
