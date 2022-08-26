@@ -354,11 +354,11 @@ def main(
 
     warnings=None
 
+    # A high value of lowest confident scale means a wide solvent model compared to the overall histogram
+    lowest_confident_scale = sol_limits[3] / max_val
+
     # Dirty check on the solvent model, could be more rigorous
     if modify:
-
-        # A high value of lowest confident scale means a wide solvent model compared to the overall histogram
-        lowest_confident_scale = sol_limits[3] / max_val
 
         if lowest_confident_scale > 0.5:
             warnings = "Solvent model fit is likely bad. Check terminal output and"
@@ -609,6 +609,7 @@ def main(
     print(f'Solvent peak              : \t {solvent_parameters[1]:.3f}', file=f_log)
     print(f'Occupancy full            : \t {max_val:.3f}', file=f_log)
     print(f'Variability_limit         : \t {variability_limit:.3f}', file=f_log)
+    print(f'Scale confidence limit    : \t {lowest_confident_scale:.3f}', file=f_log)
 
     f_log.close()
     if verbose:

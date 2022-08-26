@@ -3,45 +3,42 @@ from scipy import ndimage
 from occupy import map_tools, solvent
 
 
-def adjust_tiles(
-        array_size,
+def compute_tiling(
+        nd,
+        tile_sz,
         n_tiles,
         verbose=False
 ):
-    """
-    Adjust the number of tiles and with respect to the map dimension
+        dim = len(nd)
 
-    :param array_size:
-    :param n_tiles:
-    :param verbose:
-    :return:    tile_number, tile_size
-    """
-    array_size = array_size[0]
-    if not array_size % n_tiles == 0:
-        if verbose:
-            print(f'number of tiles ({n_tiles}) does not divide data array ({array_size}) evenly;')
-        t_low = n_tiles
-        while t_low > 2:
-            t_low -= 1
-            if array_size % t_low == 0:
-                break
-        t_high = n_tiles
-        while t_high < array_size:
-            t_high += 1
-            if array_size % t_high == 0:
-                break
-        n_tiles = np.min(np.array([t_low, t_high]) - n_tiles) + n_tiles
-        if n_tiles == 1 or n_tiles == array_size:
-            raise ValueError(f'Could not find a reasonable tile number (for data size {array_size})')
-        elif not array_size % n_tiles == 0:
-            raise ValueError(
-                f'number of tiles ({n_tiles}) does not divide data array ({array_size}), even after adjustment')
+        # Set the tile size as an array
+        if tile_sz is None:
+            tile_sz = (nd / n_tiles).astype(int)
         else:
-            if verbose:
-                print(f' ---->  Adjusted percentile value scan to {n_tiles} tiles.')
+            tile_sz = (tile_sz * np.ones(dim)).astype(int)
 
-    return n_tiles
+        # The maximum number of tiles. Overlap is ok.
+        max_tiles = nd - tile_sz + 1
+        assert all(n_tiles < max_tiles)
 
+        # number of voxels not used for tiles
+        non_tile = nd - n_tiles * tile_sz
+        non_tile = np.clip(non_tile, 0, nd[0])
+
+        # Space in-between n_tiles number of tiles
+        space = np.floor(non_tile // (n_tiles - 1)).astype(int)
+        space_0 = np.clip(space, 0, nd[0]).astype(int)
+
+        # Space around tiles
+        edge = ((non_tile - space_0 * (n_tiles - 1)) / 2).astype(int)
+
+        # Tile step (can be smaller than tile_sz)
+        tile_step = (tile_sz + np.floor(non_tile // (n_tiles - 1))).astype(int)
+
+        if verbose:
+            print(f'Using {n_tiles} {tile_sz[0]}-voxel tiles, spaced by {space[0]} voxels and starting {edge[0]} voxels from the edge')
+
+        return tile_sz, tile_step, edge
 
 def percentile_filter_tiled(
         data: np.ndarray,
@@ -81,21 +78,12 @@ def percentile_filter_tiled(
     nd = np.array(np.shape(data))
     dim = len(nd)
 
-    # Establish / adjust default tile sizes
-    n_tiles = adjust_tiles(
+    tile_sz, tile_step, edge = compute_tiling(
         nd,
+        tile_sz,
         n_tiles,
         verbose=verbose
     )
-
-    # Set the tile size as an array
-    if tile_sz is None:
-        tile_sz = (nd / n_tiles).astype(int)
-    else:
-        tile_sz = (tile_sz * np.ones(dim)).astype(int)
-
-    # Index for the first tile element
-    tile_start = (nd / n_tiles).astype(int)
 
     # Index of the smallest element in the percentile Tau
     n_tau = int(np.floor(tau * np.product(tile_sz)))
@@ -107,11 +95,13 @@ def percentile_filter_tiled(
     # despite using a for-loop structure.
     # There's probably a faster/better way of doing it, but at the moment this is negligible in execution time
     if dim == 2:
-        for i in np.arange(tile_sz[0]):
-            for j in np.arange(tile_sz[1]):
+        for i in np.arange(n_tiles):
+            for j in np.arange(n_tiles):
+                low_edge = edge + np.multiply(tile_step, [i, j])
+                high_edge = low_edge + tile_sz
                 r = np.copy(data[
-                            i * tile_start[0]:i * tile_start[0] + tile_sz[0],
-                            j * tile_start[1]:j * tile_start[1] + tile_sz[1]]).flatten()
+                            low_edge[0]: high_edge[0],
+                            low_edge[1]: high_edge[1]]).flatten()
                 s = np.sort(r)
                 s_tau_tiles[i][j] = np.copy(s[n_tau])
     else:
@@ -124,10 +114,12 @@ def percentile_filter_tiled(
                     c += 1
                     if verbose:
                         print(f'Percentile tile scan {int(100 * c / (n_tiles ** 3))}% complete.', end='\r')
+                    low_edge = edge + np.multiply(tile_step,[i,j,k])
+                    high_edge = low_edge + tile_sz
                     r = np.copy(data[
-                                i * tile_start[0]:i * tile_start[0] + tile_sz[0],
-                                j * tile_start[1]:j * tile_start[1] + tile_sz[1],
-                                k * tile_start[2]:k * tile_start[2] + tile_sz[2]]).flatten()
+                                low_edge[0]: high_edge[0],
+                                low_edge[1]: high_edge[1],
+                                low_edge[2]: high_edge[2]]).flatten()
                     s = np.sort(r)
                     s_tau_tiles[i][j][k] = np.copy(s[n_tau])
     if verbose:
@@ -149,8 +141,8 @@ def percentile_filter(
         data: np.ndarray,
         kernel: np.ndarray,
         tau: float = None,
-        tiles: int = 12,
-        tile_sz: int = 5,
+        tiles: int = 24,
+        tile_sz: int = 8,
         verbose: bool = False
 ):
     # Tau is a percentile, it does not make sense to use it outside the range [0,1]
