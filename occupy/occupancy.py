@@ -23,20 +23,21 @@ def compute_tiling(
 
         # number of voxels not used for tiles
         non_tile = nd - n_tiles * tile_sz
-        non_tile = np.clip(non_tile, 0, nd[0])
+        non_tile_0 = np.clip(non_tile, 0, nd[0])
 
         # Space in-between n_tiles number of tiles
-        space = np.floor(non_tile // (n_tiles - 1)).astype(int)
+        space = np.floor(non_tile_0 // (n_tiles - 1)).astype(int)
         space_0 = np.clip(space, 0, nd[0]).astype(int)
-
-        # Space around tiles
-        edge = ((non_tile - space_0 * (n_tiles - 1)) / 2).astype(int)
 
         # Tile step (can be smaller than tile_sz)
         tile_step = (tile_sz + np.floor(non_tile // (n_tiles - 1))).astype(int)
 
+        # Space around tiles
+        edge = ((nd - ((n_tiles - 1) * tile_step+tile_sz)) // 2).astype(int)
+        #((non_tile_0 - space_0 * (n_tiles - 1)) / 2).astype(int)
+
         if verbose:
-            print(f'Using {n_tiles} {tile_sz[0]}-voxel tiles, spaced by {space[0]} voxels and starting {edge[0]} voxels from the edge')
+            print(f'Using {n_tiles} {tile_sz[0]}-voxel tiles, spaced by {space[0]}/{tile_step[0]} voxels and starting {edge[0]} voxels from the edge')
 
         return tile_sz, tile_step, edge
 
