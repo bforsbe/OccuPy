@@ -46,6 +46,7 @@ def percentile_filter_tiled(
         n_tiles: int,
         tile_sz: int = None,
         tau: float = 0.95,
+        s0: bool = False,
         verbose: bool = False
 ):
     """
@@ -70,79 +71,86 @@ def percentile_filter_tiled(
     :param verbose:     be verbose
     :return:   s_i   and    s_max
     """
+    norm_val = 1.0
 
-    # Tau is a percentile, it does not make sense to use it outside the range [0,1]
-    assert 0 < tau <= 1
-
-    # Sizes
-    nd = np.array(np.shape(data))
-    dim = len(nd)
-
-    tile_sz, tile_step, edge = compute_tiling(
-        nd,
-        tile_sz,
-        n_tiles,
-        verbose=verbose
-    )
-
-    # Index of the smallest element in the percentile Tau
-    n_tau = int(np.floor(tau * np.product(tile_sz)))
-
-    # Prepare the output array
-    s_tau_tiles = np.zeros(n_tiles * np.ones(dim).astype(int), dtype=np.float32)
-
-    # SCipy.ndimage has a percentile filter, but we only need non-exhaustive sampling and this is faster
-    # despite using a for-loop structure.
-    # There's probably a faster/better way of doing it, but at the moment this is negligible in execution time
-    if dim == 2:
-        for i in np.arange(n_tiles):
-            for j in np.arange(n_tiles):
-                low_edge = edge + np.multiply(tile_step, [i, j])
-                high_edge = low_edge + tile_sz
-                r = np.copy(data[
-                            low_edge[0]: high_edge[0],
-                            low_edge[1]: high_edge[1]]).flatten()
-                s = np.sort(r)
-                s_tau_tiles[i][j] = np.copy(s[n_tau])
-    else:
+    if s0:
+        # Simpler normalization
         if verbose:
-            print(f'Percentile tile scan ', end='\r')
-        c = 0
-        for i in np.arange(n_tiles):
-            for j in np.arange(n_tiles):
-                for k in np.arange(n_tiles):
-                    c += 1
-                    if verbose:
-                        print(f'Percentile tile scan {int(100 * c / (n_tiles ** 3))}% complete.', end='\r')
-                    low_edge = edge + np.multiply(tile_step,[i,j,k])
+            print("Using simple kernel normalization, no tiled search")
+        norm_val = tau * np.max(data)
+    else:
+        # Distribution-aware normalization
+
+        # Tau is a percentile, it does not make sense to use it outside the range [0,1]
+        assert 0 < tau <= 1
+
+        # Sizes
+        nd = np.array(np.shape(data))
+        dim = len(nd)
+
+        tile_sz, tile_step, edge = compute_tiling(
+            nd,
+            tile_sz,
+            n_tiles,
+            verbose=verbose
+        )
+
+        # Index of the smallest element in the percentile Tau
+        n_tau = int(np.floor(tau * np.product(tile_sz)))
+
+        # Prepare the output array
+        s_tau_tiles = np.zeros(n_tiles * np.ones(dim).astype(int), dtype=np.float32)
+
+        # SCipy.ndimage has a percentile filter, but we only need non-exhaustive sampling and this is faster
+        # despite using a for-loop structure.
+        # There's probably a faster/better way of doing it, but at the moment this is negligible in execution time
+        if dim == 2:
+            for i in np.arange(n_tiles):
+                for j in np.arange(n_tiles):
+                    low_edge = edge + np.multiply(tile_step, [i, j])
                     high_edge = low_edge + tile_sz
                     r = np.copy(data[
                                 low_edge[0]: high_edge[0],
-                                low_edge[1]: high_edge[1],
-                                low_edge[2]: high_edge[2]]).flatten()
+                                low_edge[1]: high_edge[1]]).flatten()
                     s = np.sort(r)
-                    s_tau_tiles[i][j][k] = np.copy(s[n_tau])
-    if verbose:
-        print('Percentile tile scan completed.      \n')
+                    s_tau_tiles[i][j] = np.copy(s[n_tau])
+        else:
+            if verbose:
+                print(f'Percentile tile scan ', end='\r')
+            c = 0
+            for i in np.arange(n_tiles):
+                for j in np.arange(n_tiles):
+                    for k in np.arange(n_tiles):
+                        c += 1
+                        if verbose:
+                            print(f'Percentile tile scan {int(100 * c / (n_tiles ** 3))}% complete.', end='\r')
+                        low_edge = edge + np.multiply(tile_step,[i,j,k])
+                        high_edge = low_edge + tile_sz
+                        r = np.copy(data[
+                                    low_edge[0]: high_edge[0],
+                                    low_edge[1]: high_edge[1],
+                                    low_edge[2]: high_edge[2]]).flatten()
+                        s = np.sort(r)
+                        s_tau_tiles[i][j][k] = np.copy(s[n_tau])
+        if verbose:
+            print('Percentile tile scan completed.      \n')
 
-    # Establish s_max
-    max_per = np.max(s_tau_tiles)
-
-    # Poor defintion in paper
-    #max_per = tau * np.max(data)
+        # Establish s_max
+        norm_val = np.max(s_tau_tiles)
 
     # Establish s_i
     maxi = ndimage.maximum_filter(data, footprint=kernel)
 
-    return maxi, max_per
+    return maxi, norm_val
 
 
 def percentile_filter(
         data: np.ndarray,
         kernel: np.ndarray,
         tau: float = None,
-        tiles: int = 24,
-        tile_sz: int = 8,
+        tiles: int = 20,
+        tile_sz: int = 12,
+        s0 : bool = False,
         verbose: bool = False
 ):
     # Tau is a percentile, it does not make sense to use it outside the range [0,1]
@@ -154,6 +162,7 @@ def percentile_filter(
         n_tiles=tiles,
         tile_sz=tile_sz,
         tau=tau,
+        s0 = s0,
         verbose=verbose
     )
 
@@ -264,6 +273,7 @@ def get_map_scale(
         scale_kernel: np.ndarray,
         tau: float = None,
         save_occ_map: str = None,
+        s0: bool = False,
         verbose: bool = True
 ):
     """
@@ -283,6 +293,7 @@ def get_map_scale(
         data,
         scale_kernel,
         tau=tau,
+        s0 = s0,
         verbose=verbose)
 
     # Perform max-filter normalisation

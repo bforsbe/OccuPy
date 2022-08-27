@@ -1,8 +1,8 @@
 import numpy as np
 import mrcfile as mf
 from pathlib import Path
-import map_tools, occupancy, vis, solvent
-#from occupy import map_tools, occupancy, vis, solvent
+#import map_tools, occupancy, vis, solvent              # for pyCharm
+from occupy import map_tools, occupancy, vis, solvent   # for terminal use
 from skimage.exposure import match_histograms
 
 from typing import Optional
@@ -126,7 +126,11 @@ def main(
         ),
 
         # Extra  -------------------------------------------------------------------------------------------------------
-
+        s0: bool = typer.Option(
+            False,
+            "--S0/--SW",
+            help="Use simple kernel normalization S0 instead of tile-based percentile (SW)"
+        ),
         verbose: bool = typer.Option(
             False,
             "--verbose/--quiet",
@@ -334,6 +338,7 @@ def main(
         scale_kernel=scale_kernel,
         tau=tau,
         save_occ_map=scale_map,
+        s0=s0,
         verbose=verbose
     )
     map_tools.adjust_to_parent(file_name=scale_map, parent=input_map)
