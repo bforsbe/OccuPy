@@ -16,8 +16,8 @@ depreciation.
 
 # Amplification of partial occupancies 
 `OccuPy` can also amplify confidently estimated partial occupancy (local scale) in the input map by adding the 
-`--amplify` or `--attenuate` option. To modify, one must also specify `--beta`, which in simple terms is the power 
-of the modification. `--beta 1` means to do nothing, and higher values signify stronger modification. The limiting 
+`--amplify` or `--attenuate` option. To modify, one must also specify `--gamma`, which in simple terms is the power 
+of the modification. `--gamma 1` means to do nothing, and higher values signify stronger modification. The limiting 
 case of amplification is full occupancy at all non-solvent points. The limiting case for attenuation is 0 
 occupancy at all point where occupancy was less than 100%.
 
@@ -30,13 +30,14 @@ scale outside this region if it is confident about the scale in such a region . 
 the traditional sense, but rather a solvent definition. Additionally, the estimation of the solvent model does NOT 
 affect the estimated map scaling in any way, only the optional amplification.
 
-The supression of solvent is not contigent on amplification - one can choose to supress solvent regions or not, 
+The suppression of solvent is not contingent on amplification - one can choose to supress solvent regions or not, 
 irrespective of amplification. This acts as automatic solvent masking, to the extent that  `OccuPy` can reliably 
 detect it.
 
 # Expected input 
 `OccuPy` expects an input map that has not been solvent-flattened (there should be some solvent somewhere in the map, 
-the more the better). `OccuPy` may also work poorly where the map has been post-processed or altered by machine-learning, sharpening, or manual alterations. It has been designed to work in a classification setting, and as such does *not* 
+where more is better). `OccuPy` may also work poorly where the map has been post-processed or altered by 
+machine-learning, sharpening, or manual alterations. It has been designed to work in a classification setting, and as such does *not* 
 require half-maps, a resolution estimate, or solvent mask. It will likely benefit if you are able to supply these 
 things, but does not need it. 
 
@@ -65,7 +66,7 @@ OccuPy: 0.1.4
 
 but the tools and functions are available from within a python environment as well
 
-```python
+```shell
 In[1]: import occupy
 
 In[2]: occupy.occupancy.estimate_confidence?                                                                                            
@@ -106,10 +107,10 @@ map.mrc    scale_map.mrc    chimX_map.cxc
 ```
 
 To modify all confident partial scale regions (local partial occupancy), use `--amplify` and/or  `--attenuate` 
-along with `--beta` as described above. Because the input is modified and not just estimated, there is now additional 
+along with `--gamma` as described above. Because the input is modified and not just estimated, there is now additional 
 output map(s). 
 ```shell
-$ OccuPy -i map.mrc  --amplify --beta 4 
+$ OccuPy -i map.mrc  --amplify --gamma 4 
 $ ls  
 map.mrc    scale_map.mrc    ampl_4.0_map.mrc    chimX_map.cxc
 ```
@@ -122,12 +123,12 @@ map.mrc    scale_map.mrc    solExcl_map.mrc    chimX_map.cxc
 ```
 These can also be combined, of course
 ```shell
-$ OccuPy -i map.mrc --exclude-solvent --attenuate --amplify --beta 4
+$ OccuPy -i map.mrc --exclude-solvent --attenuate --amplify --gamma 4
 $ ls  
 map.mrc    scale_map.mrc    ampl_4.0_solExcl_map.mrc   attn_4.0_solExcl_map.mrc    chimX_map.cxc
 ```
 ## Visualising the local scale
-The easiest method of visualizing the estimated local scale is to use the chimeraX commad script output by `OccuPy`. 
+The easiest method of visualizing the estimated local scale is to use the chimeraX command script output by `OccuPy`. 
 This will 
 1. Color the input (and any output) map by the estimated scale
 2. Provide a color key
@@ -141,7 +142,7 @@ This will
 
 # Troubleshooting
 ### The modification is similar to the input
-1. The modification is effected by the power given to `--beta `, where values larger than 1 mean to modify. Larger 
+1. The modification is effected by the power given to `--gamma `, where values larger than 1 mean to modify. Larger 
    values mean to modify more, and typically values between 2 and 10 are useful. 
 2. The modification is suppressed if the estimated solvent model decreases confidence in partial occupancies. If 
    there isn't enough solvent for the fitting of the solvent model, it will typically be too wide and prevent 

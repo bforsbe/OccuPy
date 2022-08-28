@@ -215,12 +215,12 @@ def amplify_map(
     return np.multiply(data, np.abs(amplification))
 
 
-def amplify_map_beta(
+def amplify_map_gamma(
         data: np.ndarray,
         scale: np.ndarray,
-        beta: float,
-        amplify_beta: bool = None,
-        attenuate_beta: bool = None
+        gamma: float,
+        amplify_gamma: bool = None,
+        attenuate_gamma: bool = None
 ):
     """
     Consider the input map to be 100% everywhere, but scaled down by the
@@ -250,23 +250,23 @@ def amplify_map_beta(
 
     :param data:
     :param scale:
-    :param beta:
-    :param amplify_beta:
-    :param attenuate_beta:
+    :param gamma:
+    :param amplify_gamma:
+    :param attenuate_gamma:
     :return:
 
     """
 
-    assert beta >= 1, "Beta-exponentiation of scale by less than 1 is not permitted"
-    assert beta > 1, "Beta-exponentiation by 1 is unity operation"
-    assert amplify_beta is not None or attenuate_beta is not None, "Both amplify and attenuate are unset"
-    assert not amplify_beta == attenuate_beta, "Cannot both amplify and attenuate"
+    assert gamma >= 1, "gamma-exponentiation of scale by less than 1 is not permitted"
+    assert gamma > 1, "gamma-exponentiation by 1 is unity operation"
+    assert amplify_gamma is not None or attenuate_gamma is not None, "Both amplify and attenuate are unset"
+    assert not amplify_gamma == attenuate_gamma, "Cannot both amplify and attenuate"
 
-    if amplify_beta or not attenuate_beta:
-        beta = 1 / beta - 1
+    if amplify_gamma or not attenuate_gamma:
+        gamma = 1 / gamma - 1
     else:  # attenuate
-        beta = beta - 1
-    return np.abs(scale) ** beta
+        gamma = gamma - 1
+    return np.abs(scale) ** gamma
 
 
 def get_map_scale(
@@ -306,10 +306,10 @@ def get_map_scale(
     return scale_map, map_val_at_full_scale
 
 
-def modify_beta(
+def modify_gamma(
         data: np.ndarray,
         scale: np.ndarray,
-        beta: float = None,
+        gamma: float = None,
         fake_solvent: np.ndarray = None,
         sol_mask: np.ndarray = None,
         scale_threshold: float = None,
@@ -323,7 +323,7 @@ def modify_beta(
 
     :param data:
     :param scale:
-    :param beta:
+    :param gamma:
     :param fake_solvent:
     :param sol_mask:
     :param scale_threshold:
@@ -334,7 +334,7 @@ def modify_beta(
     """
 
     # Exit without doing anything
-    if beta is None or beta == 1:
+    if gamma is None or gamma == 1:
         return data
 
     # Scale threshold stops very small estimated scales from being modified.
@@ -355,12 +355,12 @@ def modify_beta(
             print('Using solvent mask when equalising occupancy.')
         thresholded_scale_map = (1 - sol_mask) + np.multiply(sol_mask, thresholded_scale_map)
 
-    # Construct modification as dependent on scaling and beta-coefficient
-    modification = amplify_map_beta(
+    # Construct modification as dependent on scaling and gamma-coefficient
+    modification = amplify_map_gamma(
         scale,
         thresholded_scale_map,
-        beta,
-        attenuate_beta=attenuate
+        gamma,
+        attenuate_gamma=attenuate
     )
 
     # Amplify or attenuate map

@@ -42,10 +42,10 @@ def main(
             "--attenuate", "-at",
             help="Attenuate partial occupancies, to weaken lower occupancies"
         ),
-        beta: float = typer.Option(
+        gamma: float = typer.Option(
             None,
-            "--beta", "-b",
-            help="How to alter confident partial occupancies >1"
+            "--gamma", "-g",
+            help="Gamma correction (modification) factor for confident partial occupancies [1,inf]"
         ),
 
         # Specific control ---------------------------------------------------------------------------------------------
@@ -170,10 +170,10 @@ def main(
         output_map = None
 
     if amplify or attenuate:
-        if beta is None:
-            raise ValueError("--beta must be specified if attenuating or amplifying")
+        if gamma is None:
+            raise ValueError("--gamma must be specified if attenuating or amplifying")
     else:
-        beta = None  # We might still do solvent exclusion
+        gamma = None  # We might still do solvent exclusion
 
     if relion_classes is not None:
         print('Input using a relion model.star to diversify classes is not yet implemented')
@@ -384,10 +384,10 @@ def main(
     ampl_map = None
 
     if amplify or exclude_solvent:
-        ampl = occupancy.modify_beta(
+        ampl = occupancy.modify_gamma(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
-            beta=beta,  # The exponent for amplification / attenuation
+            gamma=gamma,  # The exponent for amplification / attenuation
             attenuate=False,  # False is amplifying or not doing anything
             fake_solvent=fake_solvent,
             scale_threshold=scale_limit,
@@ -442,8 +442,8 @@ def main(
 
         # Save amplified and/or solvent-suppressed output.
         if amplify:
-            ampl_map = f'ampl_{beta:.1f}_' + Path(output_map).stem + '.mrc'
-            ampl_doc = f'{doc} attenuation beta={beta:.2f}'
+            ampl_map = f'ampl_{gamma:.1f}_' + Path(output_map).stem + '.mrc'
+            ampl_doc = f'{doc} attenuation gamma={gamma:.2f}'
         else:
             ampl_map = output_map
             ampl_doc = f'{doc}'
@@ -465,10 +465,10 @@ def main(
             # what is the correct scaling factor of the variance here????
             # also spectral properties
 
-        attn = occupancy.modify_beta(
+        attn = occupancy.modify_gamma(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
-            beta=beta,  # The exponent for amplification / attenuation
+            gamma=gamma,  # The exponent for amplification / attenuation
             attenuate=True,  # False is amplifying or not doing anything
             fake_solvent=fake_solvent,
             scale_threshold=scale_limit,
@@ -519,8 +519,8 @@ def main(
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
 
         # Save amplified and/or solvent-suppressed output.
-        attn_map = f'attn_{beta:.1f}_' + Path(output_map).stem + '.mrc'
-        attn_doc = f'{doc} attenuation beta={beta:.2f}'
+        attn_map = f'attn_{gamma:.1f}_' + Path(output_map).stem + '.mrc'
+        attn_doc = f'{doc} attenuation gamma={gamma:.2f}'
         map_tools.new_mrc(
             attn.astype(np.float32),
             attn_map,
