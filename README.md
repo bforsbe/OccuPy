@@ -1,42 +1,48 @@
+# OccuPy
 A fast and simple python module and program to estimate local scaling of cryo-EM maps, to approximate 
 occupancy, and optionally also equalise the map according to occupancy while suppressing solvent amplification.
 
 ![image](resources/cover.png)
 
+## Estimation of local scale/occupancy 
+The primary purpose of **OccuPy** is to estimate the local map scale of cryo-EM maps. All voxels in a cryo-EM map 
+can be considered as drawn from a distribution defined by the characteristics of its neighborhood. In 
+well-resolved regions noise has been cancelled such that this distribution contains values above and below that 
+expected of the surrounding solvent. Decreased resolution or occupancy conversely results in values that are closer 
+to solvent, and thus drawn from a distribution of lower variance. In essence, **OccuPy** locates the region that 
+exhibits the highest variance, and utilizes this to place all other regions on a nominal scale between 0 and 1. 
+Lower values are associated with increased variability (typically through flexibility), but under the assumption of 
+limited variability, the estimated map scale is a measure of local mass. In maps displaying compositional 
+heterogeneity, the local scale thus becomes a measure of macromolecular occupancy.
 
-# Estimation of occupancy 
-The primary purpose of `OccuPy` is to estimate the local map scale of cryo-EM maps. All regions in a cryo-EM map 
-have pixel values that can be considered as drawn from some distribution. In well-resolved regions noise has been 
-cancelled such that this distribution contains values above and below solvent. Decreased resolution or occupancy 
-conversely results in values that are closer to solvent. `OccuPy` locates a region that exhibits the highest level 
-above solvent, and utilizes this to place all other regions on a nominal scale between 0 and 1. This is a proxy for 
-occupancy, under the assumption that there is limited flexibility. In maps exhibiting flexibility, the estimated 
-map scale does not strictly represent occupancy, as `OccuPy` does not presently separate these factors in map value 
-depreciation.
-
-# Amplification of partial occupancies 
-`OccuPy` can also amplify confidently estimated partial occupancy (local scale) in the input map by adding the 
+## Modification of partial occupancies 
+**OccuPy** can also amplify confidently estimated partial occupancy (local scale) in the input map by adding the 
 `--amplify` or `--attenuate` option. To modify, one must also specify `--gamma`, which in simple terms is the power 
-of the modification. `--gamma 1` means to do nothing, and higher values signify stronger modification. The limiting 
-case of amplification is full occupancy at all non-solvent points. The limiting case for attenuation is 0 
-occupancy at all point where occupancy was less than 100%.
+of the modification, analogous to a traditional gamma correction factor. `--gamma 1` means to do nothing, and higher 
+values signify stronger modification. Values higher than about 50 are largely pointless, as values in the range 2-5 
+are typically useful. A *very* high (limiting) limiting value of `--gamma 50` (or more) leads to 
+- **amplification**: full occupancy at all non-solvent points.
+- **attenuation**:   no occupancy at all non-solvent points where estimated scale was less than 100%.
 
-# Solvent suppression 
+NOTE: Values lower than 1 are not permitted, as it simply inverts the relationship between amplification and 
+attenuation. 
+
+## Solvent suppression 
 Map scale amplification by inverse filtering would result in an extremely noisy output if solvent was permitted to 
-be amplified. To mitigate this, `OccuPy` estimates a solvent model which limits the amplification of regions where 
+be amplified. To mitigate this, **OccuPy** estimates a solvent model which limits the amplification of regions where 
 the map scale is estimated as near-solvent. One can aid this estimation by providing a mask that covers non-solvent, 
-permitting `OccuPy` to better identify solvent. This need not be precise or accurate, and `OccuPy` will amplify map 
+permitting **OccuPy** to better identify solvent. This need not be precise or accurate, and **OccuPy** will amplify map 
 scale outside this region if it is confident about the scale in such a region . This is thus *not* a solvent mask in 
 the traditional sense, but rather a solvent definition. Additionally, the estimation of the solvent model does NOT 
 affect the estimated map scaling in any way, only the optional amplification.
 
 The suppression of solvent is not contingent on amplification - one can choose to supress solvent regions or not, 
-irrespective of amplification. This acts as automatic solvent masking, to the extent that  `OccuPy` can reliably 
+irrespective of amplification. This acts as automatic solvent masking, to the extent that  **OccuPy** can reliably 
 detect it.
 
-# Expected input 
-`OccuPy` expects an input map that has not been solvent-flattened (there should be some solvent somewhere in the map, 
-where more is better). `OccuPy` may also work poorly where the map has been post-processed or altered by 
+## Expected input 
+**OccuPy** expects an input map that has not been solvent-flattened (there should be some solvent somewhere in the map, 
+where more is better). **OccuPy** may also work poorly where the map has been post-processed or altered by 
 machine-learning, sharpening, or manual alterations. It has been designed to work in a classification setting, and as such does *not* 
 require half-maps, a resolution estimate, or solvent mask. It will likely benefit if you are able to supply these 
 things, but does not need it. 
@@ -94,10 +100,10 @@ In[3]:
 
 ```
 
-# Examples of use
-## Estimating and modifying local map scale 
+## Examples of use
+### Estimating and modifying local map scale 
 
-In its basic form, `OccuPy` simply estimates the map scale, writes it out along with a chimeraX-command script to 
+In its basic form, **OccuPy** simply estimates the map scale, writes it out along with a chimeraX-command script to 
 visualise the results easily
 
 ```shell
@@ -140,7 +146,12 @@ This will
       modification affected the input map.
 
 
-# Troubleshooting
+## Troubleshooting
+### Finding more information 
+For extensive infomration regarding input options, please use 
+```shell
+$ OccuPy --help-all 
+```
 ### The modification is similar to the input
 1. The modification is effected by the power given to `--gamma `, where values larger than 1 mean to modify. Larger 
    values mean to modify more, and typically values between 2 and 10 are useful. 
