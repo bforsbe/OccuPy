@@ -66,6 +66,9 @@ NOTE: This option does *not* require amplifiaction or attentiuation. If used wit
 --max-box
 The box-size [pixels] than is used internally to perform any estimation or modification. The output maps will always be the same size as the input, but internally the map may be down-scale if larger than this value. This will limit the resolution of the output, as reported in the output log.
 
+--hedge-confidence
+The solvent model leads to a confidence of the estimated local scale, which tends to decrease along with the scale. Integer value larger than 1 supplied through this option will be used as a power-scaling of the confidence, such that values > 1 results to less modification of low-scale regions. 
+
 --solvent-def
 An .mrc-format map of the same size as the input, that delinetes content from solvent. This only affects scale-based modification, not the scale estimation itself, and so is only useful along with either amplifaction and/or attenuation.
 
