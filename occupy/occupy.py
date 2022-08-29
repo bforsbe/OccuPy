@@ -136,10 +136,10 @@ def main(
             "--verbose/--quiet",
             help="Let me know what's going on"
         ),
-        relion_classes: str = typer.Option(
-            None,
-            help="File of classes to diversify by occupancy amplification [_model.star]"
-        ),
+        #relion_classes: str = typer.Option(
+        #    None,
+        #    help="File of classes to diversify by occupancy amplification [_model.star]"
+        #),
         help_all: Optional[bool] = typer.Option(
             None,
             "--help-all",
