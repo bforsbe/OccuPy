@@ -1,8 +1,8 @@
 import numpy as np
 import mrcfile as mf
 from pathlib import Path
-#import map_tools, occupancy, vis, solvent              # for pyCharm
-from occupy import map_tools, occupancy, vis, solvent   # for terminal use
+#import map_tools, occupancy, vis, solvent, extras              # for pyCharm
+from occupy import map_tools, occupancy, vis, solvent, extras   # for terminal use
 from skimage.exposure import match_histograms
 
 from typing import Optional
@@ -140,6 +140,12 @@ def main(
             None,
             help="File of classes to diversify by occupancy amplification [_model.star]"
         ),
+        help_all: Optional[bool] = typer.Option(
+            None,
+            "--help-all",
+            is_eager=True,
+            help="Print lots of help and exit"
+        ),
         version: Optional[bool] = typer.Option(
             None,
             "--version",
@@ -152,6 +158,9 @@ def main(
     OccuPy takes a cryo-EM reconstruction produced by averaging and estimates a self-normative local map scaling.
     It can also locally alter confident partial occupancies.
     """
+
+    if help_all:
+        extras.help_all()
 
     if input_map is None:
         exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
@@ -260,9 +269,11 @@ def main(
     f_log = open(log_name, 'w+')
     print(f'\n---------------I/O AND CALCULATED SETTINGS-------', file=f_log)
     print(f'Input    :\t     \t {input_map}', file=f_log)
-    print(f'Pixel    :\t[A]  \t {voxel_size:.2f}', file=f_log)
+    print(f'Pix      :\t[A]  \t {f_open.voxel_size.x:.2f}', file=f_log)
     print(f'Box in   :\t[pix]\t {nd}', file=f_log)
     print(f'Box proc :\t[pix]\t {np.shape(in_data)}', file=f_log)
+    if downscale_processing:
+        print(f'Pix proc :\t[A]  \t {voxel_size:.2f}', file=f_log)
     print(f'Box radi :\t[pix]\t {radius:.3f}', file=f_log)
     print(f'Kernel s :\t[pix]\t {kernel_size}', file=f_log)
     print(f'Kernel r :\t[pix]\t {kernel_radius:.2f}', file=f_log)

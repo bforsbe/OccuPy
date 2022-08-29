@@ -236,7 +236,7 @@ def amplify_map_gamma(
             b = 0           not permitted
             0 < b < 1       attentuate, so not permitted
             b = 1           identity
-            b > 0           amplify
+            b > 1           amplify
             b = inf         amplify all occupancies to 100%
 
     2)  Attenuates by exponentiating the current scale b-1:
@@ -245,7 +245,7 @@ def amplify_map_gamma(
             b = 0           not permitted
             0 < b < 1       amplify, so not permitted
             b = 1           identity
-            b > 0           attenuate
+            b > 1           attenuate
             b = inf         attenuate all occupancies to 0%, except those at 100%
 
     :param data:
