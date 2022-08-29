@@ -139,7 +139,7 @@ This will
 1. Color the input (and any output) map by the estimated scale
 2. Provide a color key
 3. Provide two useful commands within the chimeraX-session:
-   1. `scale_color < color this map > < by this value >`    to color one  map by the values of another according to 
+   1. `scale_color <color this map> <by this value>`    to color one  map by the values of another according to 
       the color key. To re-color according to scale, use `scale_color <map> #2` since the .cxc always defines the 
       scale estimate as `#2`. This is useful after introducing clipping planes.
    2. `occupy_level < level >`  to set the input and output maps on the same level for easy comparison of how 
@@ -148,28 +148,33 @@ This will
 
 ## Troubleshooting
 ### Finding more information 
-For extensive infomration regarding input options, please use 
+For brief information regarding input options, please use 
+```shell
+$ OccuPy --help 
+```
+For extensive information regarding input options, please use 
 ```shell
 $ OccuPy --help-all 
 ```
-### The modification is similar to the input
+### The modified map is similar to the input map
 1. The modification is effected by the power given to `--gamma `, where values larger than 1 mean to modify. Larger 
    values mean to modify more, and typically values between 2 and 10 are useful. 
 2. The modification is suppressed if the estimated solvent model decreases confidence in partial occupancies. If 
    there isn't enough solvent for the fitting of the solvent model, it will typically be too wide and prevent 
    modification of lower-scale components. You can check this by using the `--plot` option and inspecting the output.
-   You can also use `--solvent-def <mask.mrc>` where the mask covers the *non*-solvent parts, which will allow these 
+   You can also use `--solvent-def <mask.mrc>` where the mask is a conventional solvent-mask. This will allow these 
    regions to be omitted during solvent fitting. _This mask does not need to be perfect, and does not limit the 
    modification to areas inside it_. 
 ### There is a sphere of noise surrounding the amplified map
 1. If the confidence is over-estimated, low-scale components will be permitted to be amplified. You can hedge the 
-   confidence by using `--hedge-confidence < val >`, where `< val >` is a power, meaning that higher values hedge 
+   confidence by using `--hedge-confidence <val>`, where `<val>` is a power, meaning that higher values hedge 
    more. 10 is a reasonable value to try.
 2. Another possible reason for the confidence being over-estimated is that the solvent model mean and/or variance is 
    under-estimated. A typical reason for this is that the solvent has been flattened, such that the solvent is not 
    gaussian. `OccuPy` was not designed for this type of reconstruction, since such flattening is typically enforced 
    using a mask which has thus already delineated solvent vs non-solvent. 
 3. If the map is not solvent-flattened, and confidence-hedging does not alleviate solvent-amplification surrounding 
-   the main map component, use `--solvent-def <mask.mrc>` where the mask covers the *non*-solvent parts, which will 
-   allow these regions to be omitted during solvent fitting.
+   the main map component, use `--solvent-def <mask.mrc>` where the mask is a conventional solvent-mask. This will 
+   allow these regions to be omitted during solvent fitting. _This mask does not need to be perfect, and does 
+   not limit the modification to areas inside it_. 
 
