@@ -57,8 +57,13 @@ def main(
         ),
         kernel_size: int = typer.Option(
             None,
-            "--kernel", "-k",
+            "--kernel",
             help="Size of the local occupancy estimation kernel [pixels]"
+        ),
+        tile_size: int = typer.Option(
+            None,
+            "--tile-size",
+            help="Size of the local region used for scale normalization [pixels]"
         ),
         lowpass_input: float = typer.Option(
             None,
@@ -350,6 +355,7 @@ def main(
         tau=tau,
         save_occ_map=scale_map,
         s0=s0,
+        tile_size=tile_size,
         verbose=verbose
     )
     map_tools.adjust_to_parent(file_name=scale_map, parent=input_map)
@@ -444,10 +450,15 @@ def main(
         # TODO Compare power spectrum of input out put to examine spectral effect
         # TODO also check the average change in pixel value, anf how it relates to power spectral change
         if hist_match:
-            ampl = match_histograms(ampl,
-                                    f_open.data)  # Output is no longer input + stuff, i.e. good part is now something else.
+            ampl = match_histograms(
+                ampl,
+                f_open.data
+            )  # Output is no longer input + stuff, i.e. good part is now something else.
         else:
-            ampl = map_tools.clip_to_range(ampl, f_open.data)
+            ampl = map_tools.clip_to_range(
+                ampl,
+                f_open.data
+            )
 
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
 

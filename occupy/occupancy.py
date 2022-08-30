@@ -19,7 +19,11 @@ def compute_tiling(
 
         # The maximum number of tiles. Overlap is ok.
         max_tiles = nd - tile_sz + 1
-        assert all(n_tiles < max_tiles)
+
+        if all(n_tiles > max_tiles):
+            if verbose:
+                print(f'{n_tiles} tiles is bigger than the largest number of {tile_sz[0]}-pixel tiles possible ({max_tiles[0]}). Reducing.')
+            n_tiles = max_tiles[0]
 
         # number of voxels not used for tiles
         non_tile = nd - n_tiles * tile_sz
@@ -275,6 +279,7 @@ def get_map_scale(
         tau: float = None,
         save_occ_map: str = None,
         s0: bool = False,
+        tile_size: int = 12,
         verbose: bool = True
 ):
     """
@@ -295,6 +300,7 @@ def get_map_scale(
         scale_kernel,
         tau=tau,
         s0 = s0,
+        tile_sz=tile_size,
         verbose=verbose)
 
     # Perform max-filter normalisation
