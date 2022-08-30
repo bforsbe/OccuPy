@@ -184,9 +184,9 @@ def main(
     else:
         gamma = None  # We might still do solvent exclusion
 
-    if relion_classes is not None:
-        print('Input using a relion model.star to diversify classes is not yet implemented')
-        exit(0)
+    #if relion_classes is not None:
+    #    print('Input using a relion model.star to diversify classes is not yet implemented')
+    #    exit(0)
 
     # --------------- READ INPUT ---------------------------------------------------------------
 
