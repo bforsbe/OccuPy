@@ -52,6 +52,9 @@ Lower values will consider lower values as "high", and tend to make more regions
 --kernel/-k
 The size [pixels] of the region considered when estimating the local scale, i.e. it's 'locality'. A larger egion will achieve better significance by sampling more voxels, but suffer decreased resolution. It is *not* recommended to change this setting.
 
+--tile-size
+The size of the regions used to define the scale normalization. Choosing a smaller value means that you permit a smaller region to be used to define "full" scale. If you have heavy atoms, then these will tend to dominate a small region, and define "full" scale. If you set it too big, no "full scale" region will be found, and the normalization is too small, leading to over-estimated scale. The default is big neough to not account for single atoms like mteal ions, but look for protein or nucleic acid regions as "full" scale refrence volumes. 
+
 --lowpass/-lp
 The maximal resolution [Å] consider in the input map. Low-pass filtering the input tends to allow better estimation of solvent, which can lead to better confidence of low-scale components.
 
