@@ -30,6 +30,8 @@ The reason for this is that it is intended to be compatible with the expectation
 classifiers (no half-sets) based on prior alignments (no GPUs), and be compatible with unbiased discovery of 
 macromolecular heterogeneity and/or components (no masks).
 In this context, it will provide a displacement vector to emphasize macromolecular occupancy during gradient descent.
+Basically, it needs to be fast enough to run repeatedly with delaying processing, and simple enough to use that it 
+needs no input other than a cryo-EM map. 
 
 It is here implemented as a command-line tool using open-source python libraries, to facilitate visualization of 
 partial scale of cryo-EM reconstructions.
