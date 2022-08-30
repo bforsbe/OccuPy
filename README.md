@@ -5,15 +5,34 @@ occupancy, and optionally also equalise the map according to occupancy while sup
 ![image](resources/cover.png)
 
 ## Estimation of local scale/occupancy 
-The primary purpose of **OccuPy** is to estimate the local map scale of cryo-EM maps. All voxels in a cryo-EM map 
-can be considered as drawn from a distribution defined by the characteristics of its neighborhood. In 
-well-resolved regions noise has been cancelled such that this distribution contains values above and below that 
-expected of the surrounding solvent. Decreased resolution or occupancy conversely results in values that are closer 
-to solvent, and thus drawn from a distribution of lower variance. In essence, **OccuPy** locates the region that 
-exhibits the highest variance, and utilizes this to place all other regions on a nominal scale between 0 and 1. 
-Lower values are associated with increased variability (typically through flexibility), but under the assumption of 
-limited variability, the estimated map scale is a measure of local mass. In maps displaying compositional 
-heterogeneity, the local scale thus becomes a measure of macromolecular occupancy.
+The primary purpose of **OccuPy** is to estimate the local map scale of cryo-EM maps. What does the 'local scale' 
+mean? In simple terms, think of it as the range of pixels values. In well-resolved regions, contrast is high, and we 
+expect very bright and very dark pixels. If that region has decreased resolution or occupancy, we expect decreased 
+contrast and a narrower range of pixel values. The limit is solvent, which has Gaussian distribution. **OccuPy** was 
+built to estimate this 'scale' under the assumption that structural variability (flexibility) is negligible (in which 
+case it is a good approximation for occupancy), and to modify the estimated scale while not modifying solvent noise. 
+In essence, **OccuPy** locates the region that exhibits the highest range of pixel values, and utilizes this to place 
+all other regions on a nominal scale between 0 and 1. 
+
+### Disclaimer
+**OccuPy** does not sharpen maps. It tries not to.
+
+**OccuPy** does not estimate the local resolution, but might correlate with it.
+
+## Why estimate local scale?
+**OccuPy** is designed to work
+- extremely fast
+- without half-sets
+- without GPUs
+- without masks
+
+The reason for this is that it is intended to be compatible with the expectation maximization (fast) maximum likelihood 
+classifiers (no half-sets) based on prior alignments (no GPUs), and be compatible with unbiased discovery of 
+macromolecular heterogeneity and/or components (no masks).
+In this context, it will provide a displacement vector to emphasize macromolecular occupancy during gradient descent.
+
+It is here implemented as a command-line tool using open-source python libraries, to facilitate visualization of 
+partial scale of cryo-EM reconstructions.
 
 ## Modification of partial occupancies 
 **OccuPy** can also amplify confidently estimated partial occupancy (local scale) in the input map by adding the 
