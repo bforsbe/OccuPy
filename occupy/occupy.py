@@ -173,7 +173,7 @@ def main(
     if plot:
         import matplotlib.pyplot as plt
 
-    new_name = '_' + input_map
+    new_name = f'_{Path(input_map).stem}.mrc'
     doc = ''
 
     modify = amplify or attenuate or exclude_solvent
