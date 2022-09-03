@@ -136,6 +136,11 @@ def main(
             "--S0/--SW",
             help="Use simple kernel normalization S0 instead of tile-based percentile (SW)"
         ),
+        lp_scale: bool = typer.Option(
+            False,
+            "--lp-scale","-lps",
+            help="Use the low-passed input for scale estimation"
+        ),
         verbose: bool = typer.Option(
             False,
             "--verbose/--quiet",
@@ -302,7 +307,10 @@ def main(
             square=False,
             resample=False
         )
-
+        if lp_scale:
+            if verbose:
+                print('Using low-passed input to estimate scale')
+            scale_data = np.copy(lp_data)
         sol_data = np.copy(lp_data)
     else:
         sol_data = np.copy(in_data)
