@@ -2,7 +2,7 @@
 A fast and simple python module and program to estimate local scaling of cryo-EM maps, to approximate 
 occupancy, and optionally also equalise the map according to occupancy while suppressing solvent amplification.
 
-![image](resources/cover.png)
+![image](https://drive.google.com/uc?export=view&id=14jbTq32VDkzoF0O59Bzb7cXf4cjlBFrx)
 
 ## Estimation of local scale/occupancy 
 The primary purpose of **OccuPy** is to estimate the local map scale of cryo-EM maps. What does the 'local scale' 
