@@ -329,6 +329,14 @@ def main(
             square=False,
             resample=False
         )
+        if save_all_maps:
+            map_tools.new_mrc(
+                lp_data,
+                f'lowpass{new_name}',
+                parent=input_map,
+                verbose=verbose,
+                log=f_log
+            )
         scale_mode = None
         if lp_scale:
             scale_mode = 'occ'
@@ -343,6 +351,8 @@ def main(
         sol_data = np.copy(lp_data)
     else:
         sol_data = np.copy(in_data)
+
+    del lp_data
 
     # We apply any estimations or solvent operation on the raw input (possibly down-sized)
     if modify:
@@ -634,15 +644,6 @@ def main(
             log=f_log
         )
 
-        if use_lp:
-            map_tools.new_mrc(
-                lp_data,
-                f'lowpass{new_name}',
-                parent=input_map,
-                verbose=verbose,
-                log=f_log
-            )
-
     if chimerax:
         vis.chimx_viz(
             input_map,
@@ -677,7 +678,6 @@ def main(
         f = plt.gcf()
         f.set_size_inches(20, 4)
         ax1 = f.axes[0]
-        a, b = np.histogram(sol_data, bins=levels, density=True)
 
         if solvent_def is not None:
             ax1.plot(b[:-1], a, 'gray', label='unmasked data')
