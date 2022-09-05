@@ -327,10 +327,13 @@ def main(
             square=False,
             resample=False
         )
+        scale_mode = None
         if lp_scale:
+            scale_mode = 'occ'
             if verbose:
                 print('Using low-passed input to estimate scale')
         else:
+            scale_mode = 'res'
             if verbose:
                 print('Using raw input to estimate scale')
 
@@ -394,7 +397,7 @@ def main(
 
     # --------------- SCALE ESTIMATION ------------------------------------------------------
 
-    scale_map = f'scale{new_name}'
+    scale_map = f'scale_{scale_mode}{new_name}'
     scale, max_val = occupancy.get_map_scale(
         scale_data,
         scale_kernel=scale_kernel,
