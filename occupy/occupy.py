@@ -418,6 +418,7 @@ def main(
     # This is an estimate of the density, which we can convert back to a scale,
     # which in turn signifies the expected scale at full occupancy and full variability/flex
     variability_limit = np.mean(scale_data[scale==1]) / max_val
+    del scale_data
 
     # --------------- CONFIDENCE ESTIMATION ------------------------------------------------------
 
@@ -427,6 +428,11 @@ def main(
         hedge_confidence=hedge_confidence,
         n_lev=levels
     )
+
+    # clean
+    if plot:
+        a, b = np.histogram(sol_data, bins=levels, density=True)
+    del sol_data
 
     warnings=None
 
@@ -534,6 +540,8 @@ def main(
             extra_header=ampl_doc
         )
 
+        del ampl
+
     if attenuate:
         if not exclude_solvent:
             # If we are not excluding solvent, then we will add some back when we attenuate
@@ -612,6 +620,8 @@ def main(
             verbose=verbose,
             extra_header=attn_doc
         )
+
+        del attn
 
     # ----------------OUTPUT FILES AND PLOTTING -------------------------------------------------
     if save_all_maps:
