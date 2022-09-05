@@ -214,7 +214,9 @@ def main(
     f_open = mf.open(input_map)
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
-    voxel_size = np.copy(f_open.voxel_size.x)
+    voxel_size_ori = np.copy(f_open.voxel_size.x)
+    range_ori = np.array([f_open.header['dmin'],f_open.header['dmax']])
+    f_open.close()
     assert nd[0] % 2 == 0
     assert max_box % 2 == 0
     # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
@@ -226,7 +228,7 @@ def main(
         in_data, voxel_size = map_tools.lowpass(
             in_data,
             output_size=max_box,
-            voxel_size=f_open.voxel_size.x,
+            voxel_size=voxel_size_ori,
             square=True,
             resample=True
         )
@@ -295,7 +297,7 @@ def main(
     f_log = open(log_name, 'w+')
     print(f'\n---------------I/O AND CALCULATED SETTINGS-------', file=f_log)
     print(f'Input    :\t     \t {input_map}', file=f_log)
-    print(f'Pix      :\t[A]  \t {f_open.voxel_size.x:.2f}', file=f_log)
+    print(f'Pix      :\t[A]  \t {voxel_size_ori:.2f}', file=f_log)
     print(f'Box in   :\t[pix]\t {nd}', file=f_log)
     print(f'Box proc :\t[pix]\t {np.shape(in_data)}', file=f_log)
     if downscale_processing:
@@ -361,13 +363,16 @@ def main(
         sol_mask  = np.copy(s_open.data)
         s_open.close()
 
-        assert sol_mask.shape == f_open.data.shape
+        # Check same size as ori inout map (can be relaxed later)
+        assert sol_mask.shape[0] == nd
+        # check cubic
+        assert len(np.unique(sol_mask.shape)) == 1
 
         if downscale_processing:
             sol_mask, _ = map_tools.lowpass(
                 sol_mask,
                 output_size=max_box,
-                voxel_size=f_open.voxel_size.x,
+                voxel_size=voxel_size_ori,
                 square=True,
                 resample=True
             )
@@ -499,14 +504,16 @@ def main(
         # TODO Compare power spectrum of input out put to examine spectral effect
         # TODO also check the average change in pixel value, anf how it relates to power spectral change
         if hist_match:
+            f_open = mf.open(input_map)
             ampl = match_histograms(
                 ampl,
-                f_open.data
+                reference=f_open.data
             )  # Output is no longer input + stuff, i.e. good part is now something else.
+            f_open.close()
         else:
             ampl = map_tools.clip_to_range(
                 ampl,
-                f_open.data
+                range=range_ori
             )
 
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
@@ -582,11 +589,17 @@ def main(
         # TODO Compare power spectrum of input out put to examine spectral effect
         # TODO also check the average change in pixel value, anf how it relates to power spectral change
         if hist_match:
-            attn = match_histograms(attn,
-                                    f_open.data)  # Output is no longer input + stuff, i.e. good part is now something else.
+            f_open = mf.open(input_map)
+            attn = match_histograms(
+                ampl,
+                reference=f_open.data
+            )  # Output is no longer input + stuff, i.e. good part is now something else.
+            f_open.close()
         else:
-            attn = map_tools.clip_to_range(attn, f_open.data)
-
+            attn = map_tools.clip_to_range(
+                ampl,
+                range=range_ori
+            )
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
 
         # Save amplified and/or solvent-suppressed output.
@@ -649,7 +662,6 @@ def main(
             warnings=warnings
         )
 
-    f_open.close()
 
     if plot:
         f = plt.gcf()

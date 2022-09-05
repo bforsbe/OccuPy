@@ -205,7 +205,8 @@ def change_voxel_size(
 
 def clip_to_range(
         change: np.ndarray,
-        reference: np.ndarray
+        reference: np.ndarray = None,
+        range: np.ndarray = None
 ):
     """
     Clip an array to have the range as a reference array
@@ -215,7 +216,16 @@ def clip_to_range(
 
     :return:                clipped array
     """
-    rp = np.array([np.min(reference), np.max(reference)])
+    rp = None
+    if reference is None:
+        if range is None:
+            raise(ValueError, "No clip reference or range given")
+        else:
+            assert len(range)==2
+            assert range[0]<range[1]
+            rp = np.copy(range)
+    else:
+        rp = np.array([np.min(reference), np.max(reference)])
 
     change = np.clip(change, rp[0], rp[1])
 
