@@ -138,7 +138,7 @@ def main(
         ),
         lp_scale: bool = typer.Option(
             None,
-            "--lp-scale/--raw-scale",
+            "--lp-scale/--raw-scale","--occupancy",
             help="Use the low-passed input for scale estimation, or use the raw input map"
         ),
         verbose: bool = typer.Option(

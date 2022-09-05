@@ -111,7 +111,7 @@ The lower limit [<1] of the estimated scale that is used for visualization in th
 --S0/--SW
 Two modes of scale normalization are implemented. By default, SW is used, which considers the distribution of the data within local regions when determining the edfinintion of "full" scale. S0 is a simpler normalization that tends to make the estimated scale be more sensitive to intense points in the input map.
 
---lp-scale/--raw-scale
+--lp-scale/--raw-scale, --occupancy
 The low-pass frequency is determined from the --lowpass/-lp and --resolution/-r flags. By default, the 
 
 --verbose/--quiet

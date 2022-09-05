@@ -17,7 +17,7 @@ all other regions on a nominal scale between 0 and 1.
 ### Disclaimer
 **OccuPy** does not sharpen maps. It tries not to.
 
-**OccuPy** does not estimate the local resolution, but might correlate with it.
+**OccuPy** does not estimate the local resolution, but might correlate with it. See more [here](#the-estimated-scale-looks-like-my-local-resolution). 
 
 ## Why estimate local scale?
 **OccuPy** is designed to work
@@ -69,7 +69,7 @@ require half-maps, a resolution estimate, or solvent mask. It will likely benefi
 things, but does not need it. 
 
 ## Installation
-`OccuPy` can be installed from the [Python Package Index](https://pypi.org/) (PyPI)
+**OccuPy** can be installed from the [Python Package Index](https://pypi.org/) (PyPI)
 
 ```shell
 pip install occupy
@@ -84,7 +84,7 @@ $ pip install -e .
 
 ## Usage
 
-`OccuPy` is a command-line tool 
+**OccuPy** is a command-line tool 
 
 ```shell
 $ OccuPy --version
@@ -128,7 +128,7 @@ In its basic form, **OccuPy** simply estimates the map scale, writes it out alon
 visualise the results easily
 
 ```shell
-$ OccuPy -i map.mrc 
+$ occupy -i map.mrc 
 $ ls  
 map.mrc    scale_map.mrc    chimX_map.cxc
 ```
@@ -137,25 +137,25 @@ To modify all confident partial scale regions (local partial occupancy), use `--
 along with `--gamma` as described above. Because the input is modified and not just estimated, there is now additional 
 output map(s). 
 ```shell
-$ OccuPy -i map.mrc  --amplify --gamma 4 
+$ occupy -i map.mrc  --amplify --gamma 4 
 $ ls  
 map.mrc    scale_map.mrc    ampl_4.0_map.mrc    chimX_map.cxc
 ```
 
 To supress (flatten) solvent content use `--exclude-solvent`
 ```shell
-$ OccuPy -i map.mrc --exclude-solvent 
+$ occupy -i map.mrc --exclude-solvent 
 $ ls  
 map.mrc    scale_map.mrc    solExcl_map.mrc    chimX_map.cxc
 ```
 These can also be combined, of course
 ```shell
-$ OccuPy -i map.mrc --exclude-solvent --attenuate --amplify --gamma 4
+$ occupy -i map.mrc --exclude-solvent --attenuate --amplify --gamma 4
 $ ls  
 map.mrc    scale_map.mrc    ampl_4.0_solExcl_map.mrc   attn_4.0_solExcl_map.mrc    chimX_map.cxc
 ```
 ## Visualising the local scale
-The easiest method of visualizing the estimated local scale is to use the chimeraX command script output by `OccuPy`. 
+The easiest method of visualizing the estimated local scale is to use the chimeraX command script output by **OccuPy**. 
 This will 
 1. Color the input (and any output) map by the estimated scale
 2. Provide a color key
@@ -171,11 +171,11 @@ This will
 ### Finding more information 
 For brief information regarding input options, please use 
 ```shell
-$ OccuPy --help 
+$ occupy --help 
 ```
 For extensive information regarding input options, please use 
 ```shell
-$ OccuPy --help-all 
+$ occupy --help-all 
 ```
 ### The modified map is similar to the input map
 1. The modification is effected by the power given to `--gamma `, where values larger than 1 mean to modify. Larger 
@@ -192,10 +192,31 @@ $ OccuPy --help-all
    more. 10 is a reasonable value to try.
 2. Another possible reason for the confidence being over-estimated is that the solvent model mean and/or variance is 
    under-estimated. A typical reason for this is that the solvent has been flattened, such that the solvent is not 
-   gaussian. `OccuPy` was not designed for this type of reconstruction, since such flattening is typically enforced 
+   gaussian. **OccuPy** was not designed for this type of reconstruction, since such flattening is typically enforced 
    using a mask which has thus already delineated solvent vs non-solvent. 
 3. If the map is not solvent-flattened, and confidence-hedging does not alleviate solvent-amplification surrounding 
    the main map component, use `--solvent-def <mask.mrc>` where the mask is a conventional solvent-mask. This will 
    allow these regions to be omitted during solvent fitting. _This mask does not need to be perfect, and does 
    not limit the modification to areas inside it_. 
 
+### The estimated scale looks like my local resolution
+**OccuPy** estimates the scale. The scale decreases due to **both** lower resolution and lower occupancy. Since it 
+is not possible to trivially separate these factors, the current approach to estimate occupancy as separate from 
+lower resolution is to low-pass filter the input before estimating the local scale. This is turned on by default 
+when amplifying or attenuating the map, to minimize over-amplification of low-scale components that are simply low 
+resolution. If one is just estimating scale but wants to reduce resolution-dependent effects, the low-pass 
+filtration before scale-estimation can be activated by either --lp-scale or --occupancy. It should then be combined 
+with --lowpass/-lp or --resolution/-r to specify the worst resolution among the components for which occupancy is to 
+be estimated. For membrane proteins, see [here](#my-membrane-or-detergent-looks-funny).
+
+In the absence of variable occupancy, local scale does actually approximate the local resolution. If you would like 
+to include resolution-dependent factors during amplification or attenuation (which is not recommended), you can do 
+so by using --raw_scale, which does the opposite of --lp-scale. 
+
+### My membrane or detergent looks funny 
+Membranes are lower in resolution due to their amorphous nature which cannot be coherently averaged. Because this 
+reduces the local scale, membranes are estimated at low scale. The estimated scale of membranes are thus **not** a 
+measure of relative density or occupancy. The low-pass filtration intended to reduce influence of 
+resolution-dependent scale factors is only an approximate measure, so that the precise meaning of the local scale of 
+membrane and another amorphous regions (as estimated by **OccuPy**) is not well-defined. The lower scale generally 
+reflects intuition however, and permits weak attenuation to de-emphasize these regions to make visualization easier.   
