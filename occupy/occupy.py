@@ -308,6 +308,10 @@ def main(
     if own_tau:
         print(f'Tau(rec).:\t[0,1]\t {tau_ana:.3f}', file=f_log)
     print(f'LP Filt. :\t[A]  \t {lowpass_input:.2f}', file=f_log)
+    if lp_scale:
+        print(f'LP scale :\t     \t {lp_scale} (Try to ignore res)', file=f_log)
+    else:
+        print(f'LP scale :\t     \t {lp_scale} (Include res-dep)', file=f_log)
     print(f'Scale lim:\t[0,1]\t {scale_limit:.3f}', file=f_log)
 
     # ----- LOW-PASS SETTINGS ---------
@@ -351,13 +355,27 @@ def main(
     mask = map_tools.create_radial_mask(nd_processing, dim=3, radius=radius)
     if solvent_def is not None:
         s_open = mf.open(solvent_def)
-        assert s_open.data.shape == mask.shape
+        sol_mask  = np.copy(s_open.data)
+        s_open.close()
+
+        assert sol_mask.shape == f_open.data.shape
+
+        if downscale_processing:
+            sol_mask, _ = map_tools.lowpass(
+                sol_mask,
+                output_size=max_box,
+                voxel_size=f_open.voxel_size.x,
+                square=True,
+                resample=True
+            )
+
+        assert sol_mask.shape == sol_data.shape
 
         # Make a mask from the solvent definition.
         # People might provide a mask that covers the solvent or content, we will use it as makes most sense
         solvent_region = solvent.smallest_variance_region(
             sol_data,       # data
-            s_open.data,    # solvent def
+            sol_mask,    # solvent def
             mask            # radial mask
         )
 
