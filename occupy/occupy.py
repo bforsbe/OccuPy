@@ -249,15 +249,20 @@ def main(
 
     # --------------- SETTINGS -----------------------------------------------------------------
 
-    # To make solvent more detectable, low-pass input.
-    # If a lowpass is provided use it.
-    # Otherwise, use double the provided resolution.
-    # If a resolutions is not provided, use 3 times Nyquist.
+    # Use low-pass filter to
+    # - improve solvent estimation significance
+    # - eliminate reslution-dependent scale factors
+    # If a lowpass or resolution is provided, use it. Otherwise default to 8.0Å
     if lowpass_input is None:
-        if resolution is not None:
-            lowpass_input = 2 * resolution  # Å
+        if resolution is None:
+            lowpass_input = 8.0 # 8Å default
         else:
-            lowpass_input = (2 * voxel_size * 3).astype(np.float32)  # Å
+            lowpass_input = resolution  # Å
+    elif resolution is not None:
+        if resolution < lowpass_input:
+            print(f'Warning: provided --resolution/-r value ({resolution}) is not used, since --lowpass/-l ({lowpass_input}) is greater')
+        lowpass_input = np.float32(np.max([lowpass_input,resolution]))
+    lowpass_input = np.float32(lowpass_input)
 
     # The size of the scale-estimation kernel.
     if kernel_size is None:
