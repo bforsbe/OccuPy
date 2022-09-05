@@ -30,7 +30,7 @@ def main(
         resolution: float = typer.Option(
             None,
             "--resolution", "-r",
-            help="Resolution of input map"
+            help="The lowest resolution of resolvable content input map."
         ),
         amplify: bool = typer.Option(
             False,
@@ -137,9 +137,9 @@ def main(
             help="Use simple kernel normalization S0 instead of tile-based percentile (SW)"
         ),
         lp_scale: bool = typer.Option(
-            False,
-            "--lp-scale","-lps",
-            help="Use the low-passed input for scale estimation"
+            None,
+            "--lp-scale/--raw-scale",
+            help="Use the low-passed input for scale estimation, or use the raw input map"
         ),
         verbose: bool = typer.Option(
             False,
@@ -191,8 +191,19 @@ def main(
     if amplify or attenuate:
         if gamma is None:
             raise ValueError("--gamma must be specified if attenuating or amplifying")
+
+        # If modifying, then occupancy is probably desired, in which case it makes sense to use low-passed
+        # input for scale estimation. But if --raw-scale is set, we don't override it
+        if lp_scale is None:
+            lp_scale = True
     else:
+        # If not modifying, then scale might as well reflect resolutio-dependent scale as well, in which low-passed
+        # input should NOT be used for scale estimation. But if --lp-scale is set, we don't override it
+        if lp_scale is None:
+            lp_scale = False
         gamma = None  # We might still do solvent exclusion
+
+    assert lp_scale is not None # Temp check
 
     #if relion_classes is not None:
     #    print('Input using a relion model.star to diversify classes is not yet implemented')
@@ -310,6 +321,10 @@ def main(
         if lp_scale:
             if verbose:
                 print('Using low-passed input to estimate scale')
+        else:
+            if verbose:
+                print('Using raw input to estimate scale')
+
             scale_data = np.copy(lp_data)
         sol_data = np.copy(lp_data)
     else:

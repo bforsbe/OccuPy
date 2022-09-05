@@ -9,7 +9,7 @@ def help_all():
 An input map in .mrc format. Currently, this needs to be cubic, i.e. with equal sides.  Occupy expects this to contain solvent noise, but sometimes solvent-flattening and AI-guided map modifications are ok. The input map is automatically masked with a radius equal to half the box-size, so that its corners are not considered.
 
 --resolution/-r
-The estimated resolution [Å] of the input map. This is only used to determine parameters that can be set explicitly if so desired: a reasonable low-pass filter to apply to the map initially (--lowpass/-lp), which dictates the kernel size (--kernel-size/-k) and tau value (--tau/-t).
+The estimated resolution [Å] of the input map, which is best set to the largest value of relevant content. If amplifying/attenuating (modifying) by scale, this is the worst resolution of components that are to be modified. This is to assure that the resolution-dependent contribution to local scale estimate is minimized. If the local scale of components expected to be of full occupancy are estimated at lower scale, it is possible to compensate this by reducing the --tile size, or --tau/-t value.  The chosen resolution is also used to determine parameters that can be set explicitly if so desired: a reasonable low-pass filter to apply to the map initially (--lowpass/-lp), which dictates the kernel size (--kernel-size/-k) and tau value (--tau/-t).
 
 --amplify/-am
 If set, confident partial occupancies will be amplified by applying a gamma-factor (power-scaling) to the estimated local scale of the input map, equal to 1/gamma. This option requires that one also specifies --gamma. This option can be used along --attenuate/-at, which will do the opposite and produce a separate output file. This option can be used in combination with --exclude-solvent.
@@ -110,6 +110,9 @@ The lower limit [<1] of the estimated scale that is used for visualization in th
 --------------------- EXTRA OPTIONS --------------------  
 --S0/--SW
 Two modes of scale normalization are implemented. By default, SW is used, which considers the distribution of the data within local regions when determining the edfinintion of "full" scale. S0 is a simpler normalization that tends to make the estimated scale be more sensitive to intense points in the input map.
+
+--lp-scale/--raw-scale
+The low-pass frequency is determined from the --lowpass/-lp and --resolution/-r flags. By default, the 
 
 --verbose/--quiet
 Print information during use
