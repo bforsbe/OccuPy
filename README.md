@@ -1,6 +1,7 @@
 # OccuPy
-A fast and simple python module and program to estimate local scaling of cryo-EM maps, to approximate 
-occupancy, and optionally also equalise the map according to occupancy while suppressing solvent amplification.
+A fast and simple python module and program to estimate local scaling of cryo-EM maps, to approximate relative
+occupancy and/or resolution, and optionally also equalise the map according to occupancy while suppressing solvent 
+amplification.
 
 ![image](https://drive.google.com/uc?export=view&id=14jbTq32VDkzoF0O59Bzb7cXf4cjlBFrx)
 
@@ -17,7 +18,8 @@ all other regions on a nominal scale between 0 and 1.
 ### Disclaimer
 **OccuPy** does not sharpen maps. It tries not to.
 
-**OccuPy** does not estimate the local resolution, but might correlate with it. See more [here](#the-estimated-scale-looks-like-my-local-resolution). 
+**OccuPy** does not estimate the local resolution, but might correlate with it. 
+See more [here](#the-estimated-scale-looks-like-my-local-resolution). 
 
 ## Why estimate local scale?
 **OccuPy** is designed to work
@@ -28,13 +30,13 @@ all other regions on a nominal scale between 0 and 1.
 
 The reason for this is that it is intended to be compatible with the expectation maximization (fast) maximum likelihood 
 classifiers (no half-sets) based on prior alignments (no GPUs), and be compatible with unbiased discovery of 
-macromolecular heterogeneity and/or components (no masks).
-In this context, it will provide a displacement vector to emphasize macromolecular occupancy during gradient descent.
-Basically, it needs to be fast enough to run repeatedly with delaying processing, and simple enough to use that it 
-needs no input other than a cryo-EM map. 
+macromolecular heterogeneity and/or components (no masks). In this context, it will provide ways to weight data 
+and/or provide a displacement vector to emphasize macromolecular resolution and/or occupancy during gradient 
+descent. Basically, it needs to be fast enough to run repeatedly without delaying processing, and simple enough to 
+use that it needs no input other than a cryo-EM map. 
 
 It is here implemented as a command-line tool using open-source python libraries, to facilitate visualization of 
-partial scale of cryo-EM reconstructions.
+partial occupancy and relative resolution of cryo-EM reconstructions.
 
 ## Modification of partial occupancies 
 **OccuPy** can also amplify confidently estimated partial occupancy (local scale) in the input map by adding the 
