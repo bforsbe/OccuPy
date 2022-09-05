@@ -609,13 +609,13 @@ def main(
         if hist_match:
             f_open = mf.open(input_map)
             attn = match_histograms(
-                ampl,
+                attn,
                 reference=f_open.data
             )  # Output is no longer input + stuff, i.e. good part is now something else.
             f_open.close()
         else:
             attn = map_tools.clip_to_range(
-                ampl,
+                attn,
                 range=range_ori
             )
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
