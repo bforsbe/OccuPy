@@ -349,6 +349,7 @@ def main(
             )
         scale_mode = None
         if lp_scale:
+            scale_data = np.copy(lp_data)
             scale_mode = 'occ'
             if verbose:
                 print('Using low-passed input to estimate scale')
@@ -357,7 +358,6 @@ def main(
             if verbose:
                 print('Using raw input to estimate scale')
 
-            scale_data = np.copy(lp_data)
         sol_data = np.copy(lp_data)
     else:
         sol_data = np.copy(in_data)
