@@ -143,6 +143,11 @@ def main(
             "--lp-scale/--raw-scale","--occupancy",
             help="Use the low-passed input for scale estimation, or use the raw input map"
         ),
+        emdb_id: str = typer.Option(
+            None,
+            "--emdb","--emdb-id",
+            help="Fetch the main map from an EMDB entry and use as input"
+        ),
         verbose: bool = typer.Option(
             False,
             "--verbose/--quiet",
@@ -175,7 +180,10 @@ def main(
         extras.help_all()
 
     if input_map is None:
-        exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
+        if emdb_id is None:
+            exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
+        else:
+            input_map = map_tools.fetch_EMDB(emdb_id)
 
     if plot:
         import matplotlib.pyplot as plt
@@ -216,7 +224,7 @@ def main(
     f_open = mf.open(input_map)
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
-    voxel_size_ori = np.copy(f_open.voxel_size.x)
+    voxel_size_ori = voxel_size = np.copy(f_open.voxel_size.x)
     range_ori = np.array([f_open.header['dmin'],f_open.header['dmax']])
     f_open.close()
     assert nd[0] % 2 == 0

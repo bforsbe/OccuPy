@@ -2,6 +2,9 @@ import mrcfile.mrcfile
 import numpy as np
 import mrcfile as mf
 import scipy as sp
+import wget
+import gzip
+import os
 from pathlib import Path
 
 from scipy import fft as spfft
@@ -401,3 +404,40 @@ def lowpass_map(
         m = np.mean(r_data)
         r_data = (r_data - m) * (ref_scale / np.max(r_data)) + m
     return r_data
+
+def gunzip(source_filepath, dest_filepath, block_size=65536):
+    with gzip.open(source_filepath, 'rb') as s_file, \
+            open(dest_filepath, 'wb') as d_file:
+        while True:
+            block = s_file.read(block_size)
+            if not block:
+                break
+            else:
+                d_file.write(block)
+
+def fetch_EMDB(ID: str):
+    file_name = ''
+    fetch_name = f'emd_{ID}.map.gz'
+    map_name = Path(Path(fetch_name).stem)
+
+    if map_name.is_file():
+        print(f'Found already downloaded file {map_name}')
+        return map_name
+
+    url = f'https://ftp.ebi.ac.uk/pub/databases/emdb/structures/EMD-{ID}/map/emd_{ID}.map.gz'
+    print(f'Fetching {fetch_name}')
+    try:
+        file_name = wget.download(url)
+    except:
+        raise(NameError, f"EMDB entry {ID} could not be fetched through url: \n {url}")
+    print(f'\n Done fetching {fetch_name}')
+
+    print(f'Unzipping {fetch_name}')
+    try:
+        gunzip(fetch_name,map_name)
+        os.remove(fetch_name)
+    except:
+        raise(NameError, f'Error trying to gunzip {fetch_name}')
+    print(f'Done unzipping')
+
+    return map_name
