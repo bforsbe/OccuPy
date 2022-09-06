@@ -1,8 +1,10 @@
 import numpy as np
 import mrcfile as mf
 from pathlib import Path
-#import map_tools, occupancy, vis, solvent, extras              # for pyCharm
-from occupy import map_tools, occupancy, vis, solvent, extras   # for terminal use
+try:
+    import map_tools, occupancy, vis, solvent, extras              # for pyCharm
+except:
+    from occupy import map_tools, occupancy, vis, solvent, extras   # for terminal use
 from skimage.exposure import match_histograms
 
 from typing import Optional
