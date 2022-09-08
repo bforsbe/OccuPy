@@ -188,7 +188,11 @@ def main(
     if plot:
         import matplotlib.pyplot as plt
 
-    new_name = f'_{Path(input_map).stem}.mrc'
+    # Remove path for output
+    new_name = Path(input_map).name
+    # Force .mrc for output
+    new_name = f'_{Path(new_name).stem}.mrc'
+
     doc = ''
 
     modify = amplify or attenuate or exclude_solvent
