@@ -48,23 +48,27 @@ def chimx_viz(
         pLDDT_unity = '\'0,red:0.5,orange:0.7,yellow:0.9,cornflowerblue:1.0,blue\''
         pop = '\'0.0,#AAFF00:0.2,#FFAA00:0.4,#FF00AA:0.6,#AA00FF:0.8,#00AAFF\''
         turbo = '\'0.0,#7a0403:0.1667,#e5460b:0.3333,#faba39:0.5,#a3fd3d:0.6667,#1ae4b6:0.8333,#4686fa:1.0,#30123b\''
-        turbo = ['#d23105', '#fb8022','#edd03a','#a3fd3d','#31f199','#29bbec','#29bbec']
+        #turbo = ['#d23105', '#fb8022','#edd03a','#a3fd3d','#31f199','#29bbec','#4d6edf']
+        turbo = ['#cc3920', '#f0682e','#faab46','#dcdc4b','#a4fa4f','#56f582','#36d7c3','#46a4f6','#4d6edf']
+        #turbo = ['#cc3920', '#eb5d2a','#fb923c','#f3c04b','#d1e54a','#a3fa4f','#66f974','#3ae7ab','#38c6da','#4a99fa','#4d6edf']
 
 
-        n_colors=7
+        n_colors=9
         turbo_l = ''
-        labels = ''
-        vals=np.linspace(min_scale, 1.0, n_colors)
+        labels = key_labels = ''
+        vals=np.linspace(0, 1.0, n_colors)
+        key_vals = np.linspace(min_scale, 1.0, n_colors)
         for i in np.arange(n_colors):
             turbo_l = f'{turbo_l}{vals[i]:.2f},{turbo[i]}:'
             labels = f'{labels} :{vals[i]:.2f}'
+            key_labels = f'{key_labels} :{key_vals[i]:.2f}'
         turbo_l = f'\'{turbo_l[:-1]}\''
         #turbo_l = '\'0.0,#d23105:0.1667,#fb8022:0.3333,#edd03a:0.5,#a3fd3d:0.6667,#31f199:0.8333,#29bbec:1.0,#29bbec\''
 
         clr = turbo_l
 
         key_str = f'key {clr} '
-        key_str = f'{key_str} {labels} size 0.5, 0.04 pos 0.25, 0.08 ticks true tickThickness 2 \n'
+        key_str = f'{key_str} {key_labels} size 0.5, 0.04 pos 0.25, 0.08 ticks true tickThickness 2 \n'
 
         print(f'alias scale_color color sample $1 map $2 palette {clr} range {min_scale},1.0 \n', file=the_file)
 
