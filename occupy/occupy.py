@@ -363,10 +363,12 @@ def main(
                 print('Using raw input to estimate scale')
 
         sol_data = np.copy(lp_data)
+        del lp_data
+
     else:
+
         sol_data = np.copy(in_data)
 
-    del lp_data
 
     # We apply any estimations or solvent operation on the raw input (possibly down-sized)
     if modify:
