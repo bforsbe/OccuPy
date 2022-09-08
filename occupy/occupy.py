@@ -333,6 +333,7 @@ def main(
     # ----- LOW-PASS SETTINGS ---------
 
     use_lp = False
+    scale_mode = 'res'
     if lowpass_input > 2 * voxel_size:
         use_lp = True
 
@@ -351,14 +352,12 @@ def main(
                 verbose=verbose,
                 log=f_log
             )
-        scale_mode = None
         if lp_scale:
             scale_data = np.copy(lp_data)
             scale_mode = 'occ'
             if verbose:
                 print('Using low-passed input to estimate scale')
         else:
-            scale_mode = 'res'
             if verbose:
                 print('Using raw input to estimate scale')
 
