@@ -147,7 +147,8 @@ def percentile_filter_tiled(
                             extremum_idx[0,:] = np.array([i,j,k])
 
                         # Smallest value
-                        if v < extremum[1]:
+                        tile_r = np.sqrt((i-n_tiles/2)**2+(j-n_tiles/2)**2+(k-n_tiles/2)**2)
+                        if v < extremum[1] and tile_r < n_tiles/2-1:
                             extremum[1] = v
                             extremum_idx[1,:] = np.array([i,j,k])
 
