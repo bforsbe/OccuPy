@@ -272,7 +272,8 @@ def main(
     # If a lowpass or resolution is provided, use it. Otherwise default to 8.0Å
     if lowpass_input is None:
         if resolution is None:
-            lowpass_input = 8.0 # 8Å default
+            lower_limit_default = 3 * voxel_size # 3 pixels
+            lowpass_input = np.max([lower_limit_default,8.0]) # 8 Å default unless large pixel size
         else:
             lowpass_input = resolution  # Å
     elif resolution is not None:
@@ -296,10 +297,10 @@ def main(
     kernel_warn=False
     if kernel_size < 5:
         kernel_warn=True
-        print(f'\033[93m \nAuto-calculated a very small kernel-size ({kernel_size} pixels). \nThis may lead to a bad solvent model \nSuggest --kernel 5 or more, and/or --lowpass {lowpass_input*2} or more \n \033[0m')
+        print(f'\033[93m \nAuto-calculated a very small kernel-size ({kernel_size} pixels). \nThis may lead to a bad solvent model \nSuggest --kernel 5 or more, and/or --lowpass {int(lowpass_input*2)} or more \n \033[0m')
 
     if kernel_radius < kernel_size/(2*2):
-        print(f'\033[93m \nAuto-calculated a very small kernel radius ({kernel_radius:.2f} pixels). \nThis may lead to a bad solvent model \nSuggest --lowpass {lowpass_input*2} or more \n \033[0m')
+        print(f'\033[93m \nAuto-calculated a very small kernel radius ({kernel_radius:.2f} pixels). \nThis may lead to a bad solvent model \nSuggest --lowpass {int(lowpass_input*2)} or more \n \033[0m')
         kernel_warn = True
 
     scale_kernel, tau_ana = occupancy.spherical_kernel(
