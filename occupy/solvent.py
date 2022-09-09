@@ -238,13 +238,15 @@ def suppress(
 
     return out_data
 
-def warn_bad(file=None,verbose=False):
+def warn_bad(lowest_confident_scale,file=None,verbose=False):
     if file is not None and verbose:
         print(f"\n{bcolors.WARNING}Warning: Potentially bad solvent model {bcolors.ENDC}", file=file)
+        print(f"{bcolors.WARNING}Lowest_confident_scale: {lowest_confident_scale:.2f} {bcolors.ENDC}", file=file)
         print(f"{bcolors.WARNING}consider using --plot and check solModel*.png {bcolors.ENDC}", file=file)
         print(f"{bcolors.WARNING}consider using --solvent-def <solvent_mask.mrc> {bcolors.ENDC}\n", file=file)
     else:
         print(f"\n{bcolors.WARNING}Warning: Potentially bad solvent model {bcolors.ENDC}")
+        print(f"{bcolors.WARNING}Lowest_confident_scale: {lowest_confident_scale} {bcolors.ENDC}")
         print(f"{bcolors.WARNING}consider using --plot and check solModel*.png {bcolors.ENDC}")
         print(f"{bcolors.WARNING}consider using --solvent-def <solvent_mask.mrc> {bcolors.ENDC}\n")
 

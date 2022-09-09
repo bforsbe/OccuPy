@@ -236,6 +236,7 @@ def main(
     # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
 
     downscale_processing = nd[0] > max_box
+    factor = 1
     if downscale_processing:
         factor = max_box / nd[0]
 
@@ -458,7 +459,7 @@ def main(
         n_lev=levels
     )
 
-    # clean
+    # clean sol_data asap
     if plot:
         a, b = np.histogram(sol_data, bins=levels, density=True)
     del sol_data
@@ -467,6 +468,8 @@ def main(
 
     # A high value of lowest confident scale means a wide solvent model compared to the overall histogram
     lowest_confident_scale = sol_limits[3] / max_val
+    if verbose:
+        print(f'Min c.sc :\t[0,1]\t {lowest_confident_scale:.3f}', file=f_log)
 
     # Dirty check on the solvent model, could be more rigorous
     if modify:
@@ -477,7 +480,7 @@ def main(
                 warnings = f'{warnings} run with --plot and check solModel*.png'
             else:
                 warnings = f'{warnings} check the output solModel*.png '
-            solvent.warn_bad(file=f_log,verbose=verbose)
+            solvent.warn_bad(lowest_confident_scale,file=f_log,verbose=verbose)
 
     # --------------- MODIFY INPUT MAP IF AMPLIFYING AND/OR SUPPRESSING SOLVENT ------------------
     if exclude_solvent:
