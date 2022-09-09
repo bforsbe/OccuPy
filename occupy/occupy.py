@@ -278,7 +278,7 @@ def main(
             lowpass_input = resolution  # Å
     elif resolution is not None:
         if resolution < lowpass_input:
-            print(f'Warning: provided --resolution/-r value ({resolution}) is not used, since --lowpass/-l ({lowpass_input}) is greater')
+            print(f'Warning: provided --resolution/-r value ({resolution}) is not used, since --lowpass/-lp ({lowpass_input}) is greater')
         lowpass_input = np.float32(np.max([lowpass_input,resolution]))
     lowpass_input = np.float32(lowpass_input)
 
