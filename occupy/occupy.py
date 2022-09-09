@@ -292,6 +292,16 @@ def main(
 
     # Make a kernel (morphological structuring element) for max-filter (greyscale dilation).
     kernel_radius = lowpass_input / (2 * voxel_size)
+
+    kernel_warn=False
+    if kernel_size < 5:
+        kernel_warn=True
+        print(f'\033[93m \nAuto-calculated a very small kernel-size ({kernel_size} pixels). \nThis may lead to a bad solvent model \nSuggest --kernel 5 or more, and/or --lowpass {lowpass_input*2} or more \n \033[0m')
+
+    if kernel_radius < kernel_size/(2*2):
+        print(f'\033[93m \nAuto-calculated a very small kernel radius ({kernel_radius:.2f} pixels). \nThis may lead to a bad solvent model \nSuggest --lowpass {lowpass_input*2} or more \n \033[0m')
+        kernel_warn = True
+
     scale_kernel, tau_ana = occupancy.spherical_kernel(
         kernel_size,
         radius=kernel_radius
@@ -480,7 +490,8 @@ def main(
                 warnings = f'{warnings} run with --plot and check solModel*.png'
             else:
                 warnings = f'{warnings} check the output solModel*.png '
-            solvent.warn_bad(lowest_confident_scale,file=f_log,verbose=verbose)
+            solvent.warn_bad(lowest_confident_scale,file=f_log,verbose=verbose,kernel_warn=kernel_warn)
+
 
     # --------------- MODIFY INPUT MAP IF AMPLIFYING AND/OR SUPPRESSING SOLVENT ------------------
     if exclude_solvent:

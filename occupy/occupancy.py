@@ -111,7 +111,7 @@ def percentile_filter_tiled(
         # There's probably a faster/better way of doing it, but at the moment this is negligible in execution time
         extremum = np.max(data)*np.array([-1,1])
         extremum_idx = np.zeros((2,3)).astype(int)
-        print(np.max(data))
+
         if dim == 2:
             for i in np.arange(n_tiles):
                 for j in np.arange(n_tiles):
