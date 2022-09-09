@@ -104,13 +104,14 @@ def percentile_filter_tiled(
         n_tau = int(np.floor(tau * np.product(tile_sz)))
 
         # Prepare the output array
-        s_tau_tiles = np.zeros(n_tiles * np.ones(dim).astype(int), dtype=np.float32)
+        #s_tau_tiles = np.zeros(n_tiles * np.ones(dim).astype(int), dtype=np.float32)
 
         # SCipy.ndimage has a percentile filter, but we only need non-exhaustive sampling and this is faster
         # despite using a for-loop structure.
         # There's probably a faster/better way of doing it, but at the moment this is negligible in execution time
         extremum = np.max(data)*np.array([-1,1])
         extremum_idx = np.zeros((2,3)).astype(int)
+        print(np.max(data))
         if dim == 2:
             for i in np.arange(n_tiles):
                 for j in np.arange(n_tiles):
@@ -131,36 +132,37 @@ def percentile_filter_tiled(
                         c += 1
                         if verbose:
                             print(f'Percentile tile scan {int(100 * c / (n_tiles ** 3))}% complete.', end='\r')
-                        low_edge = edge + np.multiply(tile_step,[i,j,k])
-                        high_edge = low_edge + tile_sz
-                        r = np.copy(data[
-                                    low_edge[0]: high_edge[0],
-                                    low_edge[1]: high_edge[1],
-                                    low_edge[2]: high_edge[2]]).flatten()
-                        s = np.sort(r)
-                        v = s[n_tau]
-                        s_tau_tiles[i][j][k] = np.copy(v)
+                        tile_r = np.sqrt((i - n_tiles / 2) ** 2 + (j - n_tiles / 2) ** 2 + (k - n_tiles / 2) ** 2)
+                        if tile_r < n_tiles/2-1:
+                            low_edge = edge + np.multiply(tile_step,[i,j,k])
+                            high_edge = low_edge + tile_sz
+                            r = np.copy(data[
+                                        low_edge[0]: high_edge[0],
+                                        low_edge[1]: high_edge[1],
+                                        low_edge[2]: high_edge[2]]).flatten()
+                            s = np.sort(r)
+                            v = s[n_tau]
+                            #s_tau_tiles[i][j][k] = np.copy(v)
 
-                        # Largest value
-                        if v > extremum[0]:
-                            extremum[0] = v
-                            extremum_idx[0,:] = np.array([i,j,k])
+                            # Largest value
+                            if v > extremum[0]:
+                                extremum[0] = v
+                                extremum_idx[0,:] = np.array([i,j,k])
 
-                        # Smallest value
-                        tile_r = np.sqrt((i-n_tiles/2)**2+(j-n_tiles/2)**2+(k-n_tiles/2)**2)
-                        if v < extremum[1] and tile_r < n_tiles/2-1:
-                            extremum[1] = v
-                            extremum_idx[1,:] = np.array([i,j,k])
+                            # Smallest value
+                            if v < extremum[1]:
+                                extremum[1] = v
+                                extremum_idx[1,:] = np.array([i,j,k])
 
         extremum_idx_pix = edge + tile_step[0]*extremum_idx+tile_sz/2
         if verbose:
             print(f'Percentile tile scan completed.      \n')
-            #print(f'The largest value in percentile tile was {extremum[0]} in region {extremum_idx[0,:]} (pixel center {extremum_idx_pix[:,0]})')
-            #print(f'The smallest value in percentile tile was {extremum[1]} in region {extremum_idx[1, :]} (pixel center {extremum_idx_pix[:,1]})')
+            #print(f'The largest value in percentile tile was {extremum[0]} in region {extremum_idx[0,:]} (pixel center {extremum_idx_pix[0,:]})')
+            #print(f'The smallest value in percentile tile was {extremum[1]} in region {extremum_idx[1, :]} (pixel center {extremum_idx_pix[1,:]})')
 
         extremum_idx_pix = np.vstack((extremum_idx_pix,tile_sz/2))
         # Establish s_max
-        norm_val = np.max(s_tau_tiles)
+        norm_val = extremum[0] #np.max(s_tau_tiles)
 
     # Establish s_i
     maxi = ndimage.maximum_filter(data, footprint=kernel)
