@@ -313,9 +313,14 @@ def lowpass(
     if resample:
         factor = output_size / n
 
-    # FFT forward
-    f_data = spfft.rfftn(in_data)  # *2*np.pi/n
-    f_data = sp.fft.fftshift(f_data, axes=(0, 1))
+    # More workers does not seem to have an effect on my system
+    workers = 1
+
+    f_data = []
+    with spfft.set_workers(workers):
+        # FFT forward
+        f_data = spfft.rfftn(in_data)  # *2*np.pi/n
+        f_data = spfft.fftshift(f_data, axes=(0, 1))
 
     # If we are resampling, then we may be able to provide the output voxel size
     if resample and voxel_size is not None:
@@ -355,14 +360,17 @@ def lowpass(
         mask = create_radial_mask(2 * mid_out, radius=keep_shells + 1, dim=ndim)[..., mid_out - 1:]
         t = np.multiply(t, mask)
 
-    f_data2 = np.fft.ifftshift(t, axes=(0, 1))
-    out_data = spfft.irfftn(f_data2)
+    out_data = []
+    with spfft.set_workers(workers):
+        # FFT reverse
+        t = spfft.ifftshift(t, axes=(0, 1))
+        t = spfft.irfftn(t)
 
     # The FFT must be normalized
     if resample:
-        out_data *= factor ** ndim
+        t *= factor ** ndim
 
-    return out_data, out_voxel_size
+    return t, out_voxel_size
 
 
 def lowpass_map(
@@ -380,8 +388,14 @@ def lowpass_map(
     ref_scale = np.max(data)
     assert ndim == 3  # TODO make work for 2D just in case
 
-    f_data = np.fft.rfftn(data)
-    f_data = np.fft.fftshift(f_data, axes=(0, 1))
+    # More workers does not seem to have an effect on my system
+    workers = 1
+
+    f_data = []
+    with spfft.set_workers(workers):
+        # FFT reverse
+        f_data = spfft.rfftn(data)
+        f_data = spfft.fftshift(f_data, axes=(0, 1))
 
     cutoff /= voxel_size
     cutoff_level = int(np.floor(2 * (n / cutoff)))  # Keep this many of the lower frequencies
@@ -398,8 +412,12 @@ def lowpass_map(
         # print(f_data.shape,mask.shape,mask.sum(),mask.size,n,cutoff_level)
         t = np.multiply(f_data, mask)
 
-    f_data = np.fft.ifftshift(t, axes=(0, 1))
-    r_data = np.fft.irfftn(f_data)
+    r_data = []
+    with spfft.set_workers(workers):
+        # FFT reverse
+        t = spfft.ifftshift(t, axes=(0, 1))
+        r_data = spfft.irfftn(t)
+
     if keep_scale:
         m = np.mean(r_data)
         r_data = (r_data - m) * (ref_scale / np.max(r_data)) + m
