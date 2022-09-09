@@ -109,6 +109,8 @@ def percentile_filter_tiled(
         # SCipy.ndimage has a percentile filter, but we only need non-exhaustive sampling and this is faster
         # despite using a for-loop structure.
         # There's probably a faster/better way of doing it, but at the moment this is negligible in execution time
+        extremum = np.max(data)*np.array([-1,1])
+        extremum_idx = np.zeros((2,3)).astype(int)
         if dim == 2:
             for i in np.arange(n_tiles):
                 for j in np.arange(n_tiles):
@@ -136,17 +138,33 @@ def percentile_filter_tiled(
                                     low_edge[1]: high_edge[1],
                                     low_edge[2]: high_edge[2]]).flatten()
                         s = np.sort(r)
-                        s_tau_tiles[i][j][k] = np.copy(s[n_tau])
-        if verbose:
-            print('Percentile tile scan completed.      \n')
+                        v = s[n_tau]
+                        s_tau_tiles[i][j][k] = np.copy(v)
 
+                        # Largest value
+                        if v > extremum[0]:
+                            extremum[0] = v
+                            extremum_idx[0,:] = np.array([i,j,k])
+
+                        # Smallest value
+                        if v < extremum[1]:
+                            extremum[1] = v
+                            extremum_idx[1,:] = np.array([i,j,k])
+
+        extremum_idx_pix = edge + tile_step[0]*extremum_idx+tile_sz/2
+        if verbose:
+            print(f'Percentile tile scan completed.      \n')
+            #print(f'The largest value in percentile tile was {extremum[0]} in region {extremum_idx[0,:]} (pixel center {extremum_idx_pix[:,0]})')
+            #print(f'The smallest value in percentile tile was {extremum[1]} in region {extremum_idx[1, :]} (pixel center {extremum_idx_pix[:,1]})')
+
+        extremum_idx_pix = np.vstack((extremum_idx_pix,tile_sz/2))
         # Establish s_max
         norm_val = np.max(s_tau_tiles)
 
     # Establish s_i
     maxi = ndimage.maximum_filter(data, footprint=kernel)
 
-    return maxi, norm_val
+    return maxi, norm_val, extremum_idx_pix
 
 
 def percentile_filter(
@@ -295,7 +313,7 @@ def get_map_scale(
     """
 
     # Calculate the local scale and normalisation constant based on desired percentile confidence
-    scale_map, map_val_at_full_scale = percentile_filter(
+    scale_map, map_val_at_full_scale, extr_tiles = percentile_filter(
         data,
         scale_kernel,
         tau=tau,
@@ -309,7 +327,7 @@ def get_map_scale(
     # Save the scale
     if save_occ_map is not None:
         map_tools.new_mrc(scale_map, save_occ_map, vox_sz=1.0, verbose=verbose)
-    return scale_map, map_val_at_full_scale
+    return scale_map, map_val_at_full_scale, extr_tiles
 
 
 def modify_gamma(

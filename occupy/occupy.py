@@ -428,7 +428,7 @@ def main(
     # --------------- SCALE ESTIMATION ------------------------------------------------------
 
     scale_map = f'scale_{scale_mode}{new_name}'
-    scale, max_val = occupancy.get_map_scale(
+    scale, max_val, tiles = occupancy.get_map_scale(
         scale_data,
         scale_kernel=scale_kernel,
         tau=tau,
@@ -439,6 +439,10 @@ def main(
     )
     map_tools.adjust_to_parent(file_name=scale_map, parent=input_map)
 
+    tiles = np.flip(tiles, axis=1)
+    tiles = voxel_size_ori * tiles / factor
+    #if verbose:
+    #    print(f'raw tile max: \n {tiles} \n Corrected tile max: {voxel_size_ori*tiles/factor}')
     # Get the average pixel value across all regions with full scale
     # This is an estimate of the density, which we can convert back to a scale,
     # which in turn signifies the expected scale at full occupancy and full variability/flex
@@ -670,6 +674,7 @@ def main(
             threshold_ampl=(max_val + sol_limits[3]) / 2.0,
             threshold_attn=(max_val + sol_limits[3]) / 2.0,
             min_scale=min_vis_scale,
+            tiles=tiles,
             warnings=warnings
         )
 
