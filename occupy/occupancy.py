@@ -157,7 +157,7 @@ def percentile_filter_tiled(
         extremum_idx_pix = edge + tile_step[0]*extremum_idx+tile_sz/2
         if verbose:
             print(f'Percentile tile scan completed.      \n')
-            #print(f'The largest value in percentile tile was {extremum[0]} in region {extremum_idx[0,:]} (pixel center {extremum_idx_pix[0,:]})')
+            print(f'The largest value in percentile tile was {extremum[0]:.3f} in region {extremum_idx[0,:]} (pixel center {extremum_idx_pix[0,:]})')
             #print(f'The smallest value in percentile tile was {extremum[1]} in region {extremum_idx[1, :]} (pixel center {extremum_idx_pix[1,:]})')
 
         extremum_idx_pix = np.vstack((extremum_idx_pix,tile_sz/2))

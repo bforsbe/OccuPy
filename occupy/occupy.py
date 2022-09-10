@@ -230,6 +230,7 @@ def main(
     nd = np.shape(in_data)
     voxel_size_ori = voxel_size = np.copy(f_open.voxel_size.x)
     range_ori = np.array([f_open.header['dmin'],f_open.header['dmax']])
+    offset_ori = np.array([f_open.header['nxstart'],f_open.header['nystart'],f_open.header['nzstart']])
     f_open.close()
     assert nd[0] % 2 == 0
     assert max_box % 2 == 0
@@ -452,9 +453,10 @@ def main(
     map_tools.adjust_to_parent(file_name=scale_map, parent=input_map)
 
     tiles = np.flip(tiles, axis=1)
-    tiles = voxel_size_ori * tiles / factor
-    #if verbose:
-    #    print(f'raw tile max: \n {tiles} \n Corrected tile max: {voxel_size_ori*tiles/factor}')
+    tiles[:-1,:] = voxel_size_ori*(tiles[:-1,:] / factor + offset_ori)
+    tiles[-1,:] = voxel_size_ori * tiles[-1,:] / factor
+    if verbose:
+        print(f'Corrected tile max: {tiles[0,:]}')
     # Get the average pixel value across all regions with full scale
     # This is an estimate of the density, which we can convert back to a scale,
     # which in turn signifies the expected scale at full occupancy and full variability/flex
