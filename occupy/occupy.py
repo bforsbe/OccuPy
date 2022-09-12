@@ -230,6 +230,7 @@ def main(
     nd = np.shape(in_data)
     voxel_size_ori = voxel_size = np.copy(f_open.voxel_size.x)
     range_ori = np.array([f_open.header['dmin'],f_open.header['dmax']])
+    axis_order = np.array([f_open.header['mapc'],f_open.header['mapr'],f_open.header['maps']])
     offset_ori = np.array([f_open.header['nxstart'],f_open.header['nystart'],f_open.header['nzstart']])
     f_open.close()
     assert nd[0] % 2 == 0
@@ -441,7 +442,7 @@ def main(
     # --------------- SCALE ESTIMATION ------------------------------------------------------
 
     scale_map = f'scale_{scale_mode}{new_name}'
-    scale, max_val, tiles = occupancy.get_map_scale(
+    scale, max_val, tiles_raw = occupancy.get_map_scale(
         scale_data,
         scale_kernel=scale_kernel,
         tau=tau,
@@ -452,11 +453,22 @@ def main(
     )
     map_tools.adjust_to_parent(file_name=scale_map, parent=input_map)
 
-    tiles = np.flip(tiles, axis=1)
+    # Fix the tile coordinates found during percentiel serach, for plotting
+    tiles=np.copy(tiles_raw)
+
+    #Set tile coordinates according to axis order in input file
+    for i in np.arange(3):
+        tiles[:,2-i] = tiles_raw[:,axis_order[i]-1]
+
+    # Add any offset in the input file coords (but not radius),  and make in original non-pix length.
     tiles[:-1,:] = voxel_size_ori*(tiles[:-1,:] / factor + offset_ori)
+
+    # Set radius to original non-pix length as well
     tiles[-1,:] = voxel_size_ori * tiles[-1,:] / factor
+
     if verbose:
         print(f'Corrected tile max: {tiles[0,:]}')
+
     # Get the average pixel value across all regions with full scale
     # This is an estimate of the density, which we can convert back to a scale,
     # which in turn signifies the expected scale at full occupancy and full variability/flex
