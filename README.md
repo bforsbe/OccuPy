@@ -39,17 +39,21 @@ use that it needs no input other than a cryo-EM map.
 It is here implemented as a command-line tool using open-source python libraries, to facilitate visualization of 
 partial occupancy and the relative resolution of cryo-EM reconstructions.
 
-## Modification of partial occupancies 
-**OccuPy** can also amplify confidently estimated partial occupancy (local scale) in the input map by adding the 
-`--amplify` or `--attenuate` option. To modify, one must also specify `--gamma`, which in simple terms is the power 
-of the modification, analogous to a traditional gamma correction factor. `--gamma 1` means to do nothing, and higher 
-values signify stronger modification. Values higher than about 30 are largely pointless, as values in the range 2-5 
-are typically useful. A *very* high (limiting) value of `--gamma 30` (or more) leads to 
-- **amplification**: full occupancy at all non-solvent points.
-- **attenuation**:   no occupancy at all non-solvent points where estimated scale was less than 100%.
+## Modification of partial occupancies
+**OccuPy** can also amplify confidently estimated partial occupancy, which will effectively make weak components 
+stronger. To do so, just add `--amplify` and specify a gamma factor to say how much to amplify by. `--gamma 1` means 
+to do nothing, and higher values signify stronger amplification. Values higher than about 30 are largely pointless, as 
+values in the range 2-5 are typically useful. A *very* high (limiting) value of `--gamma 30` (or more) leads to  
+full occupancy at all non-solvent points.
+
+In some cases you might also want to remove weak components, like in a detergent belt, or to make the distinction to 
+full occupancy clearer. You can do this by adding the `--attenuate` option, which uses the same gamma factor. The 
+limiting case of very strong attenuation means that all points with weak occupancy are removed.
+
+You can add both options, and combine it with `--exclude-solvent`.
 
 NOTE  1: `--gamma` values less than 1 are not permitted, as it simply inverts the relationship between amplification 
-and attenuation. 
+and attenuation.
 
 NOTE  2: Local scale should only be modified when it approximates occupancy. **OccuPy** will try to remove 
 resolution-dependent effects when modification is used, but this relies on appropriate low-pass filtering as 
