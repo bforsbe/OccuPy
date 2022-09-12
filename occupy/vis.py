@@ -174,3 +174,5 @@ def chimx_viz(
 
     the_file.close()
 
+    return the_file
+

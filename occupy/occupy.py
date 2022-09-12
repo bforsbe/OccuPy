@@ -235,6 +235,8 @@ def main(
     f_open.close()
     assert nd[0] % 2 == 0
     assert max_box % 2 == 0
+
+    print(f'Estimating local scale of {input_map}...')
     # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
 
     downscale_processing = nd[0] > max_box
@@ -693,7 +695,7 @@ def main(
         )
 
     if chimerax:
-        vis.chimx_viz(
+        chimx_file =vis.chimx_viz(
             input_map,
             scale_map,
             ampl_map=ampl_map,
@@ -708,7 +710,7 @@ def main(
         )
 
     if chimerax_silent:
-        vis.chimx_viz(
+        chimx_file_silent = vis.chimx_viz(
             input_map,
             scale_map,
             ampl_map=ampl_map,
@@ -766,6 +768,19 @@ def main(
 
     return 0
 
+    if modify:
+        print(f'Done estimating local scale and modifying input by local scale. ')
+    else:
+        print(f'Done estimating local scale')
+        print(f'You could also modify according to estimated occupancy by using either --amplify, --attenutate, or both')
+
+    if chimerax:
+        print(f'You should run chimeraX to visualize the output, using this command: ')
+        print(f'chimerax {chimx_file}')
+
+    if chimerax_silent:
+        print(f'To generate thumbnails of your output, run: ')
+        print(f'chimerax --offscreen {chimx_file_silent}')
 
 if __name__ == '__main__':
     typer.run(main)
