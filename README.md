@@ -16,10 +16,11 @@ In essence, **OccuPy** locates the region that exhibits the highest range of pix
 all other regions on a nominal scale between 0 and 1. 
 
 ### Disclaimer
-**OccuPy** does not sharpen maps. It tries not to.
-
-**OccuPy** does not estimate the local resolution, but might correlate with it. 
-See more [here](#the-estimated-scale-looks-like-my-local-resolution). 
+**OccuPy**
+- is only applicable to reconstructions produced by averaging, like SPA and STA. That is, *not* for a single tomogram.
+- does not sharpen maps. It tries not to.
+- does not estimate the _absolute_ local resolution, but to an extent the _relative_ local resolution. See more 
+  [here](#the-estimated-scale-looks-like-my-local-resolution). 
 
 ## Why estimate local scale?
 The local scale contains information about both resolution and occupancy. With this in mind, **OccuPy** is designed to 
