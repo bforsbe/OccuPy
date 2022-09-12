@@ -128,7 +128,7 @@ def chimx_viz(
         # ------LIGHTING-------------------------------------
         print(f'lighting soft \n', file=the_file)
         print(f'set bgColor white', file=the_file)
-
+        print(f'tool hide log', file=the_file)
 
         if warnings is not None:
             size = 20
