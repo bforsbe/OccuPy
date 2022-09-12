@@ -98,40 +98,64 @@ $ pip install -e .
 **OccuPy** is a command-line tool 
 
 ```shell
-$ OccuPy --version
+$ occupy --version
 OccuPy: 0.1.5rc4.dev1+gfa0f2e9.d20220905
 ```
+For development use, you can also use it as a python module. 
 
-but the tools and functions are available from within a python environment as well (but this is not intended use 
-outside of development)
+[//]: # (but the tools and functions are available from within a python environment as well &#40;but this is not intended use )
 
-```shell
-In[1]: import occupy
+[//]: # (outside of development&#41;)
 
-In[2]: occupy.occupancy.estimate_confidence?                                                                                            
-Signature:
-occupy.occupancy.estimate_confidence(
-    data,
-    solvent_paramters,
-    hedge_confidence=None,
-    n_lev=1000,
-)
-Docstring:
-Estimate the confidence of each voxel, given the data and the solvent model
+[//]: # ()
+[//]: # (```shell)
 
-The estimate is based on the relative probability of each voxel value pertaining to non-solvent or solvenr model
+[//]: # (In[1]: import occupy)
 
-:param data:                input array
-:param solvent_paramters:   solvent model parameters, gaussian (scale, mean, var)
-:param hedge_confidence:    take the estimated confidence to this power to hedge
-:param n_lev:               how many levels to use for the histogram
-:return:
-File:      ~/Documents/Occ/occupy/occupy/occupancy.py
-Type:      function
+[//]: # ()
+[//]: # (In[2]: occupy.occupancy.estimate_confidence?                                                                                            )
 
-In[3]:
+[//]: # (Signature:)
 
-```
+[//]: # (occupy.occupancy.estimate_confidence&#40;)
+
+[//]: # (    data,)
+
+[//]: # (    solvent_paramters,)
+
+[//]: # (    hedge_confidence=None,)
+
+[//]: # (    n_lev=1000,)
+
+[//]: # (&#41;)
+
+[//]: # (Docstring:)
+
+[//]: # (Estimate the confidence of each voxel, given the data and the solvent model)
+
+[//]: # ()
+[//]: # (The estimate is based on the relative probability of each voxel value pertaining to non-solvent or solvenr model)
+
+[//]: # ()
+[//]: # (:param data:                input array)
+
+[//]: # (:param solvent_paramters:   solvent model parameters, gaussian &#40;scale, mean, var&#41;)
+
+[//]: # (:param hedge_confidence:    take the estimated confidence to this power to hedge)
+
+[//]: # (:param n_lev:               how many levels to use for the histogram)
+
+[//]: # (:return:)
+
+[//]: # (File:      ~/Documents/Occ/occupy/occupy/occupancy.py)
+
+[//]: # (Type:      function)
+
+[//]: # ()
+[//]: # (In[3]:)
+
+[//]: # ()
+[//]: # (```)
 
 ## Examples of use
 
