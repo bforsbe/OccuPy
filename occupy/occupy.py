@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import mrcfile as mf
 from pathlib import Path
@@ -126,6 +127,10 @@ def main(
         chimerax_silent: bool = typer.Option(
             False,
             help="Write a .cxc file that can be opened by chimeraX to show colored input/output maps"
+        ),
+        chimerax_auto: bool = typer.Option(
+            False,
+            help="Open chimeraX when done. Implies --chimerax"
         ),
         min_vis_scale: float = typer.Option(
             0.2,
@@ -694,6 +699,9 @@ def main(
             log=f_log
         )
 
+    if chimerax_auto:
+        chimerax=True
+
     if chimerax:
         chimx_file =vis.chimx_viz(
             input_map,
@@ -778,8 +786,11 @@ def main(
             f'You \033[96mcould\033[0m also exclude solvent by adding --exclude-solvent')
 
     if chimerax:
-        print(f'\nYou should run chimeraX to visualize the output, using this command: ')
-        print(f'\033[92m \n\t chimerax {chimx_file} \033[0m \n')
+        if chimerax_auto:
+            os.system(f'chimerax {chimx_file} & ')
+        else:
+            print(f'\nYou should run chimeraX to visualize the output, using this command: ')
+            print(f'\033[92m \n\t chimerax {chimx_file} \033[0m \n')
 
     if chimerax_silent:
         print(f'\nTo generate thumbnails of your output, run: ')
