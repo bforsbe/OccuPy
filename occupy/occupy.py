@@ -209,7 +209,13 @@ def main(
 
     if amplify or attenuate:
         if gamma is None:
-            raise ValueError("--gamma must be specified if attenuating or amplifying")
+            raise ValueError("\033[91m--gamma must be specified if attenuating or amplifying\033[0m")
+        if gamma < 1:
+            raise ValueError("\033[91m--gamma must be larger than 1\033[0m")
+        if gamma == 1:
+            print(f'\033[93mSetting --gamma to 1 means to not modify at all, which is pointless.\033[0m')
+            amplify = False
+            attenuate = False
 
         # If modifying, then occupancy is probably desired, in which case it makes sense to use low-passed
         # input for scale estimation. But if --raw-scale is set, we don't override it
