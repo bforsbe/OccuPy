@@ -40,22 +40,26 @@ It is here implemented as a command-line tool using open-source python libraries
 partial occupancy and the relative resolution of cryo-EM reconstructions.
 
 ## Modification of partial occupancies
+### Amplification
 **OccuPy** can also amplify confidently estimated partial occupancy, which will effectively make weak components 
 stronger. To do so, just add `--amplify` and specify a gamma factor to say how much to amplify by. `--gamma 1` means 
 to do nothing, and higher values signify stronger amplification. Values higher than about 30 are largely pointless, as 
-values in the range 2-5 are typically useful. A *very* high (limiting) value of `--gamma 30` (or more) leads to  
+values in the range 2-5 are typically useful. A *very* high (limiting) value of `--gamma 30` (or more) leads to 
 full occupancy at all non-solvent points.
-
+### Attenuation
 In some cases you might also want to remove weak components, like in a detergent belt, or to make the distinction to 
 full occupancy clearer. You can do this by adding the `--attenuate` option, which uses the same gamma factor. The 
-limiting case of very strong attenuation means that all points with weak occupancy are removed.
+limiting case of very strong attenuation means that all points with weak occupancy are removed. For this reason, 
+attenuation tends to use lower `--gamma` values, probably in the range 2-3. Larger values will leave high-scale 
+components only.   
 
-You can add both options, and combine it with `--exclude-solvent`.
+### Notes
+NOTE  1: You can add both options, and combine it with `--exclude-solvent`. See following section(s) for details.
 
-NOTE  1: `--gamma` values less than 1 are not permitted, as it simply inverts the relationship between amplification 
+NOTE  2: `--gamma` values less than 1 are not permitted, as it simply inverts the relationship between amplification 
 and attenuation.
 
-NOTE  2: Local scale should only be modified when it approximates occupancy. **OccuPy** will try to remove 
+NOTE  3: Local scale should only be modified when it approximates occupancy. **OccuPy** will try to remove 
 resolution-dependent effects when modification is used, but this relies on appropriate low-pass filtering as 
 decribed [here](#the-estimated-scale-looks-like-my-local-resolution).
 
@@ -107,7 +111,7 @@ $ pip install -e .
 $ occupy --version
 OccuPy: 0.1.5rc4.dev1+gfa0f2e9.d20220905
 ```
-For development use, you can also use it as a python module.
+For development use, you can also import it as a python module.
 
 [//]: # (but the tools and functions are available from within a python environment as well &#40;but this is not intended use )
 
@@ -254,14 +258,14 @@ $ occupy --help-all
    You can also use `--solvent-def <mask.mrc>` where the mask is a conventional solvent-mask. This will allow these 
    regions to be omitted during solvent fitting. _This mask does not need to be perfect, and does not limit the 
    modification to areas inside it_. 
-### The estiamted scale is just 1 everywhere 
+### The estimated scale is just 1 everywhere 
 1. Well you might have a rock of a complex.
 2. If you set the value of `--tau/-t` manually low, then this is the reason. If it got auto-calculated low, you can 
-   increase it, but this is a bad idea. It is rather better to increase the `--kernel-size` so that the value of tau 
+   increase it, but this is a bad idea. It is rather better to increase the `--kernel` so that the value of tau 
    is automatically increased. You may also waent to increase `--lowpass/-lp` ot increase the number of sampled 
    pixel `nv`. You can see what paramters were calculated and used by checking the output log file or using the 
-   `--verbose` option. Increasing the kernel-size and/or lowpass setting permits more confident sampling of the local 
-   scale, but does increase the granularity. Usually a kernel-size of 5 or 7 is adequate, with nv-values in the 
+   `--verbose` option. Increasing the kernel size and/or lowpass setting permits more confident sampling of the local 
+   scale, but does increase the granularity. Usually a kernel size of 5 or 7 is adequate, with nv-values in the 
    range 30-100. Low-pass defaults to 8 or 3*pixel-size, which ever is larger, but depending on resolution and 
    pixel-size this may be adjusted depending on the sought granularity.  
 3. **OccuPy** puts everything on a scale based on what it estimates as "full" through a non-exhaustive search. It 
