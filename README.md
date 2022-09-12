@@ -85,7 +85,9 @@ are able to supply these things, but does not *need* it.
 ```shell
 pip install occupy
 ```
-But one may also pip install from the cloned repo
+If you are a developer or prefer to download the source code for some other reason, you can also install from 
+the 
+cloned repo
 
 ```shell
 $ git clone https://github.com/bforsbe/OccuPy.git
@@ -101,7 +103,7 @@ $ pip install -e .
 $ occupy --version
 OccuPy: 0.1.5rc4.dev1+gfa0f2e9.d20220905
 ```
-For development use, you can also use it as a python module. 
+For development use, you can also use it as a python module.
 
 [//]: # (but the tools and functions are available from within a python environment as well &#40;but this is not intended use )
 
@@ -156,7 +158,6 @@ For development use, you can also use it as a python module.
 
 [//]: # ()
 [//]: # (```)
-
 ## Examples of use
 
 ### Trying it out 
