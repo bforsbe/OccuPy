@@ -128,7 +128,7 @@ def main(
             False,
             help="Write a .cxc file that can be opened by chimeraX to show colored input/output maps"
         ),
-        chimerax_auto: bool = typer.Option(
+        show_chimerax: bool = typer.Option(
             False,
             help="Open chimeraX when done. Implies --chimerax"
         ),
@@ -699,7 +699,7 @@ def main(
             log=f_log
         )
 
-    if chimerax_auto:
+    if show_chimerax:
         chimerax=True
 
     if chimerax:
@@ -786,15 +786,20 @@ def main(
             f'You \033[96mcould\033[0m also exclude solvent by adding --exclude-solvent')
 
     if chimerax:
-        if chimerax_auto:
+        if show_chimerax:
+            print(f'\033[92m \nOpening {chimx_file} in chimeraX, this may take a moment. Please be patient. \033[0m \n')
             os.system(f'chimerax {chimx_file} & ')
         else:
             print(f'\nYou should run chimeraX to visualize the output, using this command: ')
-            print(f'\033[92m \n\t chimerax {chimx_file} \033[0m \n')
+            print(f'\033[92m \nchimerax {chimx_file} \033[0m \n')
+            print(f'HINT: you could also auto-start chimeraX by using --show-chimerax')
 
     if chimerax_silent:
-        print(f'\nTo generate thumbnails of your output, run: ')
-        print(f'\033[94m \n\t chimerax --offscreen {chimx_file_silent} \033[0m \n')
+        if show_chimerax:
+             os.system(f'chimerax {chimx_file}')
+        else:
+            print(f'\nTo generate thumbnails of your output, run: ')
+            print(f'\033[94m \nchimerax --offscreen {chimx_file_silent} \033[0m \n')
 
     return 0
 
