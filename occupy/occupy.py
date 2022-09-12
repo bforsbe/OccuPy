@@ -766,21 +766,26 @@ def main(
         print(f_log.read())
         f_log.close()
 
-    return 0
 
     if modify:
-        print(f'Done estimating local scale and modifying input by local scale. ')
+        print(f'\033[92mDone\033[0m estimating local scale and modifying input by local scale. ')
     else:
-        print(f'Done estimating local scale')
-        print(f'You could also modify according to estimated occupancy by using either --amplify, --attenutate, or both')
+        print(f'\033[92mDone\033[0m estimating local scale')
+        print(f'You \033[96mcould\033[0m also modify according to estimated occupancy by using either --amplify, --attenutate, or both')
+
+    if not exclude_solvent:
+        print(
+            f'You \033[96mcould\033[0m also exclude solvent by adding --exclude-solvent')
 
     if chimerax:
-        print(f'You should run chimeraX to visualize the output, using this command: ')
-        print(f'chimerax {chimx_file}')
+        print(f'\nYou should run chimeraX to visualize the output, using this command: ')
+        print(f'\033[92m \n\t chimerax {chimx_file} \033[0m \n')
 
     if chimerax_silent:
-        print(f'To generate thumbnails of your output, run: ')
-        print(f'chimerax --offscreen {chimx_file_silent}')
+        print(f'\nTo generate thumbnails of your output, run: ')
+        print(f'\033[94m \n\t chimerax --offscreen {chimx_file_silent} \033[0m \n')
+
+    return 0
 
 if __name__ == '__main__':
     typer.run(main)
