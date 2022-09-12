@@ -1,14 +1,34 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy import ndimage
 from occupy import map_tools, solvent
 
 def sigmoid_scale(x,mu,nu):
     return np.clip((1+np.divide(x*(1-mu),mu*(1-x))**-nu)**-1,0,1)
 
-def value_centered_sigmoid_constant(target,order):
-    x0 = np.linspace(0,1,1000)
-    diff = np.abs(sigmoid_scale(target, x0, order) - target)
-    return x0[np.argmin(diff)]
+def value_centered_sigmoid_mu(target,order):
+    # search space is over all possible mu-values
+    mu0 = np.linspace(0,1,1000)
+
+    # difference of all possible mu-values at target scale value
+    diff = np.abs(sigmoid_scale(target, mu0, order) - target)
+
+    return mu0[np.argmin(diff)]
+
+def scale_mapping_sigmoid(value_cutoff,order,n=1000,save_plot=False):
+    # Determine the sigmoid mean (i.e. sigmoid(mean)=0.5) that results in f(value_cutoff) = value_cutoff for this order
+    mu = value_centered_sigmoid_mu(value_cutoff,order=order)
+
+    # Generate domain and mapping
+    x = np.linspace(0,1,n)
+    s = sigmoid_scale(x,mu,order)
+
+    if save_plot:
+        plt.plot(x,s,label=f'{mu},order={order}')
+        plt.legend()
+        plt.savefig('sigmoid_mapping.png')
+
+    return x,s
 
 def compute_tiling(
         nd,
