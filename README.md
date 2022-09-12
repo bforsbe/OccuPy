@@ -183,11 +183,11 @@ Done unzipping
 ```
 Here are a few entries that might be interesting to test **OccuPy**
 
-| Entry                                         | Sample          | Box-size |
-|-----------------------------------------------|-----------------|----------|
-| [3061](https://www.ebi.ac.uk/emdb/EMD-3061)   | gamma-secretase | 180      |
-| [30185](https://www.ebi.ac.uk/emdb/EMD-30185) | F-actin         | 320      |
-| [10978](https://www.ebi.ac.uk/emdb/EMD-10978) | mt Ribosome     | 400      |
+| Entry                                         | Sample                         | Box-size |
+|-----------------------------------------------|--------------------------------|----------|
+| [3061](https://www.ebi.ac.uk/emdb/EMD-3061)   | gamma-secretase                | 180      |
+| [30185](https://www.ebi.ac.uk/emdb/EMD-30185) | F-actin                        | 320      |
+| [33437](https://www.ebi.ac.uk/emdb/EMD-33437) | RNA polymerase II + nucleosome | 240      |
 
 ### Estimating and modifying local map scale 
 
