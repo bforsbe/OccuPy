@@ -33,7 +33,8 @@ def main(
         resolution: float = typer.Option(
             None,
             "--resolution", "-r",
-            help="The lowest resolution of resolvable content input map."
+            help="The lowest resolution of resolvable content input map.",
+            min=0.0
         ),
         amplify: bool = typer.Option(
             False,
@@ -48,7 +49,8 @@ def main(
         gamma: float = typer.Option(
             None,
             "--gamma", "-g",
-            help="Gamma correction (modification) factor for confident partial occupancies [1,inf]"
+            help="Gamma correction (modification) factor for confident partial occupancies [1,inf]",
+            min=1.0
         ),
 
         # Specific control ---------------------------------------------------------------------------------------------
@@ -56,7 +58,9 @@ def main(
         tau: float = typer.Option(
             None,
             "--tau", "-t",
-            help="Percentile for scale-estimate normalization"
+            help="Percentile for scale-estimate normalization",
+            min=0.0,
+            max=1.0
         ),
         kernel_size: int = typer.Option(
             None,
@@ -98,7 +102,9 @@ def main(
         scale_limit: float = typer.Option(
             0.05,
             "--scale-limit",
-            help="Hard limit below which map scale/occupancy will be considered unreliable for amplification"
+            help="Hard limit below which map scale/occupancy will be considered unreliable for amplification",
+            min=0.0,
+            max=1.0
         ),
         hist_match: bool = typer.Option(
             False,
@@ -134,7 +140,9 @@ def main(
         ),
         min_vis_scale: float = typer.Option(
             0.2,
-            help="Lower limit of map scale (occupancy) in chimeraX coloring & color-key"
+            help="Lower limit of map scale (occupancy) in chimeraX coloring & color-key",
+            min=0.0,
+            max=1.0
         ),
 
         # Extra  -------------------------------------------------------------------------------------------------------
@@ -244,8 +252,14 @@ def main(
     axis_order = np.array([f_open.header['mapc'],f_open.header['mapr'],f_open.header['maps']])
     offset_ori = np.array([f_open.header['nxstart'],f_open.header['nystart'],f_open.header['nzstart']])
     f_open.close()
-    assert nd[0] % 2 == 0
-    assert max_box % 2 == 0
+
+    if not len(np.unique(in_data.shape)) == 1:
+        raise ValueError(f'\033[91m input map is not cubic (pixel-extents: {nd})\033[0m')
+    if not (nd[0] % 2)==0:
+        raise ValueError(f'\033[91m input map is not even-sized. (pixel-extents: {nd})\033[0m')
+    if not (max_box % 2 == 0) and (max_box < nd[0]):
+        raise ValueError(f'\033[91m You specified an odd (not even) --max-box value ({max_box})\033[0m')
+
 
     print(f'Estimating local scale of {input_map}...')
     # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
@@ -332,7 +346,9 @@ def main(
         own_tau = True
         if verbose:
             print(f'Using provided tau value of {tau} instead of recommended {tau_ana} for kernel size {kernel_size}')
-    assert 0 < tau <= 1
+
+
+
 
     log_name = f'log_{Path(input_map).stem}.txt'
     f_log = open(log_name, 'w+')
@@ -416,9 +432,8 @@ def main(
         s_open.close()
 
         # Check same size as ori inout map (can be relaxed later)
-        assert sol_mask.shape[0] == nd
-        # check cubic
-        assert len(np.unique(sol_mask.shape)) == 1
+        if not sol_mask.shape[0] == nd:
+            raise ValueError(f'\033[91m input solvent definition map  size ({sol_mask.shape}) is not the same size as input map: {nd}\033[0m')
 
         if downscale_processing:
             sol_mask, _ = map_tools.lowpass(
