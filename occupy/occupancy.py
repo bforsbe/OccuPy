@@ -2,6 +2,8 @@ import numpy as np
 from scipy import ndimage
 from occupy import map_tools, solvent
 
+def sigmoid_scale(x,mu,nu):
+    return np.clip((1+np.divide(x*(1-mu),mu*(1-x))**-nu)**-1,0,1)
 
 def compute_tiling(
         nd,
