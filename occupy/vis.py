@@ -89,6 +89,7 @@ def chimx_viz(
             print(f'scale_color #{c} #2 \n', file=the_file)
             if threshold_ampl is not None:
                 print(f'vol #{c} level {threshold_ampl}', file=the_file)
+            print(f'hide #{c}', file=the_file)
 
         if attn_map is not None:
             c += 1
@@ -96,6 +97,7 @@ def chimx_viz(
             print(f'scale_color #{c} #2 \n', file=the_file)
             if threshold_attn is not None:
                 print(f'vol #{c} level {threshold_attn}', file=the_file)
+            print(f'hide #{c}', file=the_file)
 
         setstr = '#1'
         for i in np.arange(c-2)+3:
