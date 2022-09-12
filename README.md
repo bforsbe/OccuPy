@@ -134,6 +134,28 @@ In[3]:
 ```
 
 ## Examples of use
+
+### Trying it out 
+For easy testing, there is a handy flag to dowload, unzip and use entries from the Electron Microscopy Data Bank (
+[EMDB](https://www.ebi.ac.uk/emdb/)). Simply provide the number of the entry to `--emdb` and hang back. Subsequent use 
+will not 
+re-download the file unless you renamed or moved it.
+```shell
+$ occupy --emdb 3061             
+Fetching emd_3061.map.gz
+100% [........................................................................] 21796317 / 21796317
+ Done fetching emd_3061.map.gz
+Unzipping emd_3061.map.gz
+Done unzipping
+```
+Here are a few entries that might be interesting to test **OccuPy**
+
+| Entry                                         | Sample          | Box-size |
+|-----------------------------------------------|-----------------|----------|
+| [3061](https://www.ebi.ac.uk/emdb/EMD-3061)   | gamma-secretase | 180      |
+| [30185](https://www.ebi.ac.uk/emdb/EMD-30185) | F-actin         | 320      |
+| [10978](https://www.ebi.ac.uk/emdb/EMD-10978) | mt Ribosome     | 400      |
+
 ### Estimating and modifying local map scale 
 
 In its basic form, **OccuPy** simply estimates the map scale, writes it out along with a chimeraX-command script to 
