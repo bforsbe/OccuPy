@@ -5,6 +5,11 @@ from occupy import map_tools, solvent
 def sigmoid_scale(x,mu,nu):
     return np.clip((1+np.divide(x*(1-mu),mu*(1-x))**-nu)**-1,0,1)
 
+def value_centered_sigmoid_constant(target,order):
+    x0 = np.linspace(0,1,1000)
+    diff = np.abs(sigmoid_scale(target, x0, order) - target)
+    return x0[np.argmin(diff)]
+
 def compute_tiling(
         nd,
         tile_sz,
