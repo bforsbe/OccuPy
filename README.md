@@ -203,7 +203,8 @@ The output scale here includes effects due to resolution, and is thus named as s
 additional details. 
 
 To modify all confident partial scale regions (local partial occupancy), use `--amplify` and/or  `--attenuate` 
-along with `--gamma` as described above. Because the input is modified and not just estimated, there is now additional 
+along with `--gamma` as described [here](#amplification). Because the input is modified and not just estimated, there is now 
+additional 
 output map(s). 
 ```shell
 $ occupy -i map.mrc  --amplify --gamma 4 
