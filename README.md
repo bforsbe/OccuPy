@@ -80,14 +80,14 @@ as such does *not* require half-maps, an accurate resolution estimate, or solven
 are able to supply these things, but does not *need* it. 
 
 ## Installation
-**OccuPy** can be installed from the [Python Package Index](https://pypi.org/project/OccuPy/) (PyPI) using `pip`
+Regardless if you are using conda or not, **OccuPy** can be installed from the [Python Package Index](https://pypi.
+org/project/OccuPy/) (PyPI) using `pip`
 
 ```shell
 pip install occupy
 ```
 If you are a developer or prefer to download the source code for some other reason, you can also install from 
-the 
-cloned repo
+the cloned repo
 
 ```shell
 $ git clone https://github.com/bforsbe/OccuPy.git
