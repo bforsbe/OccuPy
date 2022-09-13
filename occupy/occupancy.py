@@ -351,6 +351,21 @@ def modify_scale_gamma(
         gamma = gamma - 1
     return np.abs(scale) ** gamma
 
+def modify_scale_sigmoid(
+        scale: np.ndarray,
+        nu: float,
+        mu: float
+):
+    n = 100
+
+    domain, mapping = scale_mapping_sigmoid(mu,nu,n)
+
+    scale_idx = (np.abs(scale)*n-1).astype(int)
+
+    modification = np.divide(mapping[scale_idx], scale, where=scale>0)
+
+    return modification
+
 
 def get_map_scale(
         data: np.ndarray,
@@ -395,6 +410,7 @@ def modify(
         data: np.ndarray,
         scale: np.ndarray,
         gamma: float = None,
+        sigmoid_mu: float=None,
         fake_solvent: np.ndarray = None,
         sol_mask: np.ndarray = None,
         scale_threshold: float = None,
@@ -440,13 +456,21 @@ def modify(
             print('Using solvent mask when equalising occupancy.')
         thresholded_scale_map = (1 - sol_mask) + np.multiply(sol_mask, thresholded_scale_map)
 
-    # Construct modification as dependent on scaling and gamma-coefficient
-    modification = modify_scale_gamma(
-        scale,
-        thresholded_scale_map,
-        gamma,
-        attenuate_gamma=attenuate
-    )
+    modification = []
+    if sigmoid_mu is None:
+        # Construct modification as dependent on scaling and gamma-coefficient
+        modification = modify_scale_gamma(
+            thresholded_scale_map,
+            gamma,
+            attenuate_gamma=attenuate
+        )
+    else:
+        # Construct modification as dependent on scaling and gamma-coefficient
+        modification = modify_scale_sigmoid(
+            scale,
+            gamma,
+            sigmoid_mu
+        )
 
     # Amplify or attenuate map
     modified_map = np.multiply(data, modification)
