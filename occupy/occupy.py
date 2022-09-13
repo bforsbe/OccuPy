@@ -792,21 +792,44 @@ def main(
         if interactive_plot:
             plt.show()
 
+        n_lines = 5
+        n_elements = 1000
+        col = plt.cm.binary(np.linspace(0.3,0.7,n_lines+1))
+
         if mu is not None:
             f2 = plt.figure()
-            n_lines = 5
-            n_elements = 1000
             x = np.linspace(0,1,n_elements)
-            col = plt.cm.binary(np.linspace(0.3,0.7,n_lines))
+            plt.plot(x, x, color=col[0], label=f'gamma=1')
+            for i in np.arange(n_lines):
+                t = mu
+                val = 1+np.sqrt(t)*2**i # just values that shows some range depending on mu.
+                _, y=occupancy.scale_mapping_sigmoid(mu,val,n_elements)
+                plt.plot(x,y,color=col[i+1],label=f'gamma={val:.2f}')
+            # The actual value used
+            _, y=occupancy.scale_mapping_sigmoid(mu,gamma,n_elements)
+            plt.plot(x,y,'--',color='green',label=f'gamma={gamma}')
+            plt.legend()
+            plt.savefig("sigmoid_modification.png")
+        elif modify:
+            f3 = plt.figure()
+            x = np.linspace(0,1,n_elements)
+            col_ampl = plt.cm.Blues(np.linspace(0.3,0.7,n_lines))
+            col_attn = plt.cm.Reds(np.linspace(0.3, 0.7, n_lines))
             for i in np.arange(n_lines):
                 k = 2**i
-                y=occupancy.sigmoid_scale(x,mu,k)
-                plt.plot(x,y,color=col[i],label=f'gamma={int(k)}')
-            y=occupancy.sigmoid_scale(x,mu,gamma)
-            plt.plot(x,y,color='red',label=f'gamma={gamma}')
-            plt.legend()
+                if amplify:
+                    plt.plot(x,x**(1/k), color=col_ampl[i], label=f'ampl gamma={int(k)}')
+                if attenuate:
+                    plt.plot(x,x**k,color=col_attn[i],label=f'attn gamma={int(k)}')
+            if amplify:
+                plt.plot(x, x ** (1 / gamma), color='green', label=f'ampl gamma={gamma}')
+            if attenuate:
+                plt.plot(x, x ** gamma, color='blue', label=f'attn gamma={gamma}')
 
-            plt.savefig("sigmoid_modification.png")
+            plt.legend()
+            plt.savefig("gamma_modification.png")
+
+
 
 
     print(f'\n------------------------------------Detected limits-------', file=f_log)
