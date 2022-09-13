@@ -299,8 +299,7 @@ def amplify_map(
     return np.multiply(data, np.abs(amplification))
 
 
-def amplify_map_gamma(
-        data: np.ndarray,
+def modify_scale_gamma(
         scale: np.ndarray,
         gamma: float,
         amplify_gamma: bool = None,
@@ -392,7 +391,7 @@ def get_map_scale(
     return scale_map, map_val_at_full_scale, extr_tiles
 
 
-def modify_gamma(
+def modify(
         data: np.ndarray,
         scale: np.ndarray,
         gamma: float = None,
@@ -442,7 +441,7 @@ def modify_gamma(
         thresholded_scale_map = (1 - sol_mask) + np.multiply(sol_mask, thresholded_scale_map)
 
     # Construct modification as dependent on scaling and gamma-coefficient
-    modification = amplify_map_gamma(
+    modification = modify_scale_gamma(
         scale,
         thresholded_scale_map,
         gamma,
