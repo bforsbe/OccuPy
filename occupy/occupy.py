@@ -829,6 +829,8 @@ def main(
             plt.legend()
             plt.savefig("gamma_modification.png")
 
+        if interactive_plot:
+            plt.show()
 
 
 
