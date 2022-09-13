@@ -52,6 +52,13 @@ def main(
             help="Gamma correction (modification) factor for confident partial occupancies [1,inf]",
             min=1.0
         ),
+        mu: float = typer.Option(
+            None,
+            "--mu",
+            help="Threshold scale value for sigmoid scale modification [0,1]",
+            min=0.0,
+            max=1.0
+        ),
 
         # Specific control ---------------------------------------------------------------------------------------------
 
@@ -551,6 +558,7 @@ def main(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
             gamma=gamma,  # The exponent for amplification / attenuation
+            sigmoid_mu=mu,  # The scale value for sigmoid modificaiton
             attenuate=False,  # False is amplifying or not doing anything
             fake_solvent=fake_solvent,
             scale_threshold=scale_limit,
@@ -612,7 +620,10 @@ def main(
 
         # Save amplified and/or solvent-suppressed output.
         if amplify:
-            ampl_map = f'ampl_{gamma:.1f}_' + Path(output_map).stem + '.mrc'
+            if mu is not None:
+                ampl_map = f'sigmoid_{gamma:.1f}_{mu:.1f}_' + Path(output_map).stem + '.mrc'
+            else:
+                ampl_map = f'ampl_{gamma:.1f}_' + Path(output_map).stem + '.mrc'
             ampl_doc = f'{doc} attenuation gamma={gamma:.2f}'
         else:
             ampl_map = output_map
