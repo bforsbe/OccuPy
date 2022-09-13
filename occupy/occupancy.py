@@ -51,6 +51,20 @@ def sigmoid_scale(x, mu, order):
     out = out + 1
     out = np.divide(1, out, where=out != 0)
     out = np.clip(out, 0, 1)
+
+    #To make sure
+    for i in np.arange(len(x)):
+        if x[i] == 0:
+            out[i] = 0
+        if x[i] == 1:
+            out[i] == 1
+
+    for i in np.arange(len(x)-1):
+        if out[i+1]<out[i]:
+            out[i+1]=out[i]
+
+
+
     return out
 
 
