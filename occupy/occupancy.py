@@ -43,8 +43,12 @@ def sigmoid_scale(x,mu,order):
     :param order:
     :return:
     """
-    out = (1+np.divide(x*(1-mu),mu*(1-x))**-order)**-1
-    out = np.clip(out,0,1)
+    out = np.divide(x * (1 - mu), mu * (1 - x), where=x != 1)
+    out = np.divide(1, out, where=out != 0)
+    out = out ** order
+    out = out + 1
+    out = np.divide(1, out, where=out != 0)
+    out = np.clip(out, 0, 1)
     return out
 
 def scale_mapping_sigmoid(value_cutoff,order,n=1000,save_plot=False):
