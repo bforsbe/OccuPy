@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy import ndimage
 from occupy import map_tools, solvent
 
+
 def sigmoid_effective_mu(
         mu0: float,
         order: float
@@ -26,11 +27,12 @@ def sigmoid_effective_mu(
     :param order:
     :return:
     """
-    k = (1/mu0 - 1 )**(-1/order)
-    k *= (1-mu0)/mu0
-    return 1 / (1+k)
+    k = (1 / mu0 - 1) ** (-1 / order)
+    k *= (1 - mu0) / mu0
+    return 1 / (1 + k)
 
-def sigmoid_scale(x,mu,order):
+
+def sigmoid_scale(x, mu, order):
     """
     Use a sigmoid defined on the [0,1]-interval to attenuate low and reinforce high scale:
 
@@ -51,20 +53,22 @@ def sigmoid_scale(x,mu,order):
     out = np.clip(out, 0, 1)
     return out
 
-def scale_mapping_sigmoid(value_cutoff,order,n=1000,save_plot=False):
+
+def scale_mapping_sigmoid(value_cutoff, order, n=1000, save_plot=False):
     # Determine the sigmoid mean (i.e. sigmoid(mean)=0.5) that results in f(value_cutoff) = value_cutoff for this order
-    mu = sigmoid_effective_mu(value_cutoff,order=order)
+    mu = sigmoid_effective_mu(value_cutoff, order=order)
 
     # Generate domain and mapping
-    x = np.linspace(0,1,n)
-    s = sigmoid_scale(x,mu,order)
+    x = np.linspace(0, 1, n)
+    s = sigmoid_scale(x, mu, order)
 
     if save_plot:
-        plt.plot(x,s,label=f'{mu},order={order}')
+        plt.plot(x, s, label=f'{mu},order={order}')
         plt.legend()
         plt.savefig('sigmoid_mapping.png')
 
-    return x,s
+    return x, s
+
 
 def compute_tiling(
         nd,
@@ -72,41 +76,44 @@ def compute_tiling(
         n_tiles,
         verbose=False
 ):
-        dim = len(nd)
+    dim = len(nd)
 
-        # Set the tile size as an array
-        if tile_sz is None:
-            tile_sz = (nd / n_tiles).astype(int)
-        else:
-            tile_sz = (tile_sz * np.ones(dim)).astype(int)
+    # Set the tile size as an array
+    if tile_sz is None:
+        tile_sz = (nd / n_tiles).astype(int)
+    else:
+        tile_sz = (tile_sz * np.ones(dim)).astype(int)
 
-        # The maximum number of tiles. Overlap is ok.
-        max_tiles = nd - tile_sz + 1
+    # The maximum number of tiles. Overlap is ok.
+    max_tiles = nd - tile_sz + 1
 
-        if all(n_tiles > max_tiles):
-            if verbose:
-                print(f'{n_tiles} tiles is bigger than the largest number of {tile_sz[0]}-pixel tiles possible ({max_tiles[0]}). Reducing.')
-            n_tiles = max_tiles[0]
-
-        # number of voxels not used for tiles
-        non_tile = nd - n_tiles * tile_sz
-        non_tile_0 = np.clip(non_tile, 0, nd[0])
-
-        # Space in-between n_tiles number of tiles
-        space = np.floor(non_tile_0 // (n_tiles - 1)).astype(int)
-        space_0 = np.clip(space, 0, nd[0]).astype(int)
-
-        # Tile step (can be smaller than tile_sz)
-        tile_step = (tile_sz + np.floor(non_tile // (n_tiles - 1))).astype(int)
-
-        # Space around tiles
-        edge = ((nd - ((n_tiles - 1) * tile_step+tile_sz)) // 2).astype(int)
-        #((non_tile_0 - space_0 * (n_tiles - 1)) / 2).astype(int)
-
+    if all(n_tiles > max_tiles):
         if verbose:
-            print(f'Using {n_tiles} {tile_sz[0]}-voxel tiles, spaced by {space[0]}/{tile_step[0]} voxels and starting {edge[0]} voxels from the edge')
+            print(
+                f'{n_tiles} tiles is bigger than the largest number of {tile_sz[0]}-pixel tiles possible ({max_tiles[0]}). Reducing.')
+        n_tiles = max_tiles[0]
 
-        return tile_sz, tile_step, edge
+    # number of voxels not used for tiles
+    non_tile = nd - n_tiles * tile_sz
+    non_tile_0 = np.clip(non_tile, 0, nd[0])
+
+    # Space in-between n_tiles number of tiles
+    space = np.floor(non_tile_0 // (n_tiles - 1)).astype(int)
+    space_0 = np.clip(space, 0, nd[0]).astype(int)
+
+    # Tile step (can be smaller than tile_sz)
+    tile_step = (tile_sz + np.floor(non_tile // (n_tiles - 1))).astype(int)
+
+    # Space around tiles
+    edge = ((nd - ((n_tiles - 1) * tile_step + tile_sz)) // 2).astype(int)
+    # ((non_tile_0 - space_0 * (n_tiles - 1)) / 2).astype(int)
+
+    if verbose:
+        print(
+            f'Using {n_tiles} {tile_sz[0]}-voxel tiles, spaced by {space[0]}/{tile_step[0]} voxels and starting {edge[0]} voxels from the edge')
+
+    return tile_sz, tile_step, edge
+
 
 def percentile_filter_tiled(
         data: np.ndarray,
@@ -167,13 +174,13 @@ def percentile_filter_tiled(
         n_tau = int(np.floor(tau * np.product(tile_sz)))
 
         # Prepare the output array
-        #s_tau_tiles = np.zeros(n_tiles * np.ones(dim).astype(int), dtype=np.float32)
+        # s_tau_tiles = np.zeros(n_tiles * np.ones(dim).astype(int), dtype=np.float32)
 
         # SCipy.ndimage has a percentile filter, but we only need non-exhaustive sampling and this is faster
         # despite using a for-loop structure.
         # There's probably a faster/better way of doing it, but at the moment this is negligible in execution time
-        extremum = np.max(data)*np.array([-1,1])
-        extremum_idx = np.zeros((2,3)).astype(int)
+        extremum = np.max(data) * np.array([-1, 1])
+        extremum_idx = np.zeros((2, 3)).astype(int)
 
         if dim == 2:
             for i in np.arange(n_tiles):
@@ -196,8 +203,8 @@ def percentile_filter_tiled(
                         if verbose:
                             print(f'Percentile tile scan {int(100 * c / (n_tiles ** 3))}% complete.', end='\r')
                         tile_r = np.sqrt((i - n_tiles / 2) ** 2 + (j - n_tiles / 2) ** 2 + (k - n_tiles / 2) ** 2)
-                        if tile_r < n_tiles/2-1:
-                            low_edge = edge + np.multiply(tile_step,[i,j,k])
+                        if tile_r < n_tiles / 2 - 1:
+                            low_edge = edge + np.multiply(tile_step, [i, j, k])
                             high_edge = low_edge + tile_sz
                             r = np.copy(data[
                                         low_edge[0]: high_edge[0],
@@ -205,27 +212,28 @@ def percentile_filter_tiled(
                                         low_edge[2]: high_edge[2]]).flatten()
                             s = np.sort(r)
                             v = s[n_tau]
-                            #s_tau_tiles[i][j][k] = np.copy(v)
+                            # s_tau_tiles[i][j][k] = np.copy(v)
 
                             # Largest value
                             if v > extremum[0]:
                                 extremum[0] = v
-                                extremum_idx[0,:] = np.array([i,j,k])
+                                extremum_idx[0, :] = np.array([i, j, k])
 
                             # Smallest value
                             if v < extremum[1]:
                                 extremum[1] = v
-                                extremum_idx[1,:] = np.array([i,j,k])
+                                extremum_idx[1, :] = np.array([i, j, k])
 
-        extremum_idx_pix = edge + tile_step[0]*extremum_idx+tile_sz/2
+        extremum_idx_pix = edge + tile_step[0] * extremum_idx + tile_sz / 2
         if verbose:
             print(f'Percentile tile scan completed.      \n')
-            print(f'The largest value in percentile tile was {extremum[0]:.3f} in region {extremum_idx[0,:]} (pixel center {extremum_idx_pix[0,:]})')
-            #print(f'The smallest value in percentile tile was {extremum[1]} in region {extremum_idx[1, :]} (pixel center {extremum_idx_pix[1,:]})')
+            print(
+                f'The largest value in percentile tile was {extremum[0]:.3f} in region {extremum_idx[0, :]} (pixel center {extremum_idx_pix[0, :]})')
+            # print(f'The smallest value in percentile tile was {extremum[1]} in region {extremum_idx[1, :]} (pixel center {extremum_idx_pix[1,:]})')
 
-        extremum_idx_pix = np.vstack((extremum_idx_pix,tile_sz/2))
+        extremum_idx_pix = np.vstack((extremum_idx_pix, tile_sz / 2))
         # Establish s_max
-        norm_val = extremum[0] #np.max(s_tau_tiles)
+        norm_val = extremum[0]  # np.max(s_tau_tiles)
 
     # Establish s_i
     maxi = ndimage.maximum_filter(data, footprint=kernel)
@@ -239,7 +247,7 @@ def percentile_filter(
         tau: float = None,
         tiles: int = 20,
         tile_sz: int = 12,
-        s0 : bool = False,
+        s0: bool = False,
         verbose: bool = False
 ):
     # Tau is a percentile, it does not make sense to use it outside the range [0,1]
@@ -251,7 +259,7 @@ def percentile_filter(
         n_tiles=tiles,
         tile_sz=tile_sz,
         tau=tau,
-        s0 = s0,
+        s0=s0,
         verbose=verbose
     )
 
@@ -355,6 +363,7 @@ def modify_scale_gamma(
         gamma = gamma - 1
     return np.abs(scale) ** gamma
 
+
 def modify_scale_sigmoid(
         scale: np.ndarray,
         nu: float,
@@ -362,11 +371,11 @@ def modify_scale_sigmoid(
 ):
     n = 100
 
-    domain, mapping = scale_mapping_sigmoid(mu,nu,n)
+    domain, mapping = scale_mapping_sigmoid(mu, nu, n)
 
-    scale_idx = (np.abs(scale)*n-1).astype(int)
+    scale_idx = (np.abs(scale) * n - 1).astype(int)
 
-    modification = np.divide(mapping[scale_idx], scale, where=scale>0)
+    modification = np.divide(mapping[scale_idx], scale, where=scale > 0)
 
     return modification
 
@@ -397,7 +406,7 @@ def get_map_scale(
         data,
         scale_kernel,
         tau=tau,
-        s0 = s0,
+        s0=s0,
         tile_sz=tile_size,
         verbose=verbose)
 
@@ -414,7 +423,7 @@ def modify(
         data: np.ndarray,
         scale: np.ndarray,
         gamma: float = None,
-        sigmoid_mu: float=None,
+        sigmoid_mu: float = None,
         fake_solvent: np.ndarray = None,
         sol_mask: np.ndarray = None,
         scale_threshold: float = None,
@@ -486,7 +495,6 @@ def modify(
     # Fake solvent is drawn from solvent model distribution
     # Fake solvent is None if amplifying
     if fake_solvent is not None:
-
         # This is only active if attenuating, in which case the modification is on [0,1]
         modified_map += np.multiply(fake_solvent, 1 - modification)
 
@@ -597,8 +605,8 @@ def set_tau(
 
     # Solve for the only real and positive root of x^n = 1 - x
     # which is the same as x^n + x -1 = 0
-    v = np.zeros(n_v + 1)   # n_v + 1 degree polynomial wiht coefficients
-    v[0] += 1   # x^n_v
+    v = np.zeros(n_v + 1)  # n_v + 1 degree polynomial wiht coefficients
+    v[0] += 1  # x^n_v
     v[-2] += 1  # x^1
     v[-1] = -1  # x^0
     rt = np.roots(v)
@@ -627,7 +635,7 @@ def spherical_kernel(
     :return:
     """
     assert size % 2 == 1, f'Please make odd-sizes kernels, not size={size}'
-    #assert radius <= (size + 2) / 2.0, f'This radius ({radius}) requires a bigger odd-size kernel than {size}'
+    # assert radius <= (size + 2) / 2.0, f'This radius ({radius}) requires a bigger odd-size kernel than {size}'
 
     # Construct the kernel
     kernel = map_tools.create_radial_mask(
