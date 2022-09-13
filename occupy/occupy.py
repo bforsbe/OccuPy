@@ -792,6 +792,23 @@ def main(
         if interactive_plot:
             plt.show()
 
+        if mu is not None:
+            f2 = plt.figure()
+            n_lines = 5
+            n_elements = 1000
+            x = np.linspace(0,1,n_elements)
+            col = plt.cm.binary(np.linspace(0.3,0.7,n_lines))
+            for i in np.arange(n_lines):
+                k = 2**i
+                y=occupancy.sigmoid_scale(x,mu,k)
+                plt.plot(x,y,color=col[i],label=f'gamma={int(k)}')
+            y=occupancy.sigmoid_scale(x,mu,gamma)
+            plt.plot(x,y,color='red',label=f'gamma={gamma}')
+            plt.legend()
+
+            plt.savefig("sigmoid_modification.png")
+
+
     print(f'\n------------------------------------Detected limits-------', file=f_log)
     print(f'Content at 1% of solvent  : \t {sol_limits[2]:.3f}', file=f_log)
     print(f'Solvent drop to 0% (edge) : \t {sol_limits[3]:.3f}', file=f_log)
