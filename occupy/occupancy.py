@@ -3,21 +3,53 @@ import matplotlib.pyplot as plt
 from scipy import ndimage
 from occupy import map_tools, solvent
 
-def sigmoid_scale(x,mu,nu):
-    return np.clip((1+np.divide(x*(1-mu),mu*(1-x))**-nu)**-1,0,1)
+def sigmoid_effective_mu(
+        mu0: float,
+        order: float
+):
+    """
+    Use a sigmoid defined on the [0,1]-interval to attenuate low and reinforce high scale:
 
-def value_centered_sigmoid_mu(target,order):
-    # search space is over all possible mu-values
-    mu0 = np.linspace(0,1,1000)
+    f(x)  =  ( 1 + ((x*(1-mu)) / (mu*(1-x))) ^ -m ) ^ -1
 
-    # difference of all possible mu-values at target scale value
-    diff = np.abs(sigmoid_scale(target, mu0, order) - target)
+    Where m is an order paramter >=1, and x takes values on [0,1].
 
-    return mu0[np.argmin(diff)]
+    But this ia defined to have f(mu) = 0.5.  We want to specify a scale-value that should be unchenged, i.e.
+
+    f(mu0) = mu0
+
+    Solving that equation finds a value mu_eff that results in f(mu0) = mu0
+
+    mu_eff = ( (1/mu0 + 1)^(-1/m) * (1-mu0) / mu0  + 1 ) ^ -1
+
+    :param mu:
+    :param order:
+    :return:
+    """
+    k = (1/mu0 - 1 )**(-1/order)
+    k *= (1-mu0)/mu0
+    return 1 / (1+k)
+
+def sigmoid_scale(x,mu,order):
+    """
+    Use a sigmoid defined on the [0,1]-interval to attenuate low and reinforce high scale:
+
+    f(x)  =  ( 1 + ((x*(1-mu)) / (mu*(1-x))) ^ -m ) ^ -1
+
+    Where m is an order paramter >=1, and x takes values on [0,1]. Defined to have f(mu) = 0.5.
+
+    :param x:
+    :param mu:
+    :param order:
+    :return:
+    """
+    out = (1+np.divide(x*(1-mu),mu*(1-x))**-order)**-1
+    out = np.clip(out,0,1)
+    return out
 
 def scale_mapping_sigmoid(value_cutoff,order,n=1000,save_plot=False):
     # Determine the sigmoid mean (i.e. sigmoid(mean)=0.5) that results in f(value_cutoff) = value_cutoff for this order
-    mu = value_centered_sigmoid_mu(value_cutoff,order=order)
+    mu = sigmoid_effective_mu(value_cutoff,order=order)
 
     # Generate domain and mapping
     x = np.linspace(0,1,n)
