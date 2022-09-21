@@ -36,25 +36,25 @@ def main(
             help="The lowest resolution of resolvable content input map.",
             min=0.0
         ),
-        amplify: bool = typer.Option(
+        amplify: float = typer.Option(
             False,
             "--amplify", "-am",
-            help="Alter partial occupancies, to make more or less equal to full occupancy?"
-        ),
-        attenuate: bool = typer.Option(
-            False,
-            "--attenuate", "-at",
-            help="Attenuate partial occupancies, to weaken lower occupancies"
-        ),
-        gamma: float = typer.Option(
-            None,
-            "--gamma", "-g",
-            help="Gamma correction (modification) factor for confident partial occupancies [1,inf]",
+            help="Alter partial occupancies, to make more or less equal to full occupancy?",
             min=1.0
         ),
-        mu: float = typer.Option(
+        attenuate: float = typer.Option(
+            False,
+            "--attenuate", "-at",
+            help="Attenuate partial occupancies, to weaken lower occupancies",
+            min=1.0
+        ),
+        sigmoid: float = typer.Option(
             None,
-            "--mu",
+            help="Power value for sigmoid scale modification [0,1]",
+            min=1.0
+        ),
+        pivot: float = typer.Option(
+            None,
             help="Threshold scale value for sigmoid scale modification [0,1]",
             min=0.0,
             max=1.0
@@ -215,7 +215,23 @@ def main(
 
     doc = ''
 
-    modify = amplify or attenuate or exclude_solvent
+    do_amplify = amplify is not None
+    do_attenuate = attenuate is not None
+    do_sigmoid = sigmoid is not None
+    if do_sigmoid and pivot is None:
+        raise ValueError("You have to provide --pivot to do sigmoid modification using --sigmoid ")
+
+    if do_amplify and amplify==1:
+        print(f'\033[93mSetting --amplify to 1 means to not modify at all, which is pointless.\033[0m')
+        do_amplify = False
+    if attenuate and attenuate == 1:
+        print(f'\033[93mSetting --attenuate to 1 means to not modify at all, which is pointless.\033[0m')
+        attenuate = False
+    if do_sigmoid and sigmoid == 1:
+        print(f'\033[93mSetting --sigmoid to 1 means to not modify at all, which is pointless.\033[0m')
+        do_sigmoid = False
+
+    modify = do_amplify or do_attenuate or exclude_solvent
     if modify:
         if output_map == 'out_<input_file_name>':
             output_map = 'out' + new_name
@@ -232,8 +248,10 @@ def main(
             amplify = False
             attenuate = False
 
+
+    if do_amplify or do_attenuate or do_sigmoid:
         # If modifying, then occupancy is probably desired, in which case it makes sense to use low-passed
-        # input for scale estimation. But if --raw-scale is set, we don't override it
+        # input for scale estimation. But if --raw-scale (which sets lp_scale to false) is set, we don't override it
         if lp_scale is None:
             lp_scale = True
     else:
@@ -241,13 +259,9 @@ def main(
         # input should NOT be used for scale estimation. But if --lp-scale is set, we don't override it
         if lp_scale is None:
             lp_scale = False
-        gamma = None  # We might still do solvent exclusion
 
     assert lp_scale is not None # Temp check
 
-    #if relion_classes is not None:
-    #    print('Input using a relion model.star to diversify classes is not yet implemented')
-    #    exit(0)
 
     # --------------- READ INPUT ---------------------------------------------------------------
 
@@ -817,13 +831,13 @@ def main(
             col_attn = plt.cm.Reds(np.linspace(0.3, 0.7, n_lines))
             for i in np.arange(n_lines):
                 k = 2**i
-                if amplify:
+                if do_amplify:
                     plt.plot(x,x**(1/k), color=col_ampl[i], label=f'ampl gamma={int(k)}')
-                if attenuate:
+                if do_attenuate:
                     plt.plot(x,x**k,color=col_attn[i],label=f'attn gamma={int(k)}')
-            if amplify:
+            if do_amplify:
                 plt.plot(x, x ** (1 / gamma), color='green', label=f'ampl gamma={gamma}')
-            if attenuate:
+            if do_attenuate:
                 plt.plot(x, x ** gamma, color='blue', label=f'attn gamma={gamma}')
 
             plt.legend()
