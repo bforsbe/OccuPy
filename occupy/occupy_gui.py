@@ -304,10 +304,7 @@ class Ui_Dialog(object):
         self.tab_viewInput = QtWidgets.QWidget()
         self.tab_viewInput.setEnabled(True)
         self.tab_viewInput.setObjectName("tab_viewInput")
-        self.buttonBox_saveInput = QtWidgets.QDialogButtonBox(self.tab_viewInput)
-        self.buttonBox_saveInput.setGeometry(QtCore.QRect(320, 360, 61, 25))
-        self.buttonBox_saveInput.setStandardButtons(QtWidgets.QDialogButtonBox.Save)
-        self.buttonBox_saveInput.setObjectName("buttonBox_saveInput")
+
         self.label_viewInput = QtWidgets.QLabel(self.tab_viewInput)
         self.label_viewInput.setGeometry(QtCore.QRect(0, 0, 391, 391))
         self.label_viewInput.setMinimumSize(QtCore.QSize(320, 320))
@@ -320,10 +317,7 @@ class Ui_Dialog(object):
         self.tab_viewScale = QtWidgets.QWidget()
         self.tab_viewScale.setEnabled(True)
         self.tab_viewScale.setObjectName("tab_viewScale")
-        self.buttonBox_saveScale = QtWidgets.QDialogButtonBox(self.tab_viewScale)
-        self.buttonBox_saveScale.setGeometry(QtCore.QRect(320, 360, 61, 25))
-        self.buttonBox_saveScale.setStandardButtons(QtWidgets.QDialogButtonBox.Save)
-        self.buttonBox_saveScale.setObjectName("buttonBox_saveScale")
+
         self.label_viewScale = QtWidgets.QLabel(self.tab_viewScale)
         self.label_viewScale.setGeometry(QtCore.QRect(0, 0, 391, 391))
         self.label_viewScale.setMinimumSize(QtCore.QSize(320, 320))
@@ -335,10 +329,7 @@ class Ui_Dialog(object):
         self.tab_viewConfidence = QtWidgets.QWidget()
         self.tab_viewConfidence.setEnabled(True)
         self.tab_viewConfidence.setObjectName("tab_viewConfidence")
-        self.buttonBox_saveConfidence = QtWidgets.QDialogButtonBox(self.tab_viewConfidence)
-        self.buttonBox_saveConfidence.setGeometry(QtCore.QRect(320, 360, 61, 25))
-        self.buttonBox_saveConfidence.setStandardButtons(QtWidgets.QDialogButtonBox.Save)
-        self.buttonBox_saveConfidence.setObjectName("buttonBox_saveConfidence")
+
         self.label_viewConfidence = QtWidgets.QLabel(self.tab_viewConfidence)
         self.label_viewConfidence.setGeometry(QtCore.QRect(0, 0, 391, 391))
         self.label_viewConfidence.setMinimumSize(QtCore.QSize(320, 320))
@@ -347,7 +338,7 @@ class Ui_Dialog(object):
         self.label_viewConfidence.setText("")
         self.label_viewConfidence.setObjectName("label_viewConfidence")
         self.label_viewConfidence.raise_()
-        self.buttonBox_saveConfidence.raise_()
+
         self.tabWidget_view.addTab(self.tab_viewConfidence, "")
         self.tab_solvDef = QtWidgets.QWidget()
         self.tab_solvDef.setEnabled(True)
@@ -368,18 +359,12 @@ class Ui_Dialog(object):
         self.MplWidget_viewModification.setMinimumSize(QtCore.QSize(320, 320))
         self.MplWidget_viewModification.setMaximumSize(QtCore.QSize(400, 400))
         self.MplWidget_viewModification.setObjectName("MplWidget_viewModification")
-        self.buttonBox_saveModification = QtWidgets.QDialogButtonBox(self.MplWidget_viewModification)
-        self.buttonBox_saveModification.setGeometry(QtCore.QRect(320, 360, 61, 25))
-        self.buttonBox_saveModification.setStandardButtons(QtWidgets.QDialogButtonBox.Save)
-        self.buttonBox_saveModification.setObjectName("buttonBox_saveModification")
+
         self.tabWidget_view.addTab(self.tab_viewModification, "")
         self.tab_viewOutput = QtWidgets.QWidget()
         self.tab_viewOutput.setEnabled(True)
         self.tab_viewOutput.setObjectName("tab_viewOutput")
-        self.buttonBox_saveOutput = QtWidgets.QDialogButtonBox(self.tab_viewOutput)
-        self.buttonBox_saveOutput.setGeometry(QtCore.QRect(320, 360, 61, 25))
-        self.buttonBox_saveOutput.setStandardButtons(QtWidgets.QDialogButtonBox.Save)
-        self.buttonBox_saveOutput.setObjectName("buttonBox_saveOutput")
+
         self.label_viewOutput = QtWidgets.QLabel(self.tab_viewOutput)
         self.label_viewOutput.setGeometry(QtCore.QRect(0, 0, 391, 391))
         self.label_viewOutput.setMinimumSize(QtCore.QSize(320, 320))
@@ -388,7 +373,7 @@ class Ui_Dialog(object):
         self.label_viewOutput.setText("")
         self.label_viewOutput.setObjectName("label_viewOutput")
         self.label_viewOutput.raise_()
-        self.buttonBox_saveOutput.raise_()
+
         self.tabWidget_view.addTab(self.tab_viewOutput, "")
         self.tabWidget_output = QtWidgets.QTabWidget(Dialog)
         self.tabWidget_output.setGeometry(QtCore.QRect(10, 640, 661, 171))
@@ -827,10 +812,10 @@ class Ui_Dialog(object):
         self.checkBox_showCmd.setText(_translate("Dialog", "Only show command"))
         self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewInput), _translate("Dialog", "Input"))
         self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewScale), _translate("Dialog", "Scale"))
-        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewConfidence), _translate("Dialog", "Conf"))
-        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_solvDef), _translate("Dialog", "Solv.Def"))
-        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewModification), _translate("Dialog", "Mod"))
-        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewOutput), _translate("Dialog", "Output"))
+        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewConfidence), _translate("Dialog", "Conf."))
+        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_solvDef), _translate("Dialog", "Sol.def."))
+        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewModification), _translate("Dialog", "Plot"))
+        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewOutput), _translate("Dialog", "Preview"))
         self.textEdit_log.setPlaceholderText(_translate("Dialog", "Output messages will go here...."))
         self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_log), _translate("Dialog", "Output Log"))
         self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_hist), _translate("Dialog", "Histogram"))
@@ -1469,6 +1454,8 @@ class Ui_Dialog(object):
             self.checkBox_scaleOcc.setEnabled(True)
             self.checkBox_scaleRes.setEnabled(True)
 
+            Dialog.update()
+
 
     def occupy_log(self, message):
         self.textEdit_log.append(message)
@@ -1514,7 +1501,7 @@ class Ui_Dialog(object):
 
         # output options
         if self.checkBox_outputLowpass.isChecked():
-            self.cmd.append(f'--output-lowpass {self.doubleSpinBox_outputLowpass}')
+            self.cmd.append(f'--output-lowpass {self.doubleSpinBox_outputLowpass.value()}')
         if self.checkBox_suppresSolvent.isChecked():
             self.cmd.append(f'--suppress-solvent')
         if self.checkBox_S0.isChecked():
