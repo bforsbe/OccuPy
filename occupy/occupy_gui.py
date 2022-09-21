@@ -29,9 +29,9 @@ from scipy import ndimage
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 try:
-    import map_tools, occupancy, vis, solvent, extras              # for pyCharm
+    import map_tools, occupancy, vis, solvent, extras, args              # for pyCharm
 except:
-    from occupy import map_tools, occupancy, vis, solvent, extras   # for terminal use
+    from occupy import map_tools, occupancy, vis, solvent, extras, args   # for terminal use
 
 
 # Matplotlib canvas class to create figure
@@ -1468,6 +1468,10 @@ class Ui_Dialog(object):
         self.textEdit_log.clear()
 
     def compose_cmd(self):
+
+        options = args.occupy_options()
+        options.input_map = self.comboBox_inputMap.currentText()
+
         self.cmd.clear()
         self.cmd.append('occupy')
 
@@ -1520,8 +1524,11 @@ class Ui_Dialog(object):
         if self.checkBox_verbose.isChecked():
             self.cmd.append(f'--verbose')
 
+        return options
+
     def run_cmd(self):
-        self.compose_cmd()
+        options = self.compose_cmd()
+
         if self.checkBox_showCmd.isChecked():
             #TODO check for in-memory objects like chimeraX-maps and figure out what to do
             self.occupy_log(" ".join(self.cmd))
