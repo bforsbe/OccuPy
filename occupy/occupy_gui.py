@@ -1564,6 +1564,7 @@ class Ui_Dialog(object):
             self.occupy_log(" ".join(self.cmd))
         else:
             self.occupy_log('Will run.')
+            estimate.occupy_run(options)
 
 if __name__ == "__main__":
     import sys
