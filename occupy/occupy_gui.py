@@ -22,7 +22,6 @@ import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
 matplotlib.use('QT5Agg')
 
-from psygnal import Signal
 import scipy
 from scipy import ndimage
 
@@ -1454,8 +1453,6 @@ class Ui_Dialog(object):
             self.checkBox_scaleOcc.setEnabled(True)
             self.checkBox_scaleRes.setEnabled(True)
 
-            Dialog.update()
-
 
     def occupy_log(self, message):
         self.textEdit_log.append(message)
@@ -1574,3 +1571,5 @@ if __name__ == "__main__":
     ui.setupUi(Dialog)
     Dialog.show()
     sys.exit(app.exec_())
+
+
