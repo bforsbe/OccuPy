@@ -29,9 +29,9 @@ from scipy import ndimage
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 try:
-    import map_tools, occupancy, vis, solvent, extras, args              # for pyCharm
+    import estimate, map_tools, occupancy, vis, solvent, extras, args              # for pyCharm
 except:
-    from occupy import map_tools, occupancy, vis, solvent, extras, args   # for terminal use
+    from occupy import estimate, map_tools, occupancy, vis, solvent, extras, args   # for terminal use
 
 
 # Matplotlib canvas class to create figure
@@ -1470,58 +1470,88 @@ class Ui_Dialog(object):
     def compose_cmd(self):
 
         options = args.occupy_options()
-        options.input_map = self.comboBox_inputMap.currentText()
-
         self.cmd.clear()
         self.cmd.append('occupy')
 
-        # input files
-        self.cmd.append(f'--input-map {self.comboBox_inputMap.currentText()}')
-        if self.comboBox_inputSolventDef.currentText() != " ":
-            self.cmd.append(f'--solvenr-def {self.comboBox_inputSolventDef.currentText()}')
+        # input files ----------------------------------------------------------------------------
+        options.input_map = self.comboBox_inputMap.currentText()
+        self.cmd.append(f'--input-map {options.input_map}')
 
-        # input options
-        self.cmd.append(f'--lowpass {self.doubleSpinBox_inputLowpass.value()}')
-        self.cmd.append(f'--kernel {self.spinBox_kernelSize.value()}')
-        self.cmd.append(f'--kernel-radius {self.doubleSpinBox_kernelRadius.value()}')
-        self.cmd.append(f'--tau  {self.doubleSpinBox_Tau.value()}')
-        self.cmd.append(f'--tile-size {self.spinBox_tileSize.value()}')
-        if self.checkBox_maxBox:
-            self.cmd.append(f'--max-box {self.spinBox_maxBox.value()}')
+        if self.comboBox_inputSolventDef.currentText() != " ":
+            options.solvent_def = self.comboBox_inputSolventDef.currentText()
+            self.cmd.append(f'--solvent-def {options.solvent_def}')
+
+        # input options-------------------------------------------------------------------------
+        options.lowpass_input = self.doubleSpinBox_inputLowpass.value()
+        self.cmd.append(f'--lowpass {options.lowpass_input}')
+        options.kernel_size = self.spinBox_kernelSize.value()
+        self.cmd.append(f'--kernel-size {options.kernel_size}')
+        options.kernel = self.doubleSpinBox_kernelRadius.value()
+        self.cmd.append(f'--kernel-radius {options.kernel}')
+        options.tau = self.doubleSpinBox_Tau.value()/100.0
+        self.cmd.append(f'--tau  {options.tau}')
+        options.tile_size = self.spinBox_tileSize.value()
+        self.cmd.append(f'--tile-size {options.tile_size}')
+
+
+        # max-box -----------------------------------------------------------------------------
+        if self.checkBox_maxBox.isChecked():
+            options.max_box = self.spinBox_maxBox.value()
+            self.cmd.append(f'--max-box {options.max_box}')
         else:
+            options.max_box = self.spinBox_maxBox.value()
             self.cmd.append(f'--max-box -1')
 
-        # modification options
+
+        # modification options ---------------------------------------------------------------
         modifying = False
         if self.groupBox_amplification.isChecked():
             modifying = True
-            self.cmd.append(f'--amplify {self.doubleSpinBox_amplPower.value()}')
+            options.amplify = self.doubleSpinBox_amplPower.value()
+            self.cmd.append(f'--amplify {options.amplify}')
+
         if self.groupBox_attenuation.isChecked():
             modifying = True
-            self.cmd.append(f'--attenuate {self.doubleSpinBox_attnPower.value()}')
+            options.attenuate = self.doubleSpinBox_attnPower.value()
+            self.cmd.append(f'--attenuate {options.attenuate}')
+
         if self.groupBox_sigmoid.isChecked():
             modifying = True
-            self.cmd.append(f'--sigmoid {self.doubleSpinBox_sigmoidPower.value()} --pivot {self.doubleSpinBox_sigmoidPivot.value()}')
+            options.sigmoid = self.doubleSpinBox_sigmoidPower.value()
+            options.pivot = self.doubleSpinBox_sigmoidPivot.value()
+            self.cmd.append(f'--sigmoid {options.sigmoid } --pivot {options.pivot}')
 
-        # output options
+
+        # output options -------------------------------------------------------------------
         if self.checkBox_outputLowpass.isChecked():
-            self.cmd.append(f'--output-lowpass {self.doubleSpinBox_outputLowpass.value()}')
+            options.lowpass_output = self.doubleSpinBox_outputLowpass.value()
+            self.cmd.append(f'--output-lowpass {options.lowpass_output}')
+
         if self.checkBox_suppresSolvent.isChecked():
+            options.exclude_solvent = True
             self.cmd.append(f'--suppress-solvent')
+
         if self.checkBox_S0.isChecked():
+            options.s0 = True
             self.cmd.append(f'-S0')
+
         if self.checkBox_histMatch.isChecked():
+            options.hist_match = True
             self.cmd.append(f'--hist-match')
+
         if self.checkBox_scaleOcc.isChecked():
             if not modifying:
                 # By default we include resolution-dependent effects when not modifying,
                 # so we need to tell occupy to omit them
+                options.lp_scale = True
                 self.cmd.append(f'--occupancy')
         else:
             if modifying:
+                options.lp_scale = False
                 self.occupy_warn('Modifying with resolution-effect is not recommended. I suggest ticking "occupancy" instead.')
 
         if self.checkBox_verbose.isChecked():
+            options.verbose = True
             self.cmd.append(f'--verbose')
 
         return options
