@@ -578,8 +578,8 @@ def estimate_confidence(
 
     # Hedge if requested
     if hedge_confidence is not None:
-        assert hedge_confidence > 1
-        out = out ** hedge_confidence
+        if hedge_confidence > 1:
+            out = out ** hedge_confidence
 
     # Generate ouput from mapping
     confidence = (out[indx]).astype(np.float32)
