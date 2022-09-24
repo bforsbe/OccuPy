@@ -27,10 +27,8 @@ from scipy import ndimage
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-try:
-    import estimate, map_tools, occupancy, vis, solvent, extras, args              # for pyCharm
-except:
-    from occupy import estimate, map_tools, occupancy, vis, solvent, extras, args   # for terminal use
+import estimate, map_tools, occupancy, vis, solvent, extras, args              # for pyCharm
+#    from occupy import estimate, map_tools, occupancy, vis, solvent, extras, args   # for terminal use
 
 
 # Matplotlib canvas class to create figure
@@ -133,6 +131,7 @@ class Ui_Dialog(object):
         Dialog.setModal(False)
 
         self.inputMap = InputMapProperties()
+        self.confidence_file_name = None
         self.cmd = []
 
         # Input map
@@ -1202,12 +1201,83 @@ class Ui_Dialog(object):
 
                 f.close()
 
+    def render_confidence_slice(self):
+
+        # Check if input view is active (currently viewed)
+        # We don't want to read and render a slice that we're not viewing
+        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewConfidence):
+
+            # Get file name or object
+            confidence_file_name = self.confidence_file_name
+
+            # Get file slice number
+            slice = self.horizontalSlider_viewSlice.value()
+
+            # If there is something to render
+            if confidence_file_name is not None:
+
+                # Open memory-solvent_file_name (much faster than open)
+                f = mf.mmap(confidence_file_name)
+                # Get the dimensions (assume cubic based in read-check)
+                n = f.header['nx']
+
+                # Let the input map decide the slice number if the confidence is on another grid
+                input_file_name = self.comboBox_inputMap.currentText()
+                if input_file_name:
+                    # Open memory-mapped (much faster than open)
+                    f_input = mf.mmap(input_file_name)
+                    # Get the dimensions (assume cubic based in read-check)
+                    n_input = f_input.header['nx']
+
+                    if n != n_input:
+                        # The equivalent slice in the possibly
+                        slice = int((slice / float(n_input)) * n)
+
+                    f_input.close()
+                else:
+                    self.horizontalSlider_viewSlice.setRange(1, n)
+                    self.horizontalSlider_viewSlice.setValue(n // 2)
+
+                    self.spinBox_viewSlice.setMaximum(n)
+                    self.spinBox_viewSlice.setValue(n // 2)
+
+                # Safe-guards
+                if not slice or slice > n:
+                    slice = n // 2
+
+                # Render the selected dimension
+                if self.checkBox_viewX.isChecked():
+                    t = f.data[slice - 1, :, :]
+                elif self.checkBox_viewY.isChecked():
+                    t = f.data[:, slice - 1, :]
+                elif self.checkBox_viewZ.isChecked():
+                    t = f.data[:, :, slice - 1]
+
+                # Grayscale normalization
+                # tmin = f.header['dmin']
+                # tmax = f.header['dmax']
+                # t = (t-tmin)/(tmax-tmin)
+
+                # Construct and render image
+                im_data = np.array((t * 255).astype(np.uint8))
+                qimage = QtGui.QImage(im_data, n, n,
+                                      QtGui.QImage.Format_Grayscale8)  # Setup pixmap with the provided image
+                pixmap = QtGui.QPixmap(qimage)  # Setup pixmap with the provided image
+                pixmap = pixmap.scaled(self.label_viewConfidence.width(), self.label_viewConfidence.height(),
+                                       QtCore.Qt.KeepAspectRatio)  # Scale pixmap
+                self.label_viewConfidence.setPixmap(pixmap)  # Set the pixmap onto the label
+                self.label_viewConfidence.setAlignment(QtCore.Qt.AlignCenter)  # Align the label to center
+
+                f.close()
+
 
     def render_all_slices(self):
         self.render_input_slice()
         self.render_scale_slice()
         self.render_solvent_slice()
         self.render_output_slice()
+        if self.confidence_file_name is not None:
+            self.render_confidence_slice()
 
     def set_lowpass(self):
         # Get file name or object
@@ -1276,7 +1346,7 @@ class Ui_Dialog(object):
 
         if not self.inputMap.kernel_size == old_kernel_size:
             # Update gui with new value
-            self.spinBox_kernelSize.setValue(self.inputMap.kernel_size)
+            self.spinBox_kernelSize.setValue(int(self.inputMap.kernel_size))
         else:
             # Propagate to other settings since it won't be triggered by the connect
             self.set_kernel_tau()
@@ -1560,8 +1630,33 @@ class Ui_Dialog(object):
             #TODO check for in-memory objects like chimeraX-maps and figure out what to do
             self.occupy_log(" ".join(self.cmd))
         else:
-            self.occupy_log('Will run.')
-            estimate.occupy_run(options)
+            from io import StringIO
+            import sys
+
+            class Capturing(list):
+                def __enter__(self):
+                    self._stdout = sys.stdout
+                    sys.stdout = self._stringio = StringIO()
+                    return self
+
+                def __exit__(self, *args):
+                    self.extend(self._stringio.getvalue().splitlines())
+                    del self._stringio  # free up some memory
+                    sys.stdout = self._stdout
+
+            with Capturing() as output:
+                self.occupy_log('Estimating local scale...')
+                estimate.occupy_run(options)
+
+            for i in output:
+                self.occupy_log(i)
+
+            from pathlib import Path
+            new_name = Path(options.input_map).name
+            # Force .mrc for output
+            new_name = f'{Path(new_name).stem}.mrc'
+            self.confidence_file_name = f'conf_{Path(new_name).stem}.mrc'
+
 
 if __name__ == "__main__":
     import sys

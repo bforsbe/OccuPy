@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import ndimage
-from occupy import map_tools, solvent
+
+import map_tools, solvent
 
 
 def sigmoid_effective_mu(
@@ -73,7 +74,7 @@ def scale_mapping_sigmoid(value_cutoff, order, n=1000, save_plot=False):
     mu = sigmoid_effective_mu(value_cutoff, order=order)
 
     # Generate domain and mapping
-    x = np.linspace(0, 1, n)
+    x = np.linspace(0, 1, n).astype(np.float32)
     s = sigmoid_scale(x, mu, order)
 
     if save_plot:
@@ -436,13 +437,14 @@ def get_map_scale(
 def modify(
         data: np.ndarray,
         scale: np.ndarray,
-        gamma: float = None,
-        sigmoid_mu: float = None,
+        amplify_gamma: float = None,
+        attenuate_gamma: float = None,
+        sigmoid_gamma: float = None,
+        sigmoid_pivot: float = None,
         fake_solvent: np.ndarray = None,
         sol_mask: np.ndarray = None,
         scale_threshold: float = None,
-        attenuate: bool = False,
-        save_amp_map: bool = False,
+        save_modified_map: bool = False,
         verbose: bool = True
 ):
     """
@@ -456,14 +458,18 @@ def modify(
     :param sol_mask:
     :param scale_threshold:
     :param attenuate:
-    :param save_amp_map:
+    :param save_modified_map:
     :param verbose:
     :return:
     """
 
-    # Exit without doing anything
-    if gamma is None or gamma == 1:
-        return data
+    do_amplify = amplify_gamma is not None
+    do_attenuate = attenuate_gamma is not None
+    do_sigmoid = sigmoid_gamma is not None and sigmoid_pivot is not None
+
+    # Expect separate calls, so that we dont do more than one thing
+    actions = do_amplify + do_attenuate + do_sigmoid
+    assert actions != 1, f'A modify call should only perform one action: ampl={do_amplify}, attn={do_attenuate}, sigm={do_sigmoid}'
 
     # Scale threshold stops very small estimated scales from being modified.
     if scale_threshold is None:
@@ -483,27 +489,32 @@ def modify(
             print('Using solvent mask when equalising occupancy.')
         thresholded_scale_map = (1 - sol_mask) + np.multiply(sol_mask, thresholded_scale_map)
 
+    # Construct modification as dependent on scaling and gamma-coefficient
     modification = []
-    if sigmoid_mu is None:
-        # Construct modification as dependent on scaling and gamma-coefficient
+    if do_amplify:
         modification = modify_scale_gamma(
             thresholded_scale_map,
-            gamma,
-            attenuate_gamma=attenuate
-        )
-    else:
+            amplify_gamma,
+            attenuate_gamma=do_attenuate)
+
+    if do_attenuate:
+        modification = modify_scale_gamma(
+            thresholded_scale_map,
+            attenuate_gamma,
+            attenuate_gamma=do_attenuate)
+
+    if do_sigmoid:
         # Construct modification as dependent on scaling and gamma-coefficient
         modification = modify_scale_sigmoid(
             scale,
-            gamma,
-            sigmoid_mu
-        )
+            sigmoid_gamma,
+            sigmoid_pivot)
 
     # Amplify or attenuate map
     modified_map = np.multiply(data, modification)
 
     # Optional output with --save-all-maps
-    if save_amp_map:
+    if save_modified_map:
         map_tools.new_mrc(modification.astype(np.float32), 'modification.mrc', vox_sz=1)
 
     # Fake solvent is drawn from solvent model distribution

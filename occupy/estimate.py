@@ -2,10 +2,10 @@ import os
 import numpy as np
 import mrcfile as mf
 from pathlib import Path
-try:
-    import map_tools, occupancy, vis, solvent, extras, args              # for pyCharm
-except:
-    from occupy import map_tools, occupancy, vis, solvent, extras, args   # for terminal use
+
+
+import map_tools, occupancy, vis, solvent, extras, args              # for pyCharm
+#from occupy import map_tools, occupancy, vis, solvent, extras, args   # for terminal use
 from skimage.exposure import match_histograms
 
 
@@ -27,39 +27,29 @@ def occupy_run(options: args.occupy_options):
     if options.plot:
         import matplotlib.pyplot as plt
 
+
+
     # Remove path for output
     new_name = Path(options.input_map).name
     # Force .mrc for output
-    new_name = f'_{Path(new_name).stem}.mrc'
-
+    new_name = f'{Path(new_name).stem}.mrc'
     doc = ''
+
 
     do_amplify = options.amplify > 1
     do_attenuate = options.attenuate > 1
     do_sigmoid = options.sigmoid > 1
+    do_exclude_solvent = options.exclude_solvent
+    do_modify = do_amplify or do_attenuate or do_sigmoid or do_exclude_solvent
+
+    # Save amplified and/or solvent-suppressed output.
+    if do_exclude_solvent:
+        base_out_name = f'solExcl{new_name}'
+        doc = f'solvent exclusion, {doc}'
 
     if do_sigmoid and options.pivot is None:
         raise ValueError("You have to provide --pivot to do sigmoid modification using --sigmoid ")
 
-
-    if do_amplify and options.amplify == 1:
-        # print(f'\033[93mSetting --amplify to 1 means to not modify at all, which is pointless.\033[0m')
-        do_amplify = False
-    if do_attenuate and options.attenuate == 1:
-        # print(f'\033[93mSetting --attenuate to 1 means to not modify at all, which is pointless.\033[0m')
-        do_attenuate = False
-    if do_sigmoid and options.sigmoid == 1:
-        # print(f'\033[93mSetting --sigmoid to 1 means to not modify at all, which is pointless.\033[0m')
-        do_sigmoid = False
-
-    modify = do_amplify or do_attenuate or do_sigmoid or options.exclude_solvent
-
-    if modify:
-        if options.output_map == 'out_<input_file_name>':
-            output_map = 'out' + new_name
-    else:
-        output_map = None
-        print(f'Not modifying or excluding solvent, so expect only scale output ')
 
     if do_amplify or do_attenuate or do_sigmoid:
         # If modifying, then occupancy is probably desired, in which case it makes sense to use low-passed
@@ -137,7 +127,7 @@ def occupy_run(options: args.occupy_options):
         else:
             lowpass_input = options.resolution  # Å
     elif options.resolution is not None:
-        if options.resolution < options.lowpass_input:
+        if options.resolution < options.lowpass_input and options.resolution > 0 :
             print(
                 f'Warning: provided --resolution/-r value ({options.resolution}) is not used, since --lowpass/-lp ({options.lowpass_input}) is greater')
         options.lowpass_input = np.float32(np.max([options.lowpass_input, options.resolution]))
@@ -153,7 +143,7 @@ def occupy_run(options: args.occupy_options):
         options.kernel_size = np.clip(options.kernel_size, 3, 9)
 
     # Make a kernel (morphological structuring element) for max-filter (greyscale dilation).
-    if options.kernel_radius < 0:
+    if options.kernel_radius is None:
         options.kernel_radius = options.lowpass_input / (2 * voxel_size)
 
     kernel_warn = False
@@ -205,6 +195,10 @@ def occupy_run(options: args.occupy_options):
     else:
         print(f'LP scale :\t     \t {options.lp_scale} (Include res-dep)', file=f_log)
     print(f'Scale lim:\t[0,1]\t {options.scale_limit:.3f}', file=f_log)
+    if options.lowpass_output is not None:
+        print(f'LP output:\t     \t {options.lowpass_output} (Include res-dep)', file=f_log)
+    #else:
+    #    options.lowpass_output = None
 
     # ----- LOW-PASS SETTINGS ---------
 
@@ -245,7 +239,7 @@ def occupy_run(options: args.occupy_options):
         sol_data = np.copy(in_data)
 
     # We apply any estimations or solvent operation on the raw input (possibly down-sized)
-    if modify:
+    if do_modify:
         out_data = np.copy(in_data)
 
     # --------------- PLOTTING STUFF------------------------------------------------------------
@@ -301,7 +295,7 @@ def occupy_run(options: args.occupy_options):
     )
 
     # --------------- SCALE ESTIMATION ------------------------------------------------------
-    print(f' options.tau {options.tau}')
+    
     scale_map = f'scale_{scale_mode}{new_name}'
     scale, max_val, tiles_raw = occupancy.get_map_scale(
         scale_data,
@@ -358,7 +352,7 @@ def occupy_run(options: args.occupy_options):
         print(f'Min c.sc :\t[0,1]\t {lowest_confident_scale:.3f}', file=f_log)
 
     # Dirty check on the solvent model, could be more rigorous
-    if modify:
+    if do_modify:
 
         if lowest_confident_scale > 0.5:
             warnings = "Solvent model fit is likely bad. Check terminal output and"
@@ -368,31 +362,25 @@ def occupy_run(options: args.occupy_options):
                 warnings = f'{warnings} check the output solModel*.png '
             solvent.warn_bad(lowest_confident_scale, file=f_log, verbose=options.verbose, kernel_warn=kernel_warn)
 
-    # --------------- MODIFY INPUT MAP IF AMPLIFYING AND/OR SUPPRESSING SOLVENT ------------------
-    if options.exclude_solvent:
-        output_map = 'solExcl_' + Path(options.output_map).stem + '.mrc'
-        doc = 'Solvent exclusion '
+
 
     fake_solvent = None  # Will not  add fake solvent during amplify
 
     attn_map = None
     ampl_map = None
 
-    if do_amplify or options.exclude_solvent:
+    if do_amplify:
         ampl = occupancy.modify(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
-            gamma=options.amplify,  # The exponent for amplification / attenuation
-            sigmoid_mu=options.pivot,  # The scale value for sigmoid modificaiton
-            attenuate=False,  # False is amplifying or not doing anything
-            fake_solvent=fake_solvent,
+            amplify_gamma=options.amplify,  # The exponent for amplification / attenuation
             scale_threshold=options.scale_limit,
-            save_amp_map=options.save_all_maps,
+            save_modified_map=options.save_all_maps,
             verbose=options.verbose
         )
 
         if options.save_all_maps:
-            map_tools.adjust_to_parent(file_name='modification.mrc', parent=input_map)
+            map_tools.adjust_to_parent(file_name='modification_ampl.mrc', parent=input_map)
 
         # -- Supress solvent amplification --
         # Confidence-based mask of amplified content.
@@ -401,7 +389,7 @@ def occupy_run(options: args.occupy_options):
             ampl,  # Supress the amplified output data
             in_data,  # Add back solvent from raw input (full res)
             confidence,  # The confidence mask to supress amplification
-            options.exclude_solvent,  # Only add back if not excluding solvent
+            do_exclude_solvent,  # Only add back if not excluding solvent
             verbose=options.verbose
         )
 
@@ -443,20 +431,12 @@ def occupy_run(options: args.occupy_options):
 
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
 
-        # Save amplified and/or solvent-suppressed output.
-        if do_amplify:
-            if options.pivot is not None:
-                ampl_map = f'sigmoid_{options.amplify:.1f}_{options.pivot:.1f}_' + Path(output_map).stem + '.mrc'
-            else:
-                ampl_map = f'ampl_{options.amplify:.1f}_' + Path(output_map).stem + '.mrc'
-            ampl_doc = f'{doc} attenuation gamma={options.amplify:.2f}'
-        else:
-            ampl_map = output_map
-            ampl_doc = f'{doc}'
+        ampl_name = f'ampl_{options.amplify:.1f}_{base_out_name}'
+        ampl_doc = f'ampl {options.amplify:.1f}, {doc}'
 
         map_tools.new_mrc(
             ampl.astype(np.float32),
-            ampl_map,
+            ampl_name,
             parent=options.input_map,
             verbose=options.verbose,
             extra_header=ampl_doc
@@ -476,11 +456,10 @@ def occupy_run(options: args.occupy_options):
         attn = occupancy.modify(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
-            gamma=options.attenuate,  # The exponent for amplification / attenuation
-            attenuate=True,  # False is amplifying or not doing anything
+            attenuate_gamma=options.attenuate,  # The exponent for amplification / attenuation
             fake_solvent=fake_solvent,
             scale_threshold=options.scale_limit,
-            save_amp_map=options.save_all_maps,
+            save_modified_map=options.save_all_maps,
             verbose=options.verbose
         )
 
@@ -491,7 +470,7 @@ def occupy_run(options: args.occupy_options):
             attn,  # Supress the amplified output data
             in_data,  # Add back solvent from raw input (full res)
             confidence,  # The confidence mask to supress amplification
-            options.exclude_solvent,  # Only add back if not excluding solvent
+            do_exclude_solvent,  # Only add back if not excluding solvent
             verbose=options.verbose
         )
 
@@ -533,11 +512,12 @@ def occupy_run(options: args.occupy_options):
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
 
         # Save amplified and/or solvent-suppressed output.
-        attn_map = f'attn_{options.attenuate:.1f}_' + Path(output_map).stem + '.mrc'
-        attn_doc = f'{doc} attenuation gamma={options.attenuate:.2f}'
+        attn_name = f'attn_{options.attenuate:.1f}_{base_out_name}'
+        attn_doc = f'attn {options.attenuate:.1f}, {doc}'
+
         map_tools.new_mrc(
             attn.astype(np.float32),
-            attn_map,
+            attn_name,
             parent=options.input_map,
             verbose=options.verbose,
             extra_header=attn_doc
@@ -545,18 +525,98 @@ def occupy_run(options: args.occupy_options):
 
         del attn
 
-    # ----------------OUTPUT FILES AND PLOTTING -------------------------------------------------
-    if options.save_all_maps:
-        map_tools.new_mrc(
-            confidence.astype(np.float32),
-            f'conf{new_name}',
-            parent=input_map,
-            verbose=options.verbose,
-            log=f_log
+    if do_sigmoid:
+        #if not options.exclude_solvent:
+        # TODO: sigmoid noise comp
+
+        sigm = occupancy.modify(
+            out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
+            scale,  # The estimated scale to use for amplification
+            sigmoid_gamma=options.sigmoid,  # The exponent for sigmoid
+            sigmoid_pivot=options.pivot,
+            #fake_solvent=fake_solvent,
+            scale_threshold=options.scale_limit,
+            save_modified_map=options.save_all_maps,
+            verbose=options.verbose
         )
 
+        # -- Supress solvent amplification --
+        # Confidence-based mask of amplified content.
+        # Solvent is added back unless excluded
+        sigm = solvent.suppress(
+            sigm,  # Supress the amplified output data
+            in_data,  # Add back solvent from raw input (full res)
+            confidence,  # The confidence mask to supress amplification
+            do_exclude_solvent,  # Only add back if not excluding solvent
+            verbose=options.verbose
+        )
+
+        # -- Low-pass filter output --
+        sigm = map_tools.lowpass_map(
+            sigm,
+            options.lowpass_output,
+            voxel_size,
+            keep_scale=True
+        )
+
+        # If the input map was larger than the maximum processing size, we need to get back the bigger size as output
+        if downscale_processing:
+            sigm, _ = map_tools.lowpass(
+                sigm,
+                output_size=nd[0],
+                square=True,
+                resample=True
+            )
+
+        # -- Match output range --
+        # inverse filtering can create a few spurious pixels that
+        # ruin the dynamic range compared to the input. This is mostly
+        # aesthetic.
+        # TODO Compare power spectrum of input out put to examine spectral effect
+        # TODO also check the average change in pixel value, anf how it relates to power spectral change
+        if options.hist_match:
+            f_open = mf.open(input_map)
+            attn = match_histograms(
+                sigm,
+                reference=f_open.data
+            )  # Output is no longer input + stuff, i.e. good part is now something else.
+            f_open.close()
+        else:
+            attn = map_tools.clip_to_range(
+                sigm,
+                range=range_ori
+            )
+        # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
+
+        # Save amplified and/or solvent-suppressed output.
+        sigm_name = f'sigm_{options.sigmoid:.1f}:{options.pivot:.2f}_{base_out_name}'
+        sigm_doc = f'sigm {options.sigmoid:.1f}:{options.pivot:.2f}, {doc}'
+
+        map_tools.new_mrc(
+            sigm.astype(np.float32),
+            sigm_name,
+            parent=options.input_map,
+            verbose=options.verbose,
+            extra_header=sigm_doc
+        )
+
+        del sigm
+
+    #TODO only solvent supress output
+
+    # ----------------OUTPUT FILES AND PLOTTING -------------------------------------------------
+    #if options.save_all_maps:
+    map_tools.new_mrc(
+        confidence.astype(np.float32),
+        f'conf_{new_name}',
+        parent=options.input_map,
+        verbose=options.verbose,
+        log=f_log
+    )
+
+    # If auto-opening, must write the file for it
     if options.show_chimerax:
-        chimerax = True
+        options.chimerax = True
 
     if options.chimerax:
         chimx_file = vis.chimx_viz(
@@ -633,7 +693,7 @@ def occupy_run(options: args.occupy_options):
             plt.plot(x, y, '--', color='green', label=f'gamma={options.amplify}')
             plt.legend()
             plt.savefig("sigmoid_modification.png")
-        elif modify:
+        elif do_modify:
             f3 = plt.figure()
             x = np.linspace(0, 1, n_elements)
             col_ampl = plt.cm.Blues(np.linspace(0.3, 0.7, n_lines))
@@ -669,7 +729,7 @@ def occupy_run(options: args.occupy_options):
         print(f_log.read())
         f_log.close()
 
-    if modify:
+    if do_modify:
         print(f'\033[92mDone\033[0m estimating local scale and modifying input by local scale. ')
     else:
         print(f'\033[92mDone\033[0m estimating local scale')
