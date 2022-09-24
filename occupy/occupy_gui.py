@@ -732,8 +732,8 @@ class Ui_Dialog(object):
         self.tabWidget_output.setCurrentIndex(0)
 
         # TODO
-        self.buttonBox.accepted.connect(Dialog.accept)
-        self.buttonBox.rejected.connect(Dialog.reject)
+        #self.buttonBox.accepted.connect(Dialog.accept)
+        #self.buttonBox.rejected.connect(Dialog.reject)
 
         # Mutually explusive options
         self.checkBox_scaleRes.clicked.connect(self.checkBox_scaleOcc.toggle)
@@ -747,7 +747,7 @@ class Ui_Dialog(object):
         self.spinBox_viewSlice.valueChanged['int'].connect(self.render_all_slices)
 
         # Render slice if tab is clicked
-        self.tabWidget_view.tabBarClicked.connect(self.render_all_slices)
+        self.tabWidget_view.tabBarClicked.connect(self.force_render_all_slices)
 
         # Update spinboxes when slider is moved
         self.horizontalSlider_amplPower.valueChanged['int'].connect(self.update_mod_spin_boxes)
@@ -939,11 +939,11 @@ class Ui_Dialog(object):
         # Close the file
         f.close()
 
-    def render_input_slice(self):
+    def render_input_slice(self,force=False):
 
         # Check if input view is active (currently viewed)
         # We don't want to read and render a slice that we're not viewing
-        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewInput):
+        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewInput) or force:
 
             # Get file name or object
             file_name = self.comboBox_inputMap.currentText()
@@ -1026,11 +1026,11 @@ class Ui_Dialog(object):
         f.close()
 
 
-    def render_scale_slice(self):
+    def render_scale_slice(self,force=False):
 
         # Check if input view is active (currently viewed)
         # We don't want to read and render a slice that we're not viewing
-        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewScale):
+        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewScale) or force:
 
             # Get file name or object
             scale_file_name = self.comboBox_inputScale.currentText()
@@ -1135,11 +1135,11 @@ class Ui_Dialog(object):
             # Close the file
             f.close()
 
-    def render_solvent_slice(self):
+    def render_solvent_slice(self,force=False):
 
         # Check if input view is active (currently viewed)
         # We don't want to read and render a slice that we're not viewing
-        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_solvDef):
+        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_solvDef) or force:
 
             # Get file name or object
             solvent_file_name = self.comboBox_inputSolventDef.currentText()
@@ -1204,11 +1204,11 @@ class Ui_Dialog(object):
 
                 f.close()
 
-    def render_confidence_slice(self):
+    def render_confidence_slice(self,force=False):
 
         # Check if input view is active (currently viewed)
         # We don't want to read and render a slice that we're not viewing
-        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewConfidence):
+        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewConfidence) or force:
 
             # Get file name or object
             confidence_file_name = self.confidence_file_name
@@ -1281,6 +1281,14 @@ class Ui_Dialog(object):
         self.render_output_slice()
         if self.confidence_file_name is not None:
             self.render_confidence_slice()
+
+    def force_render_all_slices(self):
+        self.render_input_slice(force=True)
+        self.render_scale_slice(force=True)
+        self.render_solvent_slice(force=True)
+        self.render_output_slice(force=True)
+        if self.confidence_file_name is not None:
+            self.render_confidence_slice(force=True)
 
     def set_lowpass(self):
         # Get file name or object
@@ -1418,76 +1426,79 @@ class Ui_Dialog(object):
                 self.tabWidget_view.setCurrentIndex(self.tabWidget_view.indexOf(self.tab_viewOutput))
         self.render_output_slice()
 
-    def render_output_slice(self):
+    def render_output_slice(self,force=False):
+
         self.update_plot_params()
 
-        input_fileName = self.comboBox_inputMap.currentText()
-        scale_fileName = self.comboBox_inputScale.currentText()
+        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewOutput) or force:
 
-        if input_fileName and scale_fileName:
-            input_f = mf.mmap(input_fileName)
-            input_n = input_f.header['nx']
+            input_fileName = self.comboBox_inputMap.currentText()
+            scale_fileName = self.comboBox_inputScale.currentText()
 
-            scale_f = mf.mmap(scale_fileName)
-            scale_n = scale_f.header['nx']
+            if input_fileName and scale_fileName:
+                input_f = mf.mmap(input_fileName)
+                input_n = input_f.header['nx']
 
-            input_slice = self.horizontalSlider_viewSlice.value()
-            scale_slice = int((input_slice / float(input_n)) * scale_n)
+                scale_f = mf.mmap(scale_fileName)
+                scale_n = scale_f.header['nx']
 
-            tmin = input_f.header['dmin']
-            tmax = input_f.header['dmax']
+                input_slice = self.horizontalSlider_viewSlice.value()
+                scale_slice = int((input_slice / float(input_n)) * scale_n)
 
-            if self.checkBox_viewX.isChecked():
-                input_t = input_f.data[input_slice-1,:,:]
-                scale_t = scale_f.data[scale_slice-1,:,:]
-            elif self.checkBox_viewY.isChecked():
-                input_t = input_f.data[:,input_slice-1,:]
-                scale_t = scale_f.data[:,scale_slice-1,:]
-            elif self.checkBox_viewZ.isChecked():
-                input_t = input_f.data[:, :,input_slice-1]
-                scale_t = scale_f.data[:, :,scale_slice-1]
+                tmin = input_f.header['dmin']
+                tmax = input_f.header['dmax']
 
-            #print(input_t.shape, scale_t.shape)
-            if not input_t.shape == scale_t.shape:
-                input_t = scipy.ndimage.zoom(input_t,float(scale_n)/float(input_n),order=1)
-            N = 100
-            mode = self.do_modify()
+                if self.checkBox_viewX.isChecked():
+                    input_t = input_f.data[input_slice-1,:,:]
+                    scale_t = scale_f.data[scale_slice-1,:,:]
+                elif self.checkBox_viewY.isChecked():
+                    input_t = input_f.data[:,input_slice-1,:]
+                    scale_t = scale_f.data[:,scale_slice-1,:]
+                elif self.checkBox_viewZ.isChecked():
+                    input_t = input_f.data[:, :,input_slice-1]
+                    scale_t = scale_f.data[:, :,scale_slice-1]
 
-            x = np.linspace(0,1,N)
-            s = []
-            if mode == 1: #Amplify
-                s = x ** (1/self.MplWidget_viewModification.amplification_power)
-            elif mode == 2: #Attenuate
-                s = x ** (self.MplWidget_viewModification.attenuation_power)
-            elif mode == 3: #Sigmoid
-                x,s = occupancy.scale_mapping_sigmoid(self.MplWidget_viewModification.sigmoid_pivot,self.MplWidget_viewModification.sigmoid_power,n=N)
+                #print(input_t.shape, scale_t.shape)
+                if not input_t.shape == scale_t.shape:
+                    input_t = scipy.ndimage.zoom(input_t,float(scale_n)/float(input_n),order=1)
+                N = 100
+                mode = self.do_modify()
 
-            operations=['amplifying', 'attenuating', 'sigmoiding']
-            if mode is not None:
-                #print(f'{operations[mode-1]}')
-                #s = np.divide(s,x,where=x!=0)
-                mapped = s[(scale_t*N).astype(int)-1]
-                mod_slice = np.copy(input_t)
-                d_scale_t = (scale_t<0.01).astype(float)
-                d_scale_t += scale_t
-                mod_slice = np.divide(mapped,np.clip(d_scale_t,0,1))
+                x = np.linspace(0,1,N)
+                s = []
+                if mode == 1: #Amplify
+                    s = x ** (1/self.MplWidget_viewModification.amplification_power)
+                elif mode == 2: #Attenuate
+                    s = x ** (self.MplWidget_viewModification.attenuation_power)
+                elif mode == 3: #Sigmoid
+                    x,s = occupancy.scale_mapping_sigmoid(self.MplWidget_viewModification.sigmoid_pivot,self.MplWidget_viewModification.sigmoid_power,n=N)
 
-                #mod_slice = np.divide(mod_slice,scale_t,where=scale_t>=0.05)
-                output_t = np.multiply(input_t,mod_slice)
-                threshold = np.min([0.05,self.MplWidget_viewModification.sigmoid_pivot])
+                operations=['amplifying', 'attenuating', 'sigmoiding']
+                if mode is not None:
+                    #print(f'{operations[mode-1]}')
+                    #s = np.divide(s,x,where=x!=0)
+                    mapped = s[(scale_t*N).astype(int)-1]
+                    mod_slice = np.copy(input_t)
+                    d_scale_t = (scale_t<0.01).astype(float)
+                    d_scale_t += scale_t
+                    mod_slice = np.divide(mapped,np.clip(d_scale_t,0,1))
 
-                output_t =  np.multiply(output_t,scale_t>threshold)
-                output_t += np.multiply(input_t,scale_t<threshold)
-                output_t =  np.clip(output_t,tmin,tmax)
-                output_t =  (output_t-tmin)/(tmax-tmin)
+                    #mod_slice = np.divide(mod_slice,scale_t,where=scale_t>=0.05)
+                    output_t = np.multiply(input_t,mod_slice)
+                    threshold = np.min([0.05,self.MplWidget_viewModification.sigmoid_pivot])
 
-                im_data = np.array((output_t*255).astype(np.uint8))
-                qimage = QtGui.QImage(im_data,scale_n,scale_n,QtGui.QImage.Format_Grayscale8)
-                pixmap = QtGui.QPixmap(qimage) # Setup pixmap with the provided image
-                pixmap = pixmap.scaled(self.label_viewOutput.width(), self.label_viewOutput.height(), QtCore.Qt.KeepAspectRatio) # Scale pixmap
-                self.label_viewOutput.setPixmap(pixmap) # Set the pixmap onto the label
-                self.label_viewOutput.setAlignment(QtCore.Qt.AlignCenter) # Align the label to center
-                #self.ho'rizontalSlider_4.setRange(1,n)
+                    output_t =  np.multiply(output_t,scale_t>threshold)
+                    output_t += np.multiply(input_t,scale_t<threshold)
+                    output_t =  np.clip(output_t,tmin,tmax)
+                    output_t =  (output_t-tmin)/(tmax-tmin)
+
+                    im_data = np.array((output_t*255).astype(np.uint8))
+                    qimage = QtGui.QImage(im_data,scale_n,scale_n,QtGui.QImage.Format_Grayscale8)
+                    pixmap = QtGui.QPixmap(qimage) # Setup pixmap with the provided image
+                    pixmap = pixmap.scaled(self.label_viewOutput.width(), self.label_viewOutput.height(), QtCore.Qt.KeepAspectRatio) # Scale pixmap
+                    self.label_viewOutput.setPixmap(pixmap) # Set the pixmap onto the label
+                    self.label_viewOutput.setAlignment(QtCore.Qt.AlignCenter) # Align the label to center
+                    #self.ho'rizontalSlider_4.setRange(1,n)
 
     def update_plot_params(self):
         self.MplWidget_viewModification.sigmoid_power = self.doubleSpinBox_sigmoidPower.value()
