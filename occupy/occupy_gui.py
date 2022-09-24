@@ -802,6 +802,9 @@ class Ui_Dialog(object):
         self.tabWidget_modification.setTabText(self.tabWidget_modification.indexOf(self.tab_sigmoid), _translate("Dialog", "Sigmoid"))
 
         self.tabWidget_modification.tabBarClicked.connect(self.toggle_scale_mode)
+        self.groupBox_amplification.clicked.connect(self.toggle_scale_mode)
+        self.groupBox_attenuation.clicked.connect(self.toggle_scale_mode)
+        self.groupBox_sigmoid.clicked.connect(self.toggle_scale_mode)
 
 
 
