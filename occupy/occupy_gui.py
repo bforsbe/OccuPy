@@ -1371,7 +1371,7 @@ class Ui_Dialog(object):
             radius=self.doubleSpinBox_kernelRadius.value()
         )
         self.inputMap.kernel_nv = int(np.sum(scale_kernel))
-        self.inputMap.kernel_tau = occupancy.set_tau(n_v=self.inputMap.kernel_nv)
+        self.inputMap.kernel_tau = tau_ana #occupancy.set_tau(n_v=self.inputMap.kernel_nv)
 
         # Set gui
         self.label_samplesValue.setText(str(self.inputMap.kernel_nv))
