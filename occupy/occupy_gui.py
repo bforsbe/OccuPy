@@ -543,7 +543,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_inputLowpass.setDecimals(1)
         self.doubleSpinBox_inputLowpass.setMaximum(50.0)
         self.doubleSpinBox_inputLowpass.setSingleStep(1.0)
-        self.doubleSpinBox_inputLowpass.setProperty("value", 8.0)
+        self.doubleSpinBox_inputLowpass.setProperty("value", 0.0)
         self.doubleSpinBox_inputLowpass.setObjectName("doubleSpinBox_inputLowpass")
         self.gridLayout_kernelOptions.addWidget(self.doubleSpinBox_inputLowpass, 0, 1, 1, 1)
         self.label_samples = QtWidgets.QLabel(self.gridLayoutWidget_2)
