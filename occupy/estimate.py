@@ -42,9 +42,10 @@ def occupy_run(options: args.occupy_options):
     do_exclude_solvent = options.exclude_solvent
     do_modify = do_amplify or do_attenuate or do_sigmoid or do_exclude_solvent
 
-    # Save amplified and/or solvent-suppressed output.
+    # Save amplified and/or solvent-suppressed output.'
+    base_out_name = f'{new_name}'
     if do_exclude_solvent:
-        base_out_name = f'solExcl{new_name}'
+        base_out_name = f'solExcl_{new_name}'
         doc = f'solvent exclusion, {doc}'
 
     if do_sigmoid and options.pivot is None:
@@ -217,7 +218,7 @@ def occupy_run(options: args.occupy_options):
         if options.save_all_maps:
             map_tools.new_mrc(
                 lp_data,
-                f'lowpass{new_name}',
+                f'lowpass_{new_name}',
                 parent=options.input_map,
                 verbose=options.verbose,
                 log=f_log
@@ -296,7 +297,7 @@ def occupy_run(options: args.occupy_options):
 
     # --------------- SCALE ESTIMATION ------------------------------------------------------
     
-    scale_map = f'scale_{scale_mode}{new_name}'
+    scale_map = f'scale_{scale_mode}_{new_name}'
     scale, max_val, tiles_raw = occupancy.get_map_scale(
         scale_data,
         scale_kernel=scale_kernel,
