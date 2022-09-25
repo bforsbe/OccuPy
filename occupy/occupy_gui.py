@@ -313,7 +313,11 @@ class Ui_Dialog(object):
         self.label_viewInput.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewInput.setMouseTracking(False)
         self.label_viewInput.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_viewInput.setText("")
+        self.label_viewInput.setText("Load an input file (.map/.mrc)")
+        self.label_viewInput.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_viewInput.setEnabled(False)
+
+
         self.label_viewInput.setObjectName("label_viewInput")
         self.tabWidget_view.addTab(self.tab_viewInput, "")
         self.tab_viewScale = QtWidgets.QWidget()
@@ -325,11 +329,13 @@ class Ui_Dialog(object):
         self.label_viewScale.setMinimumSize(QtCore.QSize(320, 320))
         self.label_viewScale.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewScale.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_viewScale.setText("")
+        self.label_viewScale.setText("Run occupy or \n load a scale (.map/.mrc)")
+        self.label_viewScale.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_viewScale.setEnabled(False)
+
         self.label_viewScale.setObjectName("label_viewScale")
         self.tabWidget_view.addTab(self.tab_viewScale, "")
         self.tab_viewConfidence = QtWidgets.QWidget()
-        self.tab_viewConfidence.setEnabled(True)
         self.tab_viewConfidence.setObjectName("tab_viewConfidence")
 
         self.label_viewConfidence = QtWidgets.QLabel(self.tab_viewConfidence)
@@ -337,7 +343,11 @@ class Ui_Dialog(object):
         self.label_viewConfidence.setMinimumSize(QtCore.QSize(320, 320))
         self.label_viewConfidence.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewConfidence.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_viewConfidence.setText("")
+        self.label_viewConfidence.setText("Confidence is dependent on a \n "
+                                        "solvent model, and is  shown when \n "
+                                        "occupy has been run.")
+        self.label_viewConfidence.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_viewConfidence.setEnabled(False)
         self.label_viewConfidence.setObjectName("label_viewConfidence")
         self.label_viewConfidence.raise_()
 
@@ -350,7 +360,14 @@ class Ui_Dialog(object):
         self.label_viewSolDef.setMinimumSize(QtCore.QSize(320, 320))
         self.label_viewSolDef.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewSolDef.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_viewSolDef.setText("")
+        self.label_viewSolDef.setText("Provide a solvent definition (.map/.mrc) \n "
+                                      "to help contruct a solvent model. You can \n "
+                                      "provide a conventional solvent mask, but \n"
+                                      "occupy will not use it to mask.  \n\n"
+                                      "A solvent definition is optional input.")
+        self.label_viewSolDef.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_viewSolDef.setEnabled(False)
+
         self.label_viewSolDef.setObjectName("label_viewSolDef")
         self.tabWidget_view.addTab(self.tab_solvDef, "")
         self.tab_viewModification = QtWidgets.QWidget()
@@ -372,7 +389,14 @@ class Ui_Dialog(object):
         self.label_viewOutput.setMinimumSize(QtCore.QSize(320, 320))
         self.label_viewOutput.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewOutput.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_viewOutput.setText("")
+        self.label_viewOutput.setText("This is a preview of the modification \n"
+                                      "by the chosen scale. The loaded scale \n"
+                                      "must be an occupancy-based scale. \n\n"
+                                      "The preview is rough, you will have to \n"
+                                      "run occupy to get accurate modification \n"
+                                      "maps written to disk.")
+        self.label_viewOutput.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_viewOutput.setEnabled(False)
         self.label_viewOutput.setObjectName("label_viewOutput")
         self.label_viewOutput.raise_()
 
@@ -812,6 +836,9 @@ class Ui_Dialog(object):
         self.groupBox_amplification.clicked.connect(self.update_plot_params)
         self.groupBox_attenuation.clicked.connect(self.update_plot_params)
         self.groupBox_sigmoid.clicked.connect(self.update_plot_params)
+        self.groupBox_amplification.clicked.connect(self.render_output_slice_with_focus)
+        self.groupBox_attenuation.clicked.connect(self.render_output_slice_with_focus)
+        self.groupBox_sigmoid.clicked.connect(self.render_output_slice_with_focus)
 
 
 
@@ -899,6 +926,7 @@ class Ui_Dialog(object):
                                                             "Image Files (*.mrc *.map);;All Files (*)")  # Ask for file
 
         if file_name:
+            self.label_viewInput.setEnabled(True)
             # TODO loop and set if new, otherwise change active
             self.comboBox_inputMap.addItem(file_name)
             n = self.comboBox_inputMap.count()
@@ -1038,6 +1066,7 @@ class Ui_Dialog(object):
         scale_file_name, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", "",
                                                                   "Image Files (*.mrc *.map);;All Files (*)")  # Ask for file
         if scale_file_name:
+            self.label_viewScale.setEnabled(True)
             self.scale_file_name = str(scale_file_name)
             self.set_scale_mode(self.scale_file_name)
 
@@ -1160,6 +1189,7 @@ class Ui_Dialog(object):
         solvent_file_name, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", "",
                                                                    "Image Files (*.mrc *.map);;All Files (*)")  # Ask for file
         if solvent_file_name:
+            self.label_viewSolDef.setEnabled(True)
             # TODO loop and set if new, otherwise change active
             self.comboBox_inputSolventDef.addItem(str(solvent_file_name))
             n = self.comboBox_inputSolventDef.count()
@@ -1270,69 +1300,73 @@ class Ui_Dialog(object):
         # Check if input view is active (currently viewed)
         # We don't want to read and render a slice that we're not viewing
         if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewConfidence) or force:
+            if self.confidence_file_name:
+                self.label_viewConfidence.setEnabled(True)
 
-            # Get file name or object
-            confidence_file_name = self.confidence_file_name
+                # Get file name or object
+                confidence_file_name = self.confidence_file_name
 
-            # Get file slice number
-            slice = self.horizontalSlider_viewSlice.value()
+                # Get file slice number
+                slice = self.horizontalSlider_viewSlice.value()
 
-            # If there is something to render
-            if confidence_file_name is not None:
+                # If there is something to render
+                if confidence_file_name is not None:
 
-                # Open memory-solvent_file_name (much faster than open)
-                f = mf.mmap(confidence_file_name)
-                # Get the dimensions (assume cubic based in read-check)
-                n = f.header['nx']
-
-                # Let the input map decide the slice number if the confidence is on another grid
-                input_file_name = self.comboBox_inputMap.currentText()
-                if input_file_name:
-                    # Open memory-mapped (much faster than open)
-                    f_input = mf.mmap(input_file_name)
+                    # Open memory-solvent_file_name (much faster than open)
+                    f = mf.mmap(confidence_file_name)
                     # Get the dimensions (assume cubic based in read-check)
-                    n_input = f_input.header['nx']
+                    n = f.header['nx']
 
-                    if n != n_input:
-                        # The equivalent slice in the possibly
-                        slice = int((slice / float(n_input)) * n)
+                    # Let the input map decide the slice number if the confidence is on another grid
+                    input_file_name = self.comboBox_inputMap.currentText()
+                    if input_file_name:
+                        # Open memory-mapped (much faster than open)
+                        f_input = mf.mmap(input_file_name)
+                        # Get the dimensions (assume cubic based in read-check)
+                        n_input = f_input.header['nx']
 
-                    f_input.close()
-                else:
-                    self.horizontalSlider_viewSlice.setRange(1, n)
-                    self.horizontalSlider_viewSlice.setValue(n // 2)
+                        if n != n_input:
+                            # The equivalent slice in the possibly
+                            slice = int((slice / float(n_input)) * n)
 
-                    self.spinBox_viewSlice.setMaximum(n)
-                    self.spinBox_viewSlice.setValue(n // 2)
+                        f_input.close()
+                    else:
+                        self.horizontalSlider_viewSlice.setRange(1, n)
+                        self.horizontalSlider_viewSlice.setValue(n // 2)
 
-                # Safe-guards
-                if not slice or slice > n:
-                    slice = n // 2
+                        self.spinBox_viewSlice.setMaximum(n)
+                        self.spinBox_viewSlice.setValue(n // 2)
 
-                # Render the selected dimension
-                if self.checkBox_viewX.isChecked():
-                    t = f.data[slice - 1, :, :]
-                elif self.checkBox_viewY.isChecked():
-                    t = f.data[:, slice - 1, :]
-                elif self.checkBox_viewZ.isChecked():
-                    t = f.data[:, :, slice - 1]
+                    # Safe-guards
+                    if not slice or slice > n:
+                        slice = n // 2
 
-                # Grayscale normalization
-                # tmin = f.header['dmin']
-                # tmax = f.header['dmax']
-                # t = (t-tmin)/(tmax-tmin)
+                    # Render the selected dimension
+                    if self.checkBox_viewX.isChecked():
+                        t = f.data[slice - 1, :, :]
+                    elif self.checkBox_viewY.isChecked():
+                        t = f.data[:, slice - 1, :]
+                    elif self.checkBox_viewZ.isChecked():
+                        t = f.data[:, :, slice - 1]
 
-                # Construct and render image
-                im_data = np.array((t * 255).astype(np.uint8))
-                qimage = QtGui.QImage(im_data, n, n,
-                                      QtGui.QImage.Format_Grayscale8)  # Setup pixmap with the provided image
-                pixmap = QtGui.QPixmap(qimage)  # Setup pixmap with the provided image
-                pixmap = pixmap.scaled(self.label_viewConfidence.width(), self.label_viewConfidence.height(),
-                                       QtCore.Qt.KeepAspectRatio)  # Scale pixmap
-                self.label_viewConfidence.setPixmap(pixmap)  # Set the pixmap onto the label
-                self.label_viewConfidence.setAlignment(QtCore.Qt.AlignCenter)  # Align the label to center
+                    # Grayscale normalization
+                    # tmin = f.header['dmin']
+                    # tmax = f.header['dmax']
+                    # t = (t-tmin)/(tmax-tmin)
 
-                f.close()
+                    # Construct and render image
+                    im_data = np.array((t * 255).astype(np.uint8))
+                    qimage = QtGui.QImage(im_data, n, n,
+                                          QtGui.QImage.Format_Grayscale8)  # Setup pixmap with the provided image
+                    pixmap = QtGui.QPixmap(qimage)  # Setup pixmap with the provided image
+                    pixmap = pixmap.scaled(self.label_viewConfidence.width(), self.label_viewConfidence.height(),
+                                           QtCore.Qt.KeepAspectRatio)  # Scale pixmap
+                    self.label_viewConfidence.setPixmap(pixmap)  # Set the pixmap onto the label
+                    self.label_viewConfidence.setAlignment(QtCore.Qt.AlignCenter)  # Align the label to center
+
+                    f.close()
+            else:
+                self.label_viewConfidence.setEnabled(False)
 
 
     def render_all_slices(self):
@@ -1501,8 +1535,11 @@ class Ui_Dialog(object):
         if output_tab and self.occ_scale:
             do_render = True
         if self.res_scale:
-            force = False
             self.label_viewOutput.clear()
+            self.label_viewOutput.setText("The chose scale is not an 'occupancy' \n"
+                                          "scale, but a resolution scale. This \n"
+                                          "is not appropriate for modification.")
+            force = False
 
 
         if do_render or force:
@@ -1511,6 +1548,7 @@ class Ui_Dialog(object):
             scale_fileName = self.comboBox_inputScale.currentText()
 
             if input_fileName and scale_fileName:
+                self.label_viewOutput.setEnabled(True)
                 input_f = mf.mmap(input_fileName)
                 input_n = input_f.header['nx']
 
@@ -1574,7 +1612,10 @@ class Ui_Dialog(object):
                     self.label_viewOutput.setPixmap(pixmap) # Set the pixmap onto the label
                     self.label_viewOutput.setAlignment(QtCore.Qt.AlignCenter) # Align the label to center
                     #self.ho'rizontalSlider_4.setRange(1,n)
-
+                else:
+                    self.label_viewOutput.setText("You have not set to modify anything")
+        else:
+            self.label_viewOutput.setEnabled(False)
 
     def update_plot_params(self):
         self.MplWidget_viewModification.sigmoid_power = self.doubleSpinBox_sigmoidPower.value()
