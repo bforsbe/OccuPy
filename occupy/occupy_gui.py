@@ -132,6 +132,10 @@ class Ui_Dialog(object):
 
         self.inputMap = InputMapProperties()
         self.confidence_file_name = None
+        self.scale_file_name = None
+        self.occ_scale = None
+        self.res_scale = None
+
         self.cmd = []
 
         # Input map
@@ -788,7 +792,7 @@ class Ui_Dialog(object):
 
         # Update when changing the input choice
         self.comboBox_inputMap.currentIndexChanged.connect(self.read_input_file)
-        self.comboBox_inputScale.currentIndexChanged.connect(self.read_scale_file)
+        self.comboBox_inputScale.currentIndexChanged.connect(self.change_scale_file)
         self.comboBox_inputSolventDef.currentIndexChanged.connect(self.read_solvent_file)
 
 
@@ -805,6 +809,9 @@ class Ui_Dialog(object):
         self.groupBox_amplification.clicked.connect(self.toggle_scale_mode)
         self.groupBox_attenuation.clicked.connect(self.toggle_scale_mode)
         self.groupBox_sigmoid.clicked.connect(self.toggle_scale_mode)
+        self.groupBox_amplification.clicked.connect(self.update_plot_params)
+        self.groupBox_attenuation.clicked.connect(self.update_plot_params)
+        self.groupBox_sigmoid.clicked.connect(self.update_plot_params)
 
 
 
@@ -986,15 +993,69 @@ class Ui_Dialog(object):
 
                 f.close()
 
+    def set_scale_mode(self,scale_file_name):
+
+        self.occ_scale = False
+        self.res_scale = False
+
+        #String method in the interim
+        if "_occ_" in scale_file_name:
+            self.occ_scale = True
+        elif "_res_" in scale_file_name:
+            self.res_scale = True
+
+        #Label method
+        """
+        f = mf.mmap(scale_file_name)
+ 
+        not_found = True           
+        nlabl = f.header['nlabl']
+        for i in np.arange(nlabl):
+            label = f.header['labl'][i]
+            if label == "occupy scale: occ"
+                self.occ_scale = True
+                not_found = False
+                break
+            elif label == "occupy scale: occ"
+                self.res_scale = True
+                not_found = False
+                break
+        
+        if not_found and nlabl == 10:
+            print("There was nothing to confirm this is an occ scale, but all lables are full, so permitting.")
+            self.occ_scale = True
+
+            
+        """
+
+    def change_scale_file(self):
+        self.scale_file_name = str(self.comboBox_inputScale.currentText())
+        self.set_scale_mode(self.scale_file_name)
+        self.render_scale_slice()
+        self.render_output_slice()
+
     def set_scale_file(self):
         scale_file_name, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", "",
                                                                   "Image Files (*.mrc *.map);;All Files (*)")  # Ask for file
         if scale_file_name:
+            self.scale_file_name = str(scale_file_name)
+            self.set_scale_mode(self.scale_file_name)
+
             # TODO loop and set if new, otherwise change active
-            self.comboBox_inputScale.addItem(str(scale_file_name))
+            self.comboBox_inputScale.addItem(str(self.scale_file_name))
             n = self.comboBox_inputScale.count()
             self.comboBox_inputScale.setCurrentIndex(n-1)
             self.read_scale_file()
+
+    def add_scale_file(self,new_scale_file):
+        self.scale_file_name = str(new_scale_file)
+        self.set_scale_mode(self.scale_file_name)
+
+        # TODO loop and set if new, otherwise change active as in set_scale_file
+        self.comboBox_inputScale.addItem(str(self.scale_file_name))
+        n = self.comboBox_inputScale.count()
+        self.comboBox_inputScale.setCurrentIndex(n - 1)
+        self.read_scale_file()
 
 
     def read_scale_file(self):
@@ -1416,7 +1477,11 @@ class Ui_Dialog(object):
 
         if mode is not None:
             # If either the input or scale map is missing...
-            if not self.comboBox_inputScale.currentText() or not self.comboBox_inputMap.currentText():
+            have_input = self.comboBox_inputScale.currentText()
+            have_scale = self.comboBox_inputMap.currentText() and self.occ_scale
+            have_both = have_input and have_scale
+
+            if not have_both:
                 # ...then focus on the plot tab
                 self.tabWidget_view.setCurrentIndex(self.tabWidget_view.indexOf(self.tab_viewModification))
 
@@ -1424,13 +1489,23 @@ class Ui_Dialog(object):
             elif self.tabWidget_view.currentIndex() != self.tabWidget_view.indexOf(self.tab_viewModification):
                 # ...and which if we are on anything else
                 self.tabWidget_view.setCurrentIndex(self.tabWidget_view.indexOf(self.tab_viewOutput))
+
         self.render_output_slice()
 
     def render_output_slice(self,force=False):
 
         self.update_plot_params()
 
-        if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewOutput) or force:
+        do_render=False
+        output_tab = self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewOutput)
+        if output_tab and self.occ_scale:
+            do_render = True
+        if self.res_scale:
+            force = False
+            self.label_viewOutput.clear()
+
+
+        if do_render or force:
 
             input_fileName = self.comboBox_inputMap.currentText()
             scale_fileName = self.comboBox_inputScale.currentText()
@@ -1499,6 +1574,7 @@ class Ui_Dialog(object):
                     self.label_viewOutput.setPixmap(pixmap) # Set the pixmap onto the label
                     self.label_viewOutput.setAlignment(QtCore.Qt.AlignCenter) # Align the label to center
                     #self.ho'rizontalSlider_4.setRange(1,n)
+
 
     def update_plot_params(self):
         self.MplWidget_viewModification.sigmoid_power = self.doubleSpinBox_sigmoidPower.value()
@@ -1599,8 +1675,8 @@ class Ui_Dialog(object):
         if self.groupBox_sigmoid.isChecked():
             modifying = True
             options.sigmoid = self.doubleSpinBox_sigmoidPower.value()
-            options.pivot = self.doubleSpinBox_sigmoidPivot.value()
-            self.cmd.append(f'--sigmoid {options.sigmoid } --pivot {options.pivot}')
+            options.pivot = self.doubleSpinBox_sigmoidPivot.value()/100.0
+            self.cmd.append(f'--sigmoid {options.sigmoid } --pivot {options.pivot}/100.0')
 
 
         # output options -------------------------------------------------------------------
@@ -1670,6 +1746,13 @@ class Ui_Dialog(object):
             # Force .mrc for output
             new_name = f'{Path(new_name).stem}.mrc'
             self.confidence_file_name = f'conf_{Path(new_name).stem}.mrc'
+
+            scale_mode = 'res'
+            if self.checkBox_scaleOcc.isChecked():
+                scale_mode = 'occ'
+
+            self.add_scale_file(f'scale_{scale_mode}_{Path(new_name).stem}.mrc')
+
 
 
 if __name__ == "__main__":
