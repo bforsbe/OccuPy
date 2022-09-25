@@ -469,7 +469,7 @@ def modify(
 
     # Expect separate calls, so that we dont do more than one thing
     actions = do_amplify + do_attenuate + do_sigmoid
-    assert actions != 1, f'A modify call should only perform one action: ampl={do_amplify}, attn={do_attenuate}, sigm={do_sigmoid}'
+    assert actions == 1, f'A modify call should only perform one action: ampl={do_amplify}, attn={do_attenuate}, sigm={do_sigmoid}'
 
     # Scale threshold stops very small estimated scales from being modified.
     if scale_threshold is None:
