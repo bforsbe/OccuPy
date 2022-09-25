@@ -46,9 +46,10 @@ def sigmoid_scale(x, mu, order):
     :param order:
     :return:
     """
-    out = np.divide(x * (1 - mu), mu * (1 - x), where=x != 1)
-    out = np.divide(1, out, where=out != 0)
-    out = out ** order
+    out = np.divide(mu * (1 - x), x * (1 - mu), where= x != 0)
+    #out = np.divide(1, out, where=out != 0)
+    if order != 1:
+        out = out ** order
     out = out + 1
     out = np.divide(1, out, where=out != 0)
     out = np.clip(out, 0, 1)
