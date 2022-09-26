@@ -18,7 +18,7 @@ def chimx_viz(
         ampl_map: str = None,
         attn_map: str = None,
         sigm_map: str = None,
-        threshold_map: float = None,
+        threshold_maps: float = None,
         threshold_scale: float = None,
         min_scale: float = 0.2,
         tiles=None,
@@ -35,8 +35,8 @@ def chimx_viz(
 
         # -----MODELS --------------------------------------
         print(f'open {input} ', file=the_file)
-        if threshold_input is not None:
-            print(f'vol #1 level {threshold_input}', file=the_file)
+        if threshold_maps is not None:
+            print(f'vol #1 level {threshold_maps}', file=the_file)
 
         print(f'open {scale} ', file=the_file)
         if threshold_scale is not None:
@@ -86,24 +86,24 @@ def chimx_viz(
             c += 1
             print(f'open {ampl_map} ', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
-            if threshold_map is not None:
-                print(f'vol #{c} level {threshold_map}', file=the_file)
+            if threshold_maps is not None:
+                print(f'vol #{c} level {threshold_maps}', file=the_file)
             print(f'hide #{c}', file=the_file)
 
         if attn_map is not None:
             c += 1
             print(f'open {attn_map} ', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
-            if threshold_map is not None:
-                print(f'vol #{c} level {threshold_map}', file=the_file)
+            if threshold_maps is not None:
+                print(f'vol #{c} level {threshold_maps}', file=the_file)
             print(f'hide #{c}', file=the_file)
 
         if sigm_map is not None:
             c += 1
             print(f'open {attn_map} ', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
-            if threshold_map is not None:
-                print(f'vol #{c} level {threshold_map}', file=the_file)
+            if threshold_maps is not None:
+                print(f'vol #{c} level {threshold_maps}', file=the_file)
             print(f'hide #{c}', file=the_file)
 
         setstr = '#1'
