@@ -731,30 +731,33 @@ def occupy_run(options: args.occupy_options):
         f_log.close()
 
     if do_modify:
-        print(f'\033[92mDone\033[0m estimating local scale and modifying input by local scale. ')
+        print(f'Done estimating local scale and modifying input by local scale. ')
     else:
-        print(f'\033[92mDone\033[0m estimating local scale')
+        print(f'Done estimating local scale')
         print(
-            f'You \033[96mcould\033[0m also modify according to estimated occupancy by using either --amplify, --attenutate, or both')
+            f'You *could* also modify according to estimated occupancy by using either amplify, attenuate, and/or sigmoid')
 
     if not options.exclude_solvent:
         print(
-            f'You \033[96mcould\033[0m also exclude solvent by adding --exclude-solvent')
+            f'You *could* also exclude solvent ')
 
-    if options.chimerax:
-        if options.show_chimerax:
-            print(f'\033[92m \nOpening {chimx_file} in chimeraX, this may take a moment. Please be patient. \033[0m \n')
-            os.system(f'chimerax {chimx_file} & ')
-        else:
-            print(f'\nYou should run chimeraX to visualize the output, using this command: ')
-            print(f'\033[92m \nchimerax {chimx_file} \033[0m \n')
-            print(f'HINT: you could also auto-start chimeraX by using --show-chimerax')
+    if options.gui:
+        print(f'\n  -- Use the button "launch chimeraX" to view output. -- \n')
+    else:
+        if options.chimerax:
+            if options.show_chimerax:
+                print(f'\033[92m \nOpening {chimx_file} in chimeraX, this may take a moment. Please be patient. \033[0m \n')
+                os.system(f'chimerax {chimx_file} & ')
+            else:
+                print(f'\nYou should run chimeraX to visualize the output, using this command: ')
+                print(f'\033[92m \nchimerax {chimx_file} \033[0m \n')
+                print(f'HINT: you could also auto-start chimeraX by using --show-chimerax')
 
-    if options.chimerax_silent:
-        if options.show_chimerax:
-            os.system(f'chimerax {chimx_file}')
-        else:
-            print(f'\nTo generate thumbnails of your output, run: ')
-            print(f'\033[94m \nchimerax --offscreen {chimx_file_silent} \033[0m \n')
+        if options.chimerax_silent:
+            if options.show_chimerax:
+                os.system(f'chimerax {chimx_file}')
+            else:
+                print(f'\nTo generate thumbnails of your output, run: ')
+                print(f'\033[94m \nchimerax --offscreen {chimx_file_silent} \033[0m \n')
 
     return 0

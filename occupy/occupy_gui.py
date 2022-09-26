@@ -132,6 +132,7 @@ class Ui_Dialog(object):
 
         self.inputMap = InputMapProperties()
         self.confidence_file_name = None
+        self.chimerax_file_name = None
         self.scale_file_name = None
         self.occ_scale = None
         self.res_scale = None
@@ -156,12 +157,13 @@ class Ui_Dialog(object):
         self.horizontalLayout_inputMap.addWidget(self.toolButton_inputMap_reload)
 
         self.toolButton_clearLog = QtWidgets.QToolButton(Dialog)
-        self.toolButton_clearLog.setGeometry(590,610,81,24)
+        self.toolButton_clearLog.setGeometry(550,610,121,24)
         self.toolButton_clearLog.setObjectName("toolButton_clearLog")
 
-        self.toolButton_abort = QtWidgets.QToolButton(Dialog)
-        self.toolButton_abort.setGeometry(590,640,81,24)
-        self.toolButton_abort.setObjectName("toolButton_abort")
+        self.toolButton_chimerax = QtWidgets.QToolButton(Dialog)
+        self.toolButton_chimerax.setGeometry(550,640,121,24)
+        self.toolButton_chimerax.setObjectName("toolButton_chimerax")
+        self.toolButton_chimerax.setEnabled(False)
 
         #self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
         #self.buttonBox.setGeometry(QtCore.QRect(580, 640, 91, 21))
@@ -721,7 +723,7 @@ class Ui_Dialog(object):
         self.gridLayout_extraInputMaps.addWidget(self.toolButton_inputSolventDef_browse, 1, 1, 1, 1)
         self.pushButton_run = QtWidgets.QPushButton(Dialog)
         self.pushButton_run.setEnabled(False)
-        self.pushButton_run.setGeometry(QtCore.QRect(340, 610, 241, 51))
+        self.pushButton_run.setGeometry(QtCore.QRect(340, 610, 201, 54))
         font = QtGui.QFont()
         font.setPointSize(18)
         self.pushButton_run.setFont(font)
@@ -753,7 +755,7 @@ class Ui_Dialog(object):
         self.label_inputMap.setAlignment(QtCore.Qt.AlignCenter)
         self.label_inputMap.setObjectName("label_inputMap")
         self.tabWidget_output.raise_()
-        self.toolButton_abort.raise_()
+        self.toolButton_chimerax.raise_()
         self.tabWidget_modification.raise_()
         self.checkBox_verbose.raise_()
         self.checkBox_showCmd.raise_()
@@ -871,7 +873,9 @@ class Ui_Dialog(object):
         self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_solventModel), _translate("Dialog", "Solvent model"))
         self.toolButton_clearLog.setText(_translate("Dialog", "Clear log"))
         self.toolButton_clearLog.clicked.connect(self.clear_log)
-        self.toolButton_abort.setText(_translate("Dialog", "ABORT"))
+        self.toolButton_chimerax.setText(_translate("Dialog", "launch chimeraX"))
+        self.toolButton_chimerax.clicked.connect(self.run_chimerax)
+
         # Viewport X / Y / Z --------------------------------------
         self.checkBox_viewX.setText(_translate("Dialog", "x"))
         self.checkBox_viewX.clicked.connect(self.view_x)
@@ -927,7 +931,7 @@ class Ui_Dialog(object):
         self.comboBox_inputSolventDef.setToolTip(_translate("Dialog", "solvent mask to improve solvent detection"))
         self.comboBox_inputSolventDef.setWhatsThis(_translate("Dialog", "solvent mask to improve solvent detection"))
         self.toolButton_inputSolventDef_browse.setText(_translate("Dialog", "browse"))
-        self.pushButton_run.setText(_translate("Dialog", "  RUN  ɒk.jə.paɪ"))
+        self.pushButton_run.setText(_translate("Dialog", "  RUN  "))#ɒk.jə.paɪ"))
         self.pushButton_run.clicked.connect(self.run_cmd)
         self.label_inputScale.setText(_translate("Dialog", "  scale map"))
         self.label_inputSolventDef.setText(_translate("Dialog", " solvent def"))
@@ -1683,6 +1687,13 @@ class Ui_Dialog(object):
     def clear_log(self):
         self.textEdit_log.clear()
 
+    def run_chimerax(self):
+        if self.chimerax_file_name is not None:
+            import os
+            os.system(f'chimerax {self.chimerax_file_name} & ')
+        else:
+            self.occupy_log("No chimerax file defined this session.")
+
     def compose_cmd(self):
 
         options = args.occupy_options()
@@ -1772,6 +1783,8 @@ class Ui_Dialog(object):
             options.verbose = True
             self.cmd.append(f'--verbose')
 
+        options.gui = True
+
         return options
 
     def run_cmd(self):
@@ -1813,6 +1826,8 @@ class Ui_Dialog(object):
                 scale_mode = 'occ'
 
             self.add_scale_file(f'scale_{scale_mode}_{Path(new_name).stem}.mrc')
+            self.chimerax_file_name = f'chimX_{Path(new_name).stem}.cxc'
+            self.toolButton_chimerax.setEnabled(True)
 
 
 

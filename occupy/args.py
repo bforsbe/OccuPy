@@ -45,7 +45,8 @@ class occupy_options:
         emdb_id : str = None,
         verbose : bool = False,
         help_all : bool = False,
-        version : bool = False
+        version : bool = False,
+        gui = False
 ):
         self.input_map = input_map
         self.resolution = resolution
@@ -79,7 +80,7 @@ class occupy_options:
         self.verbose = verbose
         self.help_all = help_all
         self.version = version
-
+        self.gui = gui
 
 def parse(
         # Basic input --------------------------------------------------------------------------------------------------
