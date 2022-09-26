@@ -414,6 +414,10 @@ class Ui_Dialog(object):
         self.tabWidget_output = QtWidgets.QTabWidget(Dialog)
         self.tabWidget_output.setGeometry(QtCore.QRect(10, 640, 661, 171))
         self.tabWidget_output.setObjectName("tabWidget_output")
+        self.tabWidget_output.setStyleSheet('''
+        QTabWidget::tab-bar {
+            alignment: left;
+        }''')
         self.tab_log = QtWidgets.QWidget()
         self.tab_log.setObjectName("tab_log")
         self.gridLayoutWidget_8 = QtWidgets.QWidget(self.tab_log)
