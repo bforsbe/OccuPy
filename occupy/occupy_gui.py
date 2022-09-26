@@ -1756,12 +1756,14 @@ class Ui_Dialog(object):
             self.cmd.append(f'--hist-match')
 
         if self.checkBox_scaleOcc.isChecked():
+            options.scale_mode = 'occ'
             if not modifying:
                 # By default we include resolution-dependent effects when not modifying,
                 # so we need to tell occupy to omit them
                 options.lp_scale = True
                 self.cmd.append(f'--occupancy')
         else:
+            options.scale_mode = 'res'
             if modifying:
                 options.lp_scale = False
                 self.occupy_warn('Modifying with resolution-effect is not recommended. I suggest ticking "occupancy" instead.')

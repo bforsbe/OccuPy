@@ -166,7 +166,7 @@ def percentile_filter_tiled(
     :return:   s_i   and    s_max
     """
     norm_val = 1.0
-
+    extremum_idx_pix = None
     if s0:
         # Simpler normalization
         if verbose:

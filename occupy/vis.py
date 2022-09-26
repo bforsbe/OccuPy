@@ -115,20 +115,21 @@ def chimx_viz(
         output = ampl_map or attn_map
 
         # Show which tiles are used to define full scale, and which tile is the minimum
-        print(f'alias show_max_tile shape sphere center {tiles[0,0]}, {tiles[0,1]}, {tiles[0,2]} radius {tiles[2,0]}  \n', file=the_file)
-        print(f'alias show_min_tile shape sphere center {tiles[1,0]}, {tiles[1,1]}, {tiles[1,2]} radius {tiles[2,0]}  \n', file=the_file)
-        print(f'show_max_tile \n', file=the_file)
-        c += 1
-        print(f'rename  #{c} maxTile id #{c}.1', file=the_file)
-        print(f'show_min_tile \n', file=the_file)
+        if tiles is not None:
+            print(f'alias show_max_tile shape sphere center {tiles[0,0]}, {tiles[0,1]}, {tiles[0,2]} radius {tiles[2,0]}  \n', file=the_file)
+            print(f'alias show_min_tile shape sphere center {tiles[1,0]}, {tiles[1,1]}, {tiles[1,2]} radius {tiles[2,0]}  \n', file=the_file)
+            print(f'show_max_tile \n', file=the_file)
+            c += 1
+            print(f'rename  #{c} maxTile id #{c}.1', file=the_file)
+            print(f'show_min_tile \n', file=the_file)
 
-        print(f'rename  #{c+1} minTile id #{c}.2', file=the_file)
-        print(f'color #{c}.1 #4d6edf54 ', file=the_file)
-        print(f'color #{c}.2 #cc392054 ', file=the_file)
-        print(f'hide #{c}', file=the_file)
+            print(f'rename  #{c+1} minTile id #{c}.2', file=the_file)
+            print(f'color #{c}.1 #4d6edf54 ', file=the_file)
+            print(f'color #{c}.2 #cc392054 ', file=the_file)
+            print(f'hide #{c}', file=the_file)
 
-        print(f'rename  #{c} Tiles', file=the_file)
-        c += 1
+            print(f'rename  #{c} Tiles', file=the_file)
+            c += 1
 
         print(key_str, file=the_file)
 

@@ -114,9 +114,6 @@ def occupy_run(options: args.occupy_options):
     # The radius of flattened solvent masking
     radius = int(nd_processing // 2)
 
-    # Use raw (but downscaled) data for scale estimation
-    scale_data = np.copy(in_data)
-
     # --------------- SETTINGS -----------------------------------------------------------------
 
     # Use low-pass filter to
@@ -206,9 +203,11 @@ def occupy_run(options: args.occupy_options):
     # ----- LOW-PASS SETTINGS ---------
 
     use_lp = False
-    scale_mode = 'res'
+    if options.scale_mode=='occ':
+        use_lp=True
+
+    scale_data = np.copy(in_data)
     if options.lowpass_input > 2 * voxel_size:
-        use_lp = True
 
         lp_data, _ = map_tools.lowpass(
             in_data,
@@ -227,7 +226,6 @@ def occupy_run(options: args.occupy_options):
             )
         if use_lp:
             scale_data = np.copy(lp_data)
-            scale_mode = 'occ'
             if options.verbose:
                 print('Using low-passed input to estimate scale')
         else:
@@ -238,7 +236,6 @@ def occupy_run(options: args.occupy_options):
         del lp_data
 
     else:
-
         sol_data = np.copy(in_data)
 
     # We apply any estimations or solvent operation on the raw input (possibly down-sized)
@@ -299,7 +296,7 @@ def occupy_run(options: args.occupy_options):
 
     # --------------- SCALE ESTIMATION ------------------------------------------------------
     
-    scale_map = f'scale_{scale_mode}_{new_name}'
+    scale_map = f'scale_{options.scale_mode}_{new_name}'
     scale, max_val, tiles_raw = occupancy.get_map_scale(
         scale_data,
         scale_kernel=scale_kernel,
@@ -311,21 +308,23 @@ def occupy_run(options: args.occupy_options):
     )
     map_tools.adjust_to_parent(file_name=scale_map, parent=options.input_map)
 
-    # Fix the tile coordinates found during percentiel serach, for plotting
-    tiles = np.copy(tiles_raw)
+    tiles = None
+    if tiles_raw is not None:
+        # Fix the tile coordinates found during percentiel serach, for plotting
+        tiles = np.copy(tiles_raw)
 
-    # Set tile coordinates according to axis order in input file
-    for i in np.arange(3):
-        tiles[:, 2 - i] = tiles_raw[:, axis_order[i] - 1]
+        # Set tile coordinates according to axis order in input file
+        for i in np.arange(3):
+            tiles[:, 2 - i] = tiles_raw[:, axis_order[i] - 1]
 
-    # Add any offset in the input file coords (but not radius),  and make in original non-pix length.
-    tiles[:-1, :] = voxel_size_ori * (tiles[:-1, :] / factor + offset_ori)
+        # Add any offset in the input file coords (but not radius),  and make in original non-pix length.
+        tiles[:-1, :] = voxel_size_ori * (tiles[:-1, :] / factor + offset_ori)
 
-    # Set radius to original non-pix length as well
-    tiles[-1, :] = voxel_size_ori * tiles[-1, :] / factor
+        # Set radius to original non-pix length as well
+        tiles[-1, :] = voxel_size_ori * tiles[-1, :] / factor
 
-    if options.verbose:
-        print(f'Corrected tile max: {tiles[0, :]}')
+        if options.verbose:
+            print(f'Corrected tile max: {tiles[0, :]}')
 
     # Get the average pixel value across all regions with full scale
     # This is an estimate of the density, which we can convert back to a scale,

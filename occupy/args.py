@@ -31,6 +31,7 @@ class occupy_options:
         hedge_confidence: int = None,
         solvent_def: str = None,
         scale_limit: float = 0.05,
+        scale_mode: str = None,
         hist_match: bool = False,
         output_map: str = 'out_<input_file_name>',
         plot : bool = False,
@@ -63,6 +64,7 @@ class occupy_options:
         self.hedge_confidence = hedge_confidence
         self.solvent_def = solvent_def
         self.scale_limit = scale_limit
+        self.scale_mode = scale_mode
         self.hist_match = hist_match
         self.output_map = output_map
         self.plot = plot
