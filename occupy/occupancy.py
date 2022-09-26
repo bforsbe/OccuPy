@@ -2,7 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import ndimage
 
-import map_tools, solvent
+try:
+    import map_tools, solvent
+except:
+    from occupy import map_tools, solvent
 
 
 def sigmoid_effective_mu(
@@ -210,14 +213,14 @@ def percentile_filter_tiled(
                     s_tau_tiles[i][j] = np.copy(s[n_tau])
         else:
             if verbose:
-                print(f'Percentile tile scan ', end='\r')
+                print(f'Percentile tile scan... ', end='\r')
             c = 0
             for i in np.arange(n_tiles):
                 for j in np.arange(n_tiles):
                     for k in np.arange(n_tiles):
                         c += 1
-                        if verbose:
-                            print(f'Percentile tile scan {int(100 * c / (n_tiles ** 3))}% complete.', end='\r')
+                        #if verbose:
+                        #    print(f'Percentile tile scan {int(100 * c / (n_tiles ** 3))}% complete.', end='\r')
                         tile_r = np.sqrt((i - n_tiles / 2) ** 2 + (j - n_tiles / 2) ** 2 + (k - n_tiles / 2) ** 2)
                         if tile_r < n_tiles / 2 - 1:
                             low_edge = edge + np.multiply(tile_step, [i, j, k])
