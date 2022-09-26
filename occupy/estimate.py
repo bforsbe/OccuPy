@@ -171,7 +171,7 @@ def occupy_run(options: args.occupy_options):
         own_tau = True
         if options.verbose:
             print(
-                f'Using provided tau value of {options.tau} instead of recommended {tau_ana} for kernel size {options.kernel_size}')
+                f'Using provided tau value of {options.tau} (recommend {tau_ana})')
 
     log_name = f'log_{Path(options.input_map).stem}.txt'
     f_log = open(log_name, 'w+')

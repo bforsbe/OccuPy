@@ -1702,8 +1702,8 @@ class Ui_Dialog(object):
         self.cmd.append(f'--lowpass {options.lowpass_input}')
         options.kernel_size = self.spinBox_kernelSize.value()
         self.cmd.append(f'--kernel-size {options.kernel_size}')
-        options.kernel = self.doubleSpinBox_kernelRadius.value()
-        self.cmd.append(f'--kernel-radius {options.kernel}')
+        options.kernel_radius = self.doubleSpinBox_kernelRadius.value()
+        self.cmd.append(f'--kernel-radius {options.kernel_radius}')
         options.tau = self.doubleSpinBox_Tau.value()/100.0
         self.cmd.append(f'--tau  {options.tau}')
         options.tile_size = self.spinBox_tileSize.value()
