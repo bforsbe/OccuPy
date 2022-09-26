@@ -225,7 +225,7 @@ def occupy_run(options: args.occupy_options):
                 verbose=options.verbose,
                 log=f_log
             )
-        if options.lp_scale:
+        if use_lp:
             scale_data = np.copy(lp_data)
             scale_mode = 'occ'
             if options.verbose:
