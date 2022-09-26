@@ -1030,13 +1030,22 @@ class Ui_Dialog(object):
                 t = (t-tmin)/(tmax-tmin)
 
                 # Construct and render image
-                im_data = np.array((t*255).astype(np.uint8))
-                qimage = QtGui.QImage(im_data,n,n,QtGui.QImage.Format_Grayscale8)# Setup pixmap with the provided image
+                im_data = np.copy(np.array((t*255).astype(np.uint8)))
+                # get the shape of the array
+                height, width = np.shape(im_data)
+
+                # calculate the total number of bytes in the frame
+                totalBytes = im_data.nbytes
+
+                # divide by the number of rows
+                bytesPerLine = int(totalBytes / height)
+
+                qimage = QtGui.QImage(im_data,n,n,bytesPerLine,QtGui.QImage.Format_Grayscale8)# Setup pixmap with the provided image
                 pixmap = QtGui.QPixmap(qimage) # Setup pixmap with the provided image
                 pixmap = pixmap.scaled(self.label_viewInput.width(), self.label_viewInput.height(), QtCore.Qt.KeepAspectRatio) # Scale pixmap
                 self.label_viewInput.setPixmap(pixmap) # Set the pixmap onto the label
                 self.label_viewInput.setAlignment(QtCore.Qt.AlignCenter) # Align the label to center
-
+                del im_data
                 f.close()
 
     def set_scale_mode(self,scale_file_name):
