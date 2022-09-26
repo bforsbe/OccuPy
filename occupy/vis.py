@@ -17,10 +17,9 @@ def chimx_viz(
         scale: str,
         ampl_map: str = None,
         attn_map: str = None,
-        threshold_input: float = None,
+        sigm_map: str = None,
+        threshold_map: float = None,
         threshold_scale: float = None,
-        threshold_ampl: float = None,
-        threshold_attn: float = None,
         min_scale: float = 0.2,
         tiles=None,
         silent: bool = False,
@@ -87,16 +86,24 @@ def chimx_viz(
             c += 1
             print(f'open {ampl_map} ', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
-            if threshold_ampl is not None:
-                print(f'vol #{c} level {threshold_ampl}', file=the_file)
+            if threshold_map is not None:
+                print(f'vol #{c} level {threshold_map}', file=the_file)
             print(f'hide #{c}', file=the_file)
 
         if attn_map is not None:
             c += 1
             print(f'open {attn_map} ', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
-            if threshold_attn is not None:
-                print(f'vol #{c} level {threshold_attn}', file=the_file)
+            if threshold_map is not None:
+                print(f'vol #{c} level {threshold_map}', file=the_file)
+            print(f'hide #{c}', file=the_file)
+
+        if sigm_map is not None:
+            c += 1
+            print(f'open {attn_map} ', file=the_file)
+            print(f'scale_color #{c} #2 \n', file=the_file)
+            if threshold_map is not None:
+                print(f'vol #{c} level {threshold_map}', file=the_file)
             print(f'hide #{c}', file=the_file)
 
         setstr = '#1'

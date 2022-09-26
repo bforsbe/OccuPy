@@ -369,8 +369,9 @@ def occupy_run(options: args.occupy_options):
 
     fake_solvent = None  # Will not  add fake solvent during amplify
 
-    attn_map = None
-    ampl_map = None
+    ampl_name = None
+    attn_name = None
+    sigm_name = None
 
     if do_amplify:
         ampl = occupancy.modify(
@@ -579,13 +580,13 @@ def occupy_run(options: args.occupy_options):
         # TODO also check the average change in pixel value, anf how it relates to power spectral change
         if options.hist_match:
             f_open = mf.open(input_map)
-            attn = match_histograms(
+            sigm = match_histograms(
                 sigm,
                 reference=f_open.data
             )  # Output is no longer input + stuff, i.e. good part is now something else.
             f_open.close()
         else:
-            attn = map_tools.clip_to_range(
+            sigm = map_tools.clip_to_range(
                 sigm,
                 range=range_ori
             )
@@ -625,12 +626,11 @@ def occupy_run(options: args.occupy_options):
         chimx_file = vis.chimx_viz(
             options.input_map,
             scale_map,
-            ampl_map=ampl_map,
-            attn_map=attn_map,
-            threshold_input=(max_val + sol_limits[3]) / 2.0,
+            ampl_map=ampl_name,
+            attn_map=attn_name,
+            sigm_map=sigm_name,
+            threshold_maps=(max_val + sol_limits[3]) / 2.0,
             threshold_scale=variability_limit,
-            threshold_ampl=(max_val + sol_limits[3]) / 2.0,
-            threshold_attn=(max_val + sol_limits[3]) / 2.0,
             min_scale=options.min_vis_scale,
             tiles=tiles,
             warnings=warnings
@@ -640,12 +640,11 @@ def occupy_run(options: args.occupy_options):
         chimx_file_silent = vis.chimx_viz(
             options.input_map,
             scale_map,
-            ampl_map=ampl_map,
-            attn_map=attn_map,
-            threshold_input=(max_val + sol_limits[3]) / 2.0,
+            ampl_map=ampl_name,
+            attn_map=attn_name,
+            sigm_map=sigm_name,
+            threshold_map=(max_val + sol_limits[3]) / 2.0,
             threshold_scale=variability_limit,
-            threshold_ampl=(max_val + sol_limits[3]) / 2.0,
-            threshold_attn=(max_val + sol_limits[3]) / 2.0,
             min_scale=options.min_vis_scale,
             silent=True,
             warnings=warnings
