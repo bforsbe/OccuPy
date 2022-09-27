@@ -964,15 +964,25 @@ class Ui_Dialog(object):
 
         if file_name:
             self.label_viewInput.setEnabled(True)
-            # TODO loop and set if new, otherwise change active
-            self.comboBox_inputMap.addItem(file_name)
-            n = self.comboBox_inputMap.count()
-            self.comboBox_inputMap.setCurrentIndex(n-1)
+            idx = None
+            new_file = True
+            for i in range(self.comboBox_inputMap.count()):
+                if self.comboBox_inputMap.itemText(i) == file_name:
+                    idx = i
+                    new_file = False
 
-            self.read_input_file()
+            if new_file:
+                self.comboBox_inputMap.addItem(file_name)
+                n = self.comboBox_inputMap.count()
+                self.comboBox_inputMap.setCurrentIndex(n-1)
 
-            self.toolButton_run.setEnabled(True)
-            self.toolButton_run.clearFocus()
+                self.read_input_file()
+
+                self.toolButton_run.setEnabled(True)
+                self.toolButton_run.clearFocus()
+
+            else:
+                self.comboBox_inputMap.setCurrentIndex(idx)
 
 
     def read_input_file(self):
@@ -1103,8 +1113,10 @@ class Ui_Dialog(object):
                 print("There was nothing to confirm this is an occ scale, but all lables are full, so permitting.")
                 self.occ_scale = True
 
-            
-
+    def change_input_file(self):
+        self.in_file_name = str(self.comboBox_inputMap.currentText())
+        self.render_input_slice()
+        self.render_output_slice()
 
     def change_scale_file(self):
         self.scale_file_name = str(self.comboBox_inputScale.currentText())
@@ -1116,24 +1128,43 @@ class Ui_Dialog(object):
         scale_file_name, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", "",
                                                                   "Image Files (*.mrc *.map);;All Files (*)")  # Ask for file
         if scale_file_name:
-            self.label_viewScale.setEnabled(True)
-            self.scale_file_name = str(scale_file_name)
-            self.set_scale_mode(self.scale_file_name)
+            new_file = True
+            idx = None
+            for i in range(self.comboBox_inputScale.count()):
+                if self.comboBox_inputScale.itemText(i) == scale_file_name:
+                    idx = i
+                    new_file = False
+            if new_file:
+                self.label_viewScale.setEnabled(True)
+                self.scale_file_name = str(scale_file_name)
+                self.set_scale_mode(self.scale_file_name)
 
-            # TODO loop and set if new, otherwise change active
-            self.comboBox_inputScale.addItem(str(self.scale_file_name))
-            n = self.comboBox_inputScale.count()
-            self.comboBox_inputScale.setCurrentIndex(n-1)
+                self.comboBox_inputScale.addItem(str(self.scale_file_name))
+                n = self.comboBox_inputScale.count()
+                self.comboBox_inputScale.setCurrentIndex(n-1)
+            else:
+                self.comboBox_inputScale.setCurrentIndex(idx)
+
             self.read_scale_file()
 
     def add_scale_file(self,new_scale_file):
         self.scale_file_name = str(new_scale_file)
         self.set_scale_mode(self.scale_file_name)
 
-        # TODO loop and set if new, otherwise change active as in set_scale_file
-        self.comboBox_inputScale.addItem(str(self.scale_file_name))
-        n = self.comboBox_inputScale.count()
-        self.comboBox_inputScale.setCurrentIndex(n - 1)
+        if new_scale_file:
+            new_file = True
+            idx = None
+            for i in range(self.comboBox_inputScale.count()):
+                if self.comboBox_inputScale.itemText(i) == new_scale_file:
+                    idx = i
+                    new_file = False
+        if new_file:
+            self.comboBox_inputScale.addItem(str(self.scale_file_name))
+            n = self.comboBox_inputScale.count()
+            self.comboBox_inputScale.setCurrentIndex(n - 1)
+        else:
+            self.comboBox_inputScale.setCurrentIndex(idx)
+
         self.read_scale_file()
 
 
