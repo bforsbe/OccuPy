@@ -118,14 +118,15 @@ class MplWidget(QtWidgets.QWidget):
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
+        from pathlib import Path
         Dialog.setObjectName("Dialog")
         Dialog.setEnabled(True)
         Dialog.resize(684, 821)
         Dialog.setAcceptDrops(True)
         icon = QtGui.QIcon()
         icon_square = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../resources/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        icon_square.addPixmap(QtGui.QPixmap("../resources/logo_square.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon_image = f'{Path(__file__).parent.parent}/resources/logo_square.png'
+        icon_square.addPixmap(QtGui.QPixmap(icon_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon_square)
         Dialog.setSizeGripEnabled(False)
         Dialog.setModal(False)
