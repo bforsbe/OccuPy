@@ -108,9 +108,9 @@ def new_mrc(
     o_file.set_data(data.astype(np.float32))
 
     # Add labels to document what happened
-    # TODO put back in once mrcfile is version > 1.4.2
-    #o_file.add_label(f'Created using OccuPy {__version__}')
-    #o_file.add_label(f'{extra_header}')
+    o_file.add_label(f'Created using OccuPy {__version__}')
+    if extra_header is not None:
+        o_file.add_label(f'{extra_header}')
 
     adjust_to_parent(parent,file_handle=o_file)
 

@@ -1010,7 +1010,7 @@ class Ui_Dialog(object):
                 f = mf.mmap(file_name)
 
                 # Get the dimensions (assume cubic based in read-check)
-                n = f.header['nx']
+                n = int(f.header['nx'])
 
                 # Safe-guards
                 if not slice or slice > n:
@@ -1053,35 +1053,38 @@ class Ui_Dialog(object):
         self.occ_scale = False
         self.res_scale = False
 
-        #String method in the interim
-        if "_occ_" in scale_file_name:
-            self.occ_scale = True
-        elif "_res_" in scale_file_name:
-            self.res_scale = True
-
         #Label method
-        """
         f = mf.mmap(scale_file_name)
  
         not_found = True           
         nlabl = f.header['nlabl']
         for i in np.arange(nlabl):
-            label = f.header['labl'][i]
-            if label == "occupy scale: occ"
+            label = str(f.header['label'][i])
+            if "occupy scale: occ" in label:
                 self.occ_scale = True
                 not_found = False
                 break
-            elif label == "occupy scale: occ"
+            elif "occupy scale: res" in label:
                 self.res_scale = True
                 not_found = False
                 break
-        
-        if not_found and nlabl == 10:
-            print("There was nothing to confirm this is an occ scale, but all lables are full, so permitting.")
-            self.occ_scale = True
+        if not_found:
+            # String method as fallback
+            if "_occ_" in scale_file_name:
+                self.occ_scale = True
+                not_found = False
+            elif "_res_" in scale_file_name:
+                self.res_scale = True
+                not_found = False
+
+        if not_found:
+            self.occupy_log('Could not find scale mode during scale file load')
+            if nlabl == 10:
+                print("There was nothing to confirm this is an occ scale, but all lables are full, so permitting.")
+                self.occ_scale = True
 
             
-        """
+
 
     def change_scale_file(self):
         self.scale_file_name = str(self.comboBox_inputScale.currentText())

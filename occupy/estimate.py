@@ -304,6 +304,7 @@ def occupy_run(options: args.occupy_options):
         save_occ_map=scale_map,
         s0=options.s0,
         tile_size=options.tile_size,
+        scale_mode=options.scale_mode,
         verbose=options.verbose
     )
     map_tools.adjust_to_parent(file_name=scale_map, parent=options.input_map)

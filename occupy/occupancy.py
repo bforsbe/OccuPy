@@ -406,6 +406,7 @@ def get_map_scale(
         save_occ_map: str = None,
         s0: bool = False,
         tile_size: int = 12,
+        scale_mode: str = None,
         verbose: bool = True
 ):
     """
@@ -434,7 +435,13 @@ def get_map_scale(
 
     # Save the scale
     if save_occ_map is not None:
-        map_tools.new_mrc(scale_map, save_occ_map, vox_sz=1.0, verbose=verbose)
+        map_tools.new_mrc(
+            scale_map,
+            save_occ_map,
+            vox_sz=1.0,
+            verbose=verbose,
+            extra_header=f'occupy scale: {scale_mode}'
+        )
     return scale_map, map_val_at_full_scale, extr_tiles
 
 
