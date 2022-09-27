@@ -75,45 +75,46 @@ class MplWidget(QtWidgets.QWidget):
     def update_sigmoid_power(self, power):
         self.sigmoid = True
         self.sigmoid_power = power # self.parent.horizontalSlider_3.value()
-        self.plot()
+        self.plot_modification()
         #self.sigmoid_power = self.parent().horizontalSlider_5.value()
 
     def update_sigmoid_pivot(self, pivot):
         self.sigmoid = True
         self.sigmoid_pivot = pivot / 100.0 # self.parent.horizontalSlider_3.value()
-        self.plot()
+        self.plot_modification()
 
 
     def update_amplification_power(self, power):
         self.amplify = True
         self.amplification_power = power
-        self.plot()
+        self.plot_modification()
 
     def update_attenuation_power(self, power):
         self.attenuate = True
         self.attenuation_power = power
-        self.plot()
+        self.plot_modification()
 
 
-    def plot(self):
+    def plot_modification(self):
         anything = False
         self.canvas.ax.clear()
         x = np.linspace(0, 1, 100)
         if self.amplify:
-            self.canvas.ax.plot(x,x**(1/self.amplification_power),'C0')
+            self.canvas.ax.plot(x, x ** (1 / self.amplification_power), 'C0')
             anything =True
         if self.attenuate:
-            self.canvas.ax.plot(x, x ** (self.attenuation_power),'C1')
+            self.canvas.ax.plot(x, x ** (self.attenuation_power), 'C1')
             anything = True
         if self.sigmoid:
             x, y = occupancy.scale_mapping_sigmoid(self.sigmoid_pivot,self.sigmoid_power)
-            self.canvas.ax.plot(x,y,'C2')
-            self.canvas.ax.plot(self.sigmoid_pivot,self.sigmoid_pivot,'ko')
+            self.canvas.ax.plot(x, y, 'C2')
+            self.canvas.ax.plot(self.sigmoid_pivot, self.sigmoid_pivot, 'ko')
             anything = True
         if anything:
-            self.canvas.ax.plot([0,1],[0,1],'k--')
+            self.canvas.ax.plot([0, 1], [0, 1], 'k--')
 
         self.canvas.draw()
+
 
 
 class Ui_Dialog(object):
@@ -134,6 +135,7 @@ class Ui_Dialog(object):
         self.inputMap = InputMapProperties()
         self.confidence_file_name = None
         self.chimerax_file_name = None
+        self.solModel_file_name = None
         self.scale_file_name = None
         self.occ_scale = None
         self.res_scale = None
@@ -444,11 +446,23 @@ class Ui_Dialog(object):
         self.tabWidget_output.addTab(self.tab_hist, "")
         self.tab_solventModel = QtWidgets.QWidget()
         self.tab_solventModel.setObjectName("tab_solventModel")
-        self.MplWidget_solventModel = MplWidget(self.tab_solventModel)
-        self.MplWidget_solventModel.setGeometry(QtCore.QRect(0, 0, 671, 141))
-        self.MplWidget_solventModel.setMinimumSize(QtCore.QSize(320, 100))
-        self.MplWidget_solventModel.setMaximumSize(QtCore.QSize(1000, 400))
-        self.MplWidget_solventModel.setObjectName("MplWidget_solventModel")
+
+        self.label_solventModel = QtWidgets.QLabel(self.tab_solventModel)
+        self.label_solventModel.setGeometry(QtCore.QRect(0, 0, 671, 141))
+        self.label_solventModel.setMinimumSize(QtCore.QSize(320, 100))
+        self.label_solventModel.setMaximumSize(QtCore.QSize(1000, 400))
+        self.label_solventModel.setObjectName("label_solventModel")
+        self.label_solventModel.setFrameShape(QtWidgets.QFrame.Box)
+        self.label_solventModel.setText("Run occupy to \n view the solvent model")
+        self.label_solventModel.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.toolButton_expandSolModel=QtWidgets.QToolButton(self.label_solventModel)
+        self.toolButton_expandSolModel.setGeometry(QtCore.QRect(580, 10, 70, 20))
+        self.toolButton_expandSolModel.setText("Full view")
+        self.toolButton_expandSolModel.setEnabled(False)
+
+        #self.label_solventModel.setEnabled(False)
+
         self.tabWidget_output.addTab(self.tab_solventModel, "")
         self.gridLayoutWidget = QtWidgets.QWidget(Dialog)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(280, 480, 391, 31))
@@ -722,15 +736,15 @@ class Ui_Dialog(object):
         self.toolButton_inputSolventDef_browse = QtWidgets.QToolButton(self.gridLayoutWidget_7)
         self.toolButton_inputSolventDef_browse.setObjectName("toolButton_inputSolventDef_browse")
         self.gridLayout_extraInputMaps.addWidget(self.toolButton_inputSolventDef_browse, 1, 1, 1, 1)
-        self.pushButton_run = QtWidgets.QPushButton(Dialog)
-        self.pushButton_run.setEnabled(False)
-        self.pushButton_run.setGeometry(QtCore.QRect(340, 610, 201, 54))
+        self.toolButton_run = QtWidgets.QPushButton(Dialog)
+        self.toolButton_run.setEnabled(False)
+        self.toolButton_run.setGeometry(QtCore.QRect(340, 610, 201, 54))
         font = QtGui.QFont()
         font.setPointSize(18)
-        self.pushButton_run.setFont(font)
-        self.pushButton_run.setIcon(icon_square)
-        self.pushButton_run.setIconSize(QtCore.QSize(40, 40))
-        self.pushButton_run.setObjectName("pushButton_run")
+        self.toolButton_run.setFont(font)
+        self.toolButton_run.setIcon(icon_square)
+        self.toolButton_run.setIconSize(QtCore.QSize(40, 40))
+        self.toolButton_run.setObjectName("toolButton_run")
         self.verticalLayoutWidget = QtWidgets.QWidget(Dialog)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 530, 91, 61))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
@@ -767,9 +781,10 @@ class Ui_Dialog(object):
         self.gridLayoutWidget_6.raise_()
         self.horizontalLayoutWidget_4.raise_()
         self.gridLayoutWidget_7.raise_()
-        self.pushButton_run.raise_()
+        self.toolButton_run.raise_()
         self.verticalLayoutWidget.raise_()
         self.label_inputMap.raise_()
+        self.toolButton_expandSolModel.raise_()
 
         self.retranslateUi(Dialog)
         self.tabWidget_modification.setCurrentIndex(0)
@@ -805,6 +820,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_attnPower.valueChanged.connect(self.render_output_slice_with_focus)
         self.doubleSpinBox_sigmoidPower.valueChanged.connect(self.render_output_slice_with_focus)
         self.doubleSpinBox_sigmoidPivot.valueChanged.connect(self.render_output_slice_with_focus)
+
 
 
 
@@ -932,11 +948,13 @@ class Ui_Dialog(object):
         self.comboBox_inputSolventDef.setToolTip(_translate("Dialog", "solvent mask to improve solvent detection"))
         self.comboBox_inputSolventDef.setWhatsThis(_translate("Dialog", "solvent mask to improve solvent detection"))
         self.toolButton_inputSolventDef_browse.setText(_translate("Dialog", "browse"))
-        self.pushButton_run.setText(_translate("Dialog", "  RUN  "))#ɒk.jə.paɪ"))
-        self.pushButton_run.clicked.connect(self.run_cmd)
+        self.toolButton_run.setText(_translate("Dialog", "  RUN  "))#ɒk.jə.paɪ"))
+        self.toolButton_run.clicked.connect(self.run_cmd)
         self.label_inputScale.setText(_translate("Dialog", "  scale map"))
         self.label_inputSolventDef.setText(_translate("Dialog", " solvent def"))
         self.label_inputMap.setText(_translate("Dialog", "  Input map"))
+
+        self.toolButton_expandSolModel.clicked.connect(self.window_solvent_model)
 
     def set_input_file(self):
 
@@ -953,7 +971,8 @@ class Ui_Dialog(object):
 
             self.read_input_file()
 
-            self.pushButton_run.setEnabled(True)
+            self.toolButton_run.setEnabled(True)
+            self.toolButton_run.clearFocus()
 
 
     def read_input_file(self):
@@ -1661,7 +1680,7 @@ class Ui_Dialog(object):
         self.MplWidget_viewModification.attenuate = self.groupBox_attenuation.isChecked()
         self.MplWidget_viewModification.sigmoid = self.groupBox_sigmoid.isChecked()
 
-        self.MplWidget_viewModification.plot()
+        self.MplWidget_viewModification.plot_modification()
 
     def update_mod_spin_boxes(self):
         self.doubleSpinBox_amplPower.setValue(self.horizontalSlider_amplPower.value()/10.)
@@ -1796,6 +1815,10 @@ class Ui_Dialog(object):
             options.verbose = True
             self.cmd.append(f'--verbose')
 
+        # Always plot in GUI
+        options.plot = True
+        self.cmd.append(f'--plot')
+
         options.gui = True
 
         return options
@@ -1839,9 +1862,78 @@ class Ui_Dialog(object):
                 scale_mode = 'occ'
 
             self.add_scale_file(f'scale_{scale_mode}_{Path(new_name).stem}.mrc')
+
             self.chimerax_file_name = f'chimX_{Path(new_name).stem}.cxc'
             self.toolButton_chimerax.setEnabled(True)
 
+            self.show_solvent_model()
+
+    def show_solvent_model(self):
+        from pathlib import Path
+        solDef_specifier = ''
+        c =  self.comboBox_inputSolventDef.currentText()
+        if self.comboBox_inputSolventDef.currentText() != ' ':
+            solDef_specifier = f'{Path(self.comboBox_inputSolventDef.currentText()).stem}_'
+        solModel_file_name = f'solModel_{solDef_specifier}' + Path(self.comboBox_inputMap.currentText()).stem + '.png'
+
+        self.solModel_file_name = solModel_file_name
+        pixmap = QtGui.QPixmap(self.solModel_file_name)  # Setup pixmap with the provided image
+        pixmap = pixmap.scaled(self.label_solventModel.width(), self.label_solventModel.height(),
+                               QtCore.Qt.KeepAspectRatio)  # Scale pixmap
+        self.label_solventModel.setPixmap(pixmap)  # Set the pixmap onto the label
+        self.label_solventModel.setAlignment(QtCore.Qt.AlignCenter)  # Align the label to center
+
+        # Dont enable for now, for some reason the full view only woks in debug mode
+        #self.toolButton_expandSolModel.setEnabled(True)
+
+    def window_solvent_model(self):
+
+        self.Dialog_solModel = ImageWindow()
+        app = QtWidgets.QApplication(sys.argv)
+
+        screen = app.primaryScreen()
+        #print('Screen: %s' % screen.name())
+        size = screen.size()
+        #print('Size: %d x %d' % (size.width(), size.height()))
+        rect = screen.availableGeometry()
+        #print('Available: %d x %d' % (rect.width(), rect.height()))
+
+        # The image will be 1200:252 pixels.
+        # Assume width-limited and make as big as possible.
+        rect_width = rect.width()
+        rect_height = int(rect_width * 252 / 1200)
+        window = QtWidgets.QLabel(self.Dialog_solModel)
+        pixmap = QtGui.QPixmap(self.solModel_file_name)
+        pixmap = pixmap.scaled(
+            rect_width,
+            rect_height,
+            QtCore.Qt.KeepAspectRatio
+        )  # Scale pixmap
+        self.Dialog_solModel.resize(rect_width,rect_height)
+        window.setPixmap(pixmap)
+        self.Dialog_solModel.show()
+
+        # from pathlib import Path
+        # Dialog_solModel = QtWidgets.QDialog()
+        # Dialog_solModel.resize(self.label_solventModel.width()*3, self.label_solventModel.height()*3)
+        # window = QtWidgets.QLabel(Dialog_solModel)
+        # solDef_specifier = ''
+        # c = self.comboBox_inputSolventDef.currentText()
+        # if self.comboBox_inputSolventDef.currentText() != ' ':
+        #     solDef_specifier = f'{Path(self.comboBox_inputSolventDef.currentText()).stem}_'
+        # solModel_file_name = f'solModel_{solDef_specifier}' + Path(self.comboBox_inputMap.currentText()).stem + '.png'
+        #
+        # self.solModel_file_name = solModel_file_name
+        # pixmap = QtGui.QPixmap(self.solModel_file_name)  # Setup pixmap with the provided image
+        # pixmap = pixmap.scaled(self.label_solventModel.width()*2.8, self.label_solventModel.height()*3.2,
+        #                        QtCore.Qt.KeepAspectRatio)  # Scale pixmap
+        # window.setPixmap(pixmap)  # Set the pixmap onto the label
+        # window.setAlignment(QtCore.Qt.AlignCenter)  # Align the label to center
+        # Dialog_solModel.exec_()
+
+class ImageWindow(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super(ImageWindow, self).__init__(parent)
 
 
 if __name__ == "__main__":

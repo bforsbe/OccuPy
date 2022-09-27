@@ -652,7 +652,7 @@ def occupy_run(options: args.occupy_options):
 
     if options.plot:
         f = plt.gcf()
-        f.set_size_inches(20, 4)
+        f.set_size_inches(12, 2.52)
         ax1 = f.axes[0]
 
         if options.solvent_def is not None:
@@ -660,9 +660,15 @@ def occupy_run(options: args.occupy_options):
         ax1.plot(b[:-1], np.clip(mapping, ax1.get_ylim()[0], 1.0), 'r', label='confidence')
         if options.hedge_confidence is not None:
             ax1.plot(b[:-1], np.clip(mapping ** options.hedge_confidence, ax1.get_ylim()[0], 1.0), ':r',
-                     label='hedged confidence')
+                                  label='hedged confidence')
 
-        ax1.legend()
+        ax1.legend(bbox_to_anchor=(1, 1), loc="upper left",prop={'size': 11})
+        plt.subplots_adjust(
+            top=0.94,
+            bottom=0.154,
+            left=0.062,
+            right=0.688)
+        #f.tight_layout(rect=[0, 0, 1.05, 1.05])
 
         save_name = options.input_map
         has_solvent_def = None

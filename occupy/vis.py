@@ -10,7 +10,7 @@ def save_fig(
     file_name = 'solModel_' + Path(input).stem + '.png'
     if extra_specifier is not None:
         file_name = f'solModel_{extra_specifier}_' + Path(input).stem + '.png'
-    plt.savefig(file_name)
+    plt.savefig(file_name,dpi=200)
 
 def chimx_viz(
         input: str,
