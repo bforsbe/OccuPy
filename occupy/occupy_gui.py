@@ -33,6 +33,31 @@ except:
 from io import StringIO
 import sys
 
+
+class EMDB_dialog(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super(EMDB_dialog, self).__init__(parent)
+        self.id = None
+
+    def make_dialog(self):
+        self.setObjectName("Fetch EMDB")
+        self.setEnabled(True)
+        self.resize(100,90)
+
+        self.spinBox = QtWidgets.QSpinBox(self)
+        self.spinBox.setGeometry(10,10,80,30)
+        self.spinBox.setSpecialValueText('-')
+        self.spinBox.setMaximum(99999)
+
+        self.button = QtWidgets.QToolButton(self)
+        self.button.setGeometry(10,50,80,30)
+        self.button.setText("Fetch")
+        self.button.clicked.connect(self.update_id)
+
+    def update_id(self):
+        self.id = self.spinBox.value()
+        self.close()
+
 class Capturing(list):
     def __enter__(self):
         self._stdout = sys.stdout
@@ -970,18 +995,27 @@ class Ui_Dialog(object):
         self.toolButton_expandSolModel.clicked.connect(self.window_solvent_model)
 
     def fetch_emdb(self):
-        id = 3061
-        map_name = ''
-        with Capturing() as output:
-            self.occupy_log(f'Fetching emdb {id}...')
-            map_name = map_tools.fetch_EMDB(id)
 
-        for i in output:
-            self.occupy_log(i)
+        self.Dialog_emdb = EMDB_dialog()
+        self.Dialog_emdb.make_dialog()
+        self.Dialog_emdb.exec()
 
-        if map_name is not None:
+        id = self.Dialog_emdb.id
 
-            self.add_input_file(str(map_name))
+        if id is None or id == 0:
+            pass
+        else:
+            map_name = ''
+            with Capturing() as output:
+                self.occupy_log(f'Fetching emdb {id}...')
+                map_name = map_tools.fetch_EMDB(id)
+
+            for i in output:
+                self.occupy_log(i)
+
+            if map_name is not None:
+
+                self.add_input_file(str(map_name))
 
 
     def set_input_file(self):
@@ -1062,6 +1096,10 @@ class Ui_Dialog(object):
         else:
 
             self.occupy_log('Input is not cubic.')
+
+
+        self.label_viewInput.setEnabled(True)
+        self.toolButton_run.setEnabled(True)
 
         # Close the file
         f.close()

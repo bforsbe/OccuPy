@@ -100,7 +100,7 @@ def chimx_viz(
 
         if sigm_map is not None:
             c += 1
-            print(f'open {attn_map} ', file=the_file)
+            print(f'open {sigm_map} ', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
             if threshold_maps is not None:
                 print(f'vol #{c} level {threshold_maps}', file=the_file)
