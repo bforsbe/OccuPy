@@ -24,7 +24,9 @@ def occupy_run(options: args.occupy_options):
         if options.emdb_id is None:
             exit(1)  # TODO surely a better way to do nothing with no options. Invoke help?
         else:
-            input_map = map_tools.fetch_EMDB(options.emdb_id)
+            options.input_map = map_tools.fetch_EMDB(options.emdb_id)
+            if options.scale_mode is None:
+                options.scale_mode = 'res'
 
     if options.plot:
         import matplotlib.pyplot as plt
@@ -136,7 +138,7 @@ def occupy_run(options: args.occupy_options):
     # The size of the scale-estimation kernel.
     if options.kernel_size is None:
         # How many pixels do we fit into the significant highest frequency?
-        options.kernel_size = int(np.floor(lowpass_input / voxel_size))
+        options.kernel_size = int(np.floor(options.lowpass_input / voxel_size))
         # Make it an odd size
         options.kernel_size = ((options.kernel_size // 2) * 2) + 1
         # It should be larger than 1, and never needs to be bigger than 9.

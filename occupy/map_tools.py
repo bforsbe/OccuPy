@@ -444,18 +444,26 @@ def fetch_EMDB(ID: str):
 
     url = f'https://ftp.ebi.ac.uk/pub/databases/emdb/structures/EMD-{ID}/map/emd_{ID}.map.gz'
     print(f'Fetching {fetch_name}')
+
+    fail = False
     try:
         file_name = wget.download(url)
+        print(f'\n Done fetching {fetch_name}')
     except:
-        raise(NameError, f"EMDB entry {ID} could not be fetched through url: \n {url}")
-    print(f'\n Done fetching {fetch_name}')
+        print(f"EMDB entry {ID} could not be fetched through url: \n {url}")
+        fail = True
 
-    print(f'Unzipping {fetch_name}')
-    try:
-        gunzip(fetch_name,map_name)
-        os.remove(fetch_name)
-    except:
-        raise(NameError, f'Error trying to gunzip {fetch_name}')
-    print(f'Done unzipping')
+    if not fail:
+        print(f'Unzipping {fetch_name}')
+        try:
+            gunzip(fetch_name,map_name)
+            os.remove(fetch_name)
+            print(f'Done unzipping')
+        except:
+            print(f'Error trying to gunzip {fetch_name}')
+            fail =True
 
-    return map_name
+    if fail:
+        return None
+    else:
+        return map_name

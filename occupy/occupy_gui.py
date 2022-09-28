@@ -30,6 +30,19 @@ try:
 except:
     from occupy import estimate, map_tools, occupancy, vis, solvent, extras, args   # for terminal use
 
+from io import StringIO
+import sys
+
+class Capturing(list):
+    def __enter__(self):
+        self._stdout = sys.stdout
+        sys.stdout = self._stringio = StringIO()
+        return self
+
+    def __exit__(self, *args):
+        self.extend(self._stringio.getvalue().splitlines())
+        del self._stringio  # free up some memory
+        sys.stdout = self._stdout
 
 # Matplotlib canvas class to create figure
 class InputMapProperties():
@@ -155,9 +168,9 @@ class Ui_Dialog(object):
         self.toolButton_inputMap_browse = QtWidgets.QToolButton(self.horizontalLayoutWidget)
         self.toolButton_inputMap_browse.setObjectName("toolButton_inputMap_browse")
         self.horizontalLayout_inputMap.addWidget(self.toolButton_inputMap_browse)
-        self.toolButton_inputMap_reload = QtWidgets.QToolButton(self.horizontalLayoutWidget)
-        self.toolButton_inputMap_reload.setObjectName("toolButton_inputMap_reload")
-        self.horizontalLayout_inputMap.addWidget(self.toolButton_inputMap_reload)
+        self.toolButton_inputMap_emdb = QtWidgets.QToolButton(self.horizontalLayoutWidget)
+        self.toolButton_inputMap_emdb.setObjectName("toolButton_inputMap_emdb")
+        self.horizontalLayout_inputMap.addWidget(self.toolButton_inputMap_emdb)
 
         self.toolButton_clearLog = QtWidgets.QToolButton(Dialog)
         self.toolButton_clearLog.setGeometry(550,610,121,24)
@@ -834,8 +847,8 @@ class Ui_Dialog(object):
         # Input Map
         self.toolButton_inputMap_browse.setText(_translate("Dialog", "browse"))
         self.toolButton_inputMap_browse.clicked.connect(self.set_input_file)
-        self.toolButton_inputMap_reload.clicked.connect(self.read_input_file)
-        self.toolButton_inputMap_reload.setText(_translate("Dialog", "(re)load"))
+        self.toolButton_inputMap_emdb.clicked.connect(self.fetch_emdb)
+        self.toolButton_inputMap_emdb.setText(_translate("Dialog", "emdb"))
 
         # Input scale Map
         self.toolButton_inputScale_browse.setText(_translate("Dialog", "browse"))
@@ -956,6 +969,21 @@ class Ui_Dialog(object):
 
         self.toolButton_expandSolModel.clicked.connect(self.window_solvent_model)
 
+    def fetch_emdb(self):
+        id = 3061
+        map_name = ''
+        with Capturing() as output:
+            self.occupy_log(f'Fetching emdb {id}...')
+            map_name = map_tools.fetch_EMDB(id)
+
+        for i in output:
+            self.occupy_log(i)
+
+        if map_name is not None:
+
+            self.add_input_file(str(map_name))
+
+
     def set_input_file(self):
 
         # Open dialog to choose file
@@ -984,6 +1012,22 @@ class Ui_Dialog(object):
             else:
                 self.comboBox_inputMap.setCurrentIndex(idx)
 
+    def add_input_file(self,new_input_file):
+        if new_input_file:
+            new_file = True
+            idx = None
+            for i in range(self.comboBox_inputMap.count()):
+                if self.comboBox_inputMap.itemText(i) == new_input_file:
+                    idx = i
+                    new_file = False
+        if new_file:
+            self.comboBox_inputMap.addItem(str(new_input_file))
+            n = self.comboBox_inputMap.count()
+            self.comboBox_inputMap.setCurrentIndex(n - 1)
+        else:
+            self.comboBox_inputMap.setCurrentIndex(idx)
+
+        self.read_input_file()
 
     def read_input_file(self):
         #TODO check that file/map still exists
@@ -1861,19 +1905,6 @@ class Ui_Dialog(object):
             #TODO check for in-memory objects like chimeraX-maps and figure out what to do
             self.occupy_log(" ".join(self.cmd))
         else:
-            from io import StringIO
-            import sys
-
-            class Capturing(list):
-                def __enter__(self):
-                    self._stdout = sys.stdout
-                    sys.stdout = self._stringio = StringIO()
-                    return self
-
-                def __exit__(self, *args):
-                    self.extend(self._stringio.getvalue().splitlines())
-                    del self._stringio  # free up some memory
-                    sys.stdout = self._stdout
 
             with Capturing() as output:
                 self.occupy_log('Estimating local scale...')
