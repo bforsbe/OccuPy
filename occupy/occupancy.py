@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import ndimage
+import warnings
 
 try:
     import map_tools, solvent
@@ -52,7 +53,9 @@ def sigmoid_scale(x, mu, order):
     out = np.divide(mu * (1 - x), x * (1 - mu), where= x != 0)
     #out = np.divide(1, out, where=out != 0)
     if order != 1:
-        out = out ** order
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            out = np.power(out,order)
     out = out + 1
     out = np.divide(1, out, where=out != 0)
     out = np.clip(out, 0, 1)

@@ -1005,9 +1005,9 @@ class Ui_Dialog(object):
         if id is None or id == 0:
             pass
         else:
+            self.occupy_log(f'Fetching emdb {id}...')
             map_name = ''
             with Capturing() as output:
-                self.occupy_log(f'Fetching emdb {id}...')
                 map_name = map_tools.fetch_EMDB(id)
 
             for i in output:
@@ -1824,6 +1824,7 @@ class Ui_Dialog(object):
 
     def occupy_log(self, message):
         self.textEdit_log.append(message)
+        self.textEdit_log.repaint()
         
     def occupy_warn(self, message):
         warning = f'\033[91m {message} \033[0m'
