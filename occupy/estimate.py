@@ -297,8 +297,10 @@ def occupy_run(options: args.occupy_options):
     )
 
     # --------------- SCALE ESTIMATION ------------------------------------------------------
-    
+
     scale_map = f'scale_{options.scale_mode}_{new_name}'
+    if options.s0:
+        scale_map = f'scale_S0_{options.scale_mode}_{new_name}'
     scale, max_val, tiles_raw = occupancy.get_map_scale(
         scale_data,
         scale_kernel=scale_kernel,
