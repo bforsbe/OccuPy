@@ -780,12 +780,6 @@ class Ui_Dialog(object):
         self.comboBox_inputScale = QtWidgets.QComboBox(self.gridLayoutWidget_7)
         self.comboBox_inputScale.setObjectName("comboBox_inputScale")
         self.gridLayout_extraInputMaps.addWidget(self.comboBox_inputScale, 0, 0, 1, 1)
-        self.toolButton_inputSolventDef_reload = QtWidgets.QToolButton(self.gridLayoutWidget_7)
-        self.toolButton_inputSolventDef_reload.setObjectName("toolButton_inputSolventDef_reload")
-        self.gridLayout_extraInputMaps.addWidget(self.toolButton_inputSolventDef_reload, 1, 2, 1, 1)
-        self.toolButton_inputScale_reload = QtWidgets.QToolButton(self.gridLayoutWidget_7)
-        self.toolButton_inputScale_reload.setObjectName("toolButton_inputScale_reload")
-        self.gridLayout_extraInputMaps.addWidget(self.toolButton_inputScale_reload, 0, 2, 1, 1)
         self.comboBox_inputSolventDef = QtWidgets.QComboBox(self.gridLayoutWidget_7)
         self.comboBox_inputSolventDef.setObjectName("comboBox_inputSoventDef")
         self.gridLayout_extraInputMaps.addWidget(self.comboBox_inputSolventDef, 1, 0, 1, 1)
@@ -895,12 +889,10 @@ class Ui_Dialog(object):
         # Input scale Map
         self.toolButton_inputScale_browse.setText(_translate("Dialog", "browse"))
         self.toolButton_inputScale_browse.clicked.connect(self.set_scale_file)
-        self.toolButton_inputScale_reload.clicked.connect(self.read_scale_file)
 
         # Input solvent Def
         self.toolButton_inputSolventDef_browse.setText(_translate("Dialog", "browse"))
         self.toolButton_inputSolventDef_browse.clicked.connect(self.set_solvent_file)
-        self.toolButton_inputSolventDef_reload.clicked.connect(self.read_solvent_file)
 
         # Update when changing the input choice
         self.comboBox_inputMap.currentIndexChanged.connect(self.read_input_file)
@@ -1002,8 +994,6 @@ class Ui_Dialog(object):
         self.toolButton_inputScale_browse.setText(_translate("Dialog", "browse"))
         self.comboBox_inputScale.setToolTip(_translate("Dialog", "pre-estimated local scale map "))
 
-        self.toolButton_inputSolventDef_reload.setText(_translate("Dialog", "(re)load"))
-        self.toolButton_inputScale_reload.setText(_translate("Dialog", "(re)load"))
         self.comboBox_inputSolventDef.setToolTip(_translate("Dialog", "solvent mask to improve solvent detection"))
         self.comboBox_inputSolventDef.setWhatsThis(_translate("Dialog", "solvent mask to improve solvent detection"))
         self.toolButton_inputSolventDef_browse.setText(_translate("Dialog", "browse"))
@@ -1277,27 +1267,29 @@ class Ui_Dialog(object):
         # Get file name or object
         scale_file_name = self.comboBox_inputScale.currentText()
 
-        # Open memory mapped to set options etc.
-        f = mf.mmap(scale_file_name)
+        if scale_file_name:
 
-        # Slider and spinbox in view window
-        n = f.header['nx']
+            # Open memory mapped to set options etc.
+            f = mf.mmap(scale_file_name)
 
-        ny = f.header['ny']
-        nz = f.header['nz']
+            # Slider and spinbox in view window
+            n = f.header['nx']
 
-        # Only permit cubic
-        if n == ny == nz:
+            ny = f.header['ny']
+            nz = f.header['nz']
 
-            # Fill view pane
-            self.render_scale_slice()
+            # Only permit cubic
+            if n == ny == nz:
 
-        else:
+                # Fill view pane
+                self.render_scale_slice()
 
-            self.occupy_log('Scale input is not cubic.')
+            else:
 
-        # Close the file
-        f.close()
+                self.occupy_log('Scale input is not cubic.')
+
+            # Close the file
+            f.close()
 
 
     def render_scale_slice(self,force=False):
