@@ -18,6 +18,7 @@ def chimx_viz(
         ampl_map: str = None,
         attn_map: str = None,
         sigm_map: str = None,
+        solExcl_only_map: str = None,
         threshold_maps: float = None,
         threshold_scale: float = None,
         min_scale: float = 0.2,
@@ -105,6 +106,16 @@ def chimx_viz(
             if threshold_maps is not None:
                 print(f'vol #{c} level {threshold_maps}', file=the_file)
             print(f'hide #{c}', file=the_file)
+
+        if solExcl_only_map is not None:
+            c += 1
+            print(f'open {solExcl_only_map} ', file=the_file)
+            print(f'scale_color #{c} #2 \n', file=the_file)
+            if threshold_maps is not None:
+                print(f'vol #{c} level {threshold_maps}', file=the_file)
+            print(f'hide #{c}', file=the_file)
+
+
 
         setstr = '#1'
         for i in np.arange(c-2)+3:

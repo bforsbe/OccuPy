@@ -44,7 +44,7 @@ def occupy_run(options: args.occupy_options):
     do_attenuate = options.attenuate > 1
     do_sigmoid = options.sigmoid > 1
     do_exclude_solvent = options.exclude_solvent
-    do_modify = do_amplify or do_attenuate or do_sigmoid or do_exclude_solvent
+    do_modify = do_amplify or do_attenuate or do_sigmoid
 
     # Save amplified and/or solvent-suppressed output.'
     base_out_name = f'{new_name}'
@@ -241,7 +241,7 @@ def occupy_run(options: args.occupy_options):
         sol_data = np.copy(in_data)
 
     # We apply any estimations or solvent operation on the raw input (possibly down-sized)
-    if do_modify:
+    if do_modify or do_exclude_solvent:
         out_data = np.copy(in_data)
 
     # --------------- PLOTTING STUFF------------------------------------------------------------
@@ -359,7 +359,7 @@ def occupy_run(options: args.occupy_options):
         print(f'Min c.sc :\t[0,1]\t {lowest_confident_scale:.3f}', file=f_log)
 
     # Dirty check on the solvent model, could be more rigorous
-    if do_modify:
+    if do_modify or do_exclude_solvent:
 
         if lowest_confident_scale > 0.5:
             warnings = "Solvent model fit is likely bad. Check terminal output and"
@@ -610,7 +610,49 @@ def occupy_run(options: args.occupy_options):
 
         del sigm
 
-    #TODO only solvent supress output
+    solExcl_only_name = None
+    if not do_modify and do_exclude_solvent:
+        # -- Supress solvent amplification --
+        # Confidence-based mask of amplified content.
+        # Solvent is added back unless excluded
+        solExcl_only = solvent.suppress(
+            out_data,  # Supress the amplified output data
+            in_data,  # Add back solvent from raw input (full res)
+            confidence,  # The confidence mask to supress amplification
+            do_exclude_solvent,  # Only add back if not excluding solvent
+            verbose=options.verbose
+        )
+
+        # -- Low-pass filter output --
+        solExcl_only = map_tools.lowpass_map(
+            solExcl_only,
+            options.lowpass_output,
+            voxel_size,
+            keep_scale=True
+        )
+
+        # If the input map was larger than the maximum processing size, we need to get back the bigger size as output
+        if downscale_processing:
+            solExcl_only, _ = map_tools.lowpass(
+                solExcl_only,
+                output_size=nd[0],
+                square=True,
+                resample=True
+            )
+
+        # Save solvent-suppressed output.
+        solExcl_only_name = f'{base_out_name}'
+        solExcl_only_doc = f'{doc}'
+
+        map_tools.new_mrc(
+            solExcl_only.astype(np.float32),
+            solExcl_only_name,
+            parent=options.input_map,
+            verbose=options.verbose,
+            extra_header=solExcl_only_doc
+        )
+
+        del solExcl_only
 
     # ----------------OUTPUT FILES AND PLOTTING -------------------------------------------------
     #if options.save_all_maps:
@@ -633,6 +675,7 @@ def occupy_run(options: args.occupy_options):
             ampl_map=ampl_name,
             attn_map=attn_name,
             sigm_map=sigm_name,
+            solExcl_only_map=solExcl_only_name,
             threshold_maps=(max_val + sol_limits[3]) / 2.0,
             threshold_scale=variability_limit,
             min_scale=options.min_vis_scale,
