@@ -58,6 +58,20 @@ class EMDB_dialog(QtWidgets.QDialog):
         self.id = self.spinBox.value()
         self.close()
 
+
+class fullLog_dialog(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super(fullLog_dialog, self).__init__(parent)
+        self.id = None
+
+    def make_dialog(self):
+        self.setObjectName("Full Log")
+        self.setEnabled(True)
+        self.resize(600,1000)
+
+        self.logText = QtWidgets.QTextEdit(self)
+        self.logText.setGeometry(0,0,600,1000)
+
 class Capturing(list):
     def __enter__(self):
         self._stdout = sys.stdout
@@ -162,16 +176,19 @@ class Ui_Dialog(object):
         Dialog.setEnabled(True)
         Dialog.resize(684, 821)
         Dialog.setAcceptDrops(True)
-        icon = QtGui.QIcon()
         icon_square = QtGui.QIcon()
-        icon_image = f'{Path(__file__).parent.parent}/resources/logo_square.png'
-        icon_square.addPixmap(QtGui.QPixmap(icon_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        occ_image = f'{Path(__file__).parent.parent}/resources/logo_square.png'
+        icon_square.addPixmap(QtGui.QPixmap(occ_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon_chimX = QtGui.QIcon()
+        chimX_image = f'{Path(__file__).parent.parent}/resources/chimX.png'
+        icon_chimX.addPixmap(QtGui.QPixmap(chimX_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon_square)
         Dialog.setSizeGripEnabled(False)
         Dialog.setModal(False)
 
+        self.new_session = True
         self.inputMap = InputMapProperties()
-        self.log_file_name = None
+        self.log_file_name = 'occupy_gui_log.txt'
         self.confidence_file_name = None
         self.chimerax_file_name = None
         self.solModel_file_name = None
@@ -200,20 +217,19 @@ class Ui_Dialog(object):
         self.horizontalLayout_inputMap.addWidget(self.toolButton_inputMap_emdb)
 
         self.toolButton_clearLog = QtWidgets.QToolButton(Dialog)
-        self.toolButton_clearLog.setGeometry(550,610,121,24)
+        self.toolButton_clearLog.setGeometry(581,610,90,24)
         self.toolButton_clearLog.setObjectName("toolButton_clearLog")
+        self.toolButton_fullLog = QtWidgets.QToolButton(Dialog)
+        self.toolButton_fullLog.setGeometry(581,640,90,24)
+        self.toolButton_fullLog.setObjectName("toolButton_fullLog")
+        #self.toolButton_fullLog.setEnabled(False)
 
-        self.toolButton_chimerax = QtWidgets.QToolButton(Dialog)
-        self.toolButton_chimerax.setGeometry(550,640,121,24)
-        self.toolButton_chimerax.setObjectName("toolButton_chimerax")
+        self.toolButton_chimerax = QtWidgets.QPushButton(Dialog)
         self.toolButton_chimerax.setEnabled(False)
-
-        #self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
-        #self.buttonBox.setGeometry(QtCore.QRect(580, 640, 91, 21))
-        #self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        #self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Abort)
-        #self.buttonBox.setCenterButtons(False)
-        #self.buttonBox.setObjectName("buttonBox")
+        self.toolButton_chimerax.setGeometry(QtCore.QRect(430, 610, 140, 54))
+        self.toolButton_chimerax.setIcon(icon_chimX)
+        self.toolButton_chimerax.setIconSize(QtCore.QSize(40, 40))
+        self.toolButton_chimerax.setObjectName("toolButton_chimerax")
 
         self.tabWidget_modification = QtWidgets.QTabWidget(Dialog)
         self.tabWidget_modification.setGeometry(QtCore.QRect(10, 240, 261, 131))
@@ -778,7 +794,7 @@ class Ui_Dialog(object):
         self.gridLayout_extraInputMaps.addWidget(self.toolButton_inputSolventDef_browse, 1, 1, 1, 1)
         self.toolButton_run = QtWidgets.QPushButton(Dialog)
         self.toolButton_run.setEnabled(False)
-        self.toolButton_run.setGeometry(QtCore.QRect(340, 610, 201, 54))
+        self.toolButton_run.setGeometry(QtCore.QRect(280, 610, 140, 54))
         font = QtGui.QFont()
         font.setPointSize(18)
         self.toolButton_run.setFont(font)
@@ -825,6 +841,7 @@ class Ui_Dialog(object):
         self.verticalLayoutWidget.raise_()
         self.label_inputMap.raise_()
         self.toolButton_expandSolModel.raise_()
+        self.toolButton_fullLog.raise_()
 
         self.retranslateUi(Dialog)
         self.tabWidget_modification.setCurrentIndex(0)
@@ -930,7 +947,11 @@ class Ui_Dialog(object):
         self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_solventModel), _translate("Dialog", "Solvent model"))
         self.toolButton_clearLog.setText(_translate("Dialog", "Clear log"))
         self.toolButton_clearLog.clicked.connect(self.clear_log)
-        self.toolButton_chimerax.setText(_translate("Dialog", "launch chimeraX"))
+
+        self.toolButton_fullLog.setText(_translate("Dialog", "Full log"))
+        self.toolButton_fullLog.clicked.connect(self.view_full_log)
+
+        self.toolButton_chimerax.setText(_translate("Dialog", "  launch\n  chimeraX"))
         self.toolButton_chimerax.clicked.connect(self.run_chimerax)
 
         # Viewport X / Y / Z --------------------------------------
@@ -1832,22 +1853,25 @@ class Ui_Dialog(object):
                 outfile.write(infile.read())
                 outfile.write('-- END Contents of run log-file: --\n')
 
-    def occupy_log(self, message):
-        from pathlib import Path
-        self.textEdit_log.append(message)
+    def occupy_log(self, message, save=True, timestamp=False):
+        dt_string = ''
+        if timestamp or self.new_session:
+            from datetime import datetime
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            dt_string = f'{dt_string} \n'
+
+
+        self.textEdit_log.append(f'{dt_string} {message}')
         self.textEdit_log.repaint()
 
-        new_session = False
-        if self.comboBox_inputMap.currentText() != " ":
-            if self.log_file_name is None:
-                self.log_file_name = f'gui_log_{str(Path(self.comboBox_inputMap.currentText()).stem)}.txt'
-                new_session = True
-            with open(self.log_file_name, "a") as file_open:
-                if new_session:
-                    file_open.write('\n\n NEW GUI SESSION STARTED \n\n')
-                file_open.write(f'{message} \n')
-
-
+        with open(self.log_file_name, "a") as file_open:
+            if self.new_session:
+                if self.comboBox_inputMap.currentText():
+                    file_open.write(f'{dt_string} NEW GUI SESSION STARTED \n\n')
+                    self.new_session = False
+            if save:
+                file_open.write(f'{dt_string}{message}\n')
 
         
     def occupy_warn(self, message):
@@ -1856,6 +1880,18 @@ class Ui_Dialog(object):
         
     def clear_log(self):
         self.textEdit_log.clear()
+
+    def view_full_log(self):
+
+
+        self.occupy_log("Opening full log", save=False)
+        self.Dialog_fullLog = fullLog_dialog()
+        self.Dialog_fullLog.make_dialog()
+
+        with open(self.log_file_name) as gui_log:
+            for line in gui_log:
+                self.Dialog_fullLog.logText.insertPlainText(str(line))
+        self.Dialog_fullLog.show()
 
     def run_chimerax(self):
         if self.chimerax_file_name is not None:
@@ -1963,7 +1999,7 @@ class Ui_Dialog(object):
 
     def log_new_run(self):
         self.run_no += 1
-        self.occupy_log(f'\n\n Starting run no {self.run_no} \n\n')
+        self.occupy_log(f'Starting run no {self.run_no} ************************************START******', timestamp=True)
 
     def run_cmd(self):
         options = self.compose_cmd()
@@ -1985,6 +2021,8 @@ class Ui_Dialog(object):
             # Report details to gui log file even if not verbose.
             if not options.verbose:
                 self.cat_log()
+
+            self.occupy_log(f'Finished run no {self.run_no} ************************************STOP******\n', timestamp=True)
 
             from pathlib import Path
             new_name = Path(options.input_map).name
