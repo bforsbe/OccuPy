@@ -177,7 +177,7 @@ class Ui_Dialog(object):
         Dialog.resize(684, 821)
         Dialog.setAcceptDrops(True)
         icon_square = QtGui.QIcon()
-        occ_image = f'{Path(__file__).parent.parent}/resources/logo_square.png'
+        occ_image = f'{Path(__file__).parent.parent}/resources/logo_square2.png'
         icon_square.addPixmap(QtGui.QPixmap(occ_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon_chimX = QtGui.QIcon()
         chimX_image = f'{Path(__file__).parent.parent}/resources/chimX.png'
