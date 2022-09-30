@@ -325,10 +325,11 @@ class Ui_Dialog(object):
         self.horizontalSlider_sigmoidPower.setObjectName("horizontalSlider_sigmoidPower")
         self.gridLayout_sigmoid.addWidget(self.horizontalSlider_sigmoidPower, 0, 1, 1, 1)
         self.doubleSpinBox_sigmoidPivot = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_5)
-        self.doubleSpinBox_sigmoidPivot.setDecimals(1)
-        self.doubleSpinBox_sigmoidPivot.setMinimum(1.0)
-        self.doubleSpinBox_sigmoidPivot.setMaximum(99.0)
-        self.doubleSpinBox_sigmoidPivot.setProperty("value", 20.0)
+        self.doubleSpinBox_sigmoidPivot.setDecimals(2)
+        self.doubleSpinBox_sigmoidPivot.setMinimum(0.01)
+        self.doubleSpinBox_sigmoidPivot.setMaximum(0.99)
+        self.doubleSpinBox_sigmoidPivot.setSingleStep(0.01)
+        self.doubleSpinBox_sigmoidPivot.setProperty("value", 0.20)
         self.doubleSpinBox_sigmoidPivot.setObjectName("doubleSpinBox_sigmoidPivot")
         self.gridLayout_sigmoid.addWidget(self.doubleSpinBox_sigmoidPivot, 1, 2, 1, 1)
         self.horizontalSlider_sigmoidPivot = QtWidgets.QSlider(self.gridLayoutWidget_5)
@@ -877,6 +878,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox_attnPower.valueChanged.connect(self.render_output_slice_with_focus)
         self.doubleSpinBox_sigmoidPower.valueChanged.connect(self.render_output_slice_with_focus)
         self.doubleSpinBox_sigmoidPivot.valueChanged.connect(self.render_output_slice_with_focus)
+
 
 
 
@@ -1693,6 +1695,7 @@ class Ui_Dialog(object):
             return(None)
 
     def render_output_slice_with_focus(self):
+        self.update_mod_sliders()
         # Get the mode of modification
         mode = self.do_modify()
 
@@ -1809,7 +1812,7 @@ class Ui_Dialog(object):
 
     def update_plot_params(self):
         self.MplWidget_viewModification.sigmoid_power = self.doubleSpinBox_sigmoidPower.value()
-        self.MplWidget_viewModification.sigmoid_pivot = self.doubleSpinBox_sigmoidPivot.value() / 100.0
+        self.MplWidget_viewModification.sigmoid_pivot = self.doubleSpinBox_sigmoidPivot.value()
         self.MplWidget_viewModification.attenuation_power = self.doubleSpinBox_attnPower.value()
         self.MplWidget_viewModification.amplification_power = self.doubleSpinBox_amplPower.value()
         self.MplWidget_viewModification.amplify = self.groupBox_amplification.isChecked()
@@ -1822,7 +1825,13 @@ class Ui_Dialog(object):
         self.doubleSpinBox_amplPower.setValue(self.horizontalSlider_amplPower.value()/10.)
         self.doubleSpinBox_attnPower.setValue(self.horizontalSlider_attnPower.value()/10.)
         self.doubleSpinBox_sigmoidPower.setValue(self.horizontalSlider_sigmoidPower.value()/10.)
-        self.doubleSpinBox_sigmoidPivot.setValue(self.horizontalSlider_sigmoidPivot.value())
+        self.doubleSpinBox_sigmoidPivot.setValue(self.horizontalSlider_sigmoidPivot.value()/100.0)
+
+    def update_mod_sliders(self):
+        self.horizontalSlider_amplPower.setValue(int(self.doubleSpinBox_amplPower.value()*10))
+        self.horizontalSlider_attnPower.setValue(int(self.doubleSpinBox_attnPower.value()*10))
+        self.horizontalSlider_sigmoidPower.setValue(int(self.doubleSpinBox_sigmoidPower.value()*10))
+        self.horizontalSlider_sigmoidPivot.setValue(int(self.doubleSpinBox_sigmoidPivot.value()*100))
 
     def toggle_scale_mode(self):
         modifying = False
@@ -1951,8 +1960,8 @@ class Ui_Dialog(object):
         if self.groupBox_sigmoid.isChecked():
             modifying = True
             options.sigmoid = self.doubleSpinBox_sigmoidPower.value()
-            options.pivot = self.doubleSpinBox_sigmoidPivot.value()/100.0
-            self.cmd.append(f'--sigmoid {options.sigmoid } --pivot {options.pivot}/100.0')
+            options.pivot = self.doubleSpinBox_sigmoidPivot.value()
+            self.cmd.append(f'--sigmoid {options.sigmoid } --pivot {options.pivot}')
 
 
         # output options -------------------------------------------------------------------
