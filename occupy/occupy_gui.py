@@ -953,7 +953,7 @@ class Ui_Dialog(object):
         self.toolButton_fullLog.setText(_translate("Dialog", "Full log"))
         self.toolButton_fullLog.clicked.connect(self.view_full_log)
 
-        self.toolButton_chimerax.setText(_translate("Dialog", "  launch\n  chimeraX"))
+        self.toolButton_chimerax.setText(_translate("Dialog", "  Launch\n  chimeraX"))
         self.toolButton_chimerax.clicked.connect(self.run_chimerax)
 
         # Viewport X / Y / Z --------------------------------------
@@ -2018,7 +2018,8 @@ class Ui_Dialog(object):
             self.occupy_log(" Reporting command: \n")
             self.occupy_log(f'{" ".join(self.cmd)}\n')
         else:
-
+            self.toolButton_chimerax.setEnabled(False)
+            self.toolButton_run.setEnabled(False)
             self.log_new_run()
             with Capturing() as output:
                 self.occupy_log('Estimating local scale...')
@@ -2047,6 +2048,7 @@ class Ui_Dialog(object):
 
             self.chimerax_file_name = f'chimX_{Path(new_name).stem}.cxc'
             self.toolButton_chimerax.setEnabled(True)
+            self.toolButton_run.setEnabled(True)
 
             self.show_solvent_model()
 
