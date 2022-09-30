@@ -2031,6 +2031,8 @@ class Ui_Dialog(object):
             scale_mode = 'res'
             if self.checkBox_scaleOcc.isChecked():
                 scale_mode = 'occ'
+            if options.s0:
+                scale_mode = f'S0_{scale_mode}'
 
             self.add_scale_file(f'scale_{scale_mode}_{Path(new_name).stem}.mrc')
 
