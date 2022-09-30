@@ -2007,7 +2007,7 @@ class Ui_Dialog(object):
         if self.checkBox_showCmd.isChecked():
             #TODO check for in-memory objects like chimeraX-maps and figure out what to do
             self.occupy_log(" Reporting command: \n")
-            self.occupy_log(" ".join(self.cmd))
+            self.occupy_log(f'{" ".join(self.cmd)}\n')
         else:
 
             self.log_new_run()
