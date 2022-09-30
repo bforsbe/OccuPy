@@ -171,6 +171,7 @@ class Ui_Dialog(object):
         Dialog.setModal(False)
 
         self.inputMap = InputMapProperties()
+        self.log_file_name = None
         self.confidence_file_name = None
         self.chimerax_file_name = None
         self.solModel_file_name = None
@@ -179,6 +180,7 @@ class Ui_Dialog(object):
         self.res_scale = None
 
         self.cmd = []
+        self.run_no = 0
 
         # Input map
         self.horizontalLayoutWidget = QtWidgets.QWidget(Dialog)
@@ -1821,10 +1823,32 @@ class Ui_Dialog(object):
             self.checkBox_scaleOcc.setEnabled(True)
             self.checkBox_scaleRes.setEnabled(True)
 
+    def cat_log(self):
+        from pathlib import Path
+        run_log = f'log_{str(Path(self.comboBox_inputMap.currentText()).stem)}.txt'
+        with open(self.log_file_name, 'a') as outfile:
+            with open(run_log) as infile:
+                outfile.write('-- START Contents of run log-file: --\n')
+                outfile.write(infile.read())
+                outfile.write('-- END Contents of run log-file: --\n')
 
     def occupy_log(self, message):
+        from pathlib import Path
         self.textEdit_log.append(message)
         self.textEdit_log.repaint()
+
+        new_session = False
+        if self.comboBox_inputMap.currentText() != " ":
+            if self.log_file_name is None:
+                self.log_file_name = f'gui_log_{str(Path(self.comboBox_inputMap.currentText()).stem)}.txt'
+                new_session = True
+            with open(self.log_file_name, "a") as file_open:
+                if new_session:
+                    file_open.write('\n\n NEW GUI SESSION STARTED \n\n')
+                file_open.write(f'{message} \n')
+
+
+
         
     def occupy_warn(self, message):
         warning = f'\033[91m {message} \033[0m'
@@ -1937,20 +1961,30 @@ class Ui_Dialog(object):
 
         return options
 
+    def log_new_run(self):
+        self.run_no += 1
+        self.occupy_log(f'\n\n Starting run no {self.run_no} \n\n')
+
     def run_cmd(self):
         options = self.compose_cmd()
 
         if self.checkBox_showCmd.isChecked():
             #TODO check for in-memory objects like chimeraX-maps and figure out what to do
+            self.occupy_log(" Reporting command: \n")
             self.occupy_log(" ".join(self.cmd))
         else:
 
+            self.log_new_run()
             with Capturing() as output:
                 self.occupy_log('Estimating local scale...')
                 estimate.occupy_run(options)
 
             for i in output:
                 self.occupy_log(i)
+
+            # Report details to gui log file even if not verbose.
+            if not options.verbose:
+                self.cat_log()
 
             from pathlib import Path
             new_name = Path(options.input_map).name
