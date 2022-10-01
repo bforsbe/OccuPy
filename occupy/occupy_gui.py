@@ -181,7 +181,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(684, 821)
         MainWindow.setAcceptDrops(True)
         icon_square = QtGui.QIcon()
-        occ_image = f'{Path(__file__).parent.parent}/resources/occupy_icon.png'
+        occ_image = f'{Path(__file__).parent.parent}/resources/occupy_icon_small.png'
         icon_square.addPixmap(QtGui.QPixmap(occ_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon_chimX = QtGui.QIcon()
         chimX_image = f'{Path(__file__).parent.parent}/resources/chimX.png'
@@ -228,7 +228,7 @@ class Ui_MainWindow(object):
 
         self.toolButton_chimerax = QtWidgets.QPushButton(MainWindow)
         self.toolButton_chimerax.setEnabled(False)
-        self.toolButton_chimerax.setGeometry(QtCore.QRect(430, 600, 140, 64))
+        self.toolButton_chimerax.setGeometry(QtCore.QRect(530, 600, 140, 64))
         self.toolButton_chimerax.setIcon(icon_chimX)
         self.toolButton_chimerax.setIconSize(QtCore.QSize(56, 56))
         self.toolButton_chimerax.setObjectName("toolButton_chimerax")
@@ -791,7 +791,7 @@ class Ui_MainWindow(object):
         self.gridLayout_extraInputMaps.addWidget(self.toolButton_inputSolventDef_browse, 1, 1, 1, 1)
         self.toolButton_run = QtWidgets.QPushButton(MainWindow)
         self.toolButton_run.setEnabled(False)
-        self.toolButton_run.setGeometry(QtCore.QRect(280, 600, 140, 64))
+        self.toolButton_run.setGeometry(QtCore.QRect(380, 600, 140, 64))
 
         self.toolButton_run.setIcon(icon_square)
         self.toolButton_run.setIconSize(QtCore.QSize(56, 56))
