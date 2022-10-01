@@ -180,13 +180,15 @@ class Ui_MainWindow(object):
         MainWindow.setEnabled(True)
         MainWindow.resize(684, 821)
         MainWindow.setAcceptDrops(True)
-        icon_square = QtGui.QIcon()
-        occ_image = f'{Path(__file__).parent.parent}/resources/occupy_icon_small.png'
-        icon_square.addPixmap(QtGui.QPixmap(occ_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        icon_chimX = QtGui.QIcon()
+        self.icon_small = QtGui.QIcon()
+        icon_image_small = f'{Path(__file__).parent.parent}/resources/occupy_icon_small.png'
+        self.icon_small.addPixmap(QtGui.QPixmap(icon_image_small), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon_chimX = QtGui.QIcon()
         chimX_image = f'{Path(__file__).parent.parent}/resources/chimX.png'
-        icon_chimX.addPixmap(QtGui.QPixmap(chimX_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        MainWindow.setWindowIcon(icon_square)
+        self.icon_chimX.addPixmap(QtGui.QPixmap(chimX_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(self.icon_small)
+
+        self.icon_large = f'{Path(__file__).parent.parent}/resources/occupy_icon.png'
 
         self.new_session = True
         self.inputMap = InputMapProperties()
@@ -229,7 +231,7 @@ class Ui_MainWindow(object):
         self.toolButton_chimerax = QtWidgets.QPushButton(MainWindow)
         self.toolButton_chimerax.setEnabled(False)
         self.toolButton_chimerax.setGeometry(QtCore.QRect(530, 600, 140, 64))
-        self.toolButton_chimerax.setIcon(icon_chimX)
+        self.toolButton_chimerax.setIcon(self.icon_chimX)
         self.toolButton_chimerax.setIconSize(QtCore.QSize(56, 56))
         self.toolButton_chimerax.setObjectName("toolButton_chimerax")
 
@@ -793,7 +795,7 @@ class Ui_MainWindow(object):
         self.toolButton_run.setEnabled(False)
         self.toolButton_run.setGeometry(QtCore.QRect(380, 600, 140, 64))
 
-        self.toolButton_run.setIcon(icon_square)
+        self.toolButton_run.setIcon(self.icon_small)
         self.toolButton_run.setIconSize(QtCore.QSize(56, 56))
         self.toolButton_run.setObjectName("toolButton_run")
         self.verticalLayoutWidget = QtWidgets.QWidget(MainWindow)
@@ -886,6 +888,7 @@ class Ui_MainWindow(object):
         self.actiontutorial.setObjectName("actiontutorial")
         self.actionabout = QtWidgets.QAction(MainWindow)
         self.actionabout.setObjectName("actionabout")
+        self.actionabout.triggered.connect(self.window_about)
         self.actionchange_location = QtWidgets.QAction(MainWindow)
         self.actionchange_location.setObjectName("actionchange_location")
         self.actionclear_log = QtWidgets.QAction(MainWindow)
@@ -2150,6 +2153,22 @@ class Ui_MainWindow(object):
         # window.setPixmap(pixmap)  # Set the pixmap onto the label
         # window.setAlignment(QtCore.Qt.AlignCenter)  # Align the label to center
         # MainWindow_solModel.exec_()
+
+    def window_about(self):
+
+        self.MainWindow_about = ImageWindow()
+        self.MainWindow_about.resize(300, 160)
+
+        window = QtWidgets.QLabel(self.MainWindow_about)
+        window.setGeometry(10,10,140,140)
+        pixmap = QtGui.QPixmap(self.icon_large)
+        pixmap = pixmap.scaled(
+            140,
+            140,
+            QtCore.Qt.KeepAspectRatio
+        )  # Scale pixmap
+        window.setPixmap(pixmap)
+        self.MainWindow_about.show()
 
 class ImageWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
