@@ -41,16 +41,18 @@ class EMDB_dialog(QtWidgets.QDialog):
 
     def make_dialog(self):
         self.setObjectName("Fetch EMDB")
+
+        self.setWindowTitle("Fetch EMDB")
         self.setEnabled(True)
-        self.resize(100,90)
+        self.resize(140,90)
 
         self.spinBox = QtWidgets.QSpinBox(self)
-        self.spinBox.setGeometry(10,10,80,30)
+        self.spinBox.setGeometry(10,10,120,30)
         self.spinBox.setSpecialValueText('-')
         self.spinBox.setMaximum(99999)
 
         self.button = QtWidgets.QToolButton(self)
-        self.button.setGeometry(10,50,80,30)
+        self.button.setGeometry(10,50,120,30)
         self.button.setText("Fetch")
         self.button.clicked.connect(self.update_id)
 
@@ -59,13 +61,15 @@ class EMDB_dialog(QtWidgets.QDialog):
         self.close()
 
 
-class fullLog_dialog(QtWidgets.QDialog):
+class fullLog_dialog(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(fullLog_dialog, self).__init__(parent)
         self.id = None
 
-    def make_dialog(self):
+    def make_dialog(self,file_name):
+        import os
         self.setObjectName("Full Log")
+        self.setWindowTitle(f'{os.getcwd()}/{file_name}')
         self.setEnabled(True)
         self.resize(600,1000)
 
@@ -169,22 +173,20 @@ class MplWidget(QtWidgets.QWidget):
 
 
 
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
         from pathlib import Path
-        Dialog.setObjectName("Dialog")
-        Dialog.setEnabled(True)
-        Dialog.resize(684, 821)
-        Dialog.setAcceptDrops(True)
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.setEnabled(True)
+        MainWindow.resize(684, 821)
+        MainWindow.setAcceptDrops(True)
         icon_square = QtGui.QIcon()
-        occ_image = f'{Path(__file__).parent.parent}/resources/logo_square2.png'
+        occ_image = f'{Path(__file__).parent.parent}/resources/occupy_icon.png'
         icon_square.addPixmap(QtGui.QPixmap(occ_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon_chimX = QtGui.QIcon()
         chimX_image = f'{Path(__file__).parent.parent}/resources/chimX.png'
         icon_chimX.addPixmap(QtGui.QPixmap(chimX_image), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        Dialog.setWindowIcon(icon_square)
-        Dialog.setSizeGripEnabled(False)
-        Dialog.setModal(False)
+        MainWindow.setWindowIcon(icon_square)
 
         self.new_session = True
         self.inputMap = InputMapProperties()
@@ -200,8 +202,8 @@ class Ui_Dialog(object):
         self.run_no = 0
 
         # Input map
-        self.horizontalLayoutWidget = QtWidgets.QWidget(Dialog)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(90, 10, 581, 31))
+        self.horizontalLayoutWidget = QtWidgets.QWidget(MainWindow)
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(90, 30, 581, 31))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout_inputMap = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout_inputMap.setContentsMargins(0, 0, 0, 0)
@@ -216,23 +218,23 @@ class Ui_Dialog(object):
         self.toolButton_inputMap_emdb.setObjectName("toolButton_inputMap_emdb")
         self.horizontalLayout_inputMap.addWidget(self.toolButton_inputMap_emdb)
 
-        self.toolButton_clearLog = QtWidgets.QToolButton(Dialog)
+        self.toolButton_clearLog = QtWidgets.QToolButton(MainWindow)
         self.toolButton_clearLog.setGeometry(581,610,90,24)
         self.toolButton_clearLog.setObjectName("toolButton_clearLog")
-        self.toolButton_fullLog = QtWidgets.QToolButton(Dialog)
+        self.toolButton_fullLog = QtWidgets.QToolButton(MainWindow)
         self.toolButton_fullLog.setGeometry(581,640,90,24)
         self.toolButton_fullLog.setObjectName("toolButton_fullLog")
         #self.toolButton_fullLog.setEnabled(False)
 
-        self.toolButton_chimerax = QtWidgets.QPushButton(Dialog)
+        self.toolButton_chimerax = QtWidgets.QPushButton(MainWindow)
         self.toolButton_chimerax.setEnabled(False)
-        self.toolButton_chimerax.setGeometry(QtCore.QRect(430, 610, 140, 54))
+        self.toolButton_chimerax.setGeometry(QtCore.QRect(430, 600, 140, 64))
         self.toolButton_chimerax.setIcon(icon_chimX)
-        self.toolButton_chimerax.setIconSize(QtCore.QSize(40, 40))
+        self.toolButton_chimerax.setIconSize(QtCore.QSize(56, 56))
         self.toolButton_chimerax.setObjectName("toolButton_chimerax")
 
-        self.tabWidget_modification = QtWidgets.QTabWidget(Dialog)
-        self.tabWidget_modification.setGeometry(QtCore.QRect(10, 240, 261, 131))
+        self.tabWidget_modification = QtWidgets.QTabWidget(MainWindow)
+        self.tabWidget_modification.setGeometry(QtCore.QRect(10, 260, 261, 131))
         self.tabWidget_modification.setObjectName("tabWidget_modification")
         self.tab_amplification = QtWidgets.QWidget()
         self.tab_amplification.setObjectName("tab_amplification")
@@ -356,17 +358,17 @@ class Ui_Dialog(object):
         self.doubleSpinBox_sigmoidPower.setObjectName("doubleSpinBox_sigmoidPower")
         self.gridLayout_sigmoid.addWidget(self.doubleSpinBox_sigmoidPower, 0, 2, 1, 1)
         self.tabWidget_modification.addTab(self.tab_sigmoid, "")
-        self.checkBox_verbose = QtWidgets.QCheckBox(Dialog)
+        self.checkBox_verbose = QtWidgets.QCheckBox(MainWindow)
         self.checkBox_verbose.setGeometry(QtCore.QRect(10, 600, 81, 41))
         self.checkBox_verbose.setObjectName("checkBox_verbose")
-        self.checkBox_showCmd = QtWidgets.QCheckBox(Dialog)
+        self.checkBox_showCmd = QtWidgets.QCheckBox(MainWindow)
         self.checkBox_showCmd.setGeometry(QtCore.QRect(100, 600, 171, 41))
         self.checkBox_showCmd.setToolTip("")
         self.checkBox_showCmd.setAccessibleDescription("")
         self.checkBox_showCmd.setObjectName("checkBox_showCmd")
-        self.tabWidget_view = QtWidgets.QTabWidget(Dialog)
+        self.tabWidget_view = QtWidgets.QTabWidget(MainWindow)
         self.tabWidget_view.setEnabled(True)
-        self.tabWidget_view.setGeometry(QtCore.QRect(280, 50, 391, 421))
+        self.tabWidget_view.setGeometry(QtCore.QRect(280, 70, 391, 421))
         self.tabWidget_view.setMinimumSize(QtCore.QSize(319, 350))
         self.tabWidget_view.setMaximumSize(QtCore.QSize(10000, 10000))
         self.tabWidget_view.setObjectName("tabWidget_view")
@@ -473,7 +475,7 @@ class Ui_Dialog(object):
         self.label_viewOutput.raise_()
 
         self.tabWidget_view.addTab(self.tab_viewOutput, "")
-        self.tabWidget_output = QtWidgets.QTabWidget(Dialog)
+        self.tabWidget_output = QtWidgets.QTabWidget(MainWindow)
         self.tabWidget_output.setGeometry(QtCore.QRect(10, 640, 661, 171))
         self.tabWidget_output.setObjectName("tabWidget_output")
         self.tabWidget_output.setStyleSheet('''
@@ -521,8 +523,8 @@ class Ui_Dialog(object):
         #self.label_solventModel.setEnabled(False)
 
         self.tabWidget_output.addTab(self.tab_solventModel, "")
-        self.gridLayoutWidget = QtWidgets.QWidget(Dialog)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(280, 480, 391, 31))
+        self.gridLayoutWidget = QtWidgets.QWidget(MainWindow)
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(280, 490, 391, 31))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -561,8 +563,8 @@ class Ui_Dialog(object):
         self.horizontalSlider_viewSlice.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider_viewSlice.setObjectName("horizontalSlider_viewSlice")
         self.gridLayout.addWidget(self.horizontalSlider_viewSlice, 0, 4, 1, 1)
-        self.gridLayoutWidget_2 = QtWidgets.QWidget(Dialog)
-        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 50, 261, 179))
+        self.gridLayoutWidget_2 = QtWidgets.QWidget(MainWindow)
+        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 70, 261, 179))
         self.gridLayoutWidget_2.setObjectName("gridLayoutWidget_2")
         self.gridLayout_kernelOptions = QtWidgets.QGridLayout(self.gridLayoutWidget_2)
         self.gridLayout_kernelOptions.setContentsMargins(0, 0, 0, 0)
@@ -693,8 +695,8 @@ class Ui_Dialog(object):
         self.label_tileSize_pix.setObjectName("label_tileSize_pix")
         self.gridLayout_kernelOptions.addWidget(self.label_tileSize_pix, 5, 2, 1, 1)
 
-        self.gridLayoutWidget_6 = QtWidgets.QWidget(Dialog)
-        self.gridLayoutWidget_6.setGeometry(QtCore.QRect(10, 390, 261, 89))
+        self.gridLayoutWidget_6 = QtWidgets.QWidget(MainWindow)
+        self.gridLayoutWidget_6.setGeometry(QtCore.QRect(10, 400, 261, 89))
         self.gridLayoutWidget_6.setObjectName("gridLayoutWidget_6")
         self.gridLayout_extraOptions = QtWidgets.QGridLayout(self.gridLayoutWidget_6)
         self.gridLayout_extraOptions.setContentsMargins(0, 0, 0, 0)
@@ -750,8 +752,8 @@ class Ui_Dialog(object):
         self.checkBox_outputLowpass = QtWidgets.QCheckBox(self.gridLayoutWidget_6)
         self.checkBox_outputLowpass.setObjectName("checkBox_outputLowpass")
         self.gridLayout_extraOptions.addWidget(self.checkBox_outputLowpass, 1, 0, 1, 1)
-        self.horizontalLayoutWidget_4 = QtWidgets.QWidget(Dialog)
-        self.horizontalLayoutWidget_4.setGeometry(QtCore.QRect(10, 480, 261, 25))
+        self.horizontalLayoutWidget_4 = QtWidgets.QWidget(MainWindow)
+        self.horizontalLayoutWidget_4.setGeometry(QtCore.QRect(10, 490, 261, 25))
         self.horizontalLayoutWidget_4.setObjectName("horizontalLayoutWidget_4")
         self.horizontalLayout_scaleMode = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_4)
         self.horizontalLayout_scaleMode.setContentsMargins(0, 0, 0, 0)
@@ -768,7 +770,7 @@ class Ui_Dialog(object):
         self.checkBox_scaleRes.setChecked(True)
         self.checkBox_scaleRes.setObjectName("checkBox_scaleRes")
         self.horizontalLayout_scaleMode.addWidget(self.checkBox_scaleRes)
-        self.gridLayoutWidget_7 = QtWidgets.QWidget(Dialog)
+        self.gridLayoutWidget_7 = QtWidgets.QWidget(MainWindow)
         self.gridLayoutWidget_7.setGeometry(QtCore.QRect(110, 520, 561, 80))
         self.gridLayoutWidget_7.setObjectName("gridLayoutWidget_7")
         self.gridLayout_extraInputMaps = QtWidgets.QGridLayout(self.gridLayoutWidget_7)
@@ -787,14 +789,14 @@ class Ui_Dialog(object):
         self.toolButton_inputSolventDef_browse = QtWidgets.QToolButton(self.gridLayoutWidget_7)
         self.toolButton_inputSolventDef_browse.setObjectName("toolButton_inputSolventDef_browse")
         self.gridLayout_extraInputMaps.addWidget(self.toolButton_inputSolventDef_browse, 1, 1, 1, 1)
-        self.toolButton_run = QtWidgets.QPushButton(Dialog)
+        self.toolButton_run = QtWidgets.QPushButton(MainWindow)
         self.toolButton_run.setEnabled(False)
-        self.toolButton_run.setGeometry(QtCore.QRect(280, 610, 140, 54))
+        self.toolButton_run.setGeometry(QtCore.QRect(280, 600, 140, 64))
 
         self.toolButton_run.setIcon(icon_square)
-        self.toolButton_run.setIconSize(QtCore.QSize(40, 40))
+        self.toolButton_run.setIconSize(QtCore.QSize(56, 56))
         self.toolButton_run.setObjectName("toolButton_run")
-        self.verticalLayoutWidget = QtWidgets.QWidget(Dialog)
+        self.verticalLayoutWidget = QtWidgets.QWidget(MainWindow)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 530, 91, 61))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout_labelExtraInput = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
@@ -810,9 +812,9 @@ class Ui_Dialog(object):
         self.label_inputSolventDef.setAlignment(QtCore.Qt.AlignCenter)
         self.label_inputSolventDef.setObjectName("label_inputSolventDef")
         self.verticalLayout_labelExtraInput.addWidget(self.label_inputSolventDef)
-        self.label_inputMap = QtWidgets.QLabel(Dialog)
+        self.label_inputMap = QtWidgets.QLabel(MainWindow)
         self.label_inputMap.setEnabled(True)
-        self.label_inputMap.setGeometry(QtCore.QRect(0, 10, 89, 31))
+        self.label_inputMap.setGeometry(QtCore.QRect(0, 30, 89, 31))
 
         self.label_inputMap.setAlignment(QtCore.Qt.AlignCenter)
         self.label_inputMap.setObjectName("label_inputMap")
@@ -834,14 +836,14 @@ class Ui_Dialog(object):
         self.toolButton_expandSolModel.raise_()
         self.toolButton_fullLog.raise_()
 
-        self.retranslateUi(Dialog)
+        self.retranslateUi(MainWindow)
         self.tabWidget_modification.setCurrentIndex(0)
         self.tabWidget_view.setCurrentIndex(0)
         self.tabWidget_output.setCurrentIndex(0)
 
         # TODO
-        #self.buttonBox.accepted.connect(Dialog.accept)
-        #self.buttonBox.rejected.connect(Dialog.reject)
+        #self.buttonBox.accepted.connect(MainWindow.accept)
+        #self.buttonBox.rejected.connect(MainWindow.reject)
 
         # Mutually explusive options
         self.checkBox_scaleRes.clicked.connect(self.checkBox_scaleOcc.toggle)
@@ -869,29 +871,69 @@ class Ui_Dialog(object):
         self.doubleSpinBox_sigmoidPower.valueChanged.connect(self.render_output_slice_with_focus)
         self.doubleSpinBox_sigmoidPivot.valueChanged.connect(self.render_output_slice_with_focus)
 
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 849, 22))
+        self.menubar.setObjectName("menubar")
+        self.menu_session = QtWidgets.QMenu(self.menubar)
+        self.menu_session.setObjectName("menu_session")
+        self.menu_help = QtWidgets.QMenu(self.menubar)
+        self.menu_help.setObjectName("menu_help")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+        self.actiontutorial = QtWidgets.QAction(MainWindow)
+        self.actiontutorial.setObjectName("actiontutorial")
+        self.actionabout = QtWidgets.QAction(MainWindow)
+        self.actionabout.setObjectName("actionabout")
+        self.actionchange_location = QtWidgets.QAction(MainWindow)
+        self.actionchange_location.setObjectName("actionchange_location")
+        self.actionclear_log = QtWidgets.QAction(MainWindow)
+        self.actionclear_log.setObjectName("actionclear_log")
+        self.actionview_full_log = QtWidgets.QAction(MainWindow)
+        self.actionview_full_log.setObjectName("actionview_full_log")
+        self.actionreset = QtWidgets.QAction(MainWindow)
+        self.actionreset.setObjectName("actionreset")
+        self.menu_session.addAction(self.actionchange_location)
+        self.menu_session.addAction(self.actionreset)
+        self.menu_session.addSeparator()
+        self.menu_session.addAction(self.actionclear_log)
+        self.menu_session.addAction(self.actionview_full_log)
+        self.menu_help.addAction(self.actiontutorial)
+        self.menu_help.addAction(self.actionabout)
+        self.menubar.addAction(self.menu_session.menuAction())
+        self.menubar.addAction(self.menu_help.menuAction())
+
+        self.menu_session.setTitle("session")
+        self.menu_help.setTitle("help")
+        self.actiontutorial.setText("tutorial")
+        self.actionabout.setText("about")
+        self.actionchange_location.setText("change location")
+        self.actionclear_log.setText("clear log")
+        self.actionview_full_log.setText("view full log")
+        self.actionreset.setText("reset")
 
 
 
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
-
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "OccuPy"))
-        Dialog.setWhatsThis(_translate("Dialog", "pre-estimated local scale map "))
+        MainWindow.setWindowTitle(_translate("MainWindow", "OccuPy"))
+        MainWindow.setWhatsThis(_translate("MainWindow", "pre-estimated local scale map "))
 
         # Input Map
-        self.toolButton_inputMap_browse.setText(_translate("Dialog", "browse"))
+        self.toolButton_inputMap_browse.setText(_translate("MainWindow", "browse"))
         self.toolButton_inputMap_browse.clicked.connect(self.set_input_file)
         self.toolButton_inputMap_emdb.clicked.connect(self.fetch_emdb)
-        self.toolButton_inputMap_emdb.setText(_translate("Dialog", "emdb"))
+        self.toolButton_inputMap_emdb.setText(_translate("MainWindow", "emdb"))
 
         # Input scale Map
-        self.toolButton_inputScale_browse.setText(_translate("Dialog", "browse"))
+        self.toolButton_inputScale_browse.setText(_translate("MainWindow", "browse"))
         self.toolButton_inputScale_browse.clicked.connect(self.set_scale_file)
 
         # Input solvent Def
-        self.toolButton_inputSolventDef_browse.setText(_translate("Dialog", "browse"))
+        self.toolButton_inputSolventDef_browse.setText(_translate("MainWindow", "browse"))
         self.toolButton_inputSolventDef_browse.clicked.connect(self.set_solvent_file)
 
         # Update when changing the input choice
@@ -900,14 +942,14 @@ class Ui_Dialog(object):
         self.comboBox_inputSolventDef.currentIndexChanged.connect(self.read_solvent_file)
 
 
-        self.label_amplPower.setText(_translate("Dialog", " Power"))
-        self.tabWidget_modification.setTabText(self.tabWidget_modification.indexOf(self.tab_amplification), _translate("Dialog", "Amplify"))
+        self.label_amplPower.setText(_translate("MainWindow", " Power"))
+        self.tabWidget_modification.setTabText(self.tabWidget_modification.indexOf(self.tab_amplification), _translate("MainWindow", "Amplify"))
 
-        self.label_attnPower.setText(_translate("Dialog", " Power"))
-        self.tabWidget_modification.setTabText(self.tabWidget_modification.indexOf(self.tab_attenuation), _translate("Dialog", "Attenuate"))
-        self.label_sigmoidPower.setText(_translate("Dialog", " Power"))
-        self.label_sigmoidPivot.setText(_translate("Dialog", " Pivot"))
-        self.tabWidget_modification.setTabText(self.tabWidget_modification.indexOf(self.tab_sigmoid), _translate("Dialog", "Sigmoid"))
+        self.label_attnPower.setText(_translate("MainWindow", " Power"))
+        self.tabWidget_modification.setTabText(self.tabWidget_modification.indexOf(self.tab_attenuation), _translate("MainWindow", "Attenuate"))
+        self.label_sigmoidPower.setText(_translate("MainWindow", " Power"))
+        self.label_sigmoidPivot.setText(_translate("MainWindow", " Pivot"))
+        self.tabWidget_modification.setTabText(self.tabWidget_modification.indexOf(self.tab_sigmoid), _translate("MainWindow", "Sigmoid"))
 
         self.tabWidget_modification.tabBarClicked.connect(self.toggle_scale_mode)
         self.groupBox_amplification.clicked.connect(self.toggle_scale_mode)
@@ -923,87 +965,88 @@ class Ui_Dialog(object):
 
 
 
-        self.checkBox_verbose.setText(_translate("Dialog", "Verbose"))
-        self.checkBox_showCmd.setText(_translate("Dialog", "Only show command"))
-        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewInput), _translate("Dialog", "Input"))
-        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewScale), _translate("Dialog", "Scale"))
-        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewConfidence), _translate("Dialog", "Conf."))
-        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_solvDef), _translate("Dialog", "Sol.def."))
-        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewModification), _translate("Dialog", "Plot"))
-        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewOutput), _translate("Dialog", "Preview"))
-        self.textEdit_log.setPlaceholderText(_translate("Dialog", "Output messages will go here...."))
-        self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_log), _translate("Dialog", "Output Log"))
-        #self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_hist), _translate("Dialog", "Histogram"))
-        self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_solventModel), _translate("Dialog", "Solvent model"))
-        self.toolButton_clearLog.setText(_translate("Dialog", "Clear log"))
+        self.checkBox_verbose.setText(_translate("MainWindow", "Verbose"))
+        self.checkBox_showCmd.setText(_translate("MainWindow", "Only show command"))
+        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewInput), _translate("MainWindow", "Input"))
+        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewScale), _translate("MainWindow", "Scale"))
+        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewConfidence), _translate("MainWindow", "Conf."))
+        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_solvDef), _translate("MainWindow", "Sol.def."))
+        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewModification), _translate("MainWindow", "Plot"))
+        self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewOutput), _translate("MainWindow", "Preview"))
+        self.textEdit_log.setPlaceholderText(_translate("MainWindow", "Output messages will go here...."))
+        self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_log), _translate("MainWindow", "Output Log"))
+        #self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_hist), _translate("MainWindow", "Histogram"))
+        self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_solventModel), _translate("MainWindow", "Solvent model"))
+        self.toolButton_clearLog.setText(_translate("MainWindow", "Clear log"))
         self.toolButton_clearLog.clicked.connect(self.clear_log)
 
-        self.toolButton_fullLog.setText(_translate("Dialog", "Full log"))
+        self.toolButton_fullLog.setText(_translate("MainWindow", "Full log"))
         self.toolButton_fullLog.clicked.connect(self.view_full_log)
 
-        self.toolButton_chimerax.setText(_translate("Dialog", "  Launch\n  chimeraX"))
+        self.toolButton_chimerax.setText(_translate("MainWindow", "  Launch\n  ChimeraX"))
         self.toolButton_chimerax.clicked.connect(self.run_chimerax)
 
         # Viewport X / Y / Z --------------------------------------
-        self.checkBox_viewX.setText(_translate("Dialog", "x"))
+        self.checkBox_viewX.setText(_translate("MainWindow", "x"))
         self.checkBox_viewX.clicked.connect(self.view_x)
-        self.checkBox_viewY.setText(_translate("Dialog", "y"))
+        self.checkBox_viewY.setText(_translate("MainWindow", "y"))
         self.checkBox_viewY.clicked.connect(self.view_y)
-        self.checkBox_viewZ.setText(_translate("Dialog", "z"))
+        self.checkBox_viewZ.setText(_translate("MainWindow", "z"))
         self.checkBox_viewZ.clicked.connect(self.view_z)
 
 
         # Kernel options
-        self.label_inputLowpass.setText(_translate("Dialog", "Input lowpass"))
+        self.label_inputLowpass.setText(_translate("MainWindow", "Input lowpass"))
         self.doubleSpinBox_inputLowpass.valueChanged.connect(self.set_kernel_radius)
 
-        self.label_kernelRadius.setText(_translate("Dialog", "Kernel radius (pix)"))
+        self.label_kernelRadius.setText(_translate("MainWindow", "Kernel radius (pix)"))
         self.doubleSpinBox_kernelRadius.valueChanged.connect(self.set_kernel_size)
 
-        self.label_kernelSize.setText(_translate("Dialog", "Kernel size (pix)"))
+        self.label_kernelSize.setText(_translate("MainWindow", "Kernel size (pix)"))
         self.spinBox_kernelSize.valueChanged.connect(self.set_kernel_tau)
 
 
 
 
-        self.label_tileSize.setText(_translate("Dialog", "Tile size (pix)"))
-        self.label_inputLowass_A.setText(_translate("Dialog", "Å"))
+        self.label_tileSize.setText(_translate("MainWindow", "Tile size (pix)"))
+        self.label_inputLowass_A.setText(_translate("MainWindow", "Å"))
 
 
         # Kernel option labels
-        self.label_samplesValue.setText(_translate("Dialog", "-"))
-        self.label_Tau_percent.setText(_translate("Dialog", "%"))
-        self.label_kernelRadius_pix.setText(_translate("Dialog", "pixels"))
-        self.label_samples.setText(_translate("Dialog", "Samples"))
-        self.label_samples_voxels.setText(_translate("Dialog", "voxels"))
-        self.label_Tau.setText(_translate("Dialog", "Tau (percentile) "))
-        self.label_kernelSize_pix.setText(_translate("Dialog", "pixels"))
-        self.label_tileSize_pix.setText(_translate("Dialog", "pixels"))
-        self.label_outputLowpass_A.setText(_translate("Dialog", "Å"))
-        self.label_maxBox.setText(_translate("Dialog", "pix"))
+        self.label_samplesValue.setText(_translate("MainWindow", "-"))
+        self.label_Tau_percent.setText(_translate("MainWindow", "%"))
+        self.label_kernelRadius_pix.setText(_translate("MainWindow", "pixels"))
+        self.label_samples.setText(_translate("MainWindow", "Samples"))
+        self.label_samples_voxels.setText(_translate("MainWindow", "voxels"))
+        self.label_Tau.setText(_translate("MainWindow", "Tau (percentile) "))
+        self.label_kernelSize_pix.setText(_translate("MainWindow", "pixels"))
+        self.label_tileSize_pix.setText(_translate("MainWindow", "pixels"))
+        self.label_outputLowpass_A.setText(_translate("MainWindow", "Å"))
+        self.label_maxBox.setText(_translate("MainWindow", "pix"))
 
 
-        self.checkBox_histMatch.setText(_translate("Dialog", "HM"))
-        self.checkBox_S0.setText(_translate("Dialog", "S0"))
-        self.checkBox_suppresSolvent.setText(_translate("Dialog", "supress solvent"))
-        self.checkBox_maxBox.setText(_translate("Dialog", "Limit box size"))
-        self.checkBox_outputLowpass.setText(_translate("Dialog", "Output lowpass"))
-        self.checkBox_scaleOcc.setText(_translate("Dialog", "occupancy"))
-        self.label_slash.setText(_translate("Dialog", "      /"))
-        self.checkBox_scaleRes.setText(_translate("Dialog", "resolution"))
-        self.toolButton_inputScale_browse.setText(_translate("Dialog", "browse"))
-        self.comboBox_inputScale.setToolTip(_translate("Dialog", "pre-estimated local scale map "))
+        self.checkBox_histMatch.setText(_translate("MainWindow", "HM"))
+        self.checkBox_S0.setText(_translate("MainWindow", "S0"))
+        self.checkBox_suppresSolvent.setText(_translate("MainWindow", "supress solvent"))
+        self.checkBox_maxBox.setText(_translate("MainWindow", "Limit box size"))
+        self.checkBox_outputLowpass.setText(_translate("MainWindow", "Output lowpass"))
+        self.checkBox_scaleOcc.setText(_translate("MainWindow", "occupancy"))
+        self.label_slash.setText(_translate("MainWindow", "      /"))
+        self.checkBox_scaleRes.setText(_translate("MainWindow", "resolution"))
+        self.toolButton_inputScale_browse.setText(_translate("MainWindow", "browse"))
+        self.comboBox_inputScale.setToolTip(_translate("MainWindow", "pre-estimated local scale map "))
 
-        self.comboBox_inputSolventDef.setToolTip(_translate("Dialog", "solvent mask to improve solvent detection"))
-        self.comboBox_inputSolventDef.setWhatsThis(_translate("Dialog", "solvent mask to improve solvent detection"))
-        self.toolButton_inputSolventDef_browse.setText(_translate("Dialog", "browse"))
-        self.toolButton_run.setText(_translate("Dialog", "  Run  \n  OccuPy  "))#ɒk.jə.paɪ"))
+        self.comboBox_inputSolventDef.setToolTip(_translate("MainWindow", "solvent mask to improve solvent detection"))
+        self.comboBox_inputSolventDef.setWhatsThis(_translate("MainWindow", "solvent mask to improve solvent detection"))
+        self.toolButton_inputSolventDef_browse.setText(_translate("MainWindow", "browse"))
+        self.toolButton_run.setText(_translate("MainWindow", "  Run  \n  OccuPy  "))#ɒk.jə.paɪ"))
         self.toolButton_run.clicked.connect(self.run_cmd)
-        self.label_inputScale.setText(_translate("Dialog", "  scale map"))
-        self.label_inputSolventDef.setText(_translate("Dialog", " solvent def"))
-        self.label_inputMap.setText(_translate("Dialog", "  Input map"))
+        self.label_inputScale.setText(_translate("MainWindow", "  scale map"))
+        self.label_inputSolventDef.setText(_translate("MainWindow", " solvent def"))
+        self.label_inputMap.setText(_translate("MainWindow", "  Input map"))
 
         self.toolButton_expandSolModel.clicked.connect(self.window_solvent_model)
+
 
     def fetch_emdb(self):
 
@@ -1864,7 +1907,8 @@ class Ui_Dialog(object):
 
         with open(self.log_file_name, "a") as file_open:
             if self.new_session:
-                if self.comboBox_inputMap.currentText():
+                is_fetching_emdb = not (id is None or id == 0)
+                if self.comboBox_inputMap.currentText() or is_fetching_emdb:
                     file_open.write(f'{dt_string} NEW GUI SESSION STARTED \n\n')
                     self.new_session = False
             if save:
@@ -1882,13 +1926,13 @@ class Ui_Dialog(object):
 
 
         self.occupy_log("Opening full log", save=False)
-        self.Dialog_fullLog = fullLog_dialog()
-        self.Dialog_fullLog.make_dialog()
+        self.MainWindow_fullLog = fullLog_dialog()
+        self.MainWindow_fullLog.make_dialog(self.log_file_name)
 
         with open(self.log_file_name) as gui_log:
             for line in gui_log:
-                self.Dialog_fullLog.logText.insertPlainText(str(line))
-        self.Dialog_fullLog.show()
+                self.MainWindow_fullLog.logText.insertPlainText(str(line))
+        self.MainWindow_fullLog.show()
 
     def run_chimerax(self):
         if self.chimerax_file_name is not None:
@@ -2062,7 +2106,7 @@ class Ui_Dialog(object):
 
     def window_solvent_model(self):
 
-        self.Dialog_solModel = ImageWindow()
+        self.MainWindow_solModel = ImageWindow()
         app = QtWidgets.QApplication(sys.argv)
 
         screen = app.primaryScreen()
@@ -2076,21 +2120,21 @@ class Ui_Dialog(object):
         # Assume width-limited and make as big as possible.
         rect_width = rect.width()
         rect_height = int(rect_width * 252 / 1200)
-        window = QtWidgets.QLabel(self.Dialog_solModel)
+        window = QtWidgets.QLabel(self.MainWindow_solModel)
         pixmap = QtGui.QPixmap(self.solModel_file_name)
         pixmap = pixmap.scaled(
             rect_width,
             rect_height,
             QtCore.Qt.KeepAspectRatio
         )  # Scale pixmap
-        self.Dialog_solModel.resize(rect_width,rect_height)
+        self.MainWindow_solModel.resize(rect_width,rect_height)
         window.setPixmap(pixmap)
-        self.Dialog_solModel.show()
+        self.MainWindow_solModel.show()
 
         # from pathlib import Path
-        # Dialog_solModel = QtWidgets.QDialog()
-        # Dialog_solModel.resize(self.label_solventModel.width()*3, self.label_solventModel.height()*3)
-        # window = QtWidgets.QLabel(Dialog_solModel)
+        # MainWindow_solModel = QtWidgets.QMainWindow()
+        # MainWindow_solModel.resize(self.label_solventModel.width()*3, self.label_solventModel.height()*3)
+        # window = QtWidgets.QLabel(MainWindow_solModel)
         # solDef_specifier = ''
         # c = self.comboBox_inputSolventDef.currentText()
         # if self.comboBox_inputSolventDef.currentText() != ' ':
@@ -2103,9 +2147,9 @@ class Ui_Dialog(object):
         #                        QtCore.Qt.KeepAspectRatio)  # Scale pixmap
         # window.setPixmap(pixmap)  # Set the pixmap onto the label
         # window.setAlignment(QtCore.Qt.AlignCenter)  # Align the label to center
-        # Dialog_solModel.exec_()
+        # MainWindow_solModel.exec_()
 
-class ImageWindow(QtWidgets.QDialog):
+class ImageWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(ImageWindow, self).__init__(parent)
 
@@ -2113,10 +2157,10 @@ class ImageWindow(QtWidgets.QDialog):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
     sys.exit(app.exec_())
 
 
