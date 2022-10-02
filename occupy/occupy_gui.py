@@ -384,7 +384,6 @@ class Ui_MainWindow(object):
         self.label_viewInput.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewInput.setMouseTracking(False)
         self.label_viewInput.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_viewInput.setText("Load an input file (.map/.mrc)")
         self.label_viewInput.setAlignment(QtCore.Qt.AlignCenter)
         self.label_viewInput.setEnabled(False)
 
@@ -400,7 +399,6 @@ class Ui_MainWindow(object):
         self.label_viewScale.setMinimumSize(QtCore.QSize(320, 320))
         self.label_viewScale.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewScale.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_viewScale.setText("Run occupy or \n load a scale (.map/.mrc)")
         self.label_viewScale.setAlignment(QtCore.Qt.AlignCenter)
         self.label_viewScale.setEnabled(False)
 
@@ -414,9 +412,6 @@ class Ui_MainWindow(object):
         self.label_viewConfidence.setMinimumSize(QtCore.QSize(320, 320))
         self.label_viewConfidence.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewConfidence.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_viewConfidence.setText("Confidence is dependent on a \n "
-                                        "solvent model, and is  shown when \n "
-                                        "occupy has been run.")
         self.label_viewConfidence.setAlignment(QtCore.Qt.AlignCenter)
         self.label_viewConfidence.setEnabled(False)
         self.label_viewConfidence.setObjectName("label_viewConfidence")
@@ -431,11 +426,6 @@ class Ui_MainWindow(object):
         self.label_viewSolDef.setMinimumSize(QtCore.QSize(320, 320))
         self.label_viewSolDef.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewSolDef.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_viewSolDef.setText("Provide a solvent definition (.map/.mrc) \n "
-                                      "to help contruct a solvent model. You can \n "
-                                      "provide a conventional solvent mask, but \n"
-                                      "occupy will not use it to mask.  \n\n"
-                                      "A solvent definition is optional input.")
         self.label_viewSolDef.setAlignment(QtCore.Qt.AlignCenter)
         self.label_viewSolDef.setEnabled(False)
 
@@ -460,17 +450,7 @@ class Ui_MainWindow(object):
         self.label_viewOutput.setMinimumSize(QtCore.QSize(320, 320))
         self.label_viewOutput.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewOutput.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_viewOutput.setText("This is a preview of the modification \n"
-                                      "by the chosen scale. \n\n"
-                                      "To view a preview, you need \n "
-                                      "to have selected both \n"
-                                      "  1) an input map       &   \n"
-                                      "  2) an estimated scale  \n\n"
-                                      "The loaded scale must be \n"
-                                      "an occupancy-based scale. \n\n"
-                                      "The preview is rough, you will have to \n"
-                                      "run occupy to get accurate modification \n"
-                                      "maps written to disk.")
+
         self.label_viewOutput.setAlignment(QtCore.Qt.AlignCenter)
         self.label_viewOutput.setEnabled(False)
         self.label_viewOutput.setObjectName("label_viewOutput")
@@ -899,6 +879,7 @@ class Ui_MainWindow(object):
         self.actionview_full_log.triggered.connect(self.view_full_log)
         self.actionreset = QtWidgets.QAction(MainWindow)
         self.actionreset.setObjectName("actionreset")
+        self.actionreset.triggered.connect(self.reset_session)
         self.menu_session.addAction(self.actionchange_location)
         self.menu_session.addAction(self.actionreset)
         self.menu_session.addSeparator()
@@ -1016,6 +997,8 @@ class Ui_MainWindow(object):
         self.label_tileSize.setText(_translate("MainWindow", "Tile size (pix)"))
         self.label_inputLowass_A.setText(_translate("MainWindow", "Å"))
 
+        self.set_default_views()
+
 
         # Kernel option labels
         self.label_samplesValue.setText(_translate("MainWindow", "-"))
@@ -1052,6 +1035,41 @@ class Ui_MainWindow(object):
 
         self.toolButton_expandSolModel.clicked.connect(self.window_solvent_model)
 
+    def set_default_views(self):
+        self.label_viewInput.setText("Load an input file (.map/.mrc)")
+        self.label_viewScale.setText("Run occupy or \n load a scale (.map/.mrc)")
+        self.label_viewConfidence.setText("Confidence is dependent on a \n "
+                                        "solvent model, and is  shown when \n "
+                                        "occupy has been run.")
+        self.label_viewSolDef.setText("Provide a solvent definition (.map/.mrc) \n "
+                                      "to help contruct a solvent model. You can \n "
+                                      "provide a conventional solvent mask, but \n"
+                                      "occupy will not use it to mask.  \n\n"
+                                      "A solvent definition is optional input.")
+        self.label_viewOutput.setText("This is a preview of the modification \n"
+                                      "by the chosen scale. \n\n"
+                                      "To view a preview, you need \n "
+                                      "to have selected both \n"
+                                      "  1) an input map       &   \n"
+                                      "  2) an estimated scale  \n\n"
+                                      "The loaded scale must be \n"
+                                      "an occupancy-based scale. \n\n"
+                                      "The preview is rough, you will have to \n"
+                                      "run occupy to get accurate modification \n"
+                                      "maps written to disk.")
+
+    def reset_session(self):
+        # Remove input files
+        self.comboBox_inputMap.clear()
+        self.comboBox_inputScale.clear()
+        self.comboBox_inputSolventDef.clear()
+
+        # Inactive Buttons
+        self.toolButton_run.setEnabled(False)
+        self.toolButton_chimerax.setEnabled(False)
+
+        # Should clear all views
+        self.set_default_views()
 
     def fetch_emdb(self):
 
@@ -1128,40 +1146,41 @@ class Ui_MainWindow(object):
         # Get file name or object
         file_name = self.comboBox_inputMap.currentText()
 
-        # Open memory mapped to set options etc.
-        f = mf.mmap(file_name)
+        if file_name != '':
+            # Open memory mapped to set options etc.
+            f = mf.mmap(file_name)
 
-        # Slider and spinbox in view window
-        n = f.header['nx']
+            # Slider and spinbox in view window
+            n = f.header['nx']
 
-        ny = f.header['ny']
-        nz = f.header['nz']
+            ny = f.header['ny']
+            nz = f.header['nz']
 
-        # Only permit cubic
-        if n == ny == nz:
+            # Only permit cubic
+            if n == ny == nz:
 
-            self.horizontalSlider_viewSlice.setRange(1, n)
-            self.horizontalSlider_viewSlice.setValue(n//2)
+                self.horizontalSlider_viewSlice.setRange(1, n)
+                self.horizontalSlider_viewSlice.setValue(n//2)
 
-            self.spinBox_viewSlice.setMaximum(n)
-            self.spinBox_viewSlice.setValue(n//2)
+                self.spinBox_viewSlice.setMaximum(n)
+                self.spinBox_viewSlice.setValue(n//2)
 
-            # Fill view pane
-            self.render_input_slice()
+                # Fill view pane
+                self.render_input_slice()
 
-            # TODO compute kernel options
-            self.set_lowpass()
+                # TODO compute kernel options
+                self.set_lowpass()
 
-        else:
+            else:
 
-            self.occupy_log('Input is not cubic.')
+                self.occupy_log('Input is not cubic.')
 
 
-        self.label_viewInput.setEnabled(True)
-        self.toolButton_run.setEnabled(True)
+            self.label_viewInput.setEnabled(True)
+            self.toolButton_run.setEnabled(True)
 
-        # Close the file
-        f.close()
+            # Close the file
+            f.close()
 
     def render_input_slice(self,force=False):
 
@@ -1224,35 +1243,36 @@ class Ui_MainWindow(object):
         self.occ_scale = False
         self.res_scale = False
 
-        #Label method
-        f = mf.mmap(scale_file_name)
- 
-        not_found = True           
-        nlabl = f.header['nlabl']
-        for i in np.arange(nlabl):
-            label = str(f.header['label'][i])
-            if "occupy scale: occ" in label:
-                self.occ_scale = True
-                not_found = False
-                break
-            elif "occupy scale: res" in label:
-                self.res_scale = True
-                not_found = False
-                break
-        if not_found:
-            # String method as fallback
-            if "_occ_" in scale_file_name:
-                self.occ_scale = True
-                not_found = False
-            elif "_res_" in scale_file_name:
-                self.res_scale = True
-                not_found = False
+        if scale_file_name != '':
+            #Label method
+            f = mf.mmap(scale_file_name)
 
-        if not_found:
-            self.occupy_log('Could not find scale mode during scale file load')
-            if nlabl == 10:
-                print("There was nothing to confirm this is an occ scale, but all lables are full, so permitting.")
-                self.occ_scale = True
+            not_found = True
+            nlabl = f.header['nlabl']
+            for i in np.arange(nlabl):
+                label = str(f.header['label'][i])
+                if "occupy scale: occ" in label:
+                    self.occ_scale = True
+                    not_found = False
+                    break
+                elif "occupy scale: res" in label:
+                    self.res_scale = True
+                    not_found = False
+                    break
+            if not_found:
+                # String method as fallback
+                if "_occ_" in scale_file_name:
+                    self.occ_scale = True
+                    not_found = False
+                elif "_res_" in scale_file_name:
+                    self.res_scale = True
+                    not_found = False
+
+            if not_found:
+                self.occupy_log('Could not find scale mode during scale file load')
+                if nlabl == 10:
+                    print("There was nothing to confirm this is an occ scale, but all lables are full, so permitting.")
+                    self.occ_scale = True
 
     def change_input_file(self):
         self.in_file_name = str(self.comboBox_inputMap.currentText())
@@ -1427,7 +1447,7 @@ class Ui_MainWindow(object):
         # Get file name or object
         solvent_file_name = self.comboBox_inputSolventDef.currentText()
 
-        if solvent_file_name != " ":
+        if solvent_file_name != '':
 
             # Open memory mapped to set options etc.
             f = mf.mmap(solvent_file_name)
@@ -1464,7 +1484,7 @@ class Ui_MainWindow(object):
             slice = self.horizontalSlider_viewSlice.value()
 
             # If there is something to render
-            if solvent_file_name != " ":
+            if solvent_file_name != '':
 
                 # Open memory-solvent_file_name (much faster than open)
                 f = mf.mmap(solvent_file_name)
@@ -1956,7 +1976,7 @@ class Ui_MainWindow(object):
         options.input_map = self.comboBox_inputMap.currentText()
         self.cmd.append(f'--input-map {options.input_map}')
 
-        if self.comboBox_inputSolventDef.currentText() != " ":
+        if len(self.comboBox_inputSolventDef.currentText())>3:
             options.solvent_def = self.comboBox_inputSolventDef.currentText()
             self.cmd.append(f'--solvent-def {options.solvent_def}')
 
@@ -2157,17 +2177,7 @@ class Ui_MainWindow(object):
     def window_about(self):
 
         self.MainWindow_about = ImageWindow()
-        self.MainWindow_about.resize(440, 160)
-
-        ## crete the main left-right layout
-        #self.layout_main = QtWidgets.QHBoxLayout(self.MainWindow_about)
-        #self.layout_main.setContentsMargins(0, 0, 0, 0)
-        #
-        ## Make the main window
-        #self.window = QtWidgets.QLabel(self.MainWindow_about)
-        #self.window.setGeometry(10,10,140,140)
-        ## Add the image window as the left part of the main layout
-        #self.layout_main.addWidget(self.window, 0, QtCore.Qt.AlignVCenter)
+        self.MainWindow_about.resize(540, 160)
 
         self.centralwidget_about = QtWidgets.QWidget(MainWindow)
         self.centralwidget_about.setObjectName("centralwidget")
