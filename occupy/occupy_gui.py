@@ -494,7 +494,6 @@ class Ui_MainWindow(object):
         self.label_solventModel.setMaximumSize(QtCore.QSize(1000, 400))
         self.label_solventModel.setObjectName("label_solventModel")
         self.label_solventModel.setFrameShape(QtWidgets.QFrame.Box)
-        self.label_solventModel.setText("Run occupy to \n view the solvent model")
         self.label_solventModel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.toolButton_expandSolModel=QtWidgets.QToolButton(self.label_solventModel)
@@ -1057,11 +1056,14 @@ class Ui_MainWindow(object):
                                       "The preview is rough, you will have to \n"
                                       "run occupy to get accurate modification \n"
                                       "maps written to disk.")
+        self.label_solventModel.setText("Run occupy to \n view the solvent model")
+
 
     def reset_session(self):
         # Remove input files
         self.comboBox_inputMap.clear()
         self.comboBox_inputScale.clear()
+        self.confidence_file_name = None
         self.comboBox_inputSolventDef.clear()
 
         # Inactive Buttons
@@ -1070,6 +1072,9 @@ class Ui_MainWindow(object):
 
         # Should clear all views
         self.set_default_views()
+
+        # Clear output displays
+        self.textEdit_log.clear()
 
     def fetch_emdb(self):
 
@@ -1484,7 +1489,7 @@ class Ui_MainWindow(object):
             slice = self.horizontalSlider_viewSlice.value()
 
             # If there is something to render
-            if solvent_file_name != '':
+            if len(solvent_file_name) > 3:
 
                 # Open memory-solvent_file_name (much faster than open)
                 f = mf.mmap(solvent_file_name)
@@ -2116,7 +2121,7 @@ class Ui_MainWindow(object):
         solDef_specifier = ''
         c =  self.comboBox_inputSolventDef.currentText()
         if self.comboBox_inputSolventDef.currentText() != ' ':
-            solDef_specifier = f'{Path(self.comboBox_inputSolventDef.currentText()).stem}_'
+            solDef_specifier = f'{Path(self.comboBox_inputSolventDef.currentText()).stem}'
         solModel_file_name = f'solModel_{solDef_specifier}' + Path(self.comboBox_inputMap.currentText()).stem + '.png'
 
         self.solModel_file_name = solModel_file_name
