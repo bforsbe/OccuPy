@@ -2157,18 +2157,87 @@ class Ui_MainWindow(object):
     def window_about(self):
 
         self.MainWindow_about = ImageWindow()
-        self.MainWindow_about.resize(300, 160)
+        self.MainWindow_about.resize(440, 160)
 
-        window = QtWidgets.QLabel(self.MainWindow_about)
-        window.setGeometry(10,10,140,140)
+        ## crete the main left-right layout
+        #self.layout_main = QtWidgets.QHBoxLayout(self.MainWindow_about)
+        #self.layout_main.setContentsMargins(0, 0, 0, 0)
+        #
+        ## Make the main window
+        #self.window = QtWidgets.QLabel(self.MainWindow_about)
+        #self.window.setGeometry(10,10,140,140)
+        ## Add the image window as the left part of the main layout
+        #self.layout_main.addWidget(self.window, 0, QtCore.Qt.AlignVCenter)
+
+        self.centralwidget_about = QtWidgets.QWidget(MainWindow)
+        self.centralwidget_about.setObjectName("centralwidget")
+        self.horizontalLayoutWidget_about = QtWidgets.QWidget(self.centralwidget_about)
+        self.horizontalLayoutWidget_about.setGeometry(QtCore.QRect(10, 10, 500, 140))
+        self.horizontalLayoutWidget_about.setObjectName("horizontalLayoutWidget")
+        self.horizontalLayout_about = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_about)
+        self.horizontalLayout_about.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_about.setObjectName("horizontalLayout")
+        self.window_about = QtWidgets.QLabel(self.horizontalLayoutWidget_about)
+        self.window_about.setObjectName("label")
+        self.horizontalLayout_about.addWidget(self.window_about)
+        self.verticalLayout_about = QtWidgets.QVBoxLayout()
+        self.verticalLayout_about.setObjectName("verticalLayout")
+
+        self.label_title_and_version = QtWidgets.QLabel(self.horizontalLayoutWidget_about)
+        self.label_title_and_version.setObjectName("label_title_and_version")
+        self.verticalLayout_about.addWidget(self.label_title_and_version)
+
+        self.label_cite = QtWidgets.QLabel(self.horizontalLayoutWidget_about)
+        self.label_cite.setObjectName("label_cite")
+        self.verticalLayout_about.addWidget(self.label_cite)
+
+        self.label_developers = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        self.label_developers.setObjectName("label_developers")
+        self.verticalLayout_about.addWidget(self.label_developers)
+
+        self.label_issues = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        self.label_issues.setObjectName("label_issues")
+        self.verticalLayout_about.addWidget(self.label_issues)
+
+        self.label_contact = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        self.label_contact.setObjectName("label_contact")
+        self.verticalLayout_about.addWidget(self.label_contact)
+
+        self.horizontalLayout_about.addLayout(self.verticalLayout_about)
+        self.MainWindow_about.setCentralWidget(self.centralwidget_about)
+
+
+        from pkg_resources import get_distribution
+        __version__ = get_distribution("occupy").version
+        # Make the labels
+        self.label_title_and_version.setText(f'OccuPy {__version__}')
+
+        url_pub = "<a href=\"https://www.biorxiv.org/\">TBD</a>"
+        self.label_cite.setText(f'Please cite {url_pub}')
+        self.label_cite.setOpenExternalLinks(True)
+
+        self.label_developers.setText("Developed by Bjoern O. Forsberg")
+
+        url_issues = "<a href=\"https://github.com/bforsbe/OccuPy/issues\">issues</a>"
+        self.label_issues.setText(f'Report and view known {url_issues}')
+        self.label_issues.setOpenExternalLinks(True)
+
+        url_email = "<a href=\"mailto:bjorn.forsberg@ki.se\">bjorn.forsberg@ki.se</a>"
+        self.label_contact.setText(f'Contact {url_email}')
+        self.label_contact.setOpenExternalLinks(True)
+
+        # Set the image
         pixmap = QtGui.QPixmap(self.icon_large)
         pixmap = pixmap.scaled(
             140,
             140,
             QtCore.Qt.KeepAspectRatio
         )  # Scale pixmap
-        window.setPixmap(pixmap)
+        self.window_about.setPixmap(pixmap)
+
+
         self.MainWindow_about.show()
+
 
 class ImageWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
