@@ -2249,7 +2249,7 @@ class Ui_MainWindow(object):
         self.MainWindow_changeLocation.resize(800, 40)
         self.MainWindow_changeLocation.setWindowTitle("Change location")
 
-        self.centralwidget_changeLocation = QtWidgets.QWidget(MainWindow)
+        self.centralwidget_changeLocation = QtWidgets.QWidget(self.MainWindow_changeLocation)
         self.centralwidget_changeLocation.setObjectName("centralwidget_changeLocation")
         self.horizontalLayoutWidget_changeLocation = QtWidgets.QWidget(self.centralwidget_changeLocation)
         self.horizontalLayoutWidget_changeLocation.setGeometry(QtCore.QRect(10, 10, 780, 20))
