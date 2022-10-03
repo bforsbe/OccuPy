@@ -75,7 +75,7 @@ def occupy_run(options: args.occupy_options):
     in_data = np.copy(f_open.data)
     nd = np.shape(in_data)
     voxel_size_ori = voxel_size = np.copy(f_open.voxel_size.x)
-    range_ori = np.array([f_open.header['dmin'], f_open.header['dmax']])
+    range_ori = np.array([np.min(f_open.data),np.max(f_open.data)]) # header info is unreliable from e.g. relion_postprocess_localfiltered
     axis_order = np.array([f_open.header['mapc'], f_open.header['mapr'], f_open.header['maps']])
     offset_ori = np.array([f_open.header['nxstart'], f_open.header['nystart'], f_open.header['nzstart']])
     f_open.close()
@@ -583,7 +583,7 @@ def occupy_run(options: args.occupy_options):
         # TODO Compare power spectrum of input out put to examine spectral effect
         # TODO also check the average change in pixel value, anf how it relates to power spectral change
         if options.hist_match:
-            f_open = mf.open(input_map)
+            f_open = mf.open(options.input_map)
             sigm = match_histograms(
                 sigm,
                 reference=f_open.data

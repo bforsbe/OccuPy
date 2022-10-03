@@ -192,6 +192,8 @@ class Ui_MainWindow(object):
 
         self.new_session = True
         self.inputMap = InputMapProperties()
+        self.infile_minval = None
+        self.infile_maxval = None
         self.log_file_name = 'occupy_gui_log.txt'
         self.confidence_file_name = None
         self.chimerax_file_name = None
@@ -1130,6 +1132,7 @@ class Ui_MainWindow(object):
             else:
                 self.comboBox_inputMap.setCurrentIndex(idx)
 
+
     def add_input_file(self,new_input_file):
         if new_input_file:
             new_file = True
@@ -1163,14 +1166,18 @@ class Ui_MainWindow(object):
             ny = f.header['ny']
             nz = f.header['nz']
 
+
             # Only permit cubic
             if n == ny == nz:
 
-                self.horizontalSlider_viewSlice.setRange(1, n)
-                self.horizontalSlider_viewSlice.setValue(n//2)
+                self.infile_minval = np.min(f.data)
+                self.infile_maxval = np.max(f.data)
 
                 self.spinBox_viewSlice.setMaximum(n)
                 self.spinBox_viewSlice.setValue(n//2)
+
+                self.horizontalSlider_viewSlice.setRange(1, n)
+                self.horizontalSlider_viewSlice.setValue(n//2)
 
                 # Fill view pane
                 self.render_input_slice()
@@ -1222,9 +1229,7 @@ class Ui_MainWindow(object):
                     t = f.data[:, :, slice-1]
 
                 # Grayscale normalization
-                tmin = f.header['dmin']
-                tmax = f.header['dmax']
-                t = (t-tmin)/(tmax-tmin)
+                t = (t-self.infile_minval)/(self.infile_maxval-self.infile_minval)
 
                 # Construct and render image
                 im_data = np.copy(np.array((t*255).astype(np.uint8)))
