@@ -47,10 +47,9 @@ class EMDB_dialog(QtWidgets.QDialog):
         self.setEnabled(True)
         self.resize(140,90)
 
-        self.spinBox = QtWidgets.QSpinBox(self)
-        self.spinBox.setGeometry(10,10,120,30)
-        self.spinBox.setSpecialValueText('-')
-        self.spinBox.setMaximum(99999)
+        self.textEdit = QtWidgets.QLineEdit(self)
+        self.textEdit.setGeometry(10,10,120,30)
+        self.textEdit.setPlaceholderText("-")
 
         self.button = QtWidgets.QToolButton(self)
         self.button.setGeometry(10,50,120,30)
@@ -58,7 +57,7 @@ class EMDB_dialog(QtWidgets.QDialog):
         self.button.clicked.connect(self.update_id)
 
     def update_id(self):
-        self.id = self.spinBox.value()
+        self.id = self.textEdit.text()
         self.close()
 
 
