@@ -2216,6 +2216,7 @@ class Ui_MainWindow(object):
         __version__ = get_distribution("occupy").version
         # Make the labels
         self.label_title_and_version.setText(f'OccuPy {__version__}')
+        self.label_title_and_version.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
 
         url_pub = "<a href=\"https://www.biorxiv.org/\">TBD</a>"
         self.label_cite.setText(f'Please cite {url_pub}')
