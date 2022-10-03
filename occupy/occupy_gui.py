@@ -2170,6 +2170,7 @@ class Ui_MainWindow(object):
 
         self.MainWindow_about = ImageWindow()
         self.MainWindow_about.resize(540, 160)
+        self.MainWindow_about.setWindowTitle("About OccuPy")
 
         self.centralwidget_about = QtWidgets.QWidget(MainWindow)
         self.centralwidget_about.setObjectName("centralwidget")
@@ -2177,10 +2178,12 @@ class Ui_MainWindow(object):
         self.horizontalLayoutWidget_about.setGeometry(QtCore.QRect(10, 10, 500, 140))
         self.horizontalLayoutWidget_about.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout_about = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_about)
+
         self.horizontalLayout_about.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_about.setObjectName("horizontalLayout")
         self.window_about = QtWidgets.QLabel(self.horizontalLayoutWidget_about)
         self.window_about.setObjectName("label")
+
         self.horizontalLayout_about.addWidget(self.window_about)
         self.verticalLayout_about = QtWidgets.QVBoxLayout()
         self.verticalLayout_about.setObjectName("verticalLayout")
@@ -2243,6 +2246,7 @@ class Ui_MainWindow(object):
 
         self.MainWindow_changeLocation = ImageWindow()
         self.MainWindow_changeLocation.resize(800, 40)
+        self.MainWindow_changeLocation.setWindowTitle("Change location")
 
         self.centralwidget_changeLocation = QtWidgets.QWidget(MainWindow)
         self.centralwidget_changeLocation.setObjectName("centralwidget_changeLocation")
