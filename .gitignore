@@ -130,6 +130,7 @@ dmypy.json
 
 #Images
 *.svg
+*.xdp
 
 #Other
 *.token
