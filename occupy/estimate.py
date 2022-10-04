@@ -260,9 +260,9 @@ def occupy_run(options: args.occupy_options):
         s_open.close()
 
         # Check same size as ori inout map (can be relaxed later)
-        if not sol_mask.shape[0] == nd:
+        if not sol_mask.shape == nd:
             raise ValueError(
-                f'\033[91m input solvent definition map  size ({sol_mask.shape}) is not the same size as input map: {nd}\033[0m')
+                f'\033[91m input solvent definition map  size {sol_mask.shape} is not the same size as input map: {nd}\033[0m')
 
         if downscale_processing:
             sol_mask, _ = map_tools.lowpass(
