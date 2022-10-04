@@ -18,8 +18,7 @@ if __name__ == '__main__':
 
 
 def app():
-    options = typer.run(args.parse)
-    estimate.occupy_run(options)
+    typer.run(args.parse_and_run)
 
 def app_gui():
     import sys

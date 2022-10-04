@@ -1,8 +1,14 @@
 from typing import Optional
 import typer
 
+try:
+    import estimate              # for pyCharm
+except:
+    from occupy import estimate   # for terminal use
+
 from pkg_resources import get_distribution
 __version__ =  get_distribution("occupy").version
+
 
 
 def version_callback(value: bool):
@@ -82,7 +88,7 @@ class occupy_options:
         self.version = version
         self.gui = gui
 
-def parse(
+def parse_and_run(
         # Basic input --------------------------------------------------------------------------------------------------
 
         input_map: str = typer.Option(
@@ -224,7 +230,7 @@ def parse(
             help="Use simple kernel normalization S0 instead of tile-based percentile (SW)"
         ),
         lp_scale: bool = typer.Option(
-            None,
+            False,
             "--lp-scale/--raw-scale","--occupancy",
             help="Use the low-passed input for scale estimation, or use the raw input map"
         ),
@@ -256,6 +262,10 @@ def parse(
             help="Print version info and exit"
         )
 ):
+    scale_mode = 'res'
+    if lp_scale:
+        scale_mode = 'occ'
+
     options = occupy_options(
         input_map,
         resolution,
@@ -274,6 +284,7 @@ def parse(
         hedge_confidence,
         solvent_def,
         scale_limit,
+        scale_mode,
         hist_match,
         output_map,
         plot,
@@ -290,4 +301,4 @@ def parse(
         version
     )
 
-    return options
+    estimate.occupy_run(options)
