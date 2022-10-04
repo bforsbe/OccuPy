@@ -507,7 +507,7 @@ class Ui_MainWindow(object):
 
         self.tabWidget_output.addTab(self.tab_solventModel, "")
         self.gridLayoutWidget = QtWidgets.QWidget(MainWindow)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(280, 490, 391, 31))
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(280, 495, 391, 31))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
