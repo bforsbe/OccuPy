@@ -173,7 +173,7 @@ def occupy_run(options: args.occupy_options):
         own_tau = True
         if options.verbose:
             print(
-                f'Using provided tau value of {options.tau:4.f} (recommend {tau_ana:4.f})')
+                f'Using provided tau value of {options.tau:.4f} (recommend {tau_ana:.4f})')
 
     log_name = f'log_{Path(options.input_map).stem}.txt'
     f_log = open(log_name, 'w+')
