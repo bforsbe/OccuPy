@@ -872,7 +872,7 @@ class Ui_MainWindow(object):
         self.actionabout.triggered.connect(self.window_about)
         self.actionchange_location = QtWidgets.QAction(MainWindow)
         self.actionchange_location.setObjectName("actionchange_location")
-        self.actionchange_location.triggered.connect(self.window_change_location)
+        self.actionchange_location.triggered.connect(self.change_current_dir)
         self.actionclear_log = QtWidgets.QAction(MainWindow)
         self.actionclear_log.setObjectName("actionclear_log")
         self.actionclear_log.triggered.connect(self.clear_log)
@@ -2247,61 +2247,14 @@ class Ui_MainWindow(object):
 
         self.MainWindow_about.show()
 
-    def window_change_location(self):
-
-        self.MainWindow_changeLocation = ImageWindow()
-        self.MainWindow_changeLocation.resize(800, 40)
-        self.MainWindow_changeLocation.setWindowTitle("Change location")
-
-        self.centralwidget_changeLocation = QtWidgets.QWidget(self.MainWindow_changeLocation)
-        self.centralwidget_changeLocation.setObjectName("centralwidget_changeLocation")
-        self.horizontalLayoutWidget_changeLocation = QtWidgets.QWidget(self.centralwidget_changeLocation)
-        self.horizontalLayoutWidget_changeLocation.setGeometry(QtCore.QRect(10, 10, 780, 20))
-        self.horizontalLayoutWidget_changeLocation.setObjectName("horizontalLayoutWidget_changeLocation")
-        self.horizontalLayout_changeLocation = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_changeLocation)
-        self.horizontalLayout_changeLocation.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_changeLocation.setObjectName("horizontalLayout_changeLocation")
-
-        import os
-        self.lineEdit_location = QtWidgets.QLineEdit(self.horizontalLayoutWidget_changeLocation)
-        self.lineEdit_location.setGeometry(0,0,600,20)
-        self.horizontalLayout_changeLocation.addWidget(self.lineEdit_location)
-        self.lineEdit_location.setText(f'{os.getcwd()}')
-
-        self.toolButton_location_browse = QtWidgets.QToolButton(self.horizontalLayoutWidget_changeLocation)
-        self.toolButton_location_browse.setText("Browse")
-        self.horizontalLayout_changeLocation.addWidget(self.toolButton_location_browse)
-
-        self.toolButton_location_select = QtWidgets.QToolButton(self.horizontalLayoutWidget_changeLocation)
-        self.toolButton_location_select.setText("Select")
-        self.horizontalLayout_changeLocation.addWidget(self.toolButton_location_select)
-
-        self.toolButton_location_cancel = QtWidgets.QToolButton(self.horizontalLayoutWidget_changeLocation)
-        self.toolButton_location_cancel.setText("Cancel")
-        self.horizontalLayout_changeLocation.addWidget(self.toolButton_location_cancel)
-
-        self.toolButton_location_select.clicked.connect(self.change_current_dir)
-        self.toolButton_location_browse.clicked.connect(self.fill_new_dir)
-        self.toolButton_location_cancel.clicked.connect(self.MainWindow_changeLocation.close)
-
-        self.MainWindow_changeLocation.setCentralWidget(self.centralwidget_changeLocation)
-
-        self.MainWindow_changeLocation.show()
-
-    def fill_new_dir(self):
-        dir_name = QtWidgets.QFileDialog.getExistingDirectory (None, "Select Directory", "")  # Ask for file
-        self.lineEdit_location.setText(dir_name)
-        self.toolButton_location_select.setEnabled(True)
-
     def change_current_dir(self):
-        new_directory = self.lineEdit_location.text()
+        new_directory = QtWidgets.QFileDialog.getExistingDirectory(None, "Select Directory", "")  # Ask for dir
         import os
         if os.path.isdir(new_directory):
             os.chdir(new_directory)
-            self.toolButton_location_select.setEnabled(False)
             self.occupy_log(f' Changed directory to {new_directory}')
         else:
-            self.occupy_log(f' cannot change directroy to {new_directory}')
+            self.occupy_log(f' Cannot change directory to {new_directory}')
 
 class ImageWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
