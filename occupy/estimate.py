@@ -388,7 +388,7 @@ def occupy_run(options: args.occupy_options):
         )
 
         if options.save_all_maps:
-            map_tools.adjust_to_parent(file_name='modification_ampl.mrc', parent=input_map)
+            map_tools.adjust_to_parent(file_name='modification_ampl.mrc', parent=options.input_map)
 
         # -- Supress solvent amplification --
         # Confidence-based mask of amplified content.
@@ -537,12 +537,21 @@ def occupy_run(options: args.occupy_options):
         #if not options.exclude_solvent:
         # TODO: sigmoid noise comp
 
+        if not options.exclude_solvent:
+            # If we are not excluding solvent, then we will add some back when we attenuate
+            fake_solvent = np.random.randn(nd_processing, nd_processing, nd_processing)
+            fake_solvent = solvent_parameters[1] + solvent_parameters[2] * fake_solvent
+
+            # TODO:
+            # what is the correct scaling factor of the variance here????
+            # also spectral properties
+
         sigm = occupancy.modify(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
             scale,  # The estimated scale to use for amplification
             sigmoid_gamma=options.sigmoid,  # The exponent for sigmoid
             sigmoid_pivot=options.pivot,
-            #fake_solvent=fake_solvent,
+            fake_solvent=fake_solvent,
             scale_threshold=options.scale_limit,
             save_modified_map=options.save_all_maps,
             verbose=options.verbose

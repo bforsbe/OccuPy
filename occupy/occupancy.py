@@ -534,8 +534,24 @@ def modify(
     # Fake solvent is drawn from solvent model distribution
     # Fake solvent is None if amplifying
     if fake_solvent is not None:
-        # This is only active if attenuating, in which case the modification is on [0,1]
-        modified_map += np.multiply(fake_solvent, 1 - modification)
+        # CURRENT METHOD:  This is only active if attenuating, in which case the modification is on [0,1]
+        modified_map += np.multiply(fake_solvent, np.clip(1 - modification,0,1))
+
+        '''
+        # OPTIONAL METHOD, make an attenuation mask (1-mod).clip(0,1), and combine with confidence. Add solvent there.
+        region = np.multiply(confidence, np.clip(1 - modification,0,1))
+
+        # Option to blend the added noise into the noise background by low-pass. 
+        # Not as good as expected in tests - inactive
+        blended_sol = modified_map + np.multiply(fake_solvent, region)
+        blended_sol, _ = map_tools.lowpass(
+            blended_sol,
+            resolution=5.0,
+            voxel_size=1.0
+        )
+
+        modified_map = np.multiply(modified_map, 1-region) + np.multiply(blended_sol, region)
+        '''
 
     return modified_map
 
