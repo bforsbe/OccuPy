@@ -225,7 +225,7 @@ class Ui_MainWindow(object):
         bold = QtGui.QFont()
         bold.setBold(True)
         self.label_modTitle = QtWidgets.QLabel(MainWindow)
-        self.label_modTitle.setGeometry(QtCore.QRect(10, 280, 261, 30))
+        self.label_modTitle.setGeometry(QtCore.QRect(10, 270, 261, 30))
         self.label_modTitle.setText("Modification options")
         self.label_modTitle.setFont(bold)
 
@@ -241,7 +241,7 @@ class Ui_MainWindow(object):
 
 
         self.tabWidget_modification = QtWidgets.QTabWidget(MainWindow)
-        self.tabWidget_modification.setGeometry(QtCore.QRect(10, 310, 261, 131))
+        self.tabWidget_modification.setGeometry(QtCore.QRect(10, 300, 261, 131))
         self.tabWidget_modification.setObjectName("tabWidget_modification")
         self.tab_amplification = QtWidgets.QWidget()
         self.tab_amplification.setObjectName("tab_amplification")
@@ -587,7 +587,7 @@ class Ui_MainWindow(object):
         self.horizontalSlider_viewSlice.setObjectName("horizontalSlider_viewSlice")
         self.gridLayout.addWidget(self.horizontalSlider_viewSlice, 0, 4, 1, 1)
         self.gridLayoutWidget_2 = QtWidgets.QWidget(MainWindow)
-        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 100, 261, 179))
+        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 100, 261, 160))
         self.gridLayoutWidget_2.setObjectName("gridLayoutWidget_2")
         self.gridLayout_kernelOptions = QtWidgets.QGridLayout(self.gridLayoutWidget_2)
         self.gridLayout_kernelOptions.setContentsMargins(0, 0, 0, 0)
@@ -746,10 +746,10 @@ class Ui_MainWindow(object):
         self.checkBox_histMatch.setWhatsThis("")
         self.checkBox_histMatch.setTristate(False)
         self.checkBox_histMatch.setObjectName("checkBox_histMatch")
-        self.gridLayout_extraOptions.addWidget(self.checkBox_histMatch, 4, 0, 1, 1)
+        self.gridLayout_extraOptions.addWidget(self.checkBox_histMatch, 4, 0, 1, 2)
         self.checkBox_S0 = QtWidgets.QCheckBox(self.gridLayoutWidget_6)
         self.checkBox_S0.setObjectName("checkBox_S0")
-        self.gridLayout_extraOptions.addWidget(self.checkBox_S0, 3, 0, 1, 1)
+        self.gridLayout_extraOptions.addWidget(self.checkBox_S0, 3, 0, 1, 2)
         self.checkBox_suppresSolvent = QtWidgets.QCheckBox(self.gridLayoutWidget_6)
         self.checkBox_suppresSolvent.setObjectName("checkBox_suppresSolvent")
         self.gridLayout_extraOptions.addWidget(self.checkBox_suppresSolvent, 2, 0, 1, 1)
@@ -776,7 +776,7 @@ class Ui_MainWindow(object):
         self.checkBox_outputLowpass.setObjectName("checkBox_outputLowpass")
         self.gridLayout_extraOptions.addWidget(self.checkBox_outputLowpass, 1, 0, 1, 1)
         self.horizontalLayoutWidget_4 = QtWidgets.QWidget(MainWindow)
-        self.horizontalLayoutWidget_4.setGeometry(QtCore.QRect(10, 440, 261, 25))
+        self.horizontalLayoutWidget_4.setGeometry(QtCore.QRect(10, 430, 261, 25))
         self.horizontalLayoutWidget_4.setObjectName("horizontalLayoutWidget_4")
         self.horizontalLayout_scaleMode = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_4)
         self.horizontalLayout_scaleMode.setContentsMargins(0, 0, 0, 0)
@@ -1010,10 +1010,10 @@ class Ui_MainWindow(object):
         self.label_inputLowpass.setText(_translate("MainWindow", "Input lowpass"))
         self.doubleSpinBox_inputLowpass.valueChanged.connect(self.set_kernel_radius)
 
-        self.label_kernelRadius.setText(_translate("MainWindow", "Kernel radius (pix)"))
+        self.label_kernelRadius.setText(_translate("MainWindow", "Kernel radius"))
         self.doubleSpinBox_kernelRadius.valueChanged.connect(self.set_kernel_size)
 
-        self.label_kernelSize.setText(_translate("MainWindow", "Kernel size (pix)"))
+        self.label_kernelSize.setText(_translate("MainWindow", "Kernel size"))
         self.spinBox_kernelSize.valueChanged.connect(self.set_kernel_tau)
 
 
@@ -1038,9 +1038,9 @@ class Ui_MainWindow(object):
         self.label_maxBox.setText(_translate("MainWindow", "pix"))
 
 
-        self.checkBox_histMatch.setText(_translate("MainWindow", "HM"))
-        self.checkBox_S0.setText(_translate("MainWindow", "S0"))
-        self.checkBox_suppresSolvent.setText(_translate("MainWindow", "supress solvent"))
+        self.checkBox_histMatch.setText(_translate("MainWindow", "Histogram-match to input"))
+        self.checkBox_S0.setText(_translate("MainWindow", "Naive normalization"))
+        self.checkBox_suppresSolvent.setText(_translate("MainWindow", "Supress solvent"))
         self.checkBox_maxBox.setText(_translate("MainWindow", "Limit box size"))
         self.checkBox_outputLowpass.setText(_translate("MainWindow", "Output lowpass"))
         self.checkBox_scaleOcc.setText(_translate("MainWindow", "occupancy"))
@@ -1751,6 +1751,11 @@ class Ui_MainWindow(object):
         self.inputMap.kernel_tau = tau_ana #occupancy.set_tau(n_v=self.inputMap.kernel_nv)
 
         # Set gui
+        emphasis = QtGui.QFont()
+        emphasis.setBold(False)
+        if self.inputMap.kernel_nv == self.spinBox_kernelSize.value()**3:
+            emphasis.setBold(True)
+        self.label_samplesValue.setFont(emphasis)
         self.label_samplesValue.setText(str(self.inputMap.kernel_nv))
         self.doubleSpinBox_Tau.setValue(self.inputMap.kernel_tau*100)
 
