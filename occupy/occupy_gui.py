@@ -102,7 +102,7 @@ class InputMapProperties():
 class MplCanvas(Canvas):
     def __init__(self):
         self.fig = Figure()
-        self.ax = self.fig.add_subplot(111)
+        self.ax = self.fig.add_axes([0.15, 0.13, 0.8, 0.85])
         #self.fig.tight_layout()
 
         Canvas.__init__(self, self.fig)
@@ -168,6 +168,9 @@ class MplWidget(QtWidgets.QWidget):
             anything = True
         if anything:
             self.canvas.ax.plot([0, 1], [0, 1], 'k--')
+        self.canvas.ax.set_xlabel('estimated input scale')
+        self.canvas.ax.set_ylabel('modified output scale')
+
 
         self.canvas.draw()
 
@@ -1926,6 +1929,7 @@ class Ui_MainWindow(object):
         self.MplWidget_viewModification.sigmoid = self.groupBox_sigmoid.isChecked()
 
         self.MplWidget_viewModification.plot_modification()
+
 
     def update_mod_spin_boxes(self):
         self.doubleSpinBox_amplPower.setValue(self.horizontalSlider_amplPower.value()/10.)
