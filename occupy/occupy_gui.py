@@ -2204,7 +2204,7 @@ class Ui_MainWindow(object):
         self.MainWindow_about.resize(540, 160)
         self.MainWindow_about.setWindowTitle("About OccuPy")
 
-        self.centralwidget_about = QtWidgets.QWidget(MainWindow)
+        self.centralwidget_about = QtWidgets.QWidget(self.MainWindow_about)
         self.centralwidget_about.setObjectName("centralwidget")
         self.horizontalLayoutWidget_about = QtWidgets.QWidget(self.centralwidget_about)
         self.horizontalLayoutWidget_about.setGeometry(QtCore.QRect(10, 10, 500, 140))
