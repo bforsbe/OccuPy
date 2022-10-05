@@ -1975,10 +1975,10 @@ class Ui_MainWindow(object):
             from datetime import datetime
             now = datetime.now()
             dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-            dt_string = f'{dt_string} \n'
+            dt_string = f'{self.color_time(dt_string)}\n'
 
-
-        self.textEdit_log.append(f'{dt_string} {message}')
+        message = f'{dt_string} {message}'
+        self.textEdit_log.append(message)
         self.textEdit_log.repaint()
 
         with open(self.log_file_name, "a") as file_open:
@@ -1992,11 +1992,23 @@ class Ui_MainWindow(object):
 
 
     def occupy_warn(self, message):
-        warning = f'\033[91m {message} \033[0m'
+        #warning = "<span style=\" font-size:8pt; font-weight:600; color:#ff0000;\" >"
+        warning = self.color_warn()
         self.textEdit_log.append(warning)
 
     def clear_log(self):
         self.textEdit_log.clear()
+
+    def color_time(self,message):
+        return self.decorate_color(message,'1f77b4')
+    def color_warn(self,message):
+        return self.decorate_color(message,'d62728')
+    def color_run(self,message):
+        return self.decorate_color(message,'ff7f0e')
+
+    def decorate_color(self,message,color):
+        clr_message = f'<span style=\" color:#{color};\" > {message} </span>'
+        return clr_message
 
     def view_full_log(self):
 
@@ -2007,7 +2019,7 @@ class Ui_MainWindow(object):
 
         with open(self.log_file_name) as gui_log:
             for line in gui_log:
-                self.MainWindow_fullLog.logText.insertPlainText(str(line))
+                self.MainWindow_fullLog.logText.append(line.rstrip('\n'))
         self.MainWindow_fullLog.show()
 
     def is_tool(self,name):
@@ -2141,7 +2153,7 @@ class Ui_MainWindow(object):
 
     def log_new_run(self):
         self.run_no += 1
-        self.occupy_log(f'Starting run no {self.run_no} ************************************START******', timestamp=True)
+        self.occupy_log(self.color_run(f'Starting run no {self.run_no} ************************************START******'), timestamp=True)
 
     def run_cmd(self):
         options = self.compose_cmd()
@@ -2165,7 +2177,7 @@ class Ui_MainWindow(object):
             if not options.verbose:
                 self.cat_log()
 
-            self.occupy_log(f'Finished run no {self.run_no} ************************************STOP******\n', timestamp=True)
+            self.occupy_log(self.color_run(f'Finished run no {self.run_no} ************************************STOP******\n'), timestamp=True)
 
             from pathlib import Path
             new_name = Path(options.input_map).name
@@ -2317,7 +2329,7 @@ class Ui_MainWindow(object):
             os.chdir(new_directory)
             self.occupy_log(f' Changed directory to {new_directory}')
         else:
-            self.occupy_log(f' Cannot change directory to {new_directory}')
+            self.occupy_warn(f' Cannot change directory to {new_directory}')
 
 class ImageWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):

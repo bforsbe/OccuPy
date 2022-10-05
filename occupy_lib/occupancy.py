@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from scipy import ndimage
 import warnings
 
-
 from occupy_lib import map_tools, solvent
 
 
