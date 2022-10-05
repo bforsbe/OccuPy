@@ -152,25 +152,23 @@ class MplWidget(QtWidgets.QWidget):
 
 
     def plot_modification(self):
-        anything = False
+
         self.canvas.ax.clear()
         x = np.linspace(0, 1, 100)
         if self.amplify:
             self.canvas.ax.plot(x, x ** (1 / self.amplification_power), 'C0')
-            anything =True
+
         if self.attenuate:
             self.canvas.ax.plot(x, x ** (self.attenuation_power), 'C1')
-            anything = True
+
         if self.sigmoid:
             x, y = occupancy.scale_mapping_sigmoid(self.sigmoid_pivot,self.sigmoid_power)
             self.canvas.ax.plot(x, y, 'C2')
             self.canvas.ax.plot(self.sigmoid_pivot, self.sigmoid_pivot, 'ko')
-            anything = True
-        if anything:
-            self.canvas.ax.plot([0, 1], [0, 1], 'k--')
+
+        self.canvas.ax.plot([0, 1], [0, 1], 'k--')
         self.canvas.ax.set_xlabel('estimated input scale')
         self.canvas.ax.set_ylabel('modified output scale')
-
 
         self.canvas.draw()
 
@@ -455,11 +453,23 @@ class Ui_MainWindow(object):
         self.tab_viewOutput.setEnabled(True)
         self.tab_viewOutput.setObjectName("tab_viewOutput")
 
+
         self.label_viewOutput = QtWidgets.QLabel(self.tab_viewOutput)
         self.label_viewOutput.setGeometry(QtCore.QRect(0, 0, 391, 391))
         self.label_viewOutput.setMinimumSize(QtCore.QSize(320, 320))
         self.label_viewOutput.setMaximumSize(QtCore.QSize(1000, 1000))
         self.label_viewOutput.setFrameShape(QtWidgets.QFrame.Box)
+
+        self.label_warnPreview = QtWidgets.QLabel(self.tab_viewOutput)
+        self.label_warnPreview.setGeometry(QtCore.QRect(10, 330, 380, 60))
+        self.label_warnPreview.setAlignment(QtCore.Qt.AlignCenter)
+        whiteBold = QtGui.QFont()
+        whiteBold.setBold(True)
+
+
+        self.label_warnPreview.setFont(whiteBold)
+        self.label_warnPreview.setStyleSheet("QLabel { color : white}")
+        self.label_warnPreview.setText("This is very rough preview. \n Run occupy again to generate full-quality map")
 
         self.label_viewOutput.setAlignment(QtCore.Qt.AlignCenter)
         self.label_viewOutput.setEnabled(False)
@@ -1230,6 +1240,9 @@ class Ui_MainWindow(object):
             # Close the file
             f.close()
 
+            self.tabWidget_view.setCurrentIndex(self.tabWidget_view.indexOf(self.tab_viewInput))
+            self.render_input_slice()
+
     def render_input_slice(self,force=False):
 
         # Check if input view is active (currently viewed)
@@ -1911,6 +1924,8 @@ class Ui_MainWindow(object):
                     self.label_viewOutput.setPixmap(pixmap) # Set the pixmap onto the label
                     self.label_viewOutput.setAlignment(QtCore.Qt.AlignCenter) # Align the label to center
                     #self.ho'rizontalSlider_4.setRange(1,n)
+
+                    self.label_warnPreview.raise_()
                 else:
                     self.label_viewOutput.setText("You have not set to modify anything. \n\n"
                                                   "Enable \"Amplify\", \"Attenuate\", or \n"
@@ -1993,11 +2008,11 @@ class Ui_MainWindow(object):
             if save:
                 file_open.write(f'{dt_string}{message}\n')
 
-        
+
     def occupy_warn(self, message):
         warning = f'\033[91m {message} \033[0m'
         self.textEdit_log.append(warning)
-        
+
     def clear_log(self):
         self.textEdit_log.clear()
 
