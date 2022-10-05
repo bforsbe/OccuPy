@@ -201,6 +201,8 @@ class Ui_MainWindow(object):
         self.scale_file_name = None
         self.occ_scale = None
         self.res_scale = None
+        self.chimerax_name = None
+        self.have_chimerax()
 
         self.cmd = []
         self.run_no = 0
@@ -931,7 +933,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "OccuPy"))
-        MainWindow.setWhatsThis(_translate("MainWindow", "pre-estimated local scale map "))
 
         # Input Map
         self.toolButton_inputMap_browse.setText(_translate("MainWindow", "browse"))
@@ -994,8 +995,17 @@ class Ui_MainWindow(object):
         #self.toolButton_fullLog.setText(_translate("MainWindow", "Full log"))
         #self.toolButton_fullLog.clicked.connect(self.view_full_log)
 
-        self.toolButton_chimerax.setText(_translate("MainWindow", "  Launch\n  ChimeraX"))
+        extra_chimx=''
+        if self.chimerax_name is None:
+            extra_chimx = '\n(not found)'
+        self.toolButton_chimerax.setText(_translate("MainWindow", f"  Launch\n  ChimeraX{extra_chimx}"))
         self.toolButton_chimerax.clicked.connect(self.run_chimerax)
+        self.toolButton_chimerax.setWhatsThis("Run chimerax command script \n"
+                                              "to visualize the most recent  \n"
+                                              "output from occupy. \n\n"
+                                              "If chimerax was not found, the \n"
+                                              "OCCUPY_CHIMERAX environment \n"
+                                              "variable can be set.")
 
         # Viewport X / Y / Z --------------------------------------
         self.checkBox_viewX.setText(_translate("MainWindow", "x"))
@@ -1049,8 +1059,6 @@ class Ui_MainWindow(object):
         self.toolButton_inputScale_browse.setText(_translate("MainWindow", "browse"))
         self.comboBox_inputScale.setToolTip(_translate("MainWindow", "pre-estimated local scale map "))
 
-        self.comboBox_inputSolventDef.setToolTip(_translate("MainWindow", "solvent mask to improve solvent detection"))
-        self.comboBox_inputSolventDef.setWhatsThis(_translate("MainWindow", "solvent mask to improve solvent detection"))
         self.toolButton_inputSolventDef_browse.setText(_translate("MainWindow", "browse"))
         self.toolButton_run.setText(_translate("MainWindow", "  Run  \n  OccuPy  "))#ɒk.jə.paɪ"))
         self.toolButton_run.clicked.connect(self.run_cmd)
@@ -2001,10 +2009,35 @@ class Ui_MainWindow(object):
                 self.MainWindow_fullLog.logText.insertPlainText(str(line))
         self.MainWindow_fullLog.show()
 
+    def is_tool(self,name):
+        """Check whether `name` is on PATH and marked as executable."""
+        # from whichcraft import which
+        from shutil import which
+        return which(name)
+
+    def find_chimerax(self,name):
+        if self.chimerax_name is None:
+            self.chimerax_name = self.is_tool(name)
+
+    def have_chimerax(self):
+
+        import os
+
+        self.chimerax_name = None
+
+        self.find_chimerax("chimerax")
+        self.find_chimerax("xchimera")
+        self.find_chimerax("Chimerax")
+        self.find_chimerax("ChimeraX")
+
+        occupy_chimx_var = 'OCCUPY_CHIMERAX'
+        if os.environ.get(occupy_chimx_var) != None:
+            self.find_chimerax(os.environ.get(occupy_chimx_var))
+
     def run_chimerax(self):
         if self.chimerax_file_name is not None:
             import os
-            os.system(f'chimerax {self.chimerax_file_name} & ')
+            os.system(f'{self.chimerax_name} {self.chimerax_file_name} &')
         else:
             self.occupy_log("No chimerax file defined this session.")
 
@@ -2148,7 +2181,8 @@ class Ui_MainWindow(object):
             self.add_scale_file(f'scale_{scale_mode}_{Path(new_name).stem}.mrc')
 
             self.chimerax_file_name = f'chimX_{Path(new_name).stem}.cxc'
-            self.toolButton_chimerax.setEnabled(True)
+            if self.chimerax_name is not None:
+                self.toolButton_chimerax.setEnabled(True)
             self.toolButton_run.setEnabled(True)
 
             self.show_solvent_model()
