@@ -1,10 +1,7 @@
 from typing import Optional
 import typer
 
-try:
-    import estimate              # for pyCharm
-except:
-    from occupy import estimate   # for terminal use
+from occupy_lib import estimate   # for terminal use
 
 from pkg_resources import get_distribution
 __version__ =  get_distribution("occupy").version

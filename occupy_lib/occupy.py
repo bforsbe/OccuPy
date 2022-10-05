@@ -2,10 +2,8 @@ import os
 import numpy as np
 import mrcfile as mf
 from pathlib import Path
-try:
-    import estimate, args, occupy_gui              # for pyCharm
-except:
-    from occupy import estimate, args, occupy_gui   # for terminal use
+
+from occupy_lib import estimate, args, occupy_gui   # for terminal use
 from skimage.exposure import match_histograms
 
 from typing import Optional

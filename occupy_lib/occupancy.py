@@ -3,10 +3,8 @@ import matplotlib.pyplot as plt
 from scipy import ndimage
 import warnings
 
-try:
-    import map_tools, solvent
-except:
-    from occupy import map_tools, solvent
+
+from occupy_lib import map_tools, solvent
 
 
 def sigmoid_effective_mu(
