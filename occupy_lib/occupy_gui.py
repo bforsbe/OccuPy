@@ -178,6 +178,7 @@ class Ui_MainWindow(object):
 
         self.new_session = True
         self.inputMap = InputMapProperties()
+        self.infile_size = None
         self.infile_minval = None
         self.infile_maxval = None
         self.log_file_name = 'occupy_gui_log.txt'
@@ -1243,6 +1244,7 @@ class Ui_MainWindow(object):
 
                 self.infile_minval = np.min(f.data)
                 self.infile_maxval = np.max(f.data)
+                self.infile_size = n
 
                 self.spinBox_viewSlice.setMaximum(n)
                 self.spinBox_viewSlice.setValue(n//2)
@@ -1532,17 +1534,32 @@ class Ui_MainWindow(object):
 
                 f.close()
 
-    def set_solvent_file(self):
+    def set_solvent_file(self,solvent_file_name=None,generate=False):
         import os
-        solvent_file_name, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", os.getcwd(),
+        if solvent_file_name is None:
+            solvent_file_name, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", os.getcwd(),
                                                                    "Image Files (*.mrc *.map);;All Files (*)")  # Ask for file
-        if solvent_file_name:
-            self.label_viewSolDef.setEnabled(True)
-            # TODO loop and set if new, otherwise change active
-            self.comboBox_inputSolventDef.addItem(str(solvent_file_name))
-            n = self.comboBox_inputSolventDef.count()
-            self.comboBox_inputSolventDef.setCurrentIndex(n-1)
-            self.read_solvent_file()
+        new_file = True
+        idx = None
+        for i in range(self.comboBox_inputSolventDef.count()):
+            if self.comboBox_inputSolventDef.itemText(i) == solvent_file_name:
+                idx = i
+                new_file = False
+
+        if new_file:
+            if solvent_file_name:
+                self.label_viewSolDef.setEnabled(True)
+                # TODO loop and set if new, otherwise change active
+                self.comboBox_inputSolventDef.addItem(str(solvent_file_name))
+                n = self.comboBox_inputSolventDef.count()
+                self.comboBox_inputSolventDef.setCurrentIndex(n-1)
+
+                # only read if its a browsed input
+                if not generate:
+                    self.read_solvent_file()
+            return True
+        else:
+            return False
 
     def read_solvent_file(self):
         # TODO check that file/map still exists
@@ -2140,6 +2157,34 @@ class Ui_MainWindow(object):
         else:
             self.occupy_log("No chimerax file defined this session.")
 
+
+    def generate_soldef_from_scale(self):
+
+        threshold = float(self.slider_scaleAsSolDef.value()) / 100.0
+        solvent_def_name = f'soldef_by_scale_{threshold}.mrc'
+        is_new_file = self.set_solvent_file(solvent_def_name,generate=True)
+
+        if is_new_file:
+
+            scale_file_name = self.comboBox_inputScale.currentText()
+            f_in = mf.mmap(scale_file_name, 'r')
+
+            data = map_tools.lowpass(
+                np.copy(f_in.data),
+                output_size=self.infile_size
+            )
+
+            data = (data > threshold).astype(np.float32)
+            map_tools.new_mrc(
+                data=data,
+                file_name=solvent_def_name,
+                parent=self.comboBox_inputMap.currentText()
+            )
+
+            f_in.close()
+
+        return solvent_def_name
+
     def compose_cmd(self):
 
         options = args.occupy_options()
@@ -2149,6 +2194,9 @@ class Ui_MainWindow(object):
         # input files ----------------------------------------------------------------------------
         options.input_map = self.comboBox_inputMap.currentText()
         self.cmd.append(f'--input-map {options.input_map}')
+
+        if self.checkBox_scaleAsSolDef.isChecked():
+            options.solvent_def = self.generate_soldef_from_scale()
 
         if len(self.comboBox_inputSolventDef.currentText())>3:
             options.solvent_def = self.comboBox_inputSolventDef.currentText()
@@ -2255,6 +2303,7 @@ class Ui_MainWindow(object):
             self.occupy_log(" Reporting command: \n")
             self.occupy_log(f'{" ".join(self.cmd)}\n')
         else:
+
             self.toolButton_chimerax.setEnabled(False)
             self.toolButton_run.setEnabled(False)
             self.log_new_run(start=True)
