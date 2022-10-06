@@ -1413,6 +1413,8 @@ class Ui_MainWindow(object):
             self.checkBox_scaleAsSolDef.setEnabled(True)
 
     def add_scale_file(self,new_scale_file):
+        self.checkBox_scaleAsSolDef.setEnabled(True)
+
         self.scale_file_name = str(new_scale_file)
         self.set_scale_mode(self.scale_file_name)
 
@@ -1557,9 +1559,6 @@ class Ui_MainWindow(object):
                 # only read if its a browsed input
                 if not generate:
                     self.read_solvent_file()
-            return True
-        else:
-            return False
 
     def read_solvent_file(self):
         # TODO check that file/map still exists
@@ -1567,7 +1566,7 @@ class Ui_MainWindow(object):
         # Get file name or object
         solvent_file_name = self.comboBox_inputSolventDef.currentText()
 
-        if solvent_file_name != '':
+        if solvent_file_name:
 
             # Open memory mapped to set options etc.
             f = mf.mmap(solvent_file_name)
@@ -2162,17 +2161,19 @@ class Ui_MainWindow(object):
 
         threshold = float(self.slider_scaleAsSolDef.value()) / 100.0
         solvent_def_name = f'soldef_by_scale_{threshold}.mrc'
-        is_new_file = self.set_solvent_file(solvent_def_name,generate=True)
 
-        if is_new_file:
+        from os.path import exists
 
+        if not exists(solvent_def_name):
             scale_file_name = self.comboBox_inputScale.currentText()
             f_in = mf.mmap(scale_file_name, 'r')
 
-            data = map_tools.lowpass(
-                np.copy(f_in.data),
-                output_size=self.infile_size
-            )
+            data = np.copy(f_in.data)
+            if f_in.header['nx'] != self.infile_size:
+                data, _ = map_tools.lowpass(
+                    data,
+                    output_size=self.infile_size
+                )
 
             data = (data > threshold).astype(np.float32)
             map_tools.new_mrc(
@@ -2182,6 +2183,8 @@ class Ui_MainWindow(object):
             )
 
             f_in.close()
+
+        self.set_solvent_file(solvent_def_name)
 
         return solvent_def_name
 
@@ -2344,9 +2347,9 @@ class Ui_MainWindow(object):
     def show_solvent_model(self):
         from pathlib import Path
         solDef_specifier = ''
-        c =  self.comboBox_inputSolventDef.currentText()
+        c = self.comboBox_inputSolventDef.currentText()
         if self.comboBox_inputSolventDef.currentText() != ' ':
-            solDef_specifier = f'{Path(self.comboBox_inputSolventDef.currentText()).stem}'
+            solDef_specifier = f'{Path(self.comboBox_inputSolventDef.currentText()).stem}_'
         solModel_file_name = f'solModel_{solDef_specifier}' + Path(self.comboBox_inputMap.currentText()).stem + '.png'
 
         self.solModel_file_name = solModel_file_name
