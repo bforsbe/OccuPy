@@ -7,5 +7,5 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
-write_to = "occupy/_version.py"
+write_to = "occupy_lib/_version.py"
 
