@@ -1,6 +1,8 @@
 import mrcfile as mf
 import numpy as np
 import scipy
+import sys
+
 from scipy import ndimage
 
 from io import StringIO
@@ -65,6 +67,7 @@ class Capturing(list):
         return self
 
     def __exit__(self, *args):
+
         self.extend(self._stringio.getvalue().splitlines())
         del self._stringio  # free up some memory
         sys.stdout = self._stdout
@@ -420,6 +423,25 @@ class Ui_MainWindow(object):
         self.label_viewSolDef.setEnabled(False)
 
         self.label_viewSolDef.setObjectName("label_viewSolDef")
+
+
+        self.label_scaleAsSolDef = QtWidgets.QLabel(self.tab_solvDef)
+        self.label_scaleAsSolDef.setText("Binarize scale as solvent def?")
+        self.label_scaleAsSolDef.setGeometry(10,360,200,20)
+
+        self.checkBox_scaleAsSolDef = QtWidgets.QCheckBox(self.tab_solvDef)
+        self.checkBox_scaleAsSolDef.setEnabled(False)
+        self.checkBox_scaleAsSolDef.setGeometry(220,360,20,20)
+        self.slider_scaleAsSolDef = QtWidgets.QSlider(self.tab_solvDef)
+        self.slider_scaleAsSolDef.setEnabled(False)
+        self.slider_scaleAsSolDef.setGeometry(250,360,130,20)
+        self.slider_scaleAsSolDef.setMinimum(1)
+        self.slider_scaleAsSolDef.setMaximum(99)
+
+        self.slider_scaleAsSolDef.setProperty("value", 20)
+        self.slider_scaleAsSolDef.setSliderPosition(99)
+        self.slider_scaleAsSolDef.setOrientation(QtCore.Qt.Horizontal)
+
         self.tabWidget_view.addTab(self.tab_solvDef, "")
         self.tab_viewModification = QtWidgets.QWidget()
         self.tab_viewModification.setEnabled(True)
@@ -969,8 +991,8 @@ class Ui_MainWindow(object):
         self.groupBox_attenuation.clicked.connect(self.render_output_slice_with_focus)
         self.groupBox_sigmoid.clicked.connect(self.render_output_slice_with_focus)
 
-
-
+        self.checkBox_scaleAsSolDef.clicked.connect(self.update_scale_slider)
+        self.slider_scaleAsSolDef.valueChanged.connect(self.update_scale_slider)
 
         self.checkBox_verbose.setText(_translate("MainWindow", "Verbose"))
         self.checkBox_showCmd.setText(_translate("MainWindow", "CmdLine"))
@@ -1064,6 +1086,17 @@ class Ui_MainWindow(object):
         self.toolButton_expandSolModel.clicked.connect(self.window_solvent_model)
 
         self.tabWidget_output.tabBarDoubleClicked.connect(self.view_full_log)
+
+    def update_scale_slider(self):
+
+        self.label_viewSolDef.clear()
+        if self.checkBox_scaleAsSolDef.isChecked():
+            self.slider_scaleAsSolDef.setEnabled(True)
+            self.render_solvent_slice()
+        else:
+            self.slider_scaleAsSolDef.setEnabled(False)
+
+
 
     def set_default_views(self):
         self.label_viewInput.setText("Load an input file (.map/.mrc)")
@@ -1375,6 +1408,7 @@ class Ui_MainWindow(object):
                 self.comboBox_inputScale.setCurrentIndex(idx)
 
             self.read_scale_file()
+            self.checkBox_scaleAsSolDef.setEnabled(True)
 
     def add_scale_file(self,new_scale_file):
         self.scale_file_name = str(new_scale_file)
@@ -1541,13 +1575,24 @@ class Ui_MainWindow(object):
             f.close()
 
     def render_solvent_slice(self,force=False):
-
+        self.label_viewSolDef.setEnabled(True)
         # Check if input view is active (currently viewed)
         # We don't want to read and render a slice that we're not viewing
         if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_solvDef) or force:
 
-            # Get file name or object
-            solvent_file_name = self.comboBox_inputSolventDef.currentText()
+            solvent_file_name = ''
+            threshold = None
+
+            #Use the scale to render
+            if self.checkBox_scaleAsSolDef.isChecked():
+                # Get file name or object
+                solvent_file_name = self.comboBox_inputScale.currentText()
+                threshold = int( 255 * float(self.slider_scaleAsSolDef.value()) / 100.0 )
+            else:
+                self.label_viewSolDef.clear()
+
+                # Get file name or object
+                solvent_file_name = self.comboBox_inputSolventDef.currentText()
 
             # Get file slice number
             slice = self.horizontalSlider_viewSlice.value()
@@ -1599,6 +1644,10 @@ class Ui_MainWindow(object):
 
                 # Construct and render image
                 im_data = np.array((t * 255).astype(np.uint8))
+
+                if threshold is not None:
+                    im_data = np.array((im_data > threshold).astype(np.uint8))*255
+
                 qimage = QtGui.QImage(im_data, n, n,
                                       QtGui.QImage.Format_Grayscale8)  # Setup pixmap with the provided image
                 pixmap = QtGui.QPixmap(qimage)  # Setup pixmap with the provided image
