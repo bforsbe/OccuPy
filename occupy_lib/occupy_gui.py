@@ -1154,9 +1154,12 @@ class Ui_MainWindow(object):
 
                 self.toolButton_run.setEnabled(True)
                 self.toolButton_run.clearFocus()
-
+                self.occupy_log(f'Opened {file_name}')
             else:
                 self.comboBox_inputMap.setCurrentIndex(idx)
+                self.occupy_log(f'File {file_name} already open')
+        else:
+            self.occupy_log(f'File {file_name} not found')
 
 
     def add_input_file(self,new_input_file):
@@ -1977,6 +1980,9 @@ class Ui_MainWindow(object):
             dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
             dt_string = f'{self.color_time(dt_string)}\n'
 
+        if message.startswith('** warn **'):
+            message = self.color_warn(message)
+
         message = f'{dt_string} {message}'
         self.textEdit_log.append(message)
         self.textEdit_log.repaint()
@@ -1985,10 +1991,19 @@ class Ui_MainWindow(object):
             if self.new_session:
                 is_fetching_emdb = not (id is None or id == 0)
                 if self.comboBox_inputMap.currentText() or is_fetching_emdb:
-                    file_open.write(f'{dt_string} NEW GUI SESSION STARTED \n\n')
+
+                    # Which session is this
+                    file_r = open(self.log_file_name, "r")
+                    data = file_r.read()
+                    # get number of occurrences of the substring in the string
+                    self.session_no = data.count('NEW GUI SESSION STARTED') + 1
+                    # Which session is this
+
+                    # Log that this is a new seesion in the full log
+                    file_open.write(f'{dt_string} NEW GUI SESSION STARTED ({self.session_no}) \n\n')
                     self.new_session = False
             if save:
-                file_open.write(f'{dt_string}{message}\n')
+                file_open.write(f'{message}\n')
 
 
     def occupy_warn(self, message):
@@ -2011,7 +2026,6 @@ class Ui_MainWindow(object):
         return clr_message
 
     def view_full_log(self):
-
 
         self.occupy_log("Opening full log", save=False)
         self.MainWindow_fullLog = fullLog_dialog()
@@ -2151,9 +2165,15 @@ class Ui_MainWindow(object):
 
         return options
 
-    def log_new_run(self):
-        self.run_no += 1
-        self.occupy_log(self.color_run(f'Starting run no {self.run_no} ************************************START******'), timestamp=True)
+    def log_new_run(self,start=True):
+        phase = ''
+        if start:
+            self.run_no += 1
+            phase = 'STARTING'
+        else:
+            phase = 'FINISHED'
+
+        self.occupy_log(self.color_run(f'{phase} run no {self.session_no}-{self.run_no}'), timestamp=True)
 
     def run_cmd(self):
         options = self.compose_cmd()
@@ -2165,9 +2185,9 @@ class Ui_MainWindow(object):
         else:
             self.toolButton_chimerax.setEnabled(False)
             self.toolButton_run.setEnabled(False)
-            self.log_new_run()
+            self.log_new_run(start=True)
             with Capturing() as output:
-                self.occupy_log('Estimating local scale...')
+                #self.occupy_log('Estimating local scale...')
                 estimate.occupy_run(options)
 
             for i in output:
@@ -2177,7 +2197,7 @@ class Ui_MainWindow(object):
             if not options.verbose:
                 self.cat_log()
 
-            self.occupy_log(self.color_run(f'Finished run no {self.run_no} ************************************STOP******\n'), timestamp=True)
+            self.log_new_run(start=False)
 
             from pathlib import Path
             new_name = Path(options.input_map).name

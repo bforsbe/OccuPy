@@ -78,11 +78,11 @@ def occupy_run(options: args.occupy_options):
     f_open.close()
 
     if not len(np.unique(in_data.shape)) == 1:
-        raise ValueError(f'\033[91m input map is not cubic (pixel-extents: {nd})\033[0m')
+        raise ValueError(f'** fail ** input map is not cubic (pixel-extents: {nd})')
     if not (nd[0] % 2) == 0:
-        raise ValueError(f'\033[91m input map is not even-sized. (pixel-extents: {nd})\033[0m')
+        raise ValueError(f'** fail **  input map is not even-sized. (pixel-extents: {nd})')
     if not (options.max_box % 2 == 0) and (options.max_box < nd[0]):
-        raise ValueError(f'\033[91m You specified an odd (not even) --max-box value ({options.max_box})\033[0m')
+        raise ValueError(f'** fail **  You specified an odd (not even) --max-box value ({options.max_box})')
 
     print(f'Estimating local scale of {options.input_map}...')
     # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
@@ -149,11 +149,11 @@ def occupy_run(options: args.occupy_options):
     if options.kernel_size < 5:
         kernel_warn = True
         print(
-            f'\033[93m \nAuto-calculated a very small kernel-size ({options.kernel_size} pixels). \nThis may lead to a bad solvent model \nSuggest --kernel 5 or more, and/or --lowpass {int(options.lowpass_input * 2)} or more \n \033[0m')
+            f'** warn ** Auto-calculated a very small kernel-size ({options.kernel_size} pixels). \n** warn ** This may lead to a bad solvent model \n** warn ** Suggest --kernel 5 or more, and/or --lowpass {int(options.lowpass_input * 2)} or more\n')
 
     if options.kernel_radius < options.kernel_size / (2 * 2):
         print(
-            f'\033[93m \nAuto-calculated a very small kernel radius ({options.kernel_radius:.2f} pixels). \nThis may lead to a bad solvent model \nSuggest --lowpass {int(options.lowpass_input * 2)} or more \n \033[0m')
+            f'** warn ** Auto-calculated a very small kernel radius ({options.kernel_radius:.2f} pixels). \n** warn ** This may lead to a bad solvent model \n** warn ** Suggest --lowpass {int(options.lowpass_input * 2)} or more\n')
         kernel_warn = True
 
     scale_kernel, tau_ana = occupancy.spherical_kernel(
@@ -259,7 +259,7 @@ def occupy_run(options: args.occupy_options):
         # Check same size as ori inout map (can be relaxed later)
         if not sol_mask.shape == nd:
             raise ValueError(
-                f'\033[91m input solvent definition map  size {sol_mask.shape} is not the same size as input map: {nd}\033[0m')
+                f'** fail ** input solvent definition map  size {sol_mask.shape} is not the same size as input map: {nd}')
 
         if downscale_processing:
             sol_mask, _ = map_tools.lowpass(
@@ -356,15 +356,13 @@ def occupy_run(options: args.occupy_options):
         print(f'Min c.sc :\t[0,1]\t {lowest_confident_scale:.3f}', file=f_log)
 
     # Dirty check on the solvent model, could be more rigorous
-    if do_modify or do_exclude_solvent:
-
-        if lowest_confident_scale > 0.5:
-            warnings = "Solvent model fit is likely bad. Check terminal output and"
-            if not options.plot:
-                warnings = f'{warnings} run with --plot and check solModel*.png'
-            else:
-                warnings = f'{warnings} check the output solModel*.png '
-            solvent.warn_bad(lowest_confident_scale, file=f_log, verbose=options.verbose, kernel_warn=kernel_warn)
+    if lowest_confident_scale > 0.5:
+        warnings = "Solvent model fit is likely bad. Check terminal output and"
+        if not options.plot:
+            warnings = f'{warnings} run with --plot and check solModel*.png'
+        else:
+            warnings = f'{warnings} check the output solModel*.png '
+        solvent.warn_bad(lowest_confident_scale, file=f_log, verbose=options.verbose, kernel_warn=kernel_warn)
 
 
 
@@ -790,34 +788,35 @@ def occupy_run(options: args.occupy_options):
         print(f_log.read())
         f_log.close()
 
-    if do_modify:
-        print(f'Done estimating local scale and modifying input by local scale. ')
-    else:
-        print(f'Done estimating local scale')
-        print(
-            f'You *could* also modify according to estimated occupancy by using either amplify, attenuate, and/or sigmoid')
-
-    if not options.exclude_solvent:
-        print(
-            f'You *could* also exclude solvent ')
-
     if options.gui:
-        print(f'\n  -- Use the button "launch chimeraX" to view output. -- \n')
+        print(f'\n  -*- Use chimeraX to view output -*- \n')
     else:
-        if options.chimerax:
+        if do_modify:
+            print(f'Done estimating local scale and modifying input by local scale. ')
+        else:
+            print(f'Done estimating local scale')
+            print(
+                f'You *could* also modify according to estimated occupancy by using either amplify, attenuate, and/or sigmoid')
+
+        if not options.exclude_solvent:
+            print(
+                f'You *could* also exclude solvent ')
+
+        if options.chimerax and not options.gui:
             if options.show_chimerax:
-                print(f'\033[92m \nOpening {chimx_file} in chimeraX, this may take a moment. Please be patient. \033[0m \n')
+                print(f'Opening {chimx_file} in chimeraX, this may take a moment. Please be patient.\n')
                 os.system(f'chimerax {chimx_file} & ')
             else:
                 print(f'\nYou should run chimeraX to visualize the output, using this command: ')
-                print(f'\033[92m \nchimerax {chimx_file} \033[0m \n')
+                print(f'chimerax {chimx_file}\n')
                 print(f'HINT: you could also auto-start chimeraX by using --show-chimerax')
 
         if options.chimerax_silent:
             if options.show_chimerax:
                 os.system(f'chimerax {chimx_file}')
             else:
+
                 print(f'\nTo generate thumbnails of your output, run: ')
-                print(f'\033[94m \nchimerax --offscreen {chimx_file_silent} \033[0m \n')
+                print(f'\nchimerax --offscreen {chimx_file_silent}\n')
 
     return 0
