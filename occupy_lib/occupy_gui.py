@@ -1063,6 +1063,8 @@ class Ui_MainWindow(object):
 
         self.toolButton_expandSolModel.clicked.connect(self.window_solvent_model)
 
+        self.tabWidget_output.tabBarDoubleClicked.connect(self.view_full_log)
+
     def set_default_views(self):
         self.label_viewInput.setText("Load an input file (.map/.mrc)")
         self.label_viewScale.setText("Run occupy or \n load a scale (.map/.mrc)")
@@ -1165,7 +1167,7 @@ class Ui_MainWindow(object):
             else:
                 self.comboBox_inputMap.setCurrentIndex(idx)
                 self.occupy_log(f'File {file_name} already open')
-        else:
+        elif len(file_name)>3:
             self.occupy_log(f'File {file_name} not found')
 
 
