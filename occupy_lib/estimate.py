@@ -713,7 +713,8 @@ def occupy_run(options: args.occupy_options):
             ax1.plot(b[:-1], np.clip(mapping ** options.hedge_confidence, ax1.get_ylim()[0], 1.0), ':r',
                                   label='hedged confidence')
 
-        plt.plot([max_val,max_val],ax1.get_ylim(),'k-',label='full scale')
+        # It would be nice to plot this, but this is on the lp (sol_data) hist
+        # plt.plot([max_val,max_val],ax1.get_ylim(),'k-',label='full scale')
 
         ax1.legend(bbox_to_anchor=(1, 1), loc="upper left",prop={'size': 11})
         plt.subplots_adjust(
