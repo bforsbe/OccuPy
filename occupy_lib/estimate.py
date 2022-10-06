@@ -713,6 +713,8 @@ def occupy_run(options: args.occupy_options):
             ax1.plot(b[:-1], np.clip(mapping ** options.hedge_confidence, ax1.get_ylim()[0], 1.0), ':r',
                                   label='hedged confidence')
 
+        plt.plot([max_val,max_val],ax1.get_ylim(),'k-',label='full scale')
+
         ax1.legend(bbox_to_anchor=(1, 1), loc="upper left",prop={'size': 11})
         plt.subplots_adjust(
             top=0.94,
@@ -775,12 +777,12 @@ def occupy_run(options: args.occupy_options):
             plt.show()
 
     print(f'\n------------------------------------Detected limits-------', file=f_log)
-    print(f'Content at 1% of solvent  : \t {sol_limits[2]:.3f}', file=f_log)
-    print(f'Solvent drop to 0% (edge) : \t {sol_limits[3]:.3f}', file=f_log)
-    print(f'Solvent peak              : \t {solvent_parameters[1]:.3f}', file=f_log)
-    print(f'Occupancy full            : \t {max_val:.3f}', file=f_log)
-    print(f'Variability_limit         : \t {variability_limit:.3f}', file=f_log)
-    print(f'Scale confidence limit    : \t {lowest_confident_scale:.3f}', file=f_log)
+    print(f'Content at 1% of solvent  \t: \t {sol_limits[2]:.3f}', file=f_log)
+    print(f'Solvent drop to 0% (edge) \t: \t {sol_limits[3]:.3f}', file=f_log)
+    print(f'Solvent peak        \t    \t: \t {solvent_parameters[1]:.3f}', file=f_log)
+    print(f'Full scale          \t    \t: \t {max_val:.3f}', file=f_log)
+    print(f'Variability_limit   \t    \t: \t {variability_limit:.3f}', file=f_log)
+    print(f'Scale confidence limit    \t: \t {lowest_confident_scale:.3f}', file=f_log)
 
     f_log.close()
     if options.verbose:

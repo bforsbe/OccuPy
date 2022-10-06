@@ -1146,6 +1146,13 @@ class Ui_MainWindow(object):
                     new_file = False
 
             if new_file:
+
+                scale_mode = self.check_scale_mode(file_name)
+                if scale_mode is not None:
+                    self.occupy_warn(f'{file_name} appears to be a scale file, you should not use this as input.')
+                    return
+
+
                 self.comboBox_inputMap.addItem(file_name)
                 n = self.comboBox_inputMap.count()
                 self.comboBox_inputMap.setCurrentIndex(n-1)
@@ -1282,41 +1289,55 @@ class Ui_MainWindow(object):
                 del im_data
                 f.close()
 
-    def set_scale_mode(self,scale_file_name):
+    def check_scale_mode(self,file_name):
 
-        self.occ_scale = False
-        self.res_scale = False
+        occ_mode = None
 
-        if scale_file_name != '':
+        if file_name != '':
             #Label method
-            f = mf.mmap(scale_file_name)
+            f = mf.mmap(file_name)
 
             not_found = True
             nlabl = f.header['nlabl']
             for i in np.arange(nlabl):
                 label = str(f.header['label'][i])
                 if "occupy scale: occ" in label:
-                    self.occ_scale = True
+                    occ_mode = 'occ'
                     not_found = False
                     break
                 elif "occupy scale: res" in label:
-                    self.res_scale = True
+                    occ_mode = 'res'
                     not_found = False
                     break
+
+            #Keep this alive for now, but it hsould be safe to delete to make it more difficult tho cheat
             if not_found:
                 # String method as fallback
-                if "_occ_" in scale_file_name:
-                    self.occ_scale = True
-                    not_found = False
-                elif "_res_" in scale_file_name:
-                    self.res_scale = True
-                    not_found = False
+                if "_occ_" in file_name:
+                    occ_mode = 'occ'
+                elif "_res_" in file_name:
+                    occ_mode = 'res'
 
-            if not_found:
-                self.occupy_log('Could not find scale mode during scale file load')
-                if nlabl == 10:
-                    print("There was nothing to confirm this is an occ scale, but all lables are full, so permitting.")
-                    self.occ_scale = True
+            if not_found and nlabl == 10:
+                occ_mode = 'full'
+
+        return occ_mode
+
+    def set_scale_mode(self,scale_file_name):
+
+        self.occ_scale = False
+        self.res_scale = False
+
+        scale_mode = self.check_scale_mode(scale_file_name)
+        if scale_mode == 'occ':
+            self.occ_scale = True
+        elif scale_mode == 'res':
+            self.res_scale = True
+        elif scale_mode =='full':
+            print("There was nothing to confirm this is an occ scale, but all labels are full, so permitting.")
+            self.occ_scale = True
+        else:
+            self.occupy_log('Could not find scale mode during scale file load')
 
     def change_input_file(self):
         self.in_file_name = str(self.comboBox_inputMap.currentText())
@@ -2008,7 +2029,7 @@ class Ui_MainWindow(object):
 
     def occupy_warn(self, message):
         #warning = "<span style=\" font-size:8pt; font-weight:600; color:#ff0000;\" >"
-        warning = self.color_warn()
+        warning = self.color_warn(message)
         self.textEdit_log.append(warning)
 
     def clear_log(self):
