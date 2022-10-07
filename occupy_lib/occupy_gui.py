@@ -1096,6 +1096,7 @@ class Ui_MainWindow(object):
             self.render_solvent_slice()
         else:
             self.slider_scaleAsSolDef.setEnabled(False)
+            self.render_solvent_slice()
 
 
 
@@ -1129,11 +1130,16 @@ class Ui_MainWindow(object):
         self.comboBox_inputMap.clear()
         self.comboBox_inputScale.clear()
         self.confidence_file_name = None
+
         self.comboBox_inputSolventDef.clear()
+        self.comboBox_inputSolventDef.addItem(" ")
+
 
         # Inactive Buttons
         self.toolButton_run.setEnabled(False)
         self.toolButton_chimerax.setEnabled(False)
+        self.checkBox_scaleAsSolDef.setChecked(False)
+        self.checkBox_scaleAsSolDef.setEnabled(False)
 
         # Should clear all views
         self.set_default_views()
@@ -2189,7 +2195,7 @@ class Ui_MainWindow(object):
             f_in.close()
 
         self.set_solvent_file(solvent_def_name)
-
+        self.checkBox_scaleAsSolDef.setChecked(False)
         return solvent_def_name
 
     def compose_cmd(self):
@@ -2476,6 +2482,7 @@ class Ui_MainWindow(object):
         if os.path.isdir(new_directory):
             os.chdir(new_directory)
             self.occupy_log(f' Changed directory to {new_directory}')
+            self.reset_session()
         else:
             self.occupy_warn(f' Cannot change directory to {new_directory}')
 
