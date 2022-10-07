@@ -1538,7 +1538,7 @@ class Ui_MainWindow(object):
 
     def set_solvent_file(self,solvent_file_name=None,generate=False):
         import os
-        if solvent_file_name is None:
+        if solvent_file_name is None or solvent_file_name is False:
             solvent_file_name, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", os.getcwd(),
                                                                    "Image Files (*.mrc *.map);;All Files (*)")  # Ask for file
         new_file = True
@@ -1566,7 +1566,7 @@ class Ui_MainWindow(object):
         # Get file name or object
         solvent_file_name = self.comboBox_inputSolventDef.currentText()
 
-        if solvent_file_name:
+        if len(solvent_file_name)>3:
 
             # Open memory mapped to set options etc.
             f = mf.mmap(solvent_file_name)
@@ -1589,6 +1589,8 @@ class Ui_MainWindow(object):
 
             # Close the file
             f.close()
+        else:
+            self.label_viewSolDef.clear()
 
     def render_solvent_slice(self,force=False):
         self.label_viewSolDef.setEnabled(True)
