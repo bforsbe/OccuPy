@@ -1591,6 +1591,8 @@ class Ui_MainWindow(object):
             f.close()
         else:
             self.label_viewSolDef.clear()
+            self.checkBox_scaleAsSolDef.setChecked(False)
+            self.slider_scaleAsSolDef.setEnabled(False)
 
     def render_solvent_slice(self,force=False):
         self.label_viewSolDef.setEnabled(True)
