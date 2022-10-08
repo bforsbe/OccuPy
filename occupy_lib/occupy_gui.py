@@ -904,6 +904,8 @@ class Ui_MainWindow(object):
         self.menu_session.setObjectName("menu_session")
         self.menu_help = QtWidgets.QMenu(self.menubar)
         self.menu_help.setObjectName("menu_help")
+        self.menu_generate = QtWidgets.QMenu(self.menubar)
+        self.menu_generate.setObjectName("menu_generate")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -925,6 +927,11 @@ class Ui_MainWindow(object):
         self.actionreset = QtWidgets.QAction(MainWindow)
         self.actionreset.setObjectName("actionreset")
         self.actionreset.triggered.connect(self.reset_session)
+
+        self.actionsubtractionMask = QtWidgets.QAction(MainWindow)
+        self.actionsubtractionMask.setObjectName("actionsubtractionMask")
+        self.actionsubtractionMask.triggered.connect(self.generate_subtraction_mask)
+
         self.menu_session.addAction(self.actionchange_location)
         self.menu_session.addAction(self.actionreset)
         self.menu_session.addSeparator()
@@ -932,17 +939,21 @@ class Ui_MainWindow(object):
         self.menu_session.addAction(self.actionview_full_log)
         self.menu_help.addAction(self.actiontutorial)
         self.menu_help.addAction(self.actionabout)
+        self.menu_generate.addAction(self.actionsubtractionMask)
         self.menubar.addAction(self.menu_session.menuAction())
         self.menubar.addAction(self.menu_help.menuAction())
+        self.menubar.addAction(self.menu_generate.menuAction())
 
         self.menu_session.setTitle("session")
         self.menu_help.setTitle("help")
+        self.menu_generate.setTitle("generate")
         self.actiontutorial.setText("tutorial")
         self.actionabout.setText("about")
         self.actionchange_location.setText("change location")
         self.actionclear_log.setText("clear log")
         self.actionview_full_log.setText("view full log")
         self.actionreset.setText("reset")
+        self.actionsubtractionMask.setText("Subtraction mask")
 
 
 
@@ -1124,6 +1135,64 @@ class Ui_MainWindow(object):
                                       "maps written to disk.")
         self.label_solventModel.setText("Run occupy to \n view the solvent model")
 
+    def generate_subtraction_mask(self):
+
+        N=1000
+        scale_file_name = self.comboBox_inputScale.currentText()
+
+        if len(scale_file_name)>3:
+
+            did_something = False
+
+            scale_data = mf.mmap(scale_file_name)
+            scale_index = (scale_data.data*(N-1)).astype(np.int16)
+
+            if self.groupBox_attenuation.isChecked() and self.MplWidget_viewModification.attenuation_power > 1:
+                x = np.linspace(0, 1, N)
+                s_attn = x ** (self.MplWidget_viewModification.attenuation_power-1)
+
+                s_attn =np.clip(s_attn,0,1)
+
+                sub_mask_attn = s_attn[scale_index]
+                sub_mask_attn_name = f'subtraction_mask_attn_' \
+                                     f'{self.MplWidget_viewModification.attenuation_power}.' \
+                                     f'mrc'
+                #TODO wrong size, resample to input map size
+                map_tools.new_mrc(sub_mask_attn, sub_mask_attn_name, parent=scale_file_name)
+
+                did_something=True
+                self.occupy_log(f'Made {sub_mask_attn_name}')
+
+
+            if self.groupBox_sigmoid.isChecked() and self.MplWidget_viewModification.sigmoid_power > 1:
+                x, s_sigm = occupancy.scale_mapping_sigmoid(self.MplWidget_viewModification.sigmoid_pivot,
+                                                        self.MplWidget_viewModification.sigmoid_power, n=N)
+
+                # No amplification permitted during subtraction, limit sigmoid above pivot
+                n_pivot = int(N * self.MplWidget_viewModification.sigmoid_pivot)
+                s_sigm[n_pivot:] = 1
+                s_sigm[0]=0
+
+                s_sigm[1:n_pivot] = np.divide(s_sigm[1:n_pivot], x[1:n_pivot])
+                s_sigm = np.clip(s_sigm,0,1)
+
+                sub_mask_sigm = s_sigm[scale_index]
+                sub_mask_sigm_name = f'subtraction_mask_sigm_' \
+                                     f'{self.MplWidget_viewModification.sigmoid_pivot}.' \
+                                     f'{self.MplWidget_viewModification.sigmoid_power}.' \
+                                     f'mrc
+                # TODO wrong size, resample to input map size
+                map_tools.new_mrc(sub_mask_sigm,sub_mask_sigm_name, parent=scale_file_name)
+
+                did_something = True
+                self.occupy_log(f'Made {sub_mask_sigm_name}')
+
+            scale_data.close()
+            if not did_something:
+                self.occupy_log("No subtraction mask generated, because neither attenuation nor sigmoid modification \
+                with power > 1 was active.")
+        else:
+            self.occupy_log("No subtraction mask generated, because no scale was provided.")
 
     def reset_session(self):
         # Remove input files
