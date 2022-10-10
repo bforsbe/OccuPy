@@ -2016,7 +2016,6 @@ class Ui_MainWindow(object):
                 # ...and which if we are on anything else
                 self.tabWidget_view.setCurrentIndex(self.tabWidget_view.indexOf(self.tab_viewOutput))
 
-        self.toolButton_run2.setEnabled(True)
         self.render_output_slice()
 
     def render_output_slice(self,force=False):
@@ -2025,6 +2024,7 @@ class Ui_MainWindow(object):
 
         do_render=False
         output_tab = self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_viewOutput)
+
         if output_tab and self.occ_scale:
             do_render = True
         if self.res_scale:
@@ -2043,6 +2043,7 @@ class Ui_MainWindow(object):
 
             if input_fileName and scale_fileName:
                 self.label_viewOutput.setEnabled(True)
+
                 input_f = mf.mmap(input_fileName)
                 input_n = input_f.header['nx']
 
@@ -2082,6 +2083,8 @@ class Ui_MainWindow(object):
 
                 operations=['amplifying', 'attenuating', 'sigmoiding']
                 if mode is not None:
+                    self.toolButton_run2.setEnabled(True)
+
                     #print(f'{operations[mode-1]}')
                     #s = np.divide(s,x,where=x!=0)
                     mapped = s[(scale_t*N).astype(int)-1]
@@ -2109,6 +2112,7 @@ class Ui_MainWindow(object):
 
                     self.label_warnPreview.raise_()
                 else:
+                    self.toolButton_run2.setEnabled(False)
                     self.label_viewOutput.setText("You have not set to modify anything. \n\n"
                                                   "Enable \"Amplify\", \"Attenuate\", or \n"
                                                   "\"Sigmoid\" on the left and set \n "
