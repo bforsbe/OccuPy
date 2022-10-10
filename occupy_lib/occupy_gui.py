@@ -354,14 +354,14 @@ class Ui_MainWindow(object):
         self.doubleSpinBox_sigmoidPower.setObjectName("doubleSpinBox_sigmoidPower")
         self.gridLayout_sigmoid.addWidget(self.doubleSpinBox_sigmoidPower, 0, 2, 1, 1)
         self.tabWidget_modification.addTab(self.tab_sigmoid, "")
-        self.checkBox_verbose = QtWidgets.QCheckBox(MainWindow)
-        self.checkBox_verbose.setGeometry(QtCore.QRect(280, 600, 81, 41))
-        self.checkBox_verbose.setObjectName("checkBox_verbose")
-        self.checkBox_showCmd = QtWidgets.QCheckBox(MainWindow)
-        self.checkBox_showCmd.setGeometry(QtCore.QRect(280, 630, 81, 41))
-        self.checkBox_showCmd.setToolTip("")
-        self.checkBox_showCmd.setAccessibleDescription("")
-        self.checkBox_showCmd.setObjectName("checkBox_showCmd")
+        #self.checkBox_verbose = QtWidgets.QCheckBox(MainWindow)
+        #self.checkBox_verbose.setGeometry(QtCore.QRect(280, 600, 81, 41))
+        #self.checkBox_verbose.setObjectName("checkBox_verbose")
+        #self.checkBox_showCmd = QtWidgets.QCheckBox(MainWindow)
+        #self.checkBox_showCmd.setGeometry(QtCore.QRect(280, 630, 81, 41))
+        #self.checkBox_showCmd.setToolTip("")
+        #self.checkBox_showCmd.setAccessibleDescription("")
+        #self.checkBox_showCmd.setObjectName("checkBox_showCmd")
         self.tabWidget_view = QtWidgets.QTabWidget(MainWindow)
         self.tabWidget_view.setEnabled(True)
         self.tabWidget_view.setGeometry(QtCore.QRect(280, 70, 391, 421))
@@ -822,15 +822,22 @@ class Ui_MainWindow(object):
 
         self.toolButton_run = QtWidgets.QPushButton(MainWindow)
         self.toolButton_run.setEnabled(False)
-        self.toolButton_run.setGeometry(QtCore.QRect(366, 600, 148, 64))
-        self.toolButton_run.setIcon(self.icon_small)
+        self.toolButton_run.setGeometry(QtCore.QRect(280, 600, 120, 64))
+        #self.toolButton_run.setIcon(self.icon_small)
         self.toolButton_run.setIconSize(QtCore.QSize(56, 56))
         self.toolButton_run.setObjectName("toolButton_run")
 
+        self.toolButton_run2 = QtWidgets.QPushButton(MainWindow)
+        self.toolButton_run2.setEnabled(False)
+        self.toolButton_run2.setGeometry(QtCore.QRect(415, 600, 120, 64))
+        #self.toolButton_run2.setIcon(self.icon_small)
+        self.toolButton_run2.setIconSize(QtCore.QSize(56, 56))
+        self.toolButton_run2.setObjectName("toolButton_run2")
+
         self.toolButton_chimerax = QtWidgets.QPushButton(MainWindow)
         self.toolButton_chimerax.setEnabled(False)
-        self.toolButton_chimerax.setGeometry(QtCore.QRect(523, 600, 148, 64))
-        self.toolButton_chimerax.setIcon(self.icon_chimX)
+        self.toolButton_chimerax.setGeometry(QtCore.QRect(550, 600, 120, 64))
+        #self.toolButton_chimerax.setIcon(self.icon_chimX)
         self.toolButton_chimerax.setIconSize(QtCore.QSize(56, 56))
         self.toolButton_chimerax.setObjectName("toolButton_chimerax")
 
@@ -850,13 +857,14 @@ class Ui_MainWindow(object):
         self.tabWidget_output.raise_()
         self.toolButton_chimerax.raise_()
         self.tabWidget_modification.raise_()
-        self.checkBox_verbose.raise_()
-        self.checkBox_showCmd.raise_()
+        #self.checkBox_verbose.raise_()
+        #self.checkBox_showCmd.raise_()
         self.tabWidget_view.raise_()
         self.gridLayoutWidget.raise_()
         self.gridLayoutWidget_2.raise_()
         self.gridLayoutWidget_7.raise_()
         self.toolButton_run.raise_()
+        self.toolButton_run2.raise_()
         self.verticalLayoutWidget.raise_()
         self.label_inputMap.raise_()
         self.toolButton_expandSolModel.raise_()
@@ -924,6 +932,17 @@ class Ui_MainWindow(object):
         self.actionview_full_log = QtWidgets.QAction(MainWindow)
         self.actionview_full_log.setObjectName("actionview_full_log")
         self.actionview_full_log.triggered.connect(self.view_full_log)
+
+
+        self.action_verbose = QtWidgets.QAction(MainWindow)
+        self.action_verbose.setObjectName("action_verbose")
+        self.action_verbose.setCheckable(True)
+
+        self.action_print_command = QtWidgets.QAction(MainWindow)
+        self.action_print_command.setObjectName("action_print_command")
+        self.action_print_command.triggered.connect(self.print_command)
+
+
         self.actionreset = QtWidgets.QAction(MainWindow)
         self.actionreset.setObjectName("actionreset")
         self.actionreset.triggered.connect(self.reset_session)
@@ -937,6 +956,10 @@ class Ui_MainWindow(object):
         self.menu_session.addSeparator()
         self.menu_session.addAction(self.actionclear_log)
         self.menu_session.addAction(self.actionview_full_log)
+        self.menu_session.addSeparator()
+        self.menu_session.addAction(self.action_verbose)
+        self.menu_session.addAction(self.action_print_command)
+
         self.menu_help.addAction(self.actiontutorial)
         self.menu_help.addAction(self.actionabout)
         self.menu_generate.addAction(self.actionsubtractionMask)
@@ -954,6 +977,9 @@ class Ui_MainWindow(object):
         self.actionview_full_log.setText("view full log")
         self.actionreset.setText("reset")
         self.actionsubtractionMask.setText("Subtraction mask")
+        self.action_verbose.setText("be verbose")
+        self.action_print_command.setText("print command to log")
+
 
 
 
@@ -1006,8 +1032,8 @@ class Ui_MainWindow(object):
         self.checkBox_scaleAsSolDef.clicked.connect(self.update_scale_slider)
         self.slider_scaleAsSolDef.valueChanged.connect(self.update_scale_slider)
 
-        self.checkBox_verbose.setText(_translate("MainWindow", "Verbose"))
-        self.checkBox_showCmd.setText(_translate("MainWindow", "CmdLine"))
+        #self.checkBox_verbose.setText(_translate("MainWindow", "Verbose"))
+        #self.checkBox_showCmd.setText(_translate("MainWindow", "CmdLine"))
         self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewInput), _translate("MainWindow", "Input"))
         self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewScale), _translate("MainWindow", "Scale"))
         self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewConfidence), _translate("MainWindow", "Conf."))
@@ -1089,8 +1115,10 @@ class Ui_MainWindow(object):
         self.comboBox_inputScale.setToolTip(_translate("MainWindow", "pre-estimated local scale map "))
 
         self.toolButton_inputSolventDef_browse.setText(_translate("MainWindow", "browse"))
-        self.toolButton_run.setText(_translate("MainWindow", "  Run  \n  OccuPy  "))#ɒk.jə.paɪ"))
+        self.toolButton_run.setText(_translate("MainWindow", "  Estimate  \n  scale  "))#ɒk.jə.paɪ"))
         self.toolButton_run.clicked.connect(self.run_cmd)
+        self.toolButton_run2.setText(_translate("MainWindow", "  Modify  \n  Map  "))
+        self.toolButton_run2.clicked.connect(self.run_cmd)
         self.label_inputScale.setText(_translate("MainWindow", "  scale map"))
         self.label_inputSolventDef.setText(_translate("MainWindow", " solvent def"))
         self.label_inputMap.setText(_translate("MainWindow", "  Input map"))
@@ -1180,8 +1208,7 @@ class Ui_MainWindow(object):
                 sub_mask_sigm_name = f'subtraction_mask_sigm_' \
                                      f'{self.MplWidget_viewModification.sigmoid_pivot}.' \
                                      f'{self.MplWidget_viewModification.sigmoid_power}.' \
-                                     f'mrc
-                # TODO wrong size, resample to input map size
+                                     f'mrc'
                 map_tools.new_mrc(sub_mask_sigm,sub_mask_sigm_name, parent=scale_file_name)
 
                 did_something = True
@@ -1206,6 +1233,7 @@ class Ui_MainWindow(object):
 
         # Inactive Buttons
         self.toolButton_run.setEnabled(False)
+        self.toolButton_run2.setEnabled(False)
         self.toolButton_chimerax.setEnabled(False)
         self.checkBox_scaleAsSolDef.setChecked(False)
         self.checkBox_scaleAsSolDef.setEnabled(False)
@@ -1988,6 +2016,7 @@ class Ui_MainWindow(object):
                 # ...and which if we are on anything else
                 self.tabWidget_view.setCurrentIndex(self.tabWidget_view.indexOf(self.tab_viewOutput))
 
+        self.toolButton_run2.setEnabled(True)
         self.render_output_slice()
 
     def render_output_slice(self,force=False):
@@ -2004,6 +2033,7 @@ class Ui_MainWindow(object):
                                           "scale, but a resolution scale. This \n"
                                           "is not appropriate for modification.")
             force = False
+            self.toolButton_run2.setEnabled(False)
 
 
         if do_render or force:
@@ -2292,7 +2322,7 @@ class Ui_MainWindow(object):
         options.kernel_radius = self.doubleSpinBox_kernelRadius.value()
         self.cmd.append(f'--kernel-radius {options.kernel_radius}')
         options.tau = self.doubleSpinBox_Tau.value()/100.0
-        self.cmd.append(f'--tau  {options.tau}')
+        self.cmd.append(f'--tau  {options.tau:.4f}')
         options.tile_size = self.spinBox_tileSize.value()
         self.cmd.append(f'--tile-size {options.tile_size}')
 
@@ -2355,7 +2385,7 @@ class Ui_MainWindow(object):
                 options.lp_scale = False
                 self.occupy_warn('Modifying with resolution-effect is not recommended. I suggest ticking "occupancy" instead.')
 
-        if self.checkBox_verbose.isChecked():
+        if self.action_verbose.isChecked():
             options.verbose = True
             self.cmd.append(f'--verbose')
 
@@ -2377,51 +2407,55 @@ class Ui_MainWindow(object):
 
         self.occupy_log(self.color_run(f'{phase} run no {self.session_no}-{self.run_no}'), timestamp=True)
 
-    def run_cmd(self):
-        options = self.compose_cmd()
+    def print_command(self):
 
-        if self.checkBox_showCmd.isChecked():
-            #TODO check for in-memory objects like chimeraX-maps and figure out what to do
+        if len(self.comboBox_inputMap.currentText())>3:
+            options = self.compose_cmd()
+
             self.occupy_log(" Reporting command: \n")
             self.occupy_log(f'{" ".join(self.cmd)}\n')
         else:
+            self.occupy_log("provide an input file to print a working command",save=False)
 
-            self.toolButton_chimerax.setEnabled(False)
-            self.toolButton_run.setEnabled(False)
-            self.log_new_run(start=True)
-            with Capturing() as output:
-                #self.occupy_log('Estimating local scale...')
-                estimate.occupy_run(options)
+    def run_cmd(self):
+        options = self.compose_cmd()
 
-            for i in output:
-                self.occupy_log(i)
+        self.toolButton_chimerax.setEnabled(False)
+        self.toolButton_run.setEnabled(False)
+        self.log_new_run(start=True)
+        with Capturing() as output:
+            #self.occupy_log('Estimating local scale...')
+            estimate.occupy_run(options)
 
-            # Report details to gui log file even if not verbose.
-            if not options.verbose:
-                self.cat_log()
+        for i in output:
+            self.occupy_log(i)
 
-            self.log_new_run(start=False)
+        # Report details to gui log file even if not verbose.
+        if not options.verbose:
+            self.cat_log()
 
-            from pathlib import Path
-            new_name = Path(options.input_map).name
-            # Force .mrc for output
-            new_name = f'{Path(new_name).stem}.mrc'
-            self.confidence_file_name = f'conf_{Path(new_name).stem}.mrc'
+        self.log_new_run(start=False)
 
-            scale_mode = 'res'
-            if self.checkBox_scaleOcc.isChecked():
-                scale_mode = 'occ'
-            if options.s0:
-                scale_mode = f'S0_{scale_mode}'
+        from pathlib import Path
+        new_name = Path(options.input_map).name
+        # Force .mrc for output
+        new_name = f'{Path(new_name).stem}.mrc'
+        self.confidence_file_name = f'conf_{Path(new_name).stem}.mrc'
 
-            self.add_scale_file(f'scale_{scale_mode}_{Path(new_name).stem}.mrc')
+        scale_mode = 'res'
+        if self.checkBox_scaleOcc.isChecked():
+            scale_mode = 'occ'
+        if options.s0:
+            scale_mode = f'S0_{scale_mode}'
 
-            self.chimerax_file_name = f'chimX_{Path(new_name).stem}.cxc'
-            if self.chimerax_name is not None:
-                self.toolButton_chimerax.setEnabled(True)
-            self.toolButton_run.setEnabled(True)
+        self.add_scale_file(f'scale_{scale_mode}_{Path(new_name).stem}.mrc')
 
-            self.show_solvent_model()
+        self.chimerax_file_name = f'chimX_{Path(new_name).stem}.cxc'
+        if self.chimerax_name is not None:
+            self.toolButton_chimerax.setEnabled(True)
+        self.toolButton_run.setEnabled(True)
+
+        self.show_solvent_model()
 
     def show_solvent_model(self):
         from pathlib import Path
