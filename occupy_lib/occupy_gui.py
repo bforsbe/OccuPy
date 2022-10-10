@@ -820,19 +820,19 @@ class Ui_MainWindow(object):
         self.gridLayout_extraInputMaps.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_extraInputMaps.setObjectName("gridLayout_extraInputMaps")
 
-        self.toolButton_run = QtWidgets.QPushButton(MainWindow)
-        self.toolButton_run.setEnabled(False)
-        self.toolButton_run.setGeometry(QtCore.QRect(280, 600, 120, 64))
+        self.toolButton_estimateScale = QtWidgets.QPushButton(MainWindow)
+        self.toolButton_estimateScale.setEnabled(False)
+        self.toolButton_estimateScale.setGeometry(QtCore.QRect(280, 600, 120, 64))
         #self.toolButton_run.setIcon(self.icon_small)
-        self.toolButton_run.setIconSize(QtCore.QSize(56, 56))
-        self.toolButton_run.setObjectName("toolButton_run")
+        self.toolButton_estimateScale.setIconSize(QtCore.QSize(56, 56))
+        self.toolButton_estimateScale.setObjectName("toolButton_run")
 
-        self.toolButton_run2 = QtWidgets.QPushButton(MainWindow)
-        self.toolButton_run2.setEnabled(False)
-        self.toolButton_run2.setGeometry(QtCore.QRect(415, 600, 120, 64))
+        self.toolButton_modify = QtWidgets.QPushButton(MainWindow)
+        self.toolButton_modify.setEnabled(False)
+        self.toolButton_modify.setGeometry(QtCore.QRect(415, 600, 120, 64))
         #self.toolButton_run2.setIcon(self.icon_small)
-        self.toolButton_run2.setIconSize(QtCore.QSize(56, 56))
-        self.toolButton_run2.setObjectName("toolButton_run2")
+        self.toolButton_modify.setIconSize(QtCore.QSize(56, 56))
+        self.toolButton_modify.setObjectName("toolButton_run2")
 
         self.toolButton_chimerax = QtWidgets.QPushButton(MainWindow)
         self.toolButton_chimerax.setEnabled(False)
@@ -863,8 +863,8 @@ class Ui_MainWindow(object):
         self.gridLayoutWidget.raise_()
         self.gridLayoutWidget_2.raise_()
         self.gridLayoutWidget_7.raise_()
-        self.toolButton_run.raise_()
-        self.toolButton_run2.raise_()
+        self.toolButton_estimateScale.raise_()
+        self.toolButton_modify.raise_()
         self.verticalLayoutWidget.raise_()
         self.label_inputMap.raise_()
         self.toolButton_expandSolModel.raise_()
@@ -1115,10 +1115,10 @@ class Ui_MainWindow(object):
         self.comboBox_inputScale.setToolTip(_translate("MainWindow", "pre-estimated local scale map "))
 
         self.toolButton_inputSolventDef_browse.setText(_translate("MainWindow", "browse"))
-        self.toolButton_run.setText(_translate("MainWindow", "  Estimate  \n  scale  "))#ɒk.jə.paɪ"))
-        self.toolButton_run.clicked.connect(self.run_cmd)
-        self.toolButton_run2.setText(_translate("MainWindow", "  Modify  \n  Map  "))
-        self.toolButton_run2.clicked.connect(self.run_cmd)
+        self.toolButton_estimateScale.setText(_translate("MainWindow", "  Estimate  \n  scale  "))#ɒk.jə.paɪ"))
+        self.toolButton_estimateScale.clicked.connect(self.estimate_scale)
+        self.toolButton_modify.setText(_translate("MainWindow", "  Modify  \n  Map  "))
+        self.toolButton_modify.clicked.connect(self.run_cmd)
         self.label_inputScale.setText(_translate("MainWindow", "  scale map"))
         self.label_inputSolventDef.setText(_translate("MainWindow", " solvent def"))
         self.label_inputMap.setText(_translate("MainWindow", "  Input map"))
@@ -1232,8 +1232,8 @@ class Ui_MainWindow(object):
 
 
         # Inactive Buttons
-        self.toolButton_run.setEnabled(False)
-        self.toolButton_run2.setEnabled(False)
+        self.toolButton_estimateScale.setEnabled(False)
+        self.toolButton_modify.setEnabled(False)
         self.toolButton_chimerax.setEnabled(False)
         self.checkBox_scaleAsSolDef.setChecked(False)
         self.checkBox_scaleAsSolDef.setEnabled(False)
@@ -1298,8 +1298,8 @@ class Ui_MainWindow(object):
 
                 self.read_input_file()
 
-                self.toolButton_run.setEnabled(True)
-                self.toolButton_run.clearFocus()
+                self.toolButton_estimateScale.setEnabled(True)
+                self.toolButton_estimateScale.clearFocus()
                 self.occupy_log(f'Opened {file_name}')
             else:
                 self.comboBox_inputMap.setCurrentIndex(idx)
@@ -1367,7 +1367,7 @@ class Ui_MainWindow(object):
 
 
             self.label_viewInput.setEnabled(True)
-            self.toolButton_run.setEnabled(True)
+            self.toolButton_estimateScale.setEnabled(True)
 
             # Close the file
             f.close()
@@ -2033,7 +2033,7 @@ class Ui_MainWindow(object):
                                           "scale, but a resolution scale. This \n"
                                           "is not appropriate for modification.")
             force = False
-            self.toolButton_run2.setEnabled(False)
+            self.toolButton_modify.setEnabled(False)
 
 
         if do_render or force:
@@ -2083,7 +2083,7 @@ class Ui_MainWindow(object):
 
                 operations=['amplifying', 'attenuating', 'sigmoiding']
                 if mode is not None:
-                    self.toolButton_run2.setEnabled(True)
+                    self.toolButton_modify.setEnabled(True)
 
                     #print(f'{operations[mode-1]}')
                     #s = np.divide(s,x,where=x!=0)
@@ -2112,7 +2112,7 @@ class Ui_MainWindow(object):
 
                     self.label_warnPreview.raise_()
                 else:
-                    self.toolButton_run2.setEnabled(False)
+                    self.toolButton_modify.setEnabled(False)
                     self.label_viewOutput.setText("You have not set to modify anything. \n\n"
                                                   "Enable \"Amplify\", \"Attenuate\", or \n"
                                                   "\"Sigmoid\" on the left and set \n "
@@ -2301,7 +2301,7 @@ class Ui_MainWindow(object):
         self.checkBox_scaleAsSolDef.setChecked(False)
         return solvent_def_name
 
-    def compose_cmd(self):
+    def compose_cmd(self,only_estimate=None):
 
         options = args.occupy_options()
         self.cmd.clear()
@@ -2341,22 +2341,23 @@ class Ui_MainWindow(object):
 
 
         # modification options ---------------------------------------------------------------
-        modifying = False
-        if self.groupBox_amplification.isChecked():
-            modifying = True
-            options.amplify = self.doubleSpinBox_amplPower.value()
-            self.cmd.append(f'--amplify {options.amplify}')
+        if not only_estimate:
+            modifying = False
+            if self.groupBox_amplification.isChecked():
+                modifying = True
+                options.amplify = self.doubleSpinBox_amplPower.value()
+                self.cmd.append(f'--amplify {options.amplify}')
 
-        if self.groupBox_attenuation.isChecked():
-            modifying = True
-            options.attenuate = self.doubleSpinBox_attnPower.value()
-            self.cmd.append(f'--attenuate {options.attenuate}')
+            if self.groupBox_attenuation.isChecked():
+                modifying = True
+                options.attenuate = self.doubleSpinBox_attnPower.value()
+                self.cmd.append(f'--attenuate {options.attenuate}')
 
-        if self.groupBox_sigmoid.isChecked():
-            modifying = True
-            options.sigmoid = self.doubleSpinBox_sigmoidPower.value()
-            options.pivot = self.doubleSpinBox_sigmoidPivot.value()
-            self.cmd.append(f'--sigmoid {options.sigmoid } --pivot {options.pivot}')
+            if self.groupBox_sigmoid.isChecked():
+                modifying = True
+                options.sigmoid = self.doubleSpinBox_sigmoidPower.value()
+                options.pivot = self.doubleSpinBox_sigmoidPivot.value()
+                self.cmd.append(f'--sigmoid {options.sigmoid } --pivot {options.pivot}')
 
 
         # output options -------------------------------------------------------------------
@@ -2421,11 +2422,14 @@ class Ui_MainWindow(object):
         else:
             self.occupy_log("provide an input file to print a working command",save=False)
 
-    def run_cmd(self):
-        options = self.compose_cmd()
+    def estimate_scale(self):
+        self.run_cmd(only_estimate=True)
+
+    def run_cmd(self, only_estimate=False):
+        options = self.compose_cmd(only_estimate=only_estimate)
 
         self.toolButton_chimerax.setEnabled(False)
-        self.toolButton_run.setEnabled(False)
+        self.toolButton_estimateScale.setEnabled(False)
         self.log_new_run(start=True)
         with Capturing() as output:
             #self.occupy_log('Estimating local scale...')
@@ -2457,7 +2461,7 @@ class Ui_MainWindow(object):
         self.chimerax_file_name = f'chimX_{Path(new_name).stem}.cxc'
         if self.chimerax_name is not None:
             self.toolButton_chimerax.setEnabled(True)
-        self.toolButton_run.setEnabled(True)
+        self.toolButton_estimateScale.setEnabled(True)
 
         self.show_solvent_model()
 
