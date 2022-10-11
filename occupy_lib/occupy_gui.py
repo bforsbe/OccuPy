@@ -1556,11 +1556,10 @@ class Ui_MainWindow(object):
 
             self.read_scale_file()
             self.checkBox_scaleAsSolDef.setEnabled(True)
-            self.actionmakeSolDef.setEnabled(True)
+
 
     def add_scale_file(self,new_scale_file):
         self.checkBox_scaleAsSolDef.setEnabled(True)
-        self.actionmakeSolDef.setEnabled(True)
 
         self.scale_file_name = str(new_scale_file)
         self.set_scale_mode(self.scale_file_name)
@@ -1815,7 +1814,11 @@ class Ui_MainWindow(object):
                 im_data = np.array((t * 255).astype(np.uint8))
 
                 if threshold is not None:
+                    self.actionmakeSolDef.setEnabled(True)
                     im_data = np.array((im_data > threshold).astype(np.uint8))*255
+                else:
+
+                    self.actionmakeSolDef.setEnabled(False)
 
                 qimage = QtGui.QImage(im_data, n, n,
                                       QtGui.QImage.Format_Grayscale8)  # Setup pixmap with the provided image
