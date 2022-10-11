@@ -136,6 +136,7 @@ class MplWidget(QtWidgets.QWidget):
         self.plot_modification()
 
 
+
     def plot_modification(self):
 
         self.canvas.ax.clear()
@@ -156,6 +157,8 @@ class MplWidget(QtWidgets.QWidget):
         self.canvas.ax.set_ylabel('modified output scale')
 
         self.canvas.draw()
+
+
 
 
 
@@ -428,6 +431,7 @@ class Ui_MainWindow(object):
 
         self.label_scaleAsSolDef = QtWidgets.QLabel(self.tab_solvDef)
         self.label_scaleAsSolDef.setText("Binarize scale as solvent def?")
+        self.label_scaleAsSolDef.setStyleSheet("QLabel { color : red}")
         self.label_scaleAsSolDef.setGeometry(10,360,200,20)
 
         self.checkBox_scaleAsSolDef = QtWidgets.QCheckBox(self.tab_solvDef)
@@ -910,14 +914,16 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName("menubar")
         self.menu_session = QtWidgets.QMenu(self.menubar)
         self.menu_session.setObjectName("menu_session")
+        self.menu_Run = QtWidgets.QMenu(self.menubar)
+        self.menu_Run.setObjectName("menu_Run")
         self.menu_help = QtWidgets.QMenu(self.menubar)
         self.menu_help.setObjectName("menu_help")
-        self.menu_generate = QtWidgets.QMenu(self.menubar)
-        self.menu_generate.setObjectName("menu_generate")
         MainWindow.setMenuBar(self.menubar)
+
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
         self.actiontutorial = QtWidgets.QAction(MainWindow)
         self.actiontutorial.setObjectName("actiontutorial")
         self.actionabout = QtWidgets.QAction(MainWindow)
@@ -947,9 +953,22 @@ class Ui_MainWindow(object):
         self.actionreset.setObjectName("actionreset")
         self.actionreset.triggered.connect(self.reset_session)
 
-        self.actionsubtractionMask = QtWidgets.QAction(MainWindow)
-        self.actionsubtractionMask.setObjectName("actionsubtractionMask")
-        self.actionsubtractionMask.triggered.connect(self.generate_subtraction_mask)
+
+        self.actionestimateScale = QtWidgets.QAction(MainWindow)
+        self.actionestimateScale.setObjectName("actionestimateScale")
+        self.actionestimateScale.setEnabled(False)
+        self.actionestimateScale.triggered.connect(self.estimate_scale)
+
+        self.actionmodifyMap = QtWidgets.QAction(MainWindow)
+        self.actionmodifyMap.setObjectName("actionmodifyMap")
+        self.actionmodifyMap.setEnabled(False)
+        self.actionmodifyMap.triggered.connect(self.run_cmd)
+
+        self.actionmakeSubtractionMask = QtWidgets.QAction(MainWindow)
+        self.actionmakeSubtractionMask.setObjectName("actionsubtractionMask")
+        self.actionmakeSubtractionMask.triggered.connect(self.generate_subtraction_mask)
+        self.actionmakeSubtractionMask.setEnabled(False)
+
 
         self.menu_session.addAction(self.actionchange_location)
         self.menu_session.addAction(self.actionreset)
@@ -960,23 +979,33 @@ class Ui_MainWindow(object):
         self.menu_session.addAction(self.action_verbose)
         self.menu_session.addAction(self.action_print_command)
 
+
+        self.menu_Run.addAction(self.actionestimateScale)
+        self.menu_Run.addAction(self.actionmodifyMap)
+        self.menu_Run.addAction(self.actionmakeSubtractionMask)
+
+
         self.menu_help.addAction(self.actiontutorial)
         self.menu_help.addAction(self.actionabout)
-        self.menu_generate.addAction(self.actionsubtractionMask)
-        self.menubar.addAction(self.menu_session.menuAction())
-        self.menubar.addAction(self.menu_help.menuAction())
-        self.menubar.addAction(self.menu_generate.menuAction())
 
-        self.menu_session.setTitle("session")
-        self.menu_help.setTitle("help")
-        self.menu_generate.setTitle("generate")
+        self.menubar.addAction(self.menu_session.menuAction())
+        self.menubar.addAction(self.menu_Run.menuAction())
+        self.menubar.addAction(self.menu_help.menuAction())
+
+        self.menu_session.setTitle("Session")
+        self.menu_Run.setTitle("Run")
+        self.menu_help.setTitle("Help")
         self.actiontutorial.setText("tutorial")
         self.actionabout.setText("about")
         self.actionchange_location.setText("change location")
         self.actionclear_log.setText("clear log")
         self.actionview_full_log.setText("view full log")
         self.actionreset.setText("reset")
-        self.actionsubtractionMask.setText("Subtraction mask")
+
+        self.actionestimateScale.setText("Estimate scale")
+        self.actionmodifyMap.setText("Modify map by scale")
+        self.actionmakeSubtractionMask.setText("Generate subtraction mask")
+
         self.action_verbose.setText("be verbose")
         self.action_print_command.setText("print command to log")
 
@@ -1230,10 +1259,12 @@ class Ui_MainWindow(object):
         self.comboBox_inputSolventDef.clear()
         self.comboBox_inputSolventDef.addItem(" ")
 
-
         # Inactive Buttons
         self.toolButton_estimateScale.setEnabled(False)
-        self.toolButton_modify.setEnabled(False)
+        self.actionestimateScale.setEnabled(self.toolButton_estimateScale.isEnabled())
+
+        self.update_can_modify()
+
         self.toolButton_chimerax.setEnabled(False)
         self.checkBox_scaleAsSolDef.setChecked(False)
         self.checkBox_scaleAsSolDef.setEnabled(False)
@@ -1299,6 +1330,7 @@ class Ui_MainWindow(object):
                 self.read_input_file()
 
                 self.toolButton_estimateScale.setEnabled(True)
+                self.actionestimateScale.setEnabled(self.toolButton_estimateScale.isEnabled())
                 self.toolButton_estimateScale.clearFocus()
                 self.occupy_log(f'Opened {file_name}')
             else:
@@ -1368,6 +1400,7 @@ class Ui_MainWindow(object):
 
             self.label_viewInput.setEnabled(True)
             self.toolButton_estimateScale.setEnabled(True)
+            self.actionestimateScale.setEnabled(self.toolButton_estimateScale.isEnabled())
 
             # Close the file
             f.close()
@@ -1478,6 +1511,7 @@ class Ui_MainWindow(object):
             self.occ_scale = True
         else:
             self.occupy_log('Could not find scale mode during scale file load')
+
 
     def change_input_file(self):
         self.in_file_name = str(self.comboBox_inputMap.currentText())
@@ -1638,6 +1672,10 @@ class Ui_MainWindow(object):
                 self.label_viewScale.setAlignment(QtCore.Qt.AlignCenter) # Align the label to center
 
                 f.close()
+
+        # Just trigger GUI possibilities
+        else:
+            self.update_plot_params()
 
     def set_solvent_file(self,solvent_file_name=None,generate=False):
         import os
@@ -1987,14 +2025,28 @@ class Ui_MainWindow(object):
         if mod_tab == self.tabWidget_modification.indexOf(self.tab_amplification):
             if self.groupBox_amplification.isChecked():
                 return(1)
+            else:
+                pass
         elif mod_tab == self.tabWidget_modification.indexOf(self.tab_attenuation):
             if self.groupBox_attenuation.isChecked():
                 return(2)
+            else:
+                pass
+
         elif mod_tab == self.tabWidget_modification.indexOf(self.tab_sigmoid):
             if self.groupBox_sigmoid.isChecked():
                 return(3)
-        else:
-            return(None)
+            else:
+                pass
+
+        if self.groupBox_amplification.isChecked():
+                return(1)
+        if self.groupBox_attenuation.isChecked():
+                return(2)
+        if self.groupBox_sigmoid.isChecked():
+                return(3)
+
+        return(None)
 
     def render_output_slice_with_focus(self):
         self.update_mod_sliders()
@@ -2033,7 +2085,7 @@ class Ui_MainWindow(object):
                                           "scale, but a resolution scale. This \n"
                                           "is not appropriate for modification.")
             force = False
-            self.toolButton_modify.setEnabled(False)
+            self.update_can_modify()
 
 
         if do_render or force:
@@ -2082,8 +2134,8 @@ class Ui_MainWindow(object):
                     x,s = occupancy.scale_mapping_sigmoid(self.MplWidget_viewModification.sigmoid_pivot,self.MplWidget_viewModification.sigmoid_power,n=N)
 
                 operations=['amplifying', 'attenuating', 'sigmoiding']
+                self.update_can_modify()
                 if mode is not None:
-                    self.toolButton_modify.setEnabled(True)
 
                     #print(f'{operations[mode-1]}')
                     #s = np.divide(s,x,where=x!=0)
@@ -2106,19 +2158,42 @@ class Ui_MainWindow(object):
                     qimage = QtGui.QImage(im_data,scale_n,scale_n,QtGui.QImage.Format_Grayscale8)
                     pixmap = QtGui.QPixmap(qimage) # Setup pixmap with the provided image
                     pixmap = pixmap.scaled(self.label_viewOutput.width(), self.label_viewOutput.height(), QtCore.Qt.KeepAspectRatio) # Scale pixmap
+
                     self.label_viewOutput.setPixmap(pixmap) # Set the pixmap onto the label
                     self.label_viewOutput.setAlignment(QtCore.Qt.AlignCenter) # Align the label to center
                     #self.ho'rizontalSlider_4.setRange(1,n)
 
                     self.label_warnPreview.raise_()
                 else:
-                    self.toolButton_modify.setEnabled(False)
                     self.label_viewOutput.setText("You have not set to modify anything. \n\n"
                                                   "Enable \"Amplify\", \"Attenuate\", or \n"
                                                   "\"Sigmoid\" on the left and set \n "
                                                   "the power >1.")
         else:
             self.label_viewOutput.setEnabled(False)
+
+    def update_can_modify(self):
+
+        do_attn = self.MplWidget_viewModification.attenuation_power > 1 and self.groupBox_attenuation.isChecked()
+        do_sigm = self.MplWidget_viewModification.sigmoid_power > 1 and self.groupBox_sigmoid.isChecked()
+        do_ampl = self.MplWidget_viewModification.amplification_power > 1 and self.groupBox_amplification.isChecked()
+
+        can_modify  = False
+        if self.comboBox_inputMap.currentText() is not None and self.occ_scale is not None:
+            can_modify = self.occ_scale and len(self.comboBox_inputMap.currentText())>3
+
+        if do_attn or do_sigm:
+            self.actionmakeSubtractionMask.setEnabled(can_modify)
+        else:
+            self.actionmakeSubtractionMask.setEnabled(False)
+
+        if do_attn or do_sigm or do_ampl:
+            self.toolButton_modify.setEnabled(can_modify)
+            self.actionmodifyMap.setEnabled(can_modify)
+        else:
+            self.toolButton_modify.setEnabled(False)
+            self.actionmodifyMap.setEnabled(False)
+
 
     def update_plot_params(self):
         self.MplWidget_viewModification.sigmoid_power = self.doubleSpinBox_sigmoidPower.value()
@@ -2130,6 +2205,7 @@ class Ui_MainWindow(object):
         self.MplWidget_viewModification.sigmoid = self.groupBox_sigmoid.isChecked()
 
         self.MplWidget_viewModification.plot_modification()
+        self.update_can_modify()
 
 
     def update_mod_spin_boxes(self):
@@ -2339,7 +2415,7 @@ class Ui_MainWindow(object):
             options.max_box = self.spinBox_maxBox.value()
             self.cmd.append(f'--max-box -1')
 
-
+        modifying = False
         # modification options ---------------------------------------------------------------
         if not only_estimate:
             modifying = False
@@ -2430,6 +2506,7 @@ class Ui_MainWindow(object):
 
         self.toolButton_chimerax.setEnabled(False)
         self.toolButton_estimateScale.setEnabled(False)
+        self.actionestimateScale.setEnabled(self.toolButton_estimateScale.isEnabled())
         self.log_new_run(start=True)
         with Capturing() as output:
             #self.occupy_log('Estimating local scale...')
@@ -2462,6 +2539,7 @@ class Ui_MainWindow(object):
         if self.chimerax_name is not None:
             self.toolButton_chimerax.setEnabled(True)
         self.toolButton_estimateScale.setEnabled(True)
+        self.actionestimateScale.setEnabled(self.toolButton_estimateScale.isEnabled())
 
         self.show_solvent_model()
 
