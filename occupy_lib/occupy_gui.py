@@ -964,6 +964,11 @@ class Ui_MainWindow(object):
         self.actionmodifyMap.setEnabled(False)
         self.actionmodifyMap.triggered.connect(self.run_cmd)
 
+        self.actionmakeSolDef = QtWidgets.QAction(MainWindow)
+        self.actionmakeSolDef.setObjectName("actionmakeSolDef")
+        self.actionmakeSolDef.triggered.connect(self.generate_soldef_from_scale)
+        self.actionmakeSolDef.setEnabled(False)
+
         self.actionmakeSubtractionMask = QtWidgets.QAction(MainWindow)
         self.actionmakeSubtractionMask.setObjectName("actionsubtractionMask")
         self.actionmakeSubtractionMask.triggered.connect(self.generate_subtraction_mask)
@@ -982,6 +987,7 @@ class Ui_MainWindow(object):
 
         self.menu_Run.addAction(self.actionestimateScale)
         self.menu_Run.addAction(self.actionmodifyMap)
+        self.menu_Run.addAction(self.actionmakeSolDef)
         self.menu_Run.addAction(self.actionmakeSubtractionMask)
 
 
@@ -1004,6 +1010,7 @@ class Ui_MainWindow(object):
 
         self.actionestimateScale.setText("Estimate scale")
         self.actionmodifyMap.setText("Modify map by scale")
+        self.actionmakeSolDef.setText("Generate solvent definiton from scale")
         self.actionmakeSubtractionMask.setText("Generate subtraction mask")
 
         self.action_verbose.setText("be verbose")
@@ -1268,6 +1275,7 @@ class Ui_MainWindow(object):
         self.toolButton_chimerax.setEnabled(False)
         self.checkBox_scaleAsSolDef.setChecked(False)
         self.checkBox_scaleAsSolDef.setEnabled(False)
+        self.actionmakeSolDef.setEnabled(False)
 
         # Should clear all views
         self.set_default_views()
@@ -1548,9 +1556,11 @@ class Ui_MainWindow(object):
 
             self.read_scale_file()
             self.checkBox_scaleAsSolDef.setEnabled(True)
+            self.actionmakeSolDef.setEnabled(True)
 
     def add_scale_file(self,new_scale_file):
         self.checkBox_scaleAsSolDef.setEnabled(True)
+        self.actionmakeSolDef.setEnabled(True)
 
         self.scale_file_name = str(new_scale_file)
         self.set_scale_mode(self.scale_file_name)
@@ -1634,16 +1644,16 @@ class Ui_MainWindow(object):
                     n_input = f_input.header['nx']
 
                     if n != n_input:
-                        # The equivalent slice in the possibly
+                        # The equivalent slice in the scale image
                         slice = int((slice / float(n_input)) * n)
 
                     f_input.close()
-                else:
-                    self.horizontalSlider_viewSlice.setRange(1, n)
-                    self.horizontalSlider_viewSlice.setValue(n // 2)
 
-                    self.spinBox_viewSlice.setMaximum(n)
-                    self.spinBox_viewSlice.setValue(n // 2)
+                self.horizontalSlider_viewSlice.setRange(1, n)
+                self.horizontalSlider_viewSlice.setValue(slice)
+
+                self.spinBox_viewSlice.setMaximum(n)
+                self.spinBox_viewSlice.setValue(slice)
 
 
                 # Safe-guards
@@ -1779,12 +1789,10 @@ class Ui_MainWindow(object):
                         slice = int((slice / float(n_input)) * n)
 
                     f_input.close()
-                else:
-                    self.horizontalSlider_viewSlice.setRange(1, n)
-                    self.horizontalSlider_viewSlice.setValue(n // 2)
 
-                    self.spinBox_viewSlice.setMaximum(n)
-                    self.spinBox_viewSlice.setValue(n // 2)
+                self.horizontalSlider_viewSlice.setValue(slice)
+                self.spinBox_viewSlice.setValue(slice)
+
 
                 # Safe-guards
                 if not slice or slice > n:
@@ -2358,23 +2366,31 @@ class Ui_MainWindow(object):
             f_in = mf.mmap(scale_file_name, 'r')
 
             data = np.copy(f_in.data)
+
+            parent = self.comboBox_inputScale.currentText()
+            out_size = np.shape(data)[0]
+
+            if self.infile_size is not None:
+                parent = self.comboBox_inputMap.currentText()
+                out_size = self.infile_size
             if f_in.header['nx'] != self.infile_size:
                 data, _ = map_tools.lowpass(
                     data,
-                    output_size=self.infile_size
+                    output_size=out_size
                 )
 
             data = (data > threshold).astype(np.float32)
             map_tools.new_mrc(
                 data=data,
                 file_name=solvent_def_name,
-                parent=self.comboBox_inputMap.currentText()
+                parent=parent
             )
 
             f_in.close()
 
         self.set_solvent_file(solvent_def_name)
         self.checkBox_scaleAsSolDef.setChecked(False)
+        self.slider_scaleAsSolDef.setEnabled(False)
         return solvent_def_name
 
     def compose_cmd(self,only_estimate=None):
