@@ -41,11 +41,12 @@ The following steps highlight factors influencing this, and how to make the nece
    kernel settings, or even use a solvent definition. There  is a dedicated tutorial for this, that you should do 
    first if you think this might be necessary. 
 
+---
 
 ## 3 Evaluate Kernel settings
 Strong scatterers, variations in resolution, or any of a number of other factors may cause an unreasonable occupancy 
 estimate based on your expectation and the assumptions OccuPy is built on. You can explore settings to increase the 
-utility (and possibly also the utility) of the occupancy estimate, but note that this creates confirmation bias in 
+utility (and possibly also the fidelity) of the occupancy estimate, but note that this creates confirmation bias in 
 the results based on your expectations. **Always report the kernel settings** used, which are documented in the full 
 GUI log, or through command line by using `--verbose`. 
 
@@ -103,6 +104,8 @@ Look at the "Scale" tab of the viewer. In your scale estimate...
 2. is only white for a very small region that does not correspond to what you would expect to be at full occupancy, 
    try reducing the tau percentile. It might also be better to adjust the tile-size as we will soon discuss, and use 
    the theoretically derived value for tau.
+
+---
 
 ### 3.4 Tile size
 OccuPy normalizes the estimated scale against a region of the map where it in some sense finds maximal contrast. The 

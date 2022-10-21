@@ -4,7 +4,8 @@ The GUI of OccuPy allows you to open maps and view them as sliced 2D images. Occ
 map in any great detail, this is for you to make appropriate consistency checks. For fine analysis, the GUI will 
 call out to open ChimeraX, a much more sophisticated visualization tool 
 
----
+![image](https://drive.google.com/uc?export=view&id=10KrTBE-MLiQ4wu7kfjIKcupYLvydnxxu)
+
 
 ## Input map
 The map to be used as input. When you run OccuPy through the GUI it will the currently selected map. 
