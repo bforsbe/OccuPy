@@ -1,6 +1,6 @@
 site_name: OccuPy
 site_url: https://github.com/bforsbe/OccuPy
-site_author: Bjorn Försberg
+site_author: Bjoern Forsberg
 site_description: >-
   Documentation for OccuPy, a fast and simple python module and program 
   to estimate local scaling of cryo-EM maps.
