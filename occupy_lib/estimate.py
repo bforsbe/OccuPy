@@ -601,8 +601,8 @@ def occupy_run(options: args.occupy_options):
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
 
         # Save amplified and/or solvent-suppressed output.
-        sigm_name = f'sigm_{options.sigmoid:.1f}:{options.pivot:.2f}_{base_out_name}'
-        sigm_doc = f'sigm {options.sigmoid:.1f}:{options.pivot:.2f}, {doc}'
+        sigm_name = f'sigm_{options.sigmoid:.1f}-{options.pivot:.2f}_{base_out_name}'
+        sigm_doc = f'sigm {options.sigmoid:.1f} {options.pivot:.2f}, {doc}'
 
         map_tools.new_mrc(
             sigm.astype(np.float32),
