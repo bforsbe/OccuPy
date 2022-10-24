@@ -1651,10 +1651,8 @@ class Ui_MainWindow(object):
                     f_input.close()
 
                 self.horizontalSlider_viewSlice.setRange(1, n)
-                self.horizontalSlider_viewSlice.setValue(slice)
-
                 self.spinBox_viewSlice.setMaximum(n)
-                self.spinBox_viewSlice.setValue(slice)
+
 
 
                 # Safe-guards
@@ -1791,8 +1789,6 @@ class Ui_MainWindow(object):
 
                     f_input.close()
 
-                self.horizontalSlider_viewSlice.setValue(slice)
-                self.spinBox_viewSlice.setValue(slice)
 
 
                 # Safe-guards
@@ -1869,10 +1865,8 @@ class Ui_MainWindow(object):
                         f_input.close()
                     else:
                         self.horizontalSlider_viewSlice.setRange(1, n)
-                        self.horizontalSlider_viewSlice.setValue(n // 2)
 
                         self.spinBox_viewSlice.setMaximum(n)
-                        self.spinBox_viewSlice.setValue(n // 2)
 
                     # Safe-guards
                     if not slice or slice > n:
