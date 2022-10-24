@@ -178,8 +178,11 @@ class Ui_MainWindow(object):
         MainWindow.setWindowIcon(self.icon_small)
 
         self.icon_large = f'{Path(__file__).parent.parent}/resources/occupy_icon.png'
-
         self.new_session = True
+
+        self.os = None
+        self.detect_OS()
+
         self.inputMap = InputMapProperties()
         self.infile_size = None
         self.infile_minval = None
@@ -1300,7 +1303,7 @@ class Ui_MainWindow(object):
                 map_name = map_tools.fetch_EMDB(id)
 
             for i in output:
-                self.occupy_log(i)
+                self.occupy_log(i,save=False)
 
             if map_name is not None:
 
@@ -2326,16 +2329,33 @@ class Ui_MainWindow(object):
 
     def is_tool(self,name):
         """Check whether `name` is on PATH and marked as executable."""
-        # from whichcraft import which
+
         from shutil import which
         return which(name)
+
+    def detect_OS(self):
+        self.os = None
+        import sys
+
+        os_platform = (sys.platform).lower()
+        if "win" in os_platform:
+            self.os = "Windows"
+        elif "linux" in os_platform:
+            self.os = "Linux"
+        elif "darwin" in os_platform:
+            self.os = "Mac"
+        else:
+            self.os = "Unknown"
 
     def find_chimerax(self,name):
         if self.chimerax_name is None:
             self.chimerax_name = self.is_tool(name)
 
-    def have_chimerax(self):
+        if self.os == "Windows":
+            # Windows has system directories with spaces but is fussy about calling them. How consistent.
+            self.chimerax_name = self.chimerax_name.replace(" ", "\" \"")
 
+    def have_chimerax(self):
         import os
 
         self.chimerax_name = None
@@ -2352,7 +2372,10 @@ class Ui_MainWindow(object):
     def run_chimerax(self):
         if self.chimerax_file_name is not None:
             import os
-            os.system(f'{self.chimerax_name} {self.chimerax_file_name} &')
+            if self.os == "Windows":
+                os.system(f'{self.chimerax_name} {self.chimerax_file_name}')
+            else:
+                os.system(f'{self.chimerax_name} {self.chimerax_file_name} &')
         else:
             self.occupy_log("No chimerax file defined this session.")
 
