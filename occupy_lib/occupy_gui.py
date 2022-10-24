@@ -181,7 +181,6 @@ class Ui_MainWindow(object):
         self.new_session = True
 
         self.os = None
-        self.detect_OS()
 
         self.inputMap = InputMapProperties()
         self.infile_size = None
@@ -1021,7 +1020,7 @@ class Ui_MainWindow(object):
 
 
 
-
+        self.detect_OS()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -2346,6 +2345,8 @@ class Ui_MainWindow(object):
             self.os = "Mac"
         else:
             self.os = "Unknown"
+
+        self.occupy_log(f'Detected OS:{self.os}') #TODO REMOVE / HIDE
 
     def find_chimerax(self,name):
         if self.chimerax_name is None:
