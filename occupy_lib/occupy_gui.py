@@ -2337,12 +2337,13 @@ class Ui_MainWindow(object):
         import sys
 
         os_platform = (sys.platform).lower()
-        if "win" in os_platform:
+
+        if "darwin" in os_platform:
+            self.os = "Mac"
+        elif "win" in os_platform:
             self.os = "Windows"
         elif "linux" in os_platform:
             self.os = "Linux"
-        elif "darwin" in os_platform:
-            self.os = "Mac"
         else:
             self.os = "Unknown"
 
