@@ -46,7 +46,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: windows-latest #[ macos-latest, ubuntu-latest, windows-latest ]
+        os: [ windows-latest ] #[ macos-latest, ubuntu-latest, windows-latest ]
 
     runs-on: ${{ matrix.os }}
 
@@ -71,7 +71,7 @@ jobs:
         with:
           script-name: occupy_lib/occupy_gui.py
           onefile: true
-          enable-plugins: pyqt5
+          enable-plugins: pyqt5, numpy
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
