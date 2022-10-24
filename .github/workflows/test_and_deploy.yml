@@ -69,9 +69,9 @@ jobs:
       - name: Build Executable
         uses: Nuitka/Nuitka-Action@v0.4
         with:
-          script-name: occupy_gui.py
+          script-name: occupy_lib/occupy_gui.py
           onefile: true
-          enable-plugins: PyQt5
+          enable-plugins: pyqt5
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3

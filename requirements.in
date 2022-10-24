@@ -1,0 +1,8 @@
+numpy
+mrcfile>=1.4.3
+scipy
+typer
+matplotlib
+scikit-image
+wget
+PyQt5
