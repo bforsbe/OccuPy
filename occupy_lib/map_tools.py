@@ -1,7 +1,6 @@
 import mrcfile.mrcfile
 import numpy as np
 import mrcfile as mf
-import scipy as sp
 import wget
 import gzip
 import os

@@ -1,9 +1,5 @@
 import mrcfile as mf
 import numpy as np
-import scipy
-import sys
-
-from scipy import ndimage
 
 from io import StringIO
 
@@ -2127,7 +2123,7 @@ class Ui_MainWindow(object):
 
                 #print(input_t.shape, scale_t.shape)
                 if not input_t.shape == scale_t.shape:
-                    input_t = scipy.ndimage.zoom(input_t,float(scale_n)/float(input_n),order=1)
+                    input_t = ndi.zoom(input_t,float(scale_n)/float(input_n),order=1)
                 N = 100
                 mode = self.do_modify()
 

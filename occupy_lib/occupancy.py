@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import ndimage
+import scipy.ndimage as ndi
 import warnings
 
 from occupy_lib import map_tools, solvent
@@ -255,7 +255,7 @@ def percentile_filter_tiled(
         norm_val = extremum[0]  # np.max(s_tau_tiles)
 
     # Establish s_i
-    maxi = ndimage.maximum_filter(data, footprint=kernel)
+    maxi = ndi.maximum_filter(data, footprint=kernel)
 
     return maxi, norm_val, extremum_idx_pix
 

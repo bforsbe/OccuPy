@@ -72,7 +72,7 @@ jobs:
           script-name: occupy_lib/occupy_gui.py
           onefile: true
           enable-plugins: pyqt5, numpy
-          include-module: scipy.fft
+          include-module: scipy.fft, scipy.optimize, scipy.ndimage
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
