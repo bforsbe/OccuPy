@@ -35,6 +35,7 @@ class EMDB_dialog(QtWidgets.QDialog):
         self.button.setGeometry(10,50,120,30)
         self.button.setText("Fetch")
         self.button.clicked.connect(self.update_id)
+        self.textEdit.returnPressed.connect(self.update_id)
 
     def update_id(self):
         self.id = self.textEdit.text()
