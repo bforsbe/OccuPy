@@ -4,7 +4,7 @@
 This is a general tutorial to get acquainted with the GUI and workflow.
 
 <div class="admonition hint">
-<p class="admonition-title">Note</p>
+<p class="admonition-title">There's something you should know</p>
 <p>
 It will be useful to read the GUI overview first, or refer to it through this tutorial.
 </p>
@@ -23,9 +23,9 @@ ones.
 2. If you are unsure where the GUI will run and put output files, or want to change this, click "Session"->"Change 
 location" in the top menu.
 
-3. ou will find three (3) large buttons above the ouput log. These should all be greyed out. Check that the far-right 
+3. You will find three (3) large buttons above the ouput log. These should all be greyed out. Check that the far-right 
 button to start ChimeraX does not indicate "(not found)". If ChimeraX was not found, you will not be able to invoke 
-ChimeraX from the OccuPy GUI. Please see the advice here to remedy this.
+ChimeraX from the OccuPy GUI. Please see the advice under "Troubleshooting" in these docs to remedy this.
 
 ---
 
