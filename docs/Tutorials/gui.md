@@ -11,11 +11,21 @@ call out to open ChimeraX, a much more sophisticated visualization tool
 The map to be used as input. When you run OccuPy through the GUI it will the currently selected map. 
 OccuPy supports cubic .map and .mrc files. Occasionally, .ccp4 files cause issues. 
 
-NOTE 1: OccuPy was designed to expect unsharpened maps with solvent noise, so it's best to not 
-mask or post-process you map. In most cases this too is fine, but it's not recommended. 
+<div class="admonition attention">
+<p class="admonition-title">OccuPy wants raw input</p>
+<p>
+OccuPy was designed to expect unsharpened maps with solvent noise, so it's best to not 
+mask or post-process your map. In most cases its fine to do this too, but it's not recommended.
+</p>
+</div>
 
-NOTE 2: Machine-learning tools alter the maps in ways that OccuPy was not designed to anticipate. If you provide a 
+<div class="admonition attention">
+<p class="admonition-title">AI maps try to hard</p>
+<p>
+Machine-learning tools alter the maps in ways that OccuPy was not designed to anticipate. If you provide a 
 map that has been altered by machine-learning methods, the output should be considered vey unreliable.
+</p>
+</div>
 
 There is also an "emdb" button to fetch and unzip the main map of any EMD entry. 
 
@@ -29,6 +39,14 @@ If you change these parameters, parameters below may be updated. Changing some o
 local scale estimate, so leave them unchanged until you have gone through one of the specific tutorials and 
 understand what they do. 
 
+<div class="admonition hint">
+<p class="admonition-title">Details depend on use</p>
+<p>
+More detailed specification of the scale kernel settings are described in the tuorials that describe estimation of 
+occupanvy and relative resolution, since they influence each case slightly differently. 
+</p>
+</div>
+
 ---
 
 ## Modification options
@@ -36,8 +54,15 @@ In some cases you may want to change the input map based on the scale estimate. 
 
 If you have not estimated an appropriate scale, this is still coupled to the "plot" tab of the viewer. By enabling 
 one or more of the available modification types and dragging the slider, you will update the plot. If you have an 
-input map and appropriate scale loaded, this will also interactively update the "preview" tab. More on this later. 
- 
+input map and appropriate scale loaded, this will also interactively update the "preview" tab. 
+
+<div class="admonition hint">
+<p class="admonition-title">It's easier done than said</p>
+<p>
+More detailed specification of the modification options are described in the tutorial on map modification.
+</p>
+</div>
+
 ---
 
 ## Optional/extra 
@@ -67,7 +92,8 @@ the input anyway.
 ### Input 
 The map currently selected in the "input map" drop-down menu above. 
 ### Scale
-The map currently selected in the "scale map" drop-down menu **below**. You can either add files to this drop-down 
+The map currently selected in the "scale map" drop-down menu **below** the viewer. You can either add files to this 
+drop-down 
 by browsing or by running OccuPy. 
 ### Conf. 
 The estimated solvent confidence from the previous time OccuPy was run. This is based on the estimated solvent model,

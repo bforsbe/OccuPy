@@ -1,19 +1,11 @@
 # Supress solvent
 
-<style>
-p.comment {
-background-color: #c3c8e8;
-color: #4051b5;
-padding: 10px;
-margin-left: 0px;
-border-radius: 5px;
-}
-
-</style>
-
-<p class="comment">
+<div class="admonition hint">
+<p class="admonition-title">Recommendation</p>
+<p>
 Please read the GUI overview and conduct the simple tutorial first.
 </p>
+</div>
 
 
 To accurately suppress solvent you primarily have to make sure that the solvent model and confidence is accurate. 

@@ -1,21 +1,15 @@
 # A simple tutorial
 
-<style>
-p.comment {
-background-color: #c3c8e8;
-color: #4051b5;
-padding: 10px;
-margin-left: 0px;
-border-radius: 5px;
-}
 
-</style>
+This is a general tutorial to get acquainted with the GUI and workflow.
 
-This is a general tutorial to get acquainted with the GUI and workflow. 
-
-<p class="comment">
+<div class="admonition hint">
+<p class="admonition-title">Note</p>
+<p>
 It will be useful to read the GUI overview first, or refer to it through this tutorial.
 </p>
+</div>
+
 
 **There are more instructive tutorials for individual use cases, which also clarify limitations and effects of 
 adjusting input parameters.** It is recommended that you do this quick general tutorial first, then the specific 

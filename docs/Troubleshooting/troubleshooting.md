@@ -1,4 +1,4 @@
-# Troubleshooting
+# Other
 This section contains help on common concerns and questions. Further help and insight is offered through the issue 
 tracker. 
 
@@ -7,23 +7,8 @@ For brief information regarding input options on the command line, please use
 ```shell
 $ occupy --help 
 ```
-For extensive information regarding input options, please use 
-```shell
-$ occupy --help-all 
-```
+For extensive information regarding input options, see the GUI overview tutorial.
 
-## ChimeraX was not found 
-OccuPy looks for chimeraX every time it starts, by looking for a program that can be run by executing `chimerax` in 
-a terminal. It also looks for some alternate spellings. If you have ChimeraX in your path, it should be found. 
-
-If chimeraX is not in your path, you can tell OccuPy where to look, by making sure the environment variable 
-`OCCUPY_CHIMERAX` is set to the path of the chimeraX-program. On unix systems, do the following in a terminal: 
-
-```commandline
-$ export OCCUPY_CHIMERAX="/path/to/chimeraX"
-$ /path/to/occupy_gui
-```
-This should start the OccuPy GUI and detect chimeraX.
 
 ## The modified map is similar to the input map
 1. The modification is effected by the power you choose, where values larger than 1 mean to modify. Larger 

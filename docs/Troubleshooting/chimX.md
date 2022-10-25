@@ -29,13 +29,17 @@ bjornf    248767 13.9  1.2 4027076 206084 ?      Sl   16:30   0:04 /usr/bin/chim
 3. Add a new line: 
    `OCCUPY_CHIMERAX = <path from step 1>` 
     Save the file. 
-4. Restart OccuPy and see if chimeraX was detected. 
-
+4. Restart OccuPy and see if chimeraX was detected.
 
 ## There's a big "X" covering the map
 
+<div class="admonition danger">
+<p class="admonition-title">This could be bad</p>
+<p>
 This is an explicit warning. OccuPy estimates a solvent model, but also recognizes when this solvent model is a poor 
 fit. In that case, OccuPy makes sure that you notice. 
+</p>
+</div>
 
 **Do I need to care?** 
 

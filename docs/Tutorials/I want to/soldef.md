@@ -1,22 +1,20 @@
 # Use a solvent definition
-<style>
-p.comment {
-background-color: #c3c8e8;
-color: #4051b5;
-padding: 10px;
-margin-left: 0px;
-border-radius: 5px;
-}
 
-</style>
 
-<p class="comment">
+<div class="admonition hint">
+<p class="admonition-title">Recommendation</p>
+<p>
 Please read the GUI overview and conduct the simple tutorial first.
 </p>
-<p class="comment">
-The solvent model is only used for map modification and solvent suppression, so if you just need to estimate the 
-scale you need <strong>not</strong> do this tutorial.
+</div>
+
+<div class="admonition attention">
+<p class="admonition-title">Be lazy</p>
+<p>
+The solvent model is only used for map modification and solvent suppression, so if you are not doing any of these, e.
+g. if you just need to estimate the scale, you need <strong>not</strong> do this tutorial.
 </p>
+</div>
 
 In some cases, the solvent peak is not dominant in the input map histogram. Common reasons include
 

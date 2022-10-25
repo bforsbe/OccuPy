@@ -18,29 +18,30 @@ all other regions on a nominal scale between 0 and 1.**
 OccuPy also uses this scale as a tool for map modification. 
 
 ### Disclaimer
-<style>
-p.comment {
-background-color: #c3c8e8;
-color: #4051b5;
-padding: 10px;
-margin-left: 0px;
-border-radius: 5px;
-}
 
-</style>
 
-<p class="comment">
-OccuPy is only applicable to reconstructions produced by averaging, like SPA and STA. 
+<div class="admonition warning">
+<p class="admonition-title">SPA or STA, but no single tomo</p>
+<p>
+OccuPy is only applicable to reconstructions produced by ensemble averaging, like SPA and STA. 
 <br>
-That is, <strong> not </strong> for a single 
-tomogram.
+That is, it is incompatible with analysis of a single tomogram.
 </p>
-<p class="comment">
+</div>
+
+<div class="admonition warning">
+<p class="admonition-title">This is not postprocessing</p>
+<p>
 OccuPy  does not sharpen maps. It tries not to.
 </p>
-<p class="comment">
+</div>
+
+<div class="admonition warning">
+<p class="admonition-title">No number for your abstract</p>
+<p>
 OccuPy will not provide an absolute local resolution in Å, only a relative local resolution. 
 </p>
+</div>
 
 ---
 
@@ -76,9 +77,13 @@ an inverse power-scaling, which the user specifies. A power of 1 thus means that
 input, which would leave the output map identical to the input. Higher values signify stronger amplification, and 
 values in the range 2-5 are typically useful. Higher values approach equalization, which emulates full occupancy at all 
 non-solvent points.
-<p style="color:#1f77b4;">
+
+<div class="admonition note">
+<p class="admonition-title">Amplification</p>
+<p>
 Amplification is useful to visualize a map with weak components at a single threshold. 
 </p>
+</div>
 
 ### Mode 2 - Attenuation
 As amplification, but with a (non-inverse) power scaling. Again, a power of 1 means that the output scale is the 
@@ -86,10 +91,13 @@ same as the input, which would leave the output map identical to the input. High
 and values in the range 2-5 tend to be useful. Higher values leave only full occupancy regions, effectively removing 
 any other regions.
 
-<p style="color:#ff7f0e;">
+<div class="admonition note">
+<p class="admonition-title">Attenuation</p>
+<p>
 Attenuation is useful to visualize a map with uninteresting weaker components, by removing them. Detergent belts is 
 a good example.
 </p>
+</div>
 
 ### Mode 3 - Sigmoid 
 The sigmoid modification combines attenuation of lower-scale components with amplification of higher scale 
@@ -98,7 +106,10 @@ occur. The sigmoid modification takes a second parameter, which we call pivot. T
 scale value that will remain unchanged. Regions where the scale was estimated above the pivot will be amplified, and 
 conversely regions with scale lower than the pivot will be attenuated. 
 
-<p style="color:#2ca02c;">
+<div class="admonition note">
+<p class="admonition-title">Sigmoid</p>
+<p>
 Sigmoid modification is useful to visualize a map with flexible components, by removing them while still amplifying 
 relevant structured components. 
 </p>
+</div>
