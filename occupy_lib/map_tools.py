@@ -7,7 +7,7 @@ import gzip
 import os
 from pathlib import Path
 
-from scipy import fft as spfft
+import scipy.fft as spfft
 
 from pkg_resources import get_distribution
 
