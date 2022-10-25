@@ -49,7 +49,7 @@ jobs:
         os: [ windows-latest ] #[ macos-latest, ubuntu-latest, windows-latest ]
 
     runs-on: ${{ matrix.os }}
-
+    if: contains(github.ref, 'tags')
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
