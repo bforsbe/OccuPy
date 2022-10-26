@@ -28,7 +28,7 @@ significant outside your mask and amplifying or attenuating it as well.
 
 --- 
 
-## 1 Try a higher low-pass value
+## 1. Try a higher low-pass value
 This is the simple approach, and if it works satisfactorily, use it. 
 
 1. Open the input map and estimate the scale.
@@ -38,7 +38,7 @@ This is the simple approach, and if it works satisfactorily, use it.
 
 ---
 
-## 2 Open an existing solvent mask
+## 2. Open an existing solvent mask
 OccuPy permits you to simply open an existing mask to use as the solvent definition, but it must be the same 
 size as you input map. 
 
@@ -48,7 +48,7 @@ size as you input map.
 
 ---
 
-## 3 Generate a solvent definition in the GUI
+## 3. Generate a solvent definition in the GUI
 The scale is estimated independently form the solvent model, and can be thresholded or binarized to provide a 
 solvent defintion. 
 
@@ -62,7 +62,7 @@ solvent defintion.
 
 ---
 
-## 4 Evaluate the solvent definition
+## 4. Evaluate the solvent definition
 To evaluate a solvent definition, we inspect the solvent model and resulting confidence. 
 
 1. Make sure the appropriate input map is open and selected, then estimate the scale. 
@@ -74,7 +74,7 @@ To evaluate a solvent definition, we inspect the solvent model and resulting con
 
 ---
 
-## 5 Use the solvent definition
+## 5. Use the solvent definition
 
 1. Make sure the appropriate input map and solvent defintion are both selected.
 2. Set the desired modification parameters.  

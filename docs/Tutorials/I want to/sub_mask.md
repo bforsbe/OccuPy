@@ -28,7 +28,7 @@ detergent regions of membrane proteins and reducing the influence of flexible re
 
 ---
 
-## 1 Estimate occupancy-mode local scale
+## 1. Estimate occupancy-mode local scale
 
 1. Open the input map
 2. Select occupancy-model local scale just below the modification options
@@ -36,7 +36,7 @@ detergent regions of membrane proteins and reducing the influence of flexible re
 
 ---
 
-## 2 Set the desired attenuation
+## 2. Set the desired attenuation
 
 1. Activate either the "Attenutate" or "Sigmoid" options in the modification settings and inspect the preview tab of 
    the viewer as you do. 
@@ -46,7 +46,7 @@ detergent regions of membrane proteins and reducing the influence of flexible re
 
 ---
 
-## 3 Generate the subtraction mask
+## 3. Generate the subtraction mask
 
 1. Without changing the modification parameters, click "Run->Generate subtraction mask"
 2. The output log will report the mask(s) written, which can be opened in e.g. chimeraX. The generated mask(s) will 

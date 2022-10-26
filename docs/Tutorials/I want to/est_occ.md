@@ -17,14 +17,14 @@ The following steps highlight factors influencing this, and how to make the nece
 
 ---
 
-## 1 First pass estimate
+## 1. First pass estimate
 1. Open the input map. 
 2. Set the scale mode to "occupancy" and estimate the scale. 
 3. Click the button "Launch ChimeraX" to view the output. 
 
 ---
 
-## 2 Sanity check
+## 2. Sanity check
 1. Check that the output log does not show any warnings (or errors).
 2. Check the "Conf." tab in the viewer. It should be white where there is "stuff", and black where there is solvent. 
    If this si not the case, your solvent model might be bad. This is not an issue for occupancy estimation, but it 
@@ -36,7 +36,7 @@ The following steps highlight factors influencing this, and how to make the nece
 
 ---
 
-## 3 Evaluate Kernel settings
+## 3. Evaluate Kernel settings
 Strong scatterers, variations in resolution, or any of a number of other factors may cause an unreasonable occupancy 
 estimate based on your expectation and the assumptions OccuPy is built on. You can explore settings to increase the 
 utility (and possibly also the fidelity) of the occupancy estimate, but note that this creates confirmation bias in 
@@ -126,7 +126,21 @@ Look at the "Scale" tab of the viewer. In your scale estimate...
 
 ---
 
-### Final notes
+## 4. Evaluate the estimated occupancy
+If the occupancy is accurately estimated, then map modification by amplification should be possible to apply at 
+infinite power, to equalize occupancy across the map. If the scale is under-estimated, any such region will display
+exaggerated occupancy, effectively over-compensated. This can be made evident by e.g. lowpass filtering. 
+
+1. Without changing the scale estimation parameters, enable "output lowpass" and set the value much higher than the 
+   map resolution, e.g. 20Å. 
+2. Select the "Amplify" tab under modification options. Enable it and set the power to 30. 
+3. Click "Modify Map" 
+4. Click "Launch chimeraX", hide the input map and show the modified map. If regions colored by lower scale appear 
+   at lower threshold values than regions at high scale, then the occupancy appears to have been under-estimated. WE 
+   are working on a way to automate this feedback cycle to get a more accurate occupancy estimate, but for now it 
+   might be prudent to alter the scale kernel settings as described above to better estimate the occupancy. 
+
+## 5. Final notes
 1. Because a reduced tile-size emphasizes variations in mass even when occupancy is the same, a much reduced tile 
    size is potentially useful to estimate relative mass or occupancy when the relative mass is known. There are 
    however better methods available for this purpose, which we recommend for accurate estimation. OccuPy simply 

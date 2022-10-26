@@ -27,19 +27,19 @@ score that tells you how well resolved each region is, compared to the best reso
 
 ---
 
-## 1 First pass estimate
+## 1. First pass estimate
 1. Open the input map. 
 2. Set the scale mode to "resolution" and estimate the scale. 
 3. Click the button "Launch ChimeraX" to view the output. 
 
 ---
 
-## 2 Sanity check
+## 2. Sanity check
 1. Check that the output log does not show any warnings (or errors).
 
 ---
 
-## 3 Evaluate Kernel settings
+## 3. Evaluate Kernel settings
 Strong scatterers, variations in resolution, or any of a number of other factors may cause strong contrast. This 
 means that the signal-to-noise ratio (SNR) is higher, which according to typical cryo-EM estimates more confidence in 
 the estimated resolution, but not necessarily higher resolution. OccuPy evaluates contrast, which will be in 
@@ -125,8 +125,7 @@ Setting the tile-size too large will cause systematic over-estimation of local s
 Look at the "Scale" tab of the viewer. In your scale estimate...
 
 1. is only white for a very small region that does not correspond to what you would expect to be at the best 
-   resolution, 
-   try increasing the tile-size. 
+   resolution, try increasing the tile-size. 
 
 ---
 

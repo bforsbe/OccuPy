@@ -17,7 +17,7 @@ ones.
 
 ---
 
-## 1 Start OccuPy 
+## 1. Start OccuPy 
 1. Open OccuPy by double-clicking the distributed binary or calling `occupy_gui` in a terminal. 
 
 2. If you are unsure where the GUI will run and put output files, or want to change this, click "Session"->"Change 
@@ -29,7 +29,7 @@ ChimeraX from the OccuPy GUI. Please see the advice under "Troubleshooting" in t
 
 ---
 
-## 2 Open a map 
+## 2. Open a map 
 1. Click the "emdb" button in the top-right corner of the OccuPy window. A small dialog should open asking to 
 specify the unique ID of the map in the electron microscopy database. Enter the number 3061 and click "Fetch". This 
 will download, unzip and open a relatively small map of the transmembrane protein gamma-secretase in the current 
@@ -41,7 +41,7 @@ the extracellular domain.
 
 ---
 
-## 3 Notice the kernel settings 
+## 3. Notice the kernel settings 
 Based on the input, reasonable kernel settings were derived automatically. In this case, 
 
 - a low-pass of 8Å will be applied to make solvent estimation easier.
@@ -57,7 +57,7 @@ Based on the input, reasonable kernel settings were derived automatically. In th
 
 ---
 
-## 4 Estimate resolution-mode local scale 
+## 4. Estimate resolution-mode local scale 
 1. Make sure "resolution" is checked under the "Modification options". 
 
 2. Run OccuPy by clicking the Big button labeled "Estimate scale" just above the output log. 
@@ -66,7 +66,7 @@ Based on the input, reasonable kernel settings were derived automatically. In th
 
 ---
 
-## 5 Assess the scale 
+## 5. Assess the scale 
 1. You will find that the estimated scale has been added to the "scale map" drop-down and is thus also rendered in the 
 viewer tab "Scale". Click this tab and drag the slider to check the estimated scale. 
 
@@ -81,7 +81,7 @@ through the GUI. In this case it is the input map, color by the estimated scale,
 
 ---
 
-## 6 Assess 
+## 6. Assess 
 1. The solvent model is ony used for modification, but it is nonetheless a good idea to check it. Click the tab 
    "Solvent model" next to the output log tab. The green line is the solvent model fit as a gaussian to the map 
    histogram. It appears parabolic since this is a log-plot. The red line is the confidence of voxel values above  
@@ -93,7 +93,7 @@ through the GUI. In this case it is the input map, color by the estimated scale,
 
 ---
 
-## 7 Estimate occupancy-mode local scale 
+## 7. Estimate occupancy-mode local scale 
 1. Click on the "amplify" tab of modification options on the left. Enable it and drag the slider. The "plot" tab in the 
 viewer should update interactively, showing you how scale will be modified in the output compared to the input. 
 
@@ -108,7 +108,7 @@ viewer should update interactively, showing you how scale will be modified in th
 
 ---
 
-## 8 Modify by local scale
+## 8. Modify by local scale
 
 1. Click the "Preview" tab of the viewer. Note that this preview is rough. 
 
@@ -124,14 +124,14 @@ viewer should update interactively, showing you how scale will be modified in th
 
 ---
 
-## 9 Inspect modification in ChimeraX
+## 9. Inspect modification in ChimeraX
 1. Change the level (threshold) of the input and all modified maps to 0.06 by using the chimeraX command-line tool to 
    run 
    `occupy_level 0.06` .
 2. Check the difference between the modifications, comparing to the "plot" tab in the OccuPy GUI. 
 3. Close ChimeraX 
 
-## 10 Final notes 
+## 10. Final notes 
 1. Click "Session->View full log" in the menu field. Note that all run setting have been saved according to the same 
    uniwue run-ID that you saw in the output log. This log is persistent. If tou close OccuPy and start it again, the 
    numbers will be incremented, and everything you di will be there. 
