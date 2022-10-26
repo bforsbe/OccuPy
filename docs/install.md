@@ -6,23 +6,61 @@
 The GUI is distributed as precompiled binares that you can download and use. You just need to download and 
 double-click the executable, and the OccuPy GUI should appear.
 
-The current version is 0.1.7 (alpha)
-<p float="left">
-<a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/800px-Tux.svg.png" 
-    style="width:64px;" hspace="32" Title="Download for linux"></a>
+Version :fontawesome-solid-tag: 0.1.7 (alpha)
 
-<a href="https://drive.google.com/uc?export=download&id=TBD">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Apple_Computer_Logo_rainbow.svg/800px-Apple_Computer_Logo_rainbow.svg.png" 
-    style="width:64px;" hspace="32" Title="Download for mac"></a>
 
-<a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Windows_Logo_%281992-2001%29.svg/1280px-Windows_Logo_%281992-2001%29.svg.png" 
-    style="width:80px;" hspace="32" Title="Download for windows"></a>
+<div class="grid" markdown>
+<span style="font-size:1.5em;">
+<a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps" title="Compiled binary 
+for Linux">
+&nbsp;&nbsp;:fontawesome-brands-linux:{ .github }&nbsp;&nbsp; __Linux__ OccuPy GUI </a></span>
+{ .card }
 
-</p>
 
-Previous versions are **not** available as binaries, but only though [PIP](https://pypi.org/project/OccuPy/) and [github](https://github.com/bforsbe/OccuPy).
+<span style="font-size:1.5em;">
+<a href="https://drive.google.com/uc?export=download&id=TBD" title="Compiled binary 
+for Linux">
+&nbsp;&nbsp;:fontawesome-brands-apple:{ .github }&nbsp;&nbsp; __Apple__ OccuPy GUI </a></span>
+{ .card }
+
+<span style="font-size:1.5em;">
+<a href="https://drive.google.com/uc?export=download&id=TBD" title="Compiled binary 
+for Linux">
+&nbsp;&nbsp;:fontawesome-brands-windows:{ .github }&nbsp;&nbsp; __Windows__ OccuPy GUI </a></span>
+{ .card }
+
+
+</div>
+
+[//]: # ()
+[//]: # (<p float="left">)
+
+[//]: # (<a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps">)
+
+[//]: # (    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/800px-Tux.svg.png" )
+
+[//]: # (    style="width:64px;" hspace="32" Title="Download for linux"></a>)
+
+[//]: # ()
+[//]: # (<a href="https://drive.google.com/uc?export=download&id=TBD">)
+
+[//]: # (    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Apple_Computer_Logo_rainbow.svg/800px-Apple_Computer_Logo_rainbow.svg.png" )
+
+[//]: # (    style="width:64px;" hspace="32" Title="Download for mac"></a>)
+
+[//]: # ()
+[//]: # (<a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps">)
+
+[//]: # (    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Windows_Logo_%281992-2001%29.svg/1280px-Windows_Logo_%281992-2001%29.svg.png" )
+
+[//]: # (    style="width:80px;" hspace="32" Title="Download for windows"></a>)
+
+[//]: # ()
+[//]: # (</p>)
+
+Previous versions are **not** available as binaries, but only though [PIP](https://pypi.org/project/OccuPy/) and 
+[github](https://github.com/bforsbe/OccuPy). The same goes for the command-line tool. Istallation through PIP is 
+described below. 
 
 ---
 
