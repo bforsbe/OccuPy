@@ -147,9 +147,3 @@ viewer should update interactively, showing you how scale will be modified in th
    | [30185](https://www.ebi.ac.uk/emdb/EMD-30185) | F-actin                        | 320      |
    | [33437](https://www.ebi.ac.uk/emdb/EMD-33437) | RNA polymerase II + nucleosome | 240      |
    
-
----
-
-# Specific tutorials 
-
-links

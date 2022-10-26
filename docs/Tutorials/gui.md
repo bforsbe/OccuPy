@@ -1,11 +1,18 @@
 # GUI overview
 
+
 The GUI of OccuPy allows you to open maps and view them as sliced 2D images. OccuPy is not meant to visualize the 
 map in any great detail, this is for you to make appropriate consistency checks. For fine analysis, the GUI will 
-call out to open ChimeraX, a much more sophisticated visualization tool 
+call out to open ChimeraX, a much more sophisticated visualization tool.
+
+The GUI automatically calculates and adjusts kernel settings per the users direction, and permits interactive 
+evaluation of map modification. 
+
+The GUI also exposes tools to generate maks based on the estimated scale.
 
 ![image](https://drive.google.com/uc?export=view&id=10KrTBE-MLiQ4wu7kfjIKcupYLvydnxxu)
 
+---
 
 ## Input map
 The map to be used as input. When you run OccuPy through the GUI it will the currently selected map. 

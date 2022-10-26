@@ -13,7 +13,7 @@ copyright: Copyright &copy; 2022 - 2022 Björn Forsberg
 
 theme:
   icon:
-    logo: material/alarm-light
+    logo: material/fire-circle
   name: material
   palette:
     # Palette toggle for light mode
@@ -56,6 +56,24 @@ markdown_extensions:
       emoji_generator: !!python/name:materialx.emoji.to_svg
   - md_in_html
 
+extra:
+  analytics:
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/emoticon-happy-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/emoticon-sad-outline
+          name: This page could be improved
+          data: 0
+          note: >- 
+            Thanks for your feedback! Help us improve this page by
+            using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
+
+
 plugins:
   - search
 #  - autorefs
@@ -97,4 +115,3 @@ plugins:
 
 extra_css:
   - stylesheets/extra.css
-
