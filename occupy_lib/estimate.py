@@ -397,12 +397,12 @@ def occupy_run(options: args.occupy_options):
         )
 
         # -- Low-pass filter output --
-        ampl = map_tools.lowpass_map(
-            ampl,
-            options.lowpass_output,
-            voxel_size,
-            keep_scale=True
-        )
+        if options.lowpass_output is not None:
+            ampl, _ = map_tools.lowpass(
+                ampl,
+                options.lowpass_output,
+                voxel_size
+            )
 
         # If the input map was larger than the maximum processing size, we need to get back the bigger size as output
         if downscale_processing:
@@ -478,12 +478,12 @@ def occupy_run(options: args.occupy_options):
         )
 
         # -- Low-pass filter output --
-        attn = map_tools.lowpass_map(
-            attn,
-            options.lowpass_output,
-            voxel_size,
-            keep_scale=True
-        )
+        if options.lowpass_output is not None:
+            attn, _ = map_tools.lowpass(
+                attn,
+                options.lowpass_output,
+                voxel_size
+            )
 
         # If the input map was larger than the maximum processing size, we need to get back the bigger size as output
         if downscale_processing:
@@ -564,12 +564,12 @@ def occupy_run(options: args.occupy_options):
         )
 
         # -- Low-pass filter output --
-        sigm = map_tools.lowpass_map(
-            sigm,
-            options.lowpass_output,
-            voxel_size,
-            keep_scale=True
-        )
+        if options.lowpass_output is not None:
+            sigm, _ = map_tools.lowpass(
+                sigm,
+                options.lowpass_output,
+                voxel_size
+            )
 
         # If the input map was larger than the maximum processing size, we need to get back the bigger size as output
         if downscale_processing:
