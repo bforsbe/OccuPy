@@ -11,22 +11,25 @@ Version :fontawesome-solid-tag: 0.1.7 (alpha)
 
 <div class="grid" markdown>
 <span style="font-size:1.5em;">
+&nbsp;&nbsp;:fontawesome-brands-linux:&nbsp;&nbsp;
 <a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps" title="Compiled binary 
 for Linux">
-&nbsp;&nbsp;:fontawesome-brands-linux:{ .github }&nbsp;&nbsp; __Linux__ OccuPy GUI </a></span>
+ __Linux__ OccuPy GUI </a></span>
 { .card }
 
 
 <span style="font-size:1.5em;">
+&nbsp;&nbsp;:fontawesome-brands-apple:&nbsp;&nbsp;
 <a href="https://drive.google.com/uc?export=download&id=TBD" title="Compiled binary 
 for Linux">
-&nbsp;&nbsp;:fontawesome-brands-apple:{ .github }&nbsp;&nbsp; __Apple__ OccuPy GUI </a></span>
+ __Apple__ OccuPy GUI </a></span>
 { .card }
 
 <span style="font-size:1.5em;">
+&nbsp;&nbsp;:fontawesome-brands-windows:&nbsp;&nbsp;
 <a href="https://drive.google.com/uc?export=download&id=TBD" title="Compiled binary 
 for Linux">
-&nbsp;&nbsp;:fontawesome-brands-windows:{ .github }&nbsp;&nbsp; __Windows__ OccuPy GUI </a></span>
+ __Windows__ OccuPy GUI </a></span>
 { .card }
 
 
