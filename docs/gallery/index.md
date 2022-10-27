@@ -49,6 +49,30 @@ to reproduce the results.
     </a>
     </div>  
 
+    <div class="img-box">
+    <a class="reference internal" href="modification" style="color:#FFFFFF;">
+      <img src="thumbs/modification.png" alt="" />
+      <div class="transparent-box">
+        <div class="caption">
+          <p>Modification</p>
+          <p class="opacity-low">EMD-14085</p></p>
+        </div>
+      </div>    
+    </a>
+    </div>   
+
+    <div class="img-box">
+    <a class="reference internal" href="resolution" style="color:#FFFFFF;">
+      <img src="thumbs/resolution.png" alt="" />
+      <div class="transparent-box">
+        <div class="caption">
+          <p>Resolution</p>
+          <p class="opacity-low">EMD-13015</p></p>
+        </div>
+      </div>    
+    </a>
+    </div>  
+
 </div>
 
 ---
