@@ -69,47 +69,4 @@ partial occupancy and the relative resolution of cryo-EM reconstructions.
 ## Modification of partial occupancies
 OccuPy implements map modification as spatial filtering based on the estimated partial occupancy of local map 
 components. This is intended to create maps that emulate reconstruction expected if the input (image) data was more 
-homogenous at lower or higher occupancy. There are three modes. 
-
-### Mode 1  - Amplification
-Amplification will effectively make low-occupancy components higher. The output map scale will be mapped by a 
-an inverse power-scaling, which the user specifies. A power of 1 thus means that the output scale is the same as the 
-input, which would leave the output map identical to the input. Higher values signify stronger amplification, and 
-values in the range 2-5 are typically useful. Higher values approach equalization, which emulates full occupancy at all 
-non-solvent points.
-
-<div class="admonition note">
-<p class="admonition-title">Amplification</p>
-<p>
-Amplification is useful to visualize a map with weak components at a single threshold. 
-</p>
-</div>
-
-### Mode 2 - Attenuation
-As amplification, but with a (non-inverse) power scaling. Again, a power of 1 means that the output scale is the 
-same as the input, which would leave the output map identical to the input. Higher values signify stronger attenuation, 
-and values in the range 2-5 tend to be useful. Higher values leave only full occupancy regions, effectively removing 
-any other regions.
-
-<div class="admonition note">
-<p class="admonition-title">Attenuation</p>
-<p>
-Attenuation is useful to visualize a map with uninteresting weaker components, by removing them. Detergent belts is 
-a good example.
-</p>
-</div>
-
-### Mode 3 - Sigmoid 
-The sigmoid modification combines attenuation of lower-scale components with amplification of higher scale 
-components. Again, a power of 1 means that the output scale is identical to the input, and no modification will 
-occur. The sigmoid modification takes a second parameter, which we call pivot. The pivot value is the threshold 
-scale value that will remain unchanged. Regions where the scale was estimated above the pivot will be amplified, and 
-conversely regions with scale lower than the pivot will be attenuated. 
-
-<div class="admonition note">
-<p class="admonition-title">Sigmoid</p>
-<p>
-Sigmoid modification is useful to visualize a map with flexible components, by removing them while still amplifying 
-relevant structured components. 
-</p>
-</div>
+homogenous at lower or higher occupancy.
