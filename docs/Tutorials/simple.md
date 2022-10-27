@@ -1,4 +1,4 @@
-# A simple tutorial
+# An intro tutorial
 
 
 This is a general tutorial to get acquainted with the GUI and workflow.

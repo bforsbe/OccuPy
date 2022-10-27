@@ -4,7 +4,7 @@
 <div class="admonition hint">
 <p class="admonition-title">Recommendation</p>
 <p>
-Please read the GUI overview and conduct the simple tutorial first.
+Please read the GUI overview and conduct the intro tutorial first.
 </p>
 </div>
 
