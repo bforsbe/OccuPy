@@ -11,81 +11,88 @@ Different examples of how Occupy has been used, and helped to visualise and anal
 These are examples of how figures were generated for the main OccuPy paper. In some cases instructions are provided 
 to reproduce the results. 
 
+<div class="gallery-image">
 
-<div class="mkd-glr-thumbcontainer" tooltip="Occupy on synthetic maps">
-    <!--div class="figure align-default" id="idp1"-->
-        <img alt="sythetic_map" src="thumbs/synthetic.png"/>
-        <p class="caption">
-            <span class="caption-text">
-                <a class="reference internal" href="synthetic">
-                    <span class="std std-ref">Occupy on synthetic maps </span>
-                </a>
-            </span>
-            <!--a class="headerlink" href="#idp1" title="Permalink to this image"></a-->
-        </p>
-    <!--/div-->
+    <div class="img-box">
+    <a class="reference internal" href="synthetic" style="color:#FFFFFF;">
+      <img src="thumbs/synthetic.png" alt="" />
+      <div class="transparent-box">
+        <div class="caption">
+          <p>Synthetic input</p>
+            <p class="opacity-low">PDB-1UXI</p>
+        </div>
+      </div> 
+    </a>
+    </div>
+
+    <div class="img-box">
+    <a class="reference internal" href="mass" style="color:#FFFFFF;">
+      <img src="thumbs/mass.png" alt="" />
+      <div class="transparent-box">
+        <div class="caption">
+          <p>Mass effects</p>
+          <p class="opacity-low">EMD-33707</p></p>
+        </div>
+      </div>    
+    </a>
+    </div>     
+
+    <div class="img-box">
+    <a class="reference internal" href="membrane" style="color:#FFFFFF;">
+      <img src="thumbs/membrane.png" alt="" />
+      <div class="transparent-box">
+        <div class="caption">
+          <p>Membrane protein</p>
+          <p class="opacity-low">EMD-23015</p></p>
+        </div>
+      </div>    
+    </a>
+    </div>  
+
 </div>
-
-<div class="mkd-glr-thumbcontainer" tooltip="Estimating atomic mass">
-    <!--div class="figure align-default" id="idp2"-->
-        <img alt="Introductory example - Plotting sin" src="thumbs/mass.png" />
-        <p class="caption">
-            <span class="caption-text">
-                <a class="reference internal" href="mass">
-                    <span class="std std-ref">Estimating atomic mass</span>
-                </a>
-            </span>
-            <!--a class="headerlink" href="#idp2" title="Permalink to this image"></a-->
-        </p>
-    <!--/div-->
-</div>
-
-<div class="mkd-glr-thumbcontainer" tooltip="Detergent and membrane">
-    <!--div class="figure align-default" id="idp3"-->
-        <img alt="Introductory example - Plotting sin" src="thumbs/membrane.png" />
-        <p class="caption">
-            <span class="caption-text">
-                <a class="reference internal" href="membrane">
-                    <span class="std std-ref">Detergent and membrane</span>
-                </a>
-            </span>
-            <!--a class="headerlink" href="#idp3" title="Permalink to this image"></a-->
-        </p>
-    <!--/div-->
-</div>
-
-<div class="mkd-glr-clear"></div>
 
 ---
 
 ## By the team 
 
-<div class="mkd-glr-thumbcontainer" tooltip="At high resolution">
-    <!--div class="figure align-default" id="idt1"-->
-        <img alt="Introductory example - Plotting sin" src="thumbs/high-res.png" />
-        <p class="caption">
-            <span class="caption-text">
-                <a class="reference internal" href="highres">
-                    <span class="std std-ref">At high resolution</span>
-                </a>
-            </span>
-            <!--a class="headerlink" href="#idt1" title="Permalink to this image"></a-->
-        </p>
-    <!--/div-->
-</div>
+<div class="gallery-image">
 
-<div class="mkd-glr-thumbcontainer" tooltip="Actin filament">
-    <!--div class="figure align-default" id="idt2"-->
-        <img alt="Introductory example - Plotting sin" src="thumbs/actin.png" />
-        <p class="caption">
-            <span class="caption-text">
-                <a class="reference internal" href="filament">
-                    <span class="std std-ref">Actin filament</span>
-                </a>
-            </span>
-            <!--a class="headerlink" href="#idt2" title="Permalink to this image"></a-->
-        </p>
-    <!--/div-->
+    <div class="img-box">
+    <a class="reference internal" href="highres" style="color:#FFFFFF;">
+      <img src="thumbs/high-res.png" alt="" />
+      <div class="transparent-box">
+        <div class="caption">
+          <p>At high resolution</p>
+          <p class="opacity-low">EMD-33707</p></p>
+        </div>
+      </div>    
+    </a>
+    </div>  
+
+    <div class="img-box">
+    <a class="reference internal" href="ribosome" style="color:#FFFFFF;">
+      <img src="thumbs/ribo.png" alt="" />
+      <div class="transparent-box">
+        <div class="caption">
+          <p>A ribosome</p>
+          <p class="opacity-low">EMD-3943</p></p>
+        </div>
+      </div>    
+    </a>
+    </div>  
+
+    <div class="img-box">
+    <a class="reference internal" href="spike" style="color:#FFFFFF;">
+      <img src="thumbs/spike.png" alt="" />
+      <div class="transparent-box">
+        <div class="caption">
+          <p>A viral spike</p>
+          <p class="opacity-low">Unpublished data</p></p>
+        </div>
+      </div>    
+    </a>
+    </div>  
+
 </div>
 
 
