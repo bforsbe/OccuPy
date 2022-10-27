@@ -34,34 +34,6 @@ specific features of Mkdocs-Gallery.
     <!--/div-->
 </div>
 
-<div class="mkd-glr-thumbcontainer" tooltip="This is a general example demonstrating a Matplotlib plot output, embedded Markdown, the use of...">
-    <!--div class="figure align-default" id="id1"-->
-        <img alt="Introductory example - Plotting sin" src="images/thumb/mkd_glr_plot_1_sin_thumb.png" />
-        <p class="caption">
-            <span class="caption-text">
-                <a class="reference internal" href="plot_1_sin">
-                    <span class="std std-ref">Introductory example - Plotting sin</span>
-                </a>
-            </span>
-            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
-        </p>
-    <!--/div-->
-</div>
-
-<div class="mkd-glr-thumbcontainer" tooltip="This is a general example demonstrating a Matplotlib plot output, embedded Markdown, the use of...">
-    <!--div class="figure align-default" id="id1"-->
-        <img alt="Introductory example - Plotting sin" src="images/thumb/mkd_glr_plot_2_sin_thumb.png" />
-        <p class="caption">
-            <span class="caption-text">
-                <a class="reference internal" href="plot_2_sin">
-                    <span class="std std-ref">Introductory example - Plotting sin</span>
-                </a>
-            </span>
-            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
-        </p>
-    <!--/div-->
-</div>
-
 <div class="mkd-glr-clear"></div>
 
 
