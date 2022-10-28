@@ -1,6 +1,6 @@
 <!-- docs_generated_gallery -->
 
-# Gallery 
+# Showcase / gallery 
 
 Different examples of how Occupy has been used, and helped to visualise and analyze cryo-EM maps. 
 
@@ -38,11 +38,12 @@ to reproduce the results.
     </div>     
 
     <div class="img-box">
-    <a class="reference internal" href="membrane" style="color:#FFFFFF;">
+    <!--<a class="reference internal" href="membrane" style="color:#FFFFFF;">
+    -->
       <img src="thumbs/membrane.png" alt="" />
       <div class="transparent-box">
         <div class="caption">
-          <p>Membrane protein</p>
+          <p>Membrane protein <br> (COMING SOON)</p>
           <p class="opacity-low">EMD-23015</p></p>
         </div>
       </div>    
@@ -50,11 +51,12 @@ to reproduce the results.
     </div>  
 
     <div class="img-box">
-    <a class="reference internal" href="modification" style="color:#FFFFFF;">
+    <!--<a class="reference internal" href="modification" style="color:#FFFFFF;">
+    -->
       <img src="thumbs/modification.png" alt="" />
       <div class="transparent-box">
         <div class="caption">
-          <p>Modification</p>
+          <p>Modification <br> (COMING SOON)</p>
           <p class="opacity-low">EMD-14085</p></p>
         </div>
       </div>    
@@ -62,11 +64,12 @@ to reproduce the results.
     </div>   
 
     <div class="img-box">
-    <a class="reference internal" href="resolution" style="color:#FFFFFF;">
+    <!--<a class="reference internal" href="resolution" style="color:#FFFFFF;">
+    -->
       <img src="thumbs/resolution.png" alt="" />
       <div class="transparent-box">
         <div class="caption">
-          <p>Resolution</p>
+          <p>Resolution <br> (COMING SOON)</p>
           <p class="opacity-low">EMD-13015</p></p>
         </div>
       </div>    
@@ -81,7 +84,7 @@ to reproduce the results.
 
 <div class="gallery-image">
 
-    <div class="img-box">
+    <div class="img-box" >
     <a class="reference internal" href="highres" style="color:#FFFFFF;">
       <img src="thumbs/high-res.png" alt="" />
       <div class="transparent-box">
@@ -94,11 +97,12 @@ to reproduce the results.
     </div>  
 
     <div class="img-box">
-    <a class="reference internal" href="ribosome" style="color:#FFFFFF;">
+    <!--<a class="reference internal" href="ribosome" style="color:#FFFFFF;">
+    -->
       <img src="thumbs/ribo.png" alt="" />
       <div class="transparent-box">
         <div class="caption">
-          <p>A ribosome</p>
+          <p>A ribosome <br> (COMING SOON)</p>
           <p class="opacity-low">EMD-3943</p></p>
         </div>
       </div>    
@@ -106,11 +110,12 @@ to reproduce the results.
     </div>  
 
     <div class="img-box">
-    <a class="reference internal" href="spike" style="color:#FFFFFF;">
-      <img src="thumbs/spike.png" alt="" />
+    <!--<a class="reference internal" href="spike" style="color:#FFFFFF;">
+    -->
+    <img src="thumbs/spike.png" alt="" />
       <div class="transparent-box">
         <div class="caption">
-          <p>A viral spike</p>
+          <p>A viral spike <br> (COMING SOON)</p>
           <p class="opacity-low">Unpublished data</p></p>
         </div>
       </div>    

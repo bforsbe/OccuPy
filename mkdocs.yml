@@ -93,7 +93,7 @@ nav:
           - Supress solvent: Tutorials/case/supp_solv.md
           - Make a subtraction mask : Tutorials/case/sub_mask.md
           - Use a solvent definition: Tutorials/case/soldef.md
-  - Gallery: gallery       # The first gallery of examples
+  - Showcase/gallery: gallery       # The first gallery of examples
   - About: zcite.md
 
 plugins:
