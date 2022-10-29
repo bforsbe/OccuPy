@@ -31,7 +31,30 @@ google scholar">:fontawesome-solid-graduation-cap:{ .scholar }</a>
 ---
 
 ## Primary citation
+If you find OccuPy useful for any purpose, plaese refer to it and formally cite it: 
+
+```
+TBD
+```
 
 ---
 
 ## Acknowledgements  
+The software implementation is hosted and deployed to PyPI through github. 
+
+The sigmoid function originates from [Prof. Werner Antweiler](https://wernerantweiler.ca/blog.php?item=2018-11-03). 
+
+The documentation format is [readthedocs](https://readthedocs.org/), using 
+[MkDocs-material](https://squidfunk.github.io/mkdocs-material/), based on a configuration by Talley Lambert. 
+
+OccuPy is built purely in python. At it's core, it uses [numpy](https://numpy.org/), [scipy](https://scipy.org/) and 
+[matplotlib](https://matplotlib.org/). 
+
+Additional features utilize [scikit-image](https://scikit-image.org/). 
+
+I/O is handled by [mrcfile](https://mrcfile.readthedocs.io/en/latest/index.html), and the command-line interface uses typer. 
+
+The GUI was built in PyQt5, using Qt5 designer. 
+
+OccuPy is deployed to [PyPi](https://pypi.org/project/OccuPy/) using [github](https://github.com/) and [github 
+workflows](https://docs.github.com/en/actions/using-workflows). 

@@ -73,14 +73,74 @@ described below.
 Regardless if you are using conda or not, OccuPy can be installed from the [Python Package Index](https://pypi.
 org/project/OccuPy/) (PyPI) using `pip`. 
 
-```shell
-pip install occupy
-```
+### Verify/install python and/or pip
+=== "Windows"
 
-You can also easily install previous [versions](https://pypi.org/project/OccuPy/#history) using pip: 
+    The following contains elements of
+    [this](https://www.digitalocean.com/community/tutorials/install-python-windows-10) guide to installing python on 
+    windows, and 
+    [this](https://pip.pypa.io/en/stable/installation/#get-pip-py) guide to install pip using python. 
+    
+    1. In the start-menu, type "Powershell". Open a powershell terminal.
+    2. Check if python is installed by calling `python --version` in the powershell. If you see a version number, 
+    python is installed. If not, install python by visiting [python.org](https://www.python.org/downloads) and select 
+    the windows installer. Follow the instructions, and refer to 
+    [this](https://www.digitalocean.com/community/tutorials/install-python-windows-10) guide if needed. 
+    Close the powershell and reopen it once python is installed. 
+    3. Check if pip is installed by calling `pip --version` in the powershell. If you see a version number, pip 
+    is installed, and you can skip to step 5. If not, download the file `get-pip.py` from 
+    [pypa.io](https://bootstrap.pypa.io). Put it in the same folder as the powershell is running. You can find out 
+    where the powershell is running, by calling `pwd` in it.
+    4. In the powershell, run the downloaded file by calling `python get-pip.py` and hit enter. This will install pip. 
+    5. You may need to add pip to your environment variables, as described in 
+    [this guide](https://www.activestate.com/resources/quick-reads/how-to-install-pip-on-windows/).
+
+=== "Linux (ubuntu)"
+
+    Please follow [this guide](https://tecadmin.net/how-to-install-python-3-10-on-ubuntu-debian-linuxmint/),
+    which also explains and verifies that pip is installed along with python.
+
+### Install OccuPy
+
+=== "Windows"
+    
+    1. In the start-menu, type "Powershell". Open a powershell terminal.
+    2. In the powershell, call `pip install occupy`.
+    **Take note** of any notice about where OccuPy and it's dependencies were installed, and if it was suggested that 
+    you add this to your path. Please add the path to your environment variables if asked, as described in 
+    [this guide](https://www.activestate.com/resources/quick-reads/how-to-install-pip-on-windows/).
+    3. Verify the install by calling `pip show occupy`. You will either see `WARNING: Package(s) not found: occupy` 
+    or a description of the installation. If successfully installed, continue. 
+    4. In the powershell, call "occupy_gui". If you get an error starting with 
+    `occupy_gui : The term 'occupy_gui' is not recognized...`
+    then you need to add the pip path as described in step 2. Otherwise, the occupy GUI should start. 
+    5. Note also that calling `occupy` in the powershell will invoke the non-GUI tool. 
+    Call `occupy --help` for a list of input options. 
+
+=== "Linux (ubuntu)"
+
+    1. Open a terminal.
+    2. In the terminal, call `pip install occupy`.
+    3. Verify the install by calling `pip show occupy`. You will either see `WARNING: Package(s) not found: occupy` 
+    or a description of the installation. If successfully installed, continue. 
+    4. In the powershell, call "occupy_gui". If you get the error 
+    `command not found: occupy_gui`
+    then you need to add the pip path to your environment variables, or restart the terminal. Otherwise, the occupy GUI 
+    should start. 
+    5. Note also that calling `occupy` in the terminal will invoke the non-GUI tool. 
+    Call `occupy --help` for a list of input options.
+
+<div class="admonition Hint">
+<p class="admonition-title">Update, or downgrade easily</p>
+<p>
+You can also easily install previous <a href="https://pypi.org/project/OccuPy/#history">versions</a> using pip: 
+
 ```shell
 pip install occupy==0.1.6
 ```
+</p>
+</div>
+
 
 ---
 

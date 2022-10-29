@@ -3,9 +3,11 @@
 ## OccuPy wasn't found
 
 ### I used PIP
-We recommend installing OccuPy through PIP. This should make occupy available, but pip may install occupy in a 
+We recommend installing OccuPy through PIP. This should make `occupy` and `occupy_gui` available as command-line 
+tools that you can also assign desktop shortcuts to. However, pip may install occupy in a 
 location that is not universally known to your system. In this case you simply have to find where pip installed 
-occupy, and add this path to the list of locations your computer looks for programs.
+occupy. You can then either make a shortcut to it, and/or add this path to the list of locations your computer looks 
+for programs to make the commad-line tools available anywhere on your system.
 
 === "On Windows"
 

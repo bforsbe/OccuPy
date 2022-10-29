@@ -1,7 +1,6 @@
 # Overview
 
----
-
+![image](https://drive.google.com/uc?export=view&id=19U1PaDpn6e4dVtVMC91QXVy3JUtrPfOW)
 ## What is OccuPy
 
 The primary purpose of OccuPy is to estimate the local map scale of cryo-EM maps. 
@@ -10,12 +9,18 @@ What does the 'local scale'
 mean? In simple terms, think of it as the range of pixels values. In well-resolved regions, contrast is high, and we 
 expect very bright and very dark pixels. If that region has decreased resolution or occupancy, we expect decreased 
 contrast and a narrower range of pixel values. The limit is solvent, which has Gaussian distribution. OccuPy was built to estimate this 'scale', to quantify relative contrast degradation. This means that it can 
-estimate the relative resolution, or occupancy.
+estimate the relative resolution, or occupancy. OccuPy also uses this scale as a tool for map modification. 
 
-**In essence, OccuPy locates the region that exhibits the highest range of pixel values, and utilizes this to place 
-all other regions on a nominal scale between 0 and 1.**
+<p>
+ <em>
+  <br>
+In essence, OccuPy locates the region that exhibits the highest range of pixel values, and utilizes this to place 
+all other regions on a nominal scale between 0 and 1.
+  <br>
+ </em>
+</p>
 
-OccuPy also uses this scale as a tool for map modification. 
+
 
 ### Disclaimer
 

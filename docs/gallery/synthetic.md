@@ -26,7 +26,7 @@ grep ^HETATM 1UXI_noWater.pdb > chain_NAD_FUM.pdb
 ```
 
 To alter the occupancy (to 40%) of atoms in chain A of the model:
-```commandline
+```bash
 cat header.pdb > 1UXI_occ_template.pdb
 sed 's/^\(.\{57\}\).\{4\}/\1xOc /' chain_A.pdb >> 1UXI_occ_template.pdb
 echo "TER" >> 1UXI_occ_template.pdb
