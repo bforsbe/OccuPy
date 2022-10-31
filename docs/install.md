@@ -31,9 +31,7 @@ Version :fontawesome-solid-tag: 0.1.7 (alpha)
 for Linux">
  __Linux__ OccuPy GUI </a></span>
 { .card }
-
 <br>
-
 <span style="font-size:1.5em;">
 &nbsp;&nbsp;:fontawesome-brands-apple:&nbsp;&nbsp;
 <a href="https://drive.google.com/uc?export=download&id=TBD" title="Compiled binary

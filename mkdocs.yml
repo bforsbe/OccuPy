@@ -139,3 +139,5 @@ plugins:
 
 extra_css:
   - stylesheets/extra.css
+extra_css:
+  - gallery/stylesheets/extra.css
