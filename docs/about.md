@@ -53,7 +53,8 @@ OccuPy is built purely in python. At it's core, it uses [numpy](https://numpy.or
 
 Additional features utilize [scikit-image](https://scikit-image.org/). 
 
-I/O is handled by [mrcfile](https://mrcfile.readthedocs.io/en/latest/index.html), and the command-line interface uses typer. 
+I/O is handled by [mrcfile](https://mrcfile.readthedocs.io/en/latest/index.html), and the command-line interface 
+uses [typer](https://typer.tiangolo.com/). 
 
 The GUI was built in PyQt5, using Qt5 designer. 
 
