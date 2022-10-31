@@ -12,10 +12,14 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
 matplotlib.use('QT5Agg')
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
+import os
+os.environ["QT_DEVICE_PIXEL_RATIO"] = "1"
+os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+os.environ["QT_SCREEN_SCALE_FACTORS"] = "1"
+os.environ["QT_SCALE_FACTOR"] = "1" # larger than 1 makes it bigger
 
 from occupy_lib import estimate, map_tools, occupancy, vis, solvent, extras, args   # for terminal use
 from scipy import ndimage as ndi
