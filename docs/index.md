@@ -3,8 +3,8 @@
 ![image](https://drive.google.com/uc?export=view&id=19U1PaDpn6e4dVtVMC91QXVy3JUtrPfOW)
 ## What is OccuPy
 
-The primary purpose of OccuPy is to estimate the local map scale of cryo-EM maps. 
-
+The primary purpose of OccuPy is to estimate the localscale of cryo-EM maps. 
+<br><br>
 What does the 'local scale' 
 mean? In simple terms, think of it as the range of pixels values. In well-resolved regions, contrast is high, and we 
 expect very bright and very dark pixels. If that region has decreased resolution or occupancy, we expect decreased 
@@ -66,12 +66,10 @@ and/or provide a displacement vector to emphasize macromolecular resolution and/
 descent. Basically, it needs to be fast enough to run repeatedly without delaying processing, and simple enough to 
 use that it needs no input other than a cryo-EM map. 
 
-It is here implemented as a command-line tool using open-source python libraries, to facilitate visualization of 
-partial occupancy and the relative resolution of cryo-EM reconstructions.
-
----
-
-## Modification of partial occupancies
-OccuPy implements map modification as spatial filtering based on the estimated partial occupancy of local map 
-components. This is intended to create maps that emulate reconstruction expected if the input (image) data was more 
+## The gist 
+OccuPy is currently implemented as a GUI and command-line tool using open-source python libraries, to facilitate 
+visualization of partial occupancy and the relative resolution of cryo-EM reconstructions by e.g  implementing map 
+modification as spatial filtering based on the estimated partial occupancy of local map components. 
+This is intended to create maps that emulate reconstruction expected if the input (image) data was more 
 homogenous at lower or higher occupancy.
+

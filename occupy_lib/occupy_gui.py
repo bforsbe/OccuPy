@@ -926,9 +926,12 @@ class Ui_MainWindow(object):
 
         self.actiontutorial = QtWidgets.QAction(MainWindow)
         self.actiontutorial.setObjectName("actiontutorial")
+        self.actiontutorial.triggered.connect(self.tutorial_open)
+
         self.actionabout = QtWidgets.QAction(MainWindow)
         self.actionabout.setObjectName("actionabout")
         self.actionabout.triggered.connect(self.window_about)
+
         self.actionchange_location = QtWidgets.QAction(MainWindow)
         self.actionchange_location.setObjectName("actionchange_location")
         self.actionchange_location.triggered.connect(self.change_current_dir)
@@ -1162,6 +1165,11 @@ class Ui_MainWindow(object):
         self.toolButton_expandSolModel.clicked.connect(self.window_solvent_model)
 
         self.tabWidget_output.tabBarDoubleClicked.connect(self.view_full_log)
+
+    def tutorial_open(self):
+        import webbrowser
+        url = "https://occupy.readthedocs.io/en/latest/Tutorials/intro/"
+        webbrowser.open(url, new=0, autoraise=True)
 
     def update_scale_slider(self):
 
