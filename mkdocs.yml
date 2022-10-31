@@ -80,21 +80,21 @@ nav:
   - Introduction: index.md
   - Install: install.md
   - Troubleshooting:
-      - Geting it working: Troubleshooting/aa-occupy.md
-      - ChimeraX: Troubleshooting/chimX.md
-      - Other: Troubleshooting/troubleshooting.md
+      - Install troubles: Troubleshooting/install_trbl.md
+      - ChimeraX: Troubleshooting/chimX_trbl.md
+      - Other: Troubleshooting/other_trbl.md
   - Tutorials:
       - GUI overview: Tutorials/gui.md
-      - Intro tutorial: Tutorials/simple.md
+      - Intro tutorial: Tutorials/intro.md
       - I want to:
-          - Estimate relative resolution: Tutorials/case/est_occ.md
-          - Estimate occupancy: Tutorials/case/est_res.md
+          - Estimate relative resolution: Tutorials/case/est_res.md
+          - Estimate occupancy: Tutorials/case/est_occ.md
           - Modify a map: Tutorials/case/modification.md
           - Supress solvent: Tutorials/case/supp_solv.md
           - Make a subtraction mask : Tutorials/case/sub_mask.md
           - Use a solvent definition: Tutorials/case/soldef.md
   - Showcase/gallery: gallery       # The first gallery of examples
-  - About: zcite.md
+  - About: about.md
 
 plugins:
   - search

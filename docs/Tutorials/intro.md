@@ -9,11 +9,15 @@ This is a general tutorial to get acquainted with the GUI and workflow.
 It will be useful to read the GUI overview first, or refer to it through this tutorial.
 </p>
 </div>
-
-
-**There are more instructive tutorials for individual use cases, which also clarify limitations and effects of 
-adjusting input parameters.** It is recommended that you do this quick general tutorial first, then the specific 
+<div class="admonition hint">
+<p class="admonition-title">The devil is in the details</p>
+<p>
+There are more instructive tutorials for individual use cases, which also clarify limitations and effects of 
+adjusting input parameters. It is recommended that you do this quick general tutorial first, then the specific 
 ones.
+</p>
+</div>
+
 
 ---
 
@@ -23,9 +27,18 @@ ones.
 2. If you are unsure where the GUI will run and put output files, or want to change this, click "Session"->"Change 
 location" in the top menu.
 
-3. You will find three (3) large buttons above the ouput log. These should all be greyed out. Check that the far-right 
+3. You will find three (3) large buttons above the ouput log, called "Estimate Scale", "Modify Map", and "Launch 
+chimeraX". These should all be greyed out. Check that the far-right 
 button to start ChimeraX does not indicate "(not found)". If ChimeraX was not found, you will not be able to invoke 
-ChimeraX from the OccuPy GUI. Please see the advice under "Troubleshooting" in these docs to remedy this.
+ChimeraX from the OccuPy GUI. Please see the advice under "Troubleshooting" in these docs to remedy this. 
+<div class="admonition hint">
+<p class="admonition-title">Workaronud</p>
+<p>
+OccuPy writes a chimeraX command script (.cxc) every time you estimate the scale or modify a map. You can open 
+this through chimeraX instead of using OccuPy to launch chimeraX. Just make sure to use "File"->"close session" before 
+opening the .cxc. 
+</p>
+</div>
 
 ---
 
@@ -64,24 +77,31 @@ Based on the input, reasonable kernel settings were derived automatically. In th
 
 3. This should finish in a few seconds. Notice that the run is individually numbered as "1-1" in the output log. 
 
+<div class="admonition attention">
+<p class="admonition-title">There's more to this</p>
+<p>
+To learn how parameter adjustment can help you get a better estimate, consult the specific tutorial later.
+</p>
+</div>
+
 ---
 
 ## 5. Assess the scale 
 1. You will find that the estimated scale has been added to the "scale map" drop-down and is thus also rendered in the 
-viewer tab "Scale". Click this tab and drag the slider to check the estimated scale. 
+viewer tab "Scale". Click this viewer tab and drag the slider to check the estimated scale. 
 
 2. To further inspect the local scale, click the big button labeled "Launch ChimeraX" to the far right above the output 
 log. This will launch chimeraX and open a command script written by OccuPy based on the last time you ran anything 
 through the GUI. In this case it is the input map, color by the estimated scale, along with a color key. 
 
-3. change the color of map #1 to grey. Next, in the chimeraX command-line tool, run the command 
-`scale_color #1 #2`. This will re-color map #1 by the scale (map #2), according to the color key.
+3. Change the color of map #1 to grey. Next, in the chimeraX command-line tool, run the command 
+`scale_color #1 #2`. This will re-color map #1 by the scale (map #2), according to the color key. 
 
 4. Close chimeraX.
 
 ---
 
-## 6. Assess 
+## 6. Assess the solvent model
 1. The solvent model is ony used for modification, but it is nonetheless a good idea to check it. Click the tab 
    "Solvent model" next to the output log tab. The green line is the solvent model fit as a gaussian to the map 
    histogram. It appears parabolic since this is a log-plot. The red line is the confidence of voxel values above  
@@ -105,7 +125,12 @@ viewer should update interactively, showing you how scale will be modified in th
 3. When you enabled any modification, the scale-mode just below was changed to "occupancy" and can't be changed as 
    long as you want to modify. Click "Estimate scale" again to estimate the occupancy-mode local scale.  This should 
    take a few seconds and then the new scale should be selected in the "scale map" drop-down menu. 
-
+<div class="admonition attention">
+<p class="admonition-title">There's more to this</p>
+<p>
+To learn how parameter adjustment can help you get a better estimate, consult the specific tutorial later.
+</p>
+</div>
 ---
 
 ## 8. Modify by local scale
@@ -121,7 +146,12 @@ viewer should update interactively, showing you how scale will be modified in th
 5. Click the button "modify Map" to generate all desired modifications. 
 6. When completed, the preview is **still just a preview**. To see the output, please click "Launch ChimeraX". This 
    will open the original map and all modifications, but only the original is visible by default. Read on.
-
+<div class="admonition attention">
+<p class="admonition-title">There's more to this</p>
+<p>
+To understand map modification, consult the specific tutorial later.
+</p>
+</div>
 ---
 
 ## 9. Inspect modification in ChimeraX

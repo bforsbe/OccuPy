@@ -4,65 +4,52 @@
 
 
 ## Compiled binaries
+<div class="admonition attention">
+<p class="admonition-title">Pre-compiled binaries are not up-to-date during alpha/beta-testing</p>
+<p>
+When software is recently released, it is expected that users report bugs and that these get mended over time. This is 
+called (early) alpha-tesing and (later) beta-testing. OccuPy is in alpha.
+<br><br>
+Compiled binaries will not be updated as new bugfixes get implemented. Once alpha/beta testing is over, new binaries 
+will be provided. 
+<br><br>
+Using pip install, you can get bugfixes at any time, and update according to the latest changes. If you don't want 
+to wait for a new release of bug-fixes, install with pip from source, as described below).
+</p>
+</div>
 
-The GUI is distributed as precompiled binares that you can download and use. You just need to download and 
+
+The GUI will be distributed as precompiled binaries that you can download and use. You just need to download and
 double-click the executable, and the OccuPy GUI should appear.
-
+<br><br>
 Version :fontawesome-solid-tag: 0.1.7 (alpha)
-
-
+<br><br>
 <div class="grid" markdown>
 <span style="font-size:1.5em;">
 &nbsp;&nbsp;:fontawesome-brands-linux:&nbsp;&nbsp;
-<a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps" title="Compiled binary 
+<a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps" title="Compiled binary
 for Linux">
  __Linux__ OccuPy GUI </a></span>
 { .card }
 
+<br>
 
 <span style="font-size:1.5em;">
 &nbsp;&nbsp;:fontawesome-brands-apple:&nbsp;&nbsp;
-<a href="https://drive.google.com/uc?export=download&id=TBD" title="Compiled binary 
+<a href="https://drive.google.com/uc?export=download&id=TBD" title="Compiled binary
 for Linux">
  __Apple__ OccuPy GUI </a></span>
 { .card }
 
+<br>
 <span style="font-size:1.5em;">
 &nbsp;&nbsp;:fontawesome-brands-windows:&nbsp;&nbsp;
-<a href="https://drive.google.com/uc?export=download&id=TBD" title="Compiled binary 
-for Linux">
+<a href="https://drive.google.com/uc?export=download&id=1El8D0hdCIkwcbVM_LXaRXA9bd9V8sNB6" title="Compiled binary
+for Windows">
  __Windows__ OccuPy GUI </a></span>
 { .card }
-
-
 </div>
-
-[//]: # ()
-[//]: # (<p float="left">)
-
-[//]: # (<a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps">)
-
-[//]: # (    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/800px-Tux.svg.png" )
-
-[//]: # (    style="width:64px;" hspace="32" Title="Download for linux"></a>)
-
-[//]: # ()
-[//]: # (<a href="https://drive.google.com/uc?export=download&id=TBD">)
-
-[//]: # (    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Apple_Computer_Logo_rainbow.svg/800px-Apple_Computer_Logo_rainbow.svg.png" )
-
-[//]: # (    style="width:64px;" hspace="32" Title="Download for mac"></a>)
-
-[//]: # ()
-[//]: # (<a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps">)
-
-[//]: # (    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Windows_Logo_%281992-2001%29.svg/1280px-Windows_Logo_%281992-2001%29.svg.png" )
-
-[//]: # (    style="width:80px;" hspace="32" Title="Download for windows"></a>)
-
-[//]: # ()
-[//]: # (</p>)
-
+<br>
 Previous versions are **not** available as binaries, but only though [PIP](https://pypi.org/project/OccuPy/) and 
 [github](https://github.com/bforsbe/OccuPy). The same goes for the command-line tool. Istallation through PIP is 
 described below. 
@@ -71,8 +58,14 @@ described below.
 
 ## Using PIP     
 Regardless if you are using conda or not, OccuPy can be installed from the [Python Package Index](https://pypi.
-org/project/OccuPy/) (PyPI) using `pip`. 
+org/project/OccuPy/) (PyPI) using `pip`.  
 
+<div class="admonition attention">
+<p class="admonition-title">Stop. Get help.</p>
+<p>
+If you run into issues, check the troubleshooting section. 
+</p>
+</div>
 ### Verify/install python and/or pip
 === "Windows"
 
@@ -81,18 +74,22 @@ org/project/OccuPy/) (PyPI) using `pip`.
     windows, and 
     [this](https://pip.pypa.io/en/stable/installation/#get-pip-py) guide to install pip using python. 
     
-    1. In the start-menu, type "Powershell". Open a powershell terminal.
-    2. Check if python is installed by calling `python --version` in the powershell. If you see a version number, 
-    python is installed. If not, install python by visiting [python.org](https://www.python.org/downloads) and select 
-    the windows installer. Follow the instructions, and refer to 
-    [this](https://www.digitalocean.com/community/tutorials/install-python-windows-10) guide if needed. 
-    Close the powershell and reopen it once python is installed. 
-    3. Check if pip is installed by calling `pip --version` in the powershell. If you see a version number, pip 
-    is installed, and you can skip to step 5. If not, download the file `get-pip.py` from 
-    [pypa.io](https://bootstrap.pypa.io). Put it in the same folder as the powershell is running. You can find out 
-    where the powershell is running, by calling `pwd` in it.
-    4. In the powershell, run the downloaded file by calling `python get-pip.py` and hit enter. This will install pip. 
-    5. You may need to add pip to your environment variables, as described in 
+    1. In the start-menu, type "Powershell". Open a powershell, which is a text-based interface to run system commands.
+    2. Check if python is installed by running the command `python --version` in the powershell. If you see a version 
+    number, python is installed. 
+    If not, download and click the python3.10 installer for windows, which you can get thorugh 
+    [this link](https://www.python.org/ftp/python/3.10.8/python-3.10.8-amd64.exe). 
+    Follow the instructions on screen to install.     
+    3. Close the powershell and reopen it once python is installed.
+    4. Check if pip is installed by calling `py -m pip --version` in the powershell. If you see a version number, 
+    pip is installed, you can go to the next section to install OccuPy. If not, continue with step 5.  
+    5. Download the file `get-pip.py` from [pypa.io](https://bootstrap.pypa.io/get-pip.py) by saving it in the 
+    "Downloads" folder. 
+    6. In the powershell, run the command "cd ~/Downloads". If you now run `ls *.py` you should see the file 
+    "get-pip.py" you just downloaded.
+    7. In the same powershell, run the downloaded file by running the command `py get-pip.py` and hit enter. This 
+    will install pip. 
+    8. You may need to add pip to your **environment variables**, as described in the later section of
     [this guide](https://www.activestate.com/resources/quick-reads/how-to-install-pip-on-windows/).
 
 === "Linux (ubuntu)"
@@ -104,18 +101,23 @@ org/project/OccuPy/) (PyPI) using `pip`.
 
 === "Windows"
     
-    1. In the start-menu, type "Powershell". Open a powershell terminal.
-    2. In the powershell, call `pip install occupy`.
-    **Take note** of any notice about where OccuPy and it's dependencies were installed, and if it was suggested that 
-    you add this to your path. Please add the path to your environment variables if asked, as described in 
-    [this guide](https://www.activestate.com/resources/quick-reads/how-to-install-pip-on-windows/).
-    3. Verify the install by calling `pip show occupy`. You will either see `WARNING: Package(s) not found: occupy` 
+    1. If you do not have on open, start a powershell as in step 1 of the previous section.
+    2. In the powershell, run `py -m pip install occupy`.
+    3. Verify the install, run `py -m pip show occupy`. 
+    <br>You will either see `WARNING: Package(s) not found: occupy` 
     or a description of the installation. If successfully installed, continue. 
-    4. In the powershell, call "occupy_gui". If you get an error starting with 
+    4. In the powershell, call `occupy_gui`. The occupy GUI should start. 
+    <br>If instead you get an error starting with 
     `occupy_gui : The term 'occupy_gui' is not recognized...`
-    then you need to add the pip path as described in step 2. Otherwise, the occupy GUI should start. 
+    then you need to add the pip package path to your environment variables. 
+    <br> To do so, run 
+    ```Get-ChildItem  -Recurse -ErrorAction SilentlyContinue -Filter occupy_gui.exe -Force``` in the powershell. 
+    This will find the **Directory** where occupy was installed. Copy it.
+    <br> Add the location you copied to the "Path" as described in the section "Adding PIP To Windows Environment 
+    Variables" of 
+    [this guide](https://www.activestate.com/resources/quick-reads/how-to-install-pip-on-windows/#:~:text=Adding%20PIP%20To%20Windows%20Environment%20Variables).
     5. Note also that calling `occupy` in the powershell will invoke the non-GUI tool. 
-    Call `occupy --help` for a list of input options. 
+    <br>Call `occupy --help` for a list of input options. 
 
 === "Linux (ubuntu)"
 
@@ -123,7 +125,7 @@ org/project/OccuPy/) (PyPI) using `pip`.
     2. In the terminal, call `pip install occupy`.
     3. Verify the install by calling `pip show occupy`. You will either see `WARNING: Package(s) not found: occupy` 
     or a description of the installation. If successfully installed, continue. 
-    4. In the powershell, call "occupy_gui". If you get the error 
+    4. In the terminal, call `occupy_gui`. If you get the error 
     `command not found: occupy_gui`
     then you need to add the pip path to your environment variables, or restart the terminal. Otherwise, the occupy GUI 
     should start. 
@@ -141,10 +143,35 @@ pip install occupy==0.1.6
 </p>
 </div>
 
+### Make it easy to run without a terminal
+
+=== "Windows"
+
+    In the start menu, type `occupy_gui`. You should find occupy_gui as the type "Run command" suggested. 
+    If this is not convenient enough:  
+
+    1. Right-click the occupy_gui run command and choose "open location".
+    2. Right-click `occupy_gui.exe` and click "create shortcut". Move the shortcut to e.g. the desktop.
+
+=== "Linux (ubuntu)"
+    
+    To create a launcher that makes it easy to start occupy, do the following. 
+    This is derived from [this guide](https://www.maketecheasier.com/create-desktop-file-linux/)
+
+    1. Open a new text file and give it the following content: 
+    ```txt
+    [Desktop Entry]
+    Type=Application
+    Terminal=false
+    Exec=/path/to/executable
+    Name=OccuPy
+    ```
+    2. Replace the `Exec` value with the path to occupy. To find it, open a terminal and call `which occupy_gui`.
+    3. Save the file as `occupy.desktop` in `/usr/share/applications/`. This may require root access. 
 
 ---
 
-## From source 
+## Install from source 
 If you are a developer or prefer to download the [source code](https://github.com/bforsbe/OccuPy) for some other reason, you can also install from 
 the cloned repo
 

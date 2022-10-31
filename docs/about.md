@@ -40,7 +40,8 @@ TBD
 ---
 
 ## Acknowledgements  
-The software implementation is hosted and deployed to PyPI through github. 
+OccuPy is deployed to [PyPi](https://pypi.org/project/OccuPy/) using [github](https://github.com/) and [github 
+workflows](https://docs.github.com/en/actions/using-workflows). 
 
 The sigmoid function originates from [Prof. Werner Antweiler](https://wernerantweiler.ca/blog.php?item=2018-11-03). 
 
@@ -56,5 +57,4 @@ I/O is handled by [mrcfile](https://mrcfile.readthedocs.io/en/latest/index.html)
 
 The GUI was built in PyQt5, using Qt5 designer. 
 
-OccuPy is deployed to [PyPi](https://pypi.org/project/OccuPy/) using [github](https://github.com/) and [github 
-workflows](https://docs.github.com/en/actions/using-workflows). 
+
