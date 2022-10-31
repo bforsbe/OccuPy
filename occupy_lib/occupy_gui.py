@@ -13,6 +13,10 @@ matplotlib.use('QT5Agg')
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
+
+
 from occupy_lib import estimate, map_tools, occupancy, vis, solvent, extras, args   # for terminal use
 from scipy import ndimage as ndi
 
