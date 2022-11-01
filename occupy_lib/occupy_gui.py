@@ -2355,7 +2355,7 @@ class Ui_MainWindow(object):
         else:
             self.os = "Unknown"
 
-        self.occupy_log(f'Detected OS:{self.os}') #TODO REMOVE / HIDE
+        #self.occupy_log(f'Detected OS:{self.os}') #TODO REMOVE / HIDE
 
     def find_chimerax(self,name):
         if self.chimerax_name is None:
