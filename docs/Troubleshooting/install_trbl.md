@@ -1,5 +1,51 @@
 # Installation
 
+## The precompiled binary isn't working 
+
+=== "On Windows"
+
+    1. Note that it can take ~1 min for it to start.
+    2. The OccuPy GUI may be recognized as coming from an untrusted or "unidentified developer", and produce a warning 
+    message the first time you run the program. 
+    3. If the above doesn’t work, and the binary is recognized as a vrius or security threat, you can either make an 
+    exception for it in your virus software or contact one of the OccuPy developers to resolve the issue.
+
+=== "On Mac"
+
+    1. Note that it can take ~1 min for it to start.
+    2. The OccuPy GUI may be recognized as coming from an untrusted or "unidentified developer", and produce a warning 
+    message the first time you run the program. 
+    If that happens, right-click on the OccuPy GUI binary file and select "Open", and then click the "Open" button 
+    in the window that appears.
+    **This requires administrator privileges.**
+    3. If the above doesn’t work, you can run the RAW app from the command line. 
+    Open a terminal in the folder where the OccuPy GUI binary is located and run it by typing `./occupy_gui`
+
+=== "On Linux (ubuntu)"
+    
+    1. Note that it can take ~1 min for it to start.
+    2. If you get a messsage saying "Could not display occupy_gui, thereis no application installed for 
+    executable files", then you may need to alter the "permissions". Click "OK", then right-click the binary and 
+    select "Properties". Under "Permissions", make sure "Allow to execute file as program" is checked. Alternatively, 
+    you can use a terminal to change the permisssions by typing `chmod a+x occupy_gui`. 
+    
+
+
+## The GUI windows looks too big/small/...
+
+On some (e.g. 4K) screens, the high resolution causes graphical elements to be re-scaled. OccuPy knows about this 
+and does its best to get it right, but we have not been able to test on a wide range of screen sizes and resolutions.  
+<br>
+<div class="admonition bug">
+<p class="admonition-title">Report any issues</p>
+<p>
+If your GUI does not look like the image in the "GUI overview" tutorial, please 
+<a href="https://github.com/bforsbe/OccuPy/issues">report</a> this to the developers so that we can make sure 
+that it doesn't happen in the future.
+</p>
+</div>
+
+
 ## I'd like to install with pip but I don't know how
 To help us make the installation instructions better and help you use python and pip, you can request help 
 <a href="https://form.jotform.com/223012138013033" target="_blank" rel="noopener noreferrer">here</a>. 
@@ -17,6 +63,12 @@ Let's first confirm that it was.
     You need to try to install it according to the install procedures, 
     and <a href="https://form.jotform.com/223012138013033" target="_blank" rel="noopener noreferrer">ask for help</a>
     if you still can't make it work. 
+
+=== "On Mac"
+    
+    Open a terminal and type `pip show occupy`, and hit enter. If you don't see details like 
+    version and location, then occupy probably wasn't installed properly. If you used a virtual environment when 
+    installing, make sure to activate it like you did before, and try again.
 
 === "On Linux (ubuntu)"
     
@@ -46,6 +98,20 @@ In either case, we need to find where occupy was installed.
     5. Option 2: Make sure the occupy directory is included in the paths where the system looks for programs. Edit the 
     system and/or user environment variable "Path" by adding the directory from step 2, e.g. 
     ```C:\Users\IEUser\AppData\Local\Programs\Python\Python310\Scripts```
+
+=== "On Mac"
+    
+    1. In a terminal where pip is avaialble, call ```pip show occupy```. The reported location is a good indication 
+    of where occupy was installed. If the locaton is ```/home/bjornf/.local/lib/python3.8/site-packages```, then the 
+    location of the program is likely ```/home/bjornf/.local/bin```
+
+    2. To add the path of the program permanently, open the startup list of environment variables. On Ubuntu this is 
+    likely /etc/environment. You will need root access for this.
+
+    3. The PATH variable is a colon-separated list. Add the ```occupy_gui``` path as new entry in this list.
+
+    4. If you do mot have the access rights to to this system-wide, you can add the following to your session 
+    startup file: ```export PATH=$PATH:</path/to/occupy/program>```
 
 === "On Linux (ubuntu)"
     
