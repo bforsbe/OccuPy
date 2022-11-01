@@ -47,7 +47,7 @@
   height: 150px;
   width: 130px;
   transform: scale(0.7);
-  transition: transform 0.8s ease;
+  transition: transform 0.4s ease;
 }
 
 .dl-box {

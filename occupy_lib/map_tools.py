@@ -448,8 +448,9 @@ def fetch_EMDB(ID: str):
     try:
         file_name = wget.download(url)
         print(f'\n Done fetching {fetch_name}')
-    except:
+    except Exception as e:
         print(f"EMDB entry {ID} could not be fetched through url: \n {url}")
+        print(f'Reason: {e}')
         fail = True
 
     if not fail:
@@ -458,8 +459,9 @@ def fetch_EMDB(ID: str):
             gunzip(fetch_name,map_name)
             os.remove(fetch_name)
             print(f'Done unzipping')
-        except:
+        except Exception as e:
             print(f'Error trying to gunzip {fetch_name}')
+            print(f'Issue: {e}')
             fail =True
 
     if fail:
