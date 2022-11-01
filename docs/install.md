@@ -65,6 +65,8 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha)
 </div>
 
 <br>
+If you have issues using the pre-compiled binaries, please check the troubleshooting section. 
+<br><br>
 Previous versions are **not** available as binaries, but only though [PIP](https://pypi.org/project/OccuPy/) and 
 [github](https://github.com/bforsbe/OccuPy). The same goes for the command-line tool. Istallation through PIP is 
 described below.
