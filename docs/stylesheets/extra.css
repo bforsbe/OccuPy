@@ -85,7 +85,7 @@
 }
 
 .dl-box:hover img {
-  transform: scale(0.0);
+  transform: translateY(-160px);
 }
 
 .dl-box:hover .transparent-box {
