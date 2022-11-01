@@ -82,3 +82,81 @@
   opacity: 0.8;
 }
 
+
+
+
+
+
+.gallery-dl {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.gallery-dl img {
+  height: 150px;
+  width: 130px;
+  transform: scale(0.7);
+  transition: transform 0.4s ease;
+}
+
+.dl-box {
+  box-sizing: content-box;
+  margin: 10px;
+  height: 150px;
+  width: 150px;
+  overflow: hidden;
+  display: inline-block;
+  color: inherit;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.dl-caption {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  opacity: 0.0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.dl-caption > p:nth-child(2) {
+  font-size: 0.8em;
+}
+
+.transparent-box-dl {
+  height: 150px;
+  width: 150px;
+  background-color:rgba(0, 0, 0, 0);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: background-color 0.3s ease;
+}
+
+.dl-box:hover img {
+  transform: scale(0.0);
+}
+
+.dl-box:hover .transparent-box {
+  background-color:rgba(0, 0, 0, 1);
+}
+
+.dl-box:hover .dl-caption {
+  transform: translateY(-20px);
+  opacity: 1.0;
+}
+
+.dl-box:hover {
+  cursor: pointer;
+}
+
+a.nocolor
+{
+    color: inherit;
+}
+a.nocolor:hover
+{
+    color: inherit;
+}

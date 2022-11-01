@@ -22,35 +22,55 @@ to wait for a new release of bug-fixes, install with pip from source, as describ
 The GUI will be distributed as precompiled binaries that you can download and use. You just need to download and
 double-click the executable, and the OccuPy GUI should appear.
 <br><br>
-Version :fontawesome-solid-tag: 0.1.7 (alpha)
+Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha)
 <br><br>
-<div class="grid" markdown>
-<span style="font-size:1.5em;">
-&nbsp;&nbsp;:fontawesome-brands-linux:&nbsp;&nbsp;
-<a href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps" title="Compiled binary
-for Linux">
- __Linux__ OccuPy GUI </a></span>
-{ .card }
-<br>
-<span style="font-size:1.5em;">
-&nbsp;&nbsp;:fontawesome-brands-apple:&nbsp;&nbsp;
-<a href="https://drive.google.com/uc?export=download&id=TBD" title="Compiled binary
-for Linux">
- __Apple__ OccuPy GUI </a></span>
-{ .card }
+<div class="gallery-dl">
 
-<br>
-<span style="font-size:1.5em;">
-&nbsp;&nbsp;:fontawesome-brands-windows:&nbsp;&nbsp;
-<a href="https://drive.google.com/uc?export=download&id=1El8D0hdCIkwcbVM_LXaRXA9bd9V8sNB6" title="Compiled binary
-for Windows">
- __Windows__ OccuPy GUI </a></span>
-{ .card }
+    <div class="dl-box">
+    <a class=nocolor href="https://drive.google.com/uc?export=download&id=TBD">
+    <img src="../gallery/thumbs/mac_thumb.png" alt="" />
+      <div class="transparent-box-dl">
+        <div class="dl-caption">
+          <p> Mac (M1)</p>
+            <p class="opacity-low">OccuPy GUI</p>
+        </div>
+      </div> 
+    </a>
+    </div>
+
+    <div class="dl-box">
+    <a class=nocolor href="https://drive.google.com/uc?export=download&id=1El8D0hdCIkwcbVM_LXaRXA9bd9V8sNB6">
+    <img src="../gallery/thumbs/win_thumb.png" alt="" />
+      <div class="transparent-box-dl">
+        <div class="dl-caption">
+          <p> Windows </p>
+            <p class="opacity-low">OccuPy GUI</p>
+        </div>
+      </div> 
+    </a>
+    </div>
+
+    <div class="dl-box">
+    <a class=nocolor href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps">
+    <img src="../gallery/thumbs/linux_thumb.png" alt="" />
+      <div class="transparent-box-dl">
+        <div class="dl-caption">
+          <p> &nbsp;&nbsp;Linux </p>
+            <p class="opacity-low">OccuPy GUI</p>
+        </div>
+      </div> 
+    </a>
+    </div>
+
 </div>
+
 <br>
 Previous versions are **not** available as binaries, but only though [PIP](https://pypi.org/project/OccuPy/) and 
 [github](https://github.com/bforsbe/OccuPy). The same goes for the command-line tool. Istallation through PIP is 
-described below. 
+described below.
+
+
+
 
 ---
 

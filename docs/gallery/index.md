@@ -1,5 +1,3 @@
-<!-- docs_generated_gallery -->
-
 # Showcase / gallery 
 
 Different examples of how Occupy has been used, and helped to visualise and analyze cryo-EM maps. 
