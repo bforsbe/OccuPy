@@ -15,9 +15,9 @@ $ wget https://files.rcsb.org/download/7A4M.pdb
 ## In OccuPy
 
 1. Fetch EMDB 11638
-3. Set extra option "Naive normalization" = checked
-4. Estimate scale 
-5. Launch ChimeraX (open chimX_emd_11638.cxc through ChimeraX)
+2. Set extra option "Naive normalization" = checked
+3. Estimate scale 
+4. Launch ChimeraX (open chimX_emd_11638.cxc through ChimeraX)
 
 ## In chimeraX
 Open 7A4M.pdb, here as #4

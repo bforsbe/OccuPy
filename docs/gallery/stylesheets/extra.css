@@ -87,3 +87,84 @@
 
 
 
+.c-compare {
+  --h: 9;
+  --m: 1rem 0;
+  --w: 16;
+  --thumb-bgc: blue;
+  --thumb-bgc-focus: hsla(0, 70%, 70%, 0.7);
+  --thumb-w: 1rem;
+
+  margin: var(--m);
+  position: relative;
+}
+.c-compare::after {
+  content: "";
+  display: block;
+  padding-bottom: calc((var(--h) / var(--w)) * 100%);
+}
+.c-compare__left,
+.c-compare__right {
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
+}
+.c-compare__left {
+  clip-path: polygon(0% 0%, var(--value) 0%, var(--value) 100%, 0% 100%);
+}
+.c-compare__right {
+  clip-path: polygon(100% 0%, var(--value) 0%, var(--value) 100%, 100% 100%);
+}
+.c-compare__range {
+  background-color: transparent;
+  box-sizing: border-box;
+  font-family: inherit;
+  height: 100%;
+  margin: 0;
+  outline: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.c-compare__range::-moz-range-thumb {
+  background-color: black;
+  cursor: ew-resize;
+  height: 100%;
+  width: 5px;
+}
+.c-compare__range::-webkit-slider-thumb {
+  background-color: black;
+  height: 100%;
+  width: 5px;
+}
+.c-compare__range:focus::-webkit-slider-thumb {
+  background-color: black;
+  height: 100%;
+  width: 5px;
+}
+.c-compare__range:focus::-moz-range-thumb {
+  background-color: black;
+  height: 100%;
+  width: 5px;
+}
+.c-compare__range::-moz-range-track {
+  background: transparent;
+  background-size: 100%;
+  box-sizing: border-box;
+}
+.c-compare__range::-webkit-slider-runnable-track {
+  background: transparent;
+  background-size: 100%;
+  box-sizing: border-box;
+  height: 100%;
+}
+.c-compare__range,
+.c-compare__range::-webkit-slider-runnable-track,
+.c-compare__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+
+

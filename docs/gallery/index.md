@@ -49,12 +49,11 @@ to reproduce the results.
     </div>  
 
     <div class="img-box">
-    <!--<a class="reference internal" href="modification" style="color:#FFFFFF;">
-    -->
+    <a class="reference internal" href="modification" style="color:#FFFFFF;">
       <img src="thumbs/modification.png" alt="" />
       <div class="transparent-box">
         <div class="caption">
-          <p>Modification <br> (COMING SOON)</p>
+          <p>Modification</p>
           <p class="opacity-low">EMD-14085</p></p>
         </div>
       </div>    
