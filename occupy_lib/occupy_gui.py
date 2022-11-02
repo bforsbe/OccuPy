@@ -15,7 +15,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
-import os
+import os,sys
 os.environ["QT_DEVICE_PIXEL_RATIO"] = "1"
 os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
 os.environ["QT_SCREEN_SCALE_FACTORS"] = "1"
