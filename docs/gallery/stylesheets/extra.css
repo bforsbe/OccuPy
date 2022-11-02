@@ -21,8 +21,8 @@
 }
 
 .gallery-image img {
-  height: 240px;
-  width: 240px;
+  height: 150px;
+  width: 150px;
   transform: scale(1.0);
   transition: transform 0.4s ease;
 }
@@ -30,8 +30,8 @@
 .img-box {
   box-sizing: content-box;
   margin: 10px;
-  height: 240px;
-  width: 240px;
+  height: 150px;
+  width: 150px;
   overflow: hidden;
   display: inline-block;
   color: white;
@@ -49,8 +49,8 @@
 }
 
 .transparent-box {
-  height: 240px;
-  width: 240px;
+  height: 150px;
+  width: 150px;
   background-color:rgba(0, 0, 0, 0);
   position: absolute;
   top: 0;
@@ -92,9 +92,9 @@
   --h: 9;
   --m: 1rem 0;
   --w: 16;
-  --thumb-bgc: blue;
-  --thumb-bgc-focus: hsla(0, 70%, 70%, 0.7);
-  --thumb-w: 1rem;
+  --thumb-bgc: black;
+  --thumb-bgc-focus: black;
+  --thumb-w: 5px;
 
   margin: var(--m);
   position: relative;
@@ -119,6 +119,7 @@
 }
 .c-compare__range {
   background-color: transparent;
+  box-sizing: border-box;
   font-family: inherit;
   height: 100%;
   margin: 0;
@@ -128,34 +129,32 @@
   width: 100%;
 }
 .c-compare__range::-moz-range-thumb {
-  background-color: black;
+  background-color: var(--thumb-bgc);
+  cursor: ew-resize;
   height: 100%;
-  width: 5px;
+  width: var(--thumb-w);
 }
 .c-compare__range::-webkit-slider-thumb {
-  background-color: black;
+  background-color: var(--thumb-bgc);
+  cursor: ew-resize;
   height: 100%;
-  width: 5px;
+  width: var(--thumb-w);
 }
 .c-compare__range:focus::-webkit-slider-thumb {
-  background-color: black;
-  height: 100%;
-  width: 5px;
+  background-color: var(--thumb-bgc-focus);
+  box-shadow: 0 0 0 0 var(--thumb-bgc);
 }
 .c-compare__range:focus::-moz-range-thumb {
-  background-color: black;
-  height: 100%;
-  width: 5px;
+  background-color: var(--thumb-bgc-focus);
+  box-shadow: 0 0 0 0px var(--thumb-bgc);
 }
 .c-compare__range::-moz-range-track {
   background: transparent;
   background-size: 100%;
-  box-sizing: border-box;
 }
 .c-compare__range::-webkit-slider-runnable-track {
   background: transparent;
   background-size: 100%;
-  box-sizing: border-box;
   height: 100%;
 }
 .c-compare__range,
@@ -164,6 +163,5 @@
   -webkit-appearance: none;
   appearance: none;
 }
-
 
 

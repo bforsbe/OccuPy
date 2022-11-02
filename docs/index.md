@@ -8,7 +8,6 @@ alt="Synthetic map estimate" />
 setProperty('--value', `${this.value}%`)" />
 </div>
 
-![image](https://drive.google.com/uc?export=view&id=19U1PaDpn6e4dVtVMC91QXVy3JUtrPfOW)
 ## What is OccuPy
 
 The primary purpose of OccuPy is to estimate the localscale of cryo-EM maps. 
