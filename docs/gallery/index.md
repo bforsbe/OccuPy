@@ -36,19 +36,6 @@ to reproduce the results.
     </div>     
 
     <div class="img-box">
-    <!--<a class="reference internal" href="membrane" style="color:#FFFFFF;">
-    -->
-      <img src="thumbs/membrane.png" alt="" />
-      <div class="transparent-box">
-        <div class="caption">
-          <p>Membrane protein <br> (COMING SOON)</p>
-          <p class="opacity-low">EMD-23015</p></p>
-        </div>
-      </div>    
-    </a>
-    </div>  
-
-    <div class="img-box">
     <a class="reference internal" href="modification" style="color:#FFFFFF;">
       <img src="thumbs/modification.png" alt="" />
       <div class="transparent-box">
@@ -59,6 +46,19 @@ to reproduce the results.
       </div>    
     </a>
     </div>   
+
+    <div class="img-box">
+    <!--<a class="reference internal" href="membrane" style="color:#FFFFFF;">
+    -->
+      <img src="thumbs/membrane.png" alt="" />
+      <div class="transparent-box">
+        <div class="caption">
+          <p>Membrane protein <br> (COMING SOON)</p>
+          <p class="opacity-low">EMD-23015</p></p>
+        </div>
+      </div>    
+    </a>
+    </div>
 
     <div class="img-box">
     <!--<a class="reference internal" href="resolution" style="color:#FFFFFF;">
