@@ -23,11 +23,14 @@
 
     1. Note that it can take ~1 min for it to start.
     2. The OccuPy GUI may be recognized as coming from an untrusted or "unidentified developer", and produce a warning 
-    message the first time you run the program. 
-    If that happens, right-click on the OccuPy GUI binary file and select "Open", and then click the "Open" button 
-    in the window that appears.
-    **This requires administrator privileges.**
-    3. If the above doesn’t work, you can run the binary from the command line, which may provide some more info.
+    message the first time you run the program. **This requires administrator privileges.**
+    3. If doulbe-clicking the binary does not open the GUI, right-click on the OccuPy GUI binary file and select 
+    "Open", and then click the "Open" button in the window that appears.
+    4. If it opens as a text file, you will need to mark the file as an executable. Unfortunately, you need to do this in a 
+    terminal as described 
+    <a href="https://support.apple.com/en-gb/guide/terminal/apdd100908f-06b3-4e63-8a87-32e71241bab4/mac">here</a>.
+    The file icon should now appear to be a small terminal window. Double-clicking the file should open the OccuPy GUI. 
+    3. If the above doesn’t work, you can run the binary from the terminal, which may provide some more info.
     Open a terminal in the folder where the OccuPy GUI binary is located, and run it by typing `./occupy_gui`
     4. If you still have not been able to resolve the issue, please look through existing 
     <a href="https://github.com/bforsbe/OccuPy/issues">issues</a>, 
