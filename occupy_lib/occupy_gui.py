@@ -2281,6 +2281,9 @@ class Ui_MainWindow(object):
         if message.startswith('** warn **'):
             message = self.color_warn(message)
 
+        if message.startswith('AT:'):
+            message = self.color_testing(message)
+
         message = f'{dt_string} {message}'
         self.textEdit_log.append(message)
         self.textEdit_log.repaint()
@@ -2316,6 +2319,8 @@ class Ui_MainWindow(object):
         return self.decorate_color(message,'1f77b4')
     def color_warn(self,message):
         return self.decorate_color(message,'d62728')
+    def color_testing(self,message):
+        return self.decorate_color(message,'5f8e40')
     def color_run(self,message):
         return self.decorate_color(message,'ff7f0e')
 
@@ -2355,15 +2360,17 @@ class Ui_MainWindow(object):
         else:
             self.os = "Unknown"
 
-        #self.occupy_log(f'Detected OS:{self.os}') #TODO REMOVE / HIDE
+        self.occupy_log(f'AT: Detected OS:{self.os}')
 
     def find_chimerax(self,name):
         if self.chimerax_name is None:
             self.chimerax_name = self.is_tool(name)
 
-        if self.os == "Windows":
-            # Windows has system directories with spaces but is fussy about calling them. How consistent.
-            self.chimerax_name = self.chimerax_name.replace(" ", "\" \"")
+            if self.chimerax_name is not None:
+                if self.os == "Windows":
+                    # Windows has system directories with spaces but is fussy about calling them. How consistent.
+                    self.chimerax_name = self.chimerax_name.replace(" ", "\" \"")
+
 
     def have_chimerax(self):
         import os
@@ -2375,17 +2382,34 @@ class Ui_MainWindow(object):
         self.find_chimerax("Chimerax")
         self.find_chimerax("ChimeraX")
 
+        if self.os == "Windows":
+            self.find_chimerax('C:\Program\" \"Files\ChimeraX\bin\ChimeraX.exe')
+
         occupy_chimx_var = 'OCCUPY_CHIMERAX'
         if os.environ.get(occupy_chimx_var) != None:
             self.find_chimerax(os.environ.get(occupy_chimx_var))
 
     def run_chimerax(self):
         if self.chimerax_file_name is not None:
+
+            self.occupy_log(f'AT: Detected chimerax: {self.chimerax_name}')
+
             import os
+
+            cmd_to_run = ' '
             if self.os == "Windows":
-                os.system(f'{self.chimerax_name} {self.chimerax_file_name}')
+                cmd_to_run = f'{self.chimerax_name} {self.chimerax_file_name}'
             else:
-                os.system(f'{self.chimerax_name} {self.chimerax_file_name} &')
+                cmd_to_run = f'{self.chimerax_name} {self.chimerax_file_name} &'
+
+            self.occupy_log(f'AT: Starting chimeraX: {cmd_to_run}')
+
+            with Capturing() as output:
+                os.system(cmd_to_run)
+
+            for i in output:
+                self.occupy_log(f'AT:  chimX: {i}')
+
         else:
             self.occupy_log("No chimerax file defined this session.")
 
@@ -2720,12 +2744,16 @@ class Ui_MainWindow(object):
     def change_current_dir(self):
         new_directory = QtWidgets.QFileDialog.getExistingDirectory(None, "Select Directory", "")  # Ask for dir
         import os
-        if os.path.isdir(new_directory):
-            os.chdir(new_directory)
-            self.occupy_log(f' Changed directory to {new_directory}')
-            self.reset_session()
+
+        if new_directory != '':
+            if os.path.isdir(new_directory):
+                os.chdir(new_directory)
+                self.occupy_log(f' Changed directory to {new_directory}')
+                self.reset_session()
+            else:
+                self.occupy_warn(f' Cannot change directory to {new_directory}')
         else:
-            self.occupy_warn(f' Cannot change directory to {new_directory}')
+            self.occupy_log(f'AT: staying in {os.getcwd()}')
 
 class ImageWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
