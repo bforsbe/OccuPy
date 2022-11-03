@@ -35,9 +35,9 @@ theme:
         name: Switch to light mode
   features:
     - navigation.instant
-    # - navigation.tabs
-    # - navigation.top
-    # - navigation.tracking
+    #- navigation.tabs
+    #- navigation.top
+    #- navigation.tracking
     - search.highlight
     - search.suggest
     # - toc.follow
@@ -93,7 +93,16 @@ nav:
           - Supress solvent: Tutorials/case/supp_solv.md
           - Make a subtraction mask : Tutorials/case/sub_mask.md
           - Use a solvent definition: Tutorials/case/soldef.md
-  - Showcase/gallery: gallery/index.md       # The first gallery of examples
+  - Showcase/gallery:
+    - View all: gallery/index.md
+    - Individual:
+        - From the paper:
+          - Synthetic: gallery/synthetic.md
+          - Mass: gallery/mass.md
+          - Membrane: gallery/membrane.md
+          - Modification: gallery/modification.md
+        - From the team:
+          - High-res: gallery/highres.md
   - About: about.md
 
 plugins:

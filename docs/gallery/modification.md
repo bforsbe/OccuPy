@@ -28,7 +28,7 @@ occupy_level 11
 show #3
 ```
 
-<div class="c-compare" style="--value:2%;">
+<div class="c-compare" style="--value:20%;">
   <img class="c-compare__left" src="https://drive.google.com/uc?export=view&id=1g4D7AUyeZXfROoukWvzAkdQoZ6Fvnf1z" alt="Input" />
   <img class="c-compare__right" src="https://drive.google.com/uc?export=view&id=1pRrOUqs0EiJXvQGC3saxbbG66VhV7XAZ" alt="Amplified" />
   <input type="range" class="c-rng c-compare__range" min="0" max="100" value="20" oninput="this.parentNode.style.
@@ -68,8 +68,6 @@ show #5
 setProperty('--value', `${this.value}%`)" />
 </div>
 
-
-## Other Views
 
 
 

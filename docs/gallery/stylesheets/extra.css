@@ -117,6 +117,21 @@
 .c-compare__right {
   clip-path: polygon(100% 0%, var(--value) 0%, var(--value) 100%, 100% 100%);
 }
+
+.c-compare__top,
+.c-compare__bottom {
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
+}
+.c-compare__top {
+  clip-path: polygon(0% 0%, 0% var(--value),  100% var(--value) 100%, 100% 0% );
+}
+.c-compare__bottom {
+  clip-path: polygon(0% 100%,0% var(--value) , 100% var(--value) , 100% 100%);
+}
+
 .c-compare__range {
   background-color: transparent;
   box-sizing: border-box;
