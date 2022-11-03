@@ -2363,13 +2363,16 @@ class Ui_MainWindow(object):
         self.occupy_log(f'AT: Detected OS:{self.os}')
 
     def find_chimerax(self,name):
+        self.occupy_log(f'AT: current chimx:{self.chimerax_name},  looking for {name}')
         if self.chimerax_name is None:
             self.chimerax_name = self.is_tool(name)
 
             if self.chimerax_name is not None:
+                self.occupy_log(f'AT: found chimX:{self.chimerax_name}')
                 if self.os == "Windows":
                     # Windows has system directories with spaces but is fussy about calling them. How consistent.
                     self.chimerax_name = self.chimerax_name.replace(" ", "\" \"")
+                    self.occupy_log(f'AT: on win, setting chimX:{self.chimerax_name}')
 
 
     def have_chimerax(self):
