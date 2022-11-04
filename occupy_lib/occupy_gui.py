@@ -1030,6 +1030,10 @@ class Ui_MainWindow(object):
 
         self.detect_OS()
         self.have_chimerax()
+        extra_chimx=''
+        if self.chimerax_name is None:
+            extra_chimx = '\n(not found)'
+        self.toolButton_chimerax.setText(f"  Launch\n  ChimeraX{extra_chimx}")
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
