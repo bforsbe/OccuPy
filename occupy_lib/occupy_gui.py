@@ -200,7 +200,6 @@ class Ui_MainWindow(object):
         self.occ_scale = None
         self.res_scale = None
         self.chimerax_name = None
-        self.have_chimerax()
 
         self.cmd = []
         self.run_no = 0
@@ -1030,6 +1029,8 @@ class Ui_MainWindow(object):
 
 
         self.detect_OS()
+        self.have_chimerax()
+
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -2363,8 +2364,9 @@ class Ui_MainWindow(object):
         self.occupy_log(f'AT: Detected OS:{self.os}')
 
     def find_chimerax(self,name):
-        self.occupy_log(f'AT: current chimx:{self.chimerax_name},  looking for {name}')
+        self.occupy_log(f'AT: current chimx:{self.chimerax_name}')
         if self.chimerax_name is None:
+            self.occupy_log(f'AT: looking for {name}')
             self.chimerax_name = self.is_tool(name)
 
             if self.chimerax_name is not None:
@@ -2373,6 +2375,8 @@ class Ui_MainWindow(object):
                     # Windows has system directories with spaces but is fussy about calling them. How consistent.
                     self.chimerax_name = self.chimerax_name.replace(" ", "\" \"")
                     self.occupy_log(f'AT: on win, setting chimX:{self.chimerax_name}')
+        else:
+            self.occupy_log(f'AT:  skipping {name}')
 
 
     def have_chimerax(self):
