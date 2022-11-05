@@ -10,7 +10,7 @@ setProperty('--value', `${this.value}%`)" />
 
 ## What is OccuPy
 
-The primary purpose of OccuPy is to estimate the localscale of cryo-EM maps. 
+The primary purpose of OccuPy is to estimate the local scale of cryo-EM maps. 
 <br><br>
 What does the 'local scale' 
 mean? In simple terms, think of it as the range of pixels values. In well-resolved regions, contrast is high, and we 

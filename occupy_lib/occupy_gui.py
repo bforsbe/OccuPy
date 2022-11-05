@@ -1136,7 +1136,7 @@ class Ui_MainWindow(object):
 
 
 
-        self.label_tileSize.setText(_translate("MainWindow", "Tile size (pix)"))
+        self.label_tileSize.setText(_translate("MainWindow", "Tile size"))
         self.label_inputLowass_A.setText(_translate("MainWindow", "Å"))
 
         self.set_default_views()

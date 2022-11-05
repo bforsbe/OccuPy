@@ -42,16 +42,22 @@ fit. In that case, OccuPy makes sure that you notice.
 </p>
 </div>
 
-**Do I need to care?** 
+### This warning is ok to ignore if...
 
-1. If you intend to modify the map based on the estimated occupancy, or use the confidence map for anything, this 
+1. **If you are just estimating relative resolution**, then the solvent model and confidence are not used. You can 
+   then safely ignore the warning and hide it from view in the chimeraX model list. 
+
+2. If you are estimating occupancies **without modification**, then the solvent model and confidence are not used. You can 
+   then safely ignore the warning and hide it from view in the chimeraX model list.
+
+### You need to fix the situation if...
+
+**If you intend to modify the map** based on the estimated occupancy, or use the confidence map for anything, this 
 warning is very serious. A bad solvent model leads to low confidence. OccuPy does not permit modification with low 
 confidence over solvent, because it aims to avoid amplifying "false" things within solvent. 
+<br><br>
+Please consult the <a href="../Tutorials/case/modification">tutorial on map modification</a> to fix the situation.  
 
-2. If you are just estimating realtive resolution, then you can ignore the warning. Just hide it from view in the 
-   chimeraX model list. 
-
-3. If you are estimating occupancies without modification, you can also ignore the warning.
 
 
 

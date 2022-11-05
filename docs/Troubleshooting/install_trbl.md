@@ -73,7 +73,7 @@ Please try to complete the installation by the instructions
 provided in the install section first, and see if the below can resolve any issues. 
 
 ## I installed through pip but OccuPy isn't found
-Let's first confirm that it was.
+Let's first confirm that it was in fact installed. 
 === "On Windows"
 
     1. In the main menu search bar, type "powershell", and open a text-based interface to your system. 

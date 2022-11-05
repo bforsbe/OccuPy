@@ -26,10 +26,11 @@ mask or post-process your map. In most cases its fine to do this too, but it's n
 </p>
 </div>
 
-<div class="admonition attention">
-<p class="admonition-title">AI maps try to hard</p>
+<div class="admonition error">
+<p class="admonition-title">AI maps try too hard</p>
 <p>
-Machine-learning tools alter the maps in ways that OccuPy was not designed to anticipate. If you provide a 
+Machine-learning tools for post-processing alter the map in ways that OccuPy was not designed to anticipate. If 
+you provide a 
 map that has been altered by machine-learning methods, the output should be considered vey unreliable.
 </p>
 </div>
@@ -58,15 +59,18 @@ occupanvy and relative resolution, since they influence each case slightly diffe
 
 ## Modification options
 In some cases you may want to change the input map based on the scale estimate. This is where you do that. 
-
-If you have not estimated an appropriate scale, this is still coupled to the "plot" tab of the viewer. By enabling 
-one or more of the available modification types and dragging the slider, you will update the plot. If you have an 
-input map and appropriate scale loaded, this will also interactively update the "preview" tab. 
-
+<br><br>
+If the scale you have selected (below the viewer) is in "occupancy" mode (name has 'occ' in it), OccuPy will
+let you use it to modify. The active modification will be interactively approximated in the "preview" and "plot"
+tab of the viewer.
+<br><br>
+If the scale you have selected (below the viewer) is in "resolution" mode (name has 'res' in it), OccuPy will *not* 
+let you use it to modify, which will inactivate the "preview" tab of the viewer and the "Modify Map" button.  
 <div class="admonition hint">
 <p class="admonition-title">It's easier done than said</p>
 <p>
-More detailed specification of the modification options are described in the tutorial on map modification.
+If you try it out and follow one or more tutorials, this will make more sense than any explanation. More detailed 
+specification of the modification options are e.g. described in the tutorial on map modification.
 </p>
 </div>
 
@@ -118,6 +122,14 @@ not account for confidence and solvent compensation, and will look worse than th
 ## The output log 
 This will document what is happening, for our convenience. But everything is also documented in the full log, which 
 you can access either through the menu or by double-clicking the output log *tab*. 
+
+<div class="admonition attention">
+<p class="admonition-title">Some clutter during testing</p>
+<p>
+OccuPy is currently being alpha-tested, so there's a bunch of extra output to make it easier to respond to user 
+issues. These lines begin with "AT: " and should be colored green. You can safely ignore them. 
+</p>
+</div>
 
 ---
 

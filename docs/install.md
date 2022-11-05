@@ -20,9 +20,11 @@ to wait for a new release of bug-fixes, install with pip from source, as describ
 
 
 The GUI will be distributed as precompiled binaries that you can download and use. You just need to download and
-double-click the executable, and the OccuPy GUI should appear.
+double-click the executable, and the OccuPy GUI should appear. Depending on your operating system, you might need to 
+"enable" it by adding permissions and assuring that it isn't a virus. Detailed instructions for this can be found in 
+the <a href="../Troubleshooting/install_trbl/">troubleshooting section</a>.
 <br><br>
-Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha)
+Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha).
 <br><br>
 <div class="gallery-dl">
 
@@ -65,10 +67,12 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha)
 </div>
 
 <br>
-If you have issues using the pre-compiled binaries, please check the troubleshooting section. 
+If you have issues using the pre-compiled binaries, please check the 
+<a href="../Troubleshooting/install_trbl/">troubleshooting section</a>. 
 <br><br>
-Previous versions are **not** available as binaries, but only though [PIP](https://pypi.org/project/OccuPy/) and 
-[github](https://github.com/bforsbe/OccuPy). The same goes for the command-line tool. Istallation through PIP is 
+Previous versions of OccuPy are **not** available as binaries, but only though [PIP](https://pypi.
+org/project/OccuPy/) and 
+[github](https://github.com/bforsbe/OccuPy). The same goes for the command-line tool. Installation through PIP is 
 described below.
 
 
@@ -83,7 +87,7 @@ org/project/OccuPy/) (PyPI) using `pip`.
 <div class="admonition attention">
 <p class="admonition-title">Stop. Get help.</p>
 <p>
-If you run into issues, check the troubleshooting section. 
+If you run into issues, check the <a href="../Troubleshooting/install_trbl/">troubleshooting section</a>. 
 </p>
 </div>
 ### Verify/install python and/or pip
