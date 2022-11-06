@@ -2292,6 +2292,7 @@ class Ui_MainWindow(object):
         message = f'{dt_string} {message}'
         self.textEdit_log.append(message)
         self.textEdit_log.repaint()
+        self.jump_to_end_of_log()
 
         with open(self.log_file_name, "a") as file_open:
             if self.new_session:
@@ -2402,6 +2403,7 @@ class Ui_MainWindow(object):
 
     def run_chimerax(self):
         if self.chimerax_file_name is not None:
+            self.jump_to_end_of_log()
 
             self.occupy_log(f'AT: Detected chimerax: {self.chimerax_name}')
 
@@ -2588,7 +2590,13 @@ class Ui_MainWindow(object):
     def estimate_scale(self):
         self.run_cmd(only_estimate=True)
 
+    def jump_to_end_of_log(self):
+        self.textEdit_log.verticalScrollBar().setValue(self.textEdit_log.verticalScrollBar().maximum())
+
     def run_cmd(self, only_estimate=False):
+
+        self.jump_to_end_of_log()
+
         options = self.compose_cmd(only_estimate=only_estimate)
 
         self.toolButton_chimerax.setEnabled(False)
