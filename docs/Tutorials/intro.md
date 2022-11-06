@@ -178,8 +178,8 @@ To understand map modification, consult the
    OccuPy. Remember to use the emdb-fetch button in the GUI, or the `--emdb <ID>` flag on the command-line.
 
    | Entry                                         | Sample                         | Box-size |
-   |-----------------------------------------------|--------------------------------|----------|
-   | [3061](https://www.ebi.ac.uk/emdb/EMD-3061)   | gamma-secretase                | 180      |
+---|-----------------------------------------------|--------------------------------|----------|
+   | [27842](https://www.ebi.ac.uk/emdb/EMD-27842) | Twinkle helicase               | 320      |
    | [30185](https://www.ebi.ac.uk/emdb/EMD-30185) | F-actin                        | 320      |
    | [33437](https://www.ebi.ac.uk/emdb/EMD-33437) | RNA polymerase II + nucleosome | 240      |
    

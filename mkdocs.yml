@@ -13,7 +13,7 @@ copyright: Copyright &copy; 2022 - 2022 Björn Forsberg
 
 theme:
   icon:
-    logo: material/fire-circle
+    logo: material/home-circle
   name: material
   palette:
     # Palette toggle for light mode
