@@ -1,0 +1,1448 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for OccuPy, a fast and simple python module and program  to estimate local scaling of cryo-EM maps.">
+      
+      
+        <meta name="author" content="Bjoern Forsberg">
+      
+      
+        <link rel="canonical" href="https://github.com/bforsbe/OccuPy/install/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.8">
+    
+    
+      
+        <title>Install - OccuPy</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.815d1a91.min.css">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../gallery/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#installation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="OccuPy" class="md-header__button md-logo" aria-label="OccuPy" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.07 4.93C17.22 3 14.66 1.96 12 2c-2.66-.04-5.21 1-7.06 2.93C3 6.78 1.96 9.34 2 12c-.04 2.66 1 5.21 2.93 7.06C6.78 21 9.34 22.04 12 22c2.66.04 5.21-1 7.06-2.93C21 17.22 22.04 14.66 22 12c.04-2.66-1-5.22-2.93-7.07M17 12v6h-3.5v-5h-3v5H7v-6H5l7-7 7.5 7H17Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OccuPy
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Install
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="blue-grey"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bforsbe/OccuPy" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bforsbe/OccuPy
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="OccuPy" class="md-nav__button md-logo" aria-label="OccuPy" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.07 4.93C17.22 3 14.66 1.96 12 2c-2.66-.04-5.21 1-7.06 2.93C3 6.78 1.96 9.34 2 12c-.04 2.66 1 5.21 2.93 7.06C6.78 21 9.34 22.04 12 22c2.66.04 5.21-1 7.06-2.93C21 17.22 22.04 14.66 22 12c.04-2.66-1-5.22-2.93-7.07M17 12v6h-3.5v-5h-3v5H7v-6H5l7-7 7.5 7H17Z"/></svg>
+
+    </a>
+    OccuPy
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bforsbe/OccuPy" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bforsbe/OccuPy
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Install
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Install
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#compiled-binaries" class="md-nav__link">
+    Compiled binaries
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-pip" class="md-nav__link">
+    Using PIP
+  </a>
+  
+    <nav class="md-nav" aria-label="Using PIP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verifyinstall-python-andor-pip" class="md-nav__link">
+    Verify/install python and/or pip
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-occupy" class="md-nav__link">
+    Install OccuPy
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make-it-easy-to-run-without-a-terminal" class="md-nav__link">
+    Make it easy to run without a terminal
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-from-source" class="md-nav__link">
+    Install from source
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-gui" class="md-nav__link">
+    The GUI
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-command-line-tool" class="md-nav__link">
+    The command-line tool
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-use" class="md-nav__link">
+    Developer use
+  </a>
+  
+    <nav class="md-nav" aria-label="Developer use">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dev-tools" class="md-nav__link">
+    Dev tools
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-python-module" class="md-nav__link">
+    The python module
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Troubleshooting
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Troubleshooting" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Troubleshooting
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Troubleshooting/install_trbl/" class="md-nav__link">
+        Install troubles
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Troubleshooting/chimX_trbl/" class="md-nav__link">
+        ChimeraX
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Troubleshooting/other_trbl/" class="md-nav__link">
+        Other
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Tutorials
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tutorials/gui/" class="md-nav__link">
+        GUI overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tutorials/intro/" class="md-nav__link">
+        Intro tutorial
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_3" type="checkbox" id="__nav_4_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_3">
+          I want to
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="I want to" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          I want to
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tutorials/case/est_res/" class="md-nav__link">
+        Estimate relative resolution
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tutorials/case/est_occ/" class="md-nav__link">
+        Estimate occupancy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tutorials/case/modification/" class="md-nav__link">
+        Modify a map
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tutorials/case/supp_solv/" class="md-nav__link">
+        Supress solvent
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tutorials/case/sub_mask/" class="md-nav__link">
+        Make a subtraction mask
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Tutorials/case/soldef/" class="md-nav__link">
+        Use a solvent definition
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Showcase/gallery
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Showcase/gallery" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Showcase/gallery
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gallery/" class="md-nav__link">
+        View all
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_2" type="checkbox" id="__nav_5_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_2">
+          Individual
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Individual" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          Individual
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_2_1" type="checkbox" id="__nav_5_2_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_2_1">
+          From the paper
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="From the paper" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          From the paper
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gallery/synthetic/" class="md-nav__link">
+        Synthetic
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gallery/mass/" class="md-nav__link">
+        Mass
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gallery/membrane/" class="md-nav__link">
+        Membrane
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gallery/modification/" class="md-nav__link">
+        Modification
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_2_2" type="checkbox" id="__nav_5_2_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_2_2">
+          From the team
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="From the team" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          From the team
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gallery/highres/" class="md-nav__link">
+        High-res
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#compiled-binaries" class="md-nav__link">
+    Compiled binaries
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-pip" class="md-nav__link">
+    Using PIP
+  </a>
+  
+    <nav class="md-nav" aria-label="Using PIP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verifyinstall-python-andor-pip" class="md-nav__link">
+    Verify/install python and/or pip
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-occupy" class="md-nav__link">
+    Install OccuPy
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make-it-easy-to-run-without-a-terminal" class="md-nav__link">
+    Make it easy to run without a terminal
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-from-source" class="md-nav__link">
+    Install from source
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-gui" class="md-nav__link">
+    The GUI
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-command-line-tool" class="md-nav__link">
+    The command-line tool
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-use" class="md-nav__link">
+    Developer use
+  </a>
+  
+    <nav class="md-nav" aria-label="Developer use">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dev-tools" class="md-nav__link">
+    Dev tools
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-python-module" class="md-nav__link">
+    The python module
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <a href="https://github.com/bforsbe/OccuPy/edit/master/docs/install.md" title="Edit this page" class="md-content__button md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+<h1 id="installation">Installation</h1>
+<h2 id="compiled-binaries">Compiled binaries</h2>
+<div class="admonition attention">
+<p class="admonition-title">Pre-compiled binaries are not up-to-date during alpha/beta-testing</p>
+<p>
+When software is recently released, it is expected that users report bugs and that these get mended over time. This is 
+called (early) alpha-tesing and (later) beta-testing. OccuPy is in alpha.
+<br><br>
+Compiled binaries will not be updated as new bugfixes get implemented. Once alpha/beta testing is over, new binaries 
+will be provided. 
+<br><br>
+Using pip install, you can get bugfixes at any time, and update according to the latest changes. If you don't want 
+to wait for a new release of bug-fixes, install with pip from source, as described below).
+</p>
+</div>
+
+<p>The GUI will be distributed as precompiled binaries that you can download and use. You just need to download and
+double-click the executable, and the OccuPy GUI should appear. Depending on your operating system, you might need to 
+"enable" it by adding permissions and assuring that it isn't a virus. Detailed instructions for this can be found in 
+the <a href="../Troubleshooting/install_trbl/">troubleshooting section</a>.
+<br><br>
+Occupy GUI version <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M0 80v149.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0l133.5-133.5c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 96c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32z"/></svg></span> 0.1.7 (alpha).
+<br><br></p>
+<div class="gallery-dl">
+
+    <div class="dl-box">
+    <a class=nocolor href="https://drive.google.com/uc?export=download&id=1j30PKVwX8GpiqKPJQAhU7rAQ3BOGow1k">
+    <img src="../gallery/thumbs/mac_thumb.png" alt="" />
+      <div class="transparent-box-dl">
+        <div class="dl-caption">
+          <p> &nbsp;&nbsp;&nbsp;&nbsp;Mac </p>
+            <p class="opacity-low">OccuPy GUI</p>
+        </div>
+      </div> 
+    </a>
+    </div>
+
+    <div class="dl-box">
+    <a class=nocolor href="https://drive.google.com/uc?export=download&id=1El8D0hdCIkwcbVM_LXaRXA9bd9V8sNB6">
+    <img src="../gallery/thumbs/win_thumb.png" alt="" />
+      <div class="transparent-box-dl">
+        <div class="dl-caption">
+          <p> Windows </p>
+            <p class="opacity-low">OccuPy GUI</p>
+        </div>
+      </div> 
+    </a>
+    </div>
+
+    <div class="dl-box">
+    <a class=nocolor href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps">
+    <img src="../gallery/thumbs/linux_thumb.png" alt="" />
+      <div class="transparent-box-dl">
+        <div class="dl-caption">
+          <p> &nbsp;&nbsp;Linux </p>
+            <p class="opacity-low">OccuPy GUI</p>
+        </div>
+      </div> 
+    </a>
+    </div>
+
+</div>
+
+<p><br>
+If you have issues using the pre-compiled binaries, please check the 
+<a href="../Troubleshooting/install_trbl/">troubleshooting section</a>. 
+<br><br>
+Previous versions of OccuPy are <strong>not</strong> available as binaries, but only though <a href="https://pypi.
+org/project/OccuPy/">PIP</a> and 
+<a href="https://github.com/bforsbe/OccuPy">github</a>. The same goes for the command-line tool. Installation through PIP is 
+described below.</p>
+<hr />
+<h2 id="using-pip">Using PIP</h2>
+<p>Regardless if you are using conda or not, OccuPy can be installed from the <a href="https://pypi.
+org/project/OccuPy/">Python Package Index</a> (PyPI) using <code>pip</code>.  </p>
+<div class="admonition attention">
+<p class="admonition-title">Stop. Get help.</p>
+<p>
+If you run into issues, check the <a href="../Troubleshooting/install_trbl/">troubleshooting section</a>. 
+</p>
+</div>
+<h3 id="verifyinstall-python-andor-pip">Verify/install python and/or pip</h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Windows</label><label for="__tabbed_1_2">Linux (ubuntu)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>The following contains elements of
+<a href="https://www.digitalocean.com/community/tutorials/install-python-windows-10">this</a> guide to installing python on 
+windows, and 
+<a href="https://pip.pypa.io/en/stable/installation/#get-pip-py">this</a> guide to install pip using python. </p>
+<ol>
+<li>In the start-menu, type "Powershell". Open a powershell, which is a text-based interface to run system commands.</li>
+<li>Check if python is installed by running the command <code>python --version</code> in the powershell. If you see a version 
+number, python is installed. 
+If not, download and click the python3.10 installer for windows, which you can get thorugh 
+<a href="https://www.python.org/ftp/python/3.10.8/python-3.10.8-amd64.exe">this link</a>. 
+Follow the instructions on screen to install.     </li>
+<li>Close the powershell and reopen it once python is installed.</li>
+<li>Check if pip is installed by calling <code>py -m pip --version</code> in the powershell. If you see a version number, 
+pip is installed, you can go to the next section to install OccuPy. If not, continue with step 5.  </li>
+<li>Download the file <code>get-pip.py</code> from <a href="https://bootstrap.pypa.io/get-pip.py">pypa.io</a> by saving it in the 
+"Downloads" folder. </li>
+<li>In the powershell, run the command "cd ~/Downloads". If you now run <code>ls *.py</code> you should see the file 
+"get-pip.py" you just downloaded.</li>
+<li>In the same powershell, run the downloaded file by running the command <code>py get-pip.py</code> and hit enter. This 
+will install pip. </li>
+<li>You may need to add pip to your <strong>environment variables</strong>, as described in the later section of
+<a href="https://www.activestate.com/resources/quick-reads/how-to-install-pip-on-windows/">this guide</a>.</li>
+</ol>
+</div>
+<div class="tabbed-block">
+<p>Please follow <a href="https://tecadmin.net/how-to-install-python-3-10-on-ubuntu-debian-linuxmint/">this guide</a>,
+which also explains and verifies that pip is installed along with python.</p>
+</div>
+</div>
+</div>
+<h3 id="install-occupy">Install OccuPy</h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Windows</label><label for="__tabbed_2_2">Linux (ubuntu)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>If you do not have on open, start a powershell as in step 1 of the previous section.</li>
+<li>In the powershell, run <code>py -m pip install occupy</code>.</li>
+<li>Verify the install, run <code>py -m pip show occupy</code>. 
+<br>You will either see <code>WARNING: Package(s) not found: occupy</code> 
+or a description of the installation. If successfully installed, continue. </li>
+<li>In the powershell, call <code>occupy_gui</code>. The occupy GUI should start. 
+<br>If instead you get an error starting with 
+<code>occupy_gui : The term 'occupy_gui' is not recognized...</code>
+then you need to add the pip package path to your environment variables. 
+<br> To do so, run 
+<code>Get-ChildItem  -Recurse -ErrorAction SilentlyContinue -Filter occupy_gui.exe -Force</code> in the powershell. 
+This will find the <strong>Directory</strong> where occupy was installed. Copy it.
+<br> Add the location you copied to the "Path" as described in the section "Adding PIP To Windows Environment 
+Variables" of 
+<a href="https://www.activestate.com/resources/quick-reads/how-to-install-pip-on-windows/#:~:text=Adding%20PIP%20To%20Windows%20Environment%20Variables">this guide</a>.</li>
+<li>Note also that calling <code>occupy</code> in the powershell will invoke the non-GUI tool. 
+<br>Call <code>occupy --help</code> for a list of input options. </li>
+</ol>
+</div>
+<div class="tabbed-block">
+<ol>
+<li>Open a terminal.</li>
+<li>In the terminal, call <code>pip install occupy</code>.</li>
+<li>Verify the install by calling <code>pip show occupy</code>. You will either see <code>WARNING: Package(s) not found: occupy</code> 
+or a description of the installation. If successfully installed, continue. </li>
+<li>In the terminal, call <code>occupy_gui</code>. If you get the error 
+<code>command not found: occupy_gui</code>
+then you need to add the pip path to your environment variables, or restart the terminal. Otherwise, the occupy GUI 
+should start. </li>
+<li>Note also that calling <code>occupy</code> in the terminal will invoke the non-GUI tool. 
+Call <code>occupy --help</code> for a list of input options.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="admonition Hint">
+<p class="admonition-title">Update, or downgrade easily</p>
+<p>
+You can also easily install previous <a href="https://pypi.org/project/OccuPy/#history">versions</a> using pip: 
+
+<div class="highlight"><pre><span></span><code>pip install <span class="nv">occupy</span><span class="o">==</span><span class="m">0</span>.1.6
+</code></pre></div>
+</p>
+</div>
+
+<h3 id="make-it-easy-to-run-without-a-terminal">Make it easy to run without a terminal</h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Windows</label><label for="__tabbed_3_2">Linux (ubuntu)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>In the start menu, type <code>occupy_gui</code>. You should find occupy_gui as the type "Run command" suggested. 
+If this is not convenient enough:  </p>
+<ol>
+<li>Right-click the occupy_gui run command and choose "open location".</li>
+<li>Right-click <code>occupy_gui.exe</code> and click "create shortcut". Move the shortcut to e.g. the desktop.</li>
+</ol>
+</div>
+<div class="tabbed-block">
+<p>To create a launcher that makes it easy to start occupy, do the following. 
+This is derived from <a href="https://www.maketecheasier.com/create-desktop-file-linux/">this guide</a></p>
+<ol>
+<li>Open a new text file and give it the following content: 
+<div class="highlight"><pre><span></span><code>[Desktop Entry]
+Type=Application
+Terminal=false
+Exec=/path/to/executable
+Name=OccuPy
+</code></pre></div></li>
+<li>Replace the <code>Exec</code> value with the path to occupy. To find it, open a terminal and call <code>which occupy_gui</code>.</li>
+<li>Save the file as <code>occupy.desktop</code> in <code>/usr/share/applications/</code>. This may require root access. </li>
+</ol>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="install-from-source">Install from source</h2>
+<p>If you are a developer or prefer to download the <a href="https://github.com/bforsbe/OccuPy">source code</a> for some other reason, you can also install from 
+the cloned repo</p>
+<p><div class="highlight"><pre><span></span><code>git clone https://github.com/bforsbe/OccuPy.git
+<span class="nb">cd</span> occupy 
+pip install -e . 
+</code></pre></div>
+We recommend you do this in a virtual environment. More on this and specific dev use in the final section on this page.</p>
+<hr />
+<h2 id="usage">Usage</h2>
+<h3 id="the-gui">The GUI</h3>
+<p>Occupy has a GUI that is recommended to use, because it makes the processing steps more intuitive, presents the 
+options plainly, and offer easy ways to check your input and processing results for consistency. </p>
+<p>To <strong>start the GUI</strong> from the command-line (terminal) and it is in your path (e.g. if you used pip install), simply call</p>
+<div class="highlight"><pre><span></span><code>$ occupy_gui
+</code></pre></div>
+<p>If it is not in your path, simply specify its location, or add it to your path.</p>
+<p>If you downloaded a binary, simply double-click it.</p>
+<h3 id="the-command-line-tool">The command-line tool</h3>
+<p>OccuPy is also a command-line tool, so that you can easily script its use if needed for bulk processing. This is 
+only available by installing using PIP, or from sourc code. </p>
+<p>We recommend getting acquainted with OccuPy through the GUI, which also has an option to print the command it will run, 
+which can then be called on the command-line.  </p>
+<div class="highlight"><pre><span></span><code>$ occupy --version
+OccuPy: <span class="m">0</span>.1.5rc4.dev1+gfa0f2e9.d20220905
+</code></pre></div>
+<h2 id="developer-use">Developer use</h2>
+<h3 id="dev-tools">Dev tools</h3>
+<p>These are instructions to install the developer tools used to build documentation, build binaries, etc. <strong>This is not 
+needed to use occupy.</strong></p>
+<ol>
+<li>clone the repo 
+<div class="highlight"><pre><span></span><code>git clone https://github.com/bforsbe/OccuPy.git
+</code></pre></div></li>
+<li>make a clean <a href="https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/">virtual environment</a>
+<div class="highlight"><pre><span></span><code>mkdir occupy/occupy_venv
+python3 -m venv ocucpy/occupy_venv
+<span class="nb">source</span> ocucpy/occupy_venv/bin/activate
+</code></pre></div></li>
+<li>
+<p>pip install occupy, deps and dev-deps in the virtual environment
+<div class="highlight"><pre><span></span><code>pip install -e occupy/<span class="s2">&quot;.[dev]&quot;</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>build binary 
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> occupy 
+pyinstaller --onefile --windowed occupy_lib/occupy_gui.py 
+ls dist 
+</code></pre></div></p>
+</li>
+<li>
+<p>build docs and start a local serve to view them (interactive with changes)<br />
+<div class="highlight"><pre><span></span><code>mkdocs serve 
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="the-python-module">The python module</h3>
+<p>For development use, you can also import it as a python module, but this currently and unsupported feature that we 
+will not prioritize as main functionality.</p>
+<div class="highlight"><pre><span></span><code><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">occupy_lib</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">occupy_lib.map_tools</span> <span class="kn">import</span> <span class="n">create_radial_mask</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">create_radial_mask</span><span class="err">?</span>
+<span class="n">Signature</span><span class="p">:</span>
+<span class="n">create_radial_mask</span><span class="p">(</span>
+    <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">center</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">Docstring</span><span class="p">:</span>
+<span class="n">Create</span> <span class="n">a</span> <span class="n">circular</span> <span class="ow">or</span> <span class="n">spherical</span> <span class="n">dimensional</span> <span class="n">mask</span> <span class="ow">or</span> <span class="n">kernel</span>
+
+<span class="p">:</span><span class="n">param</span> <span class="n">size</span><span class="p">:</span>    <span class="n">Output</span> <span class="n">array</span> <span class="n">length</span>
+<span class="p">:</span><span class="n">param</span> <span class="n">dim</span><span class="p">:</span>     <span class="n">Output</span> <span class="n">array</span> <span class="n">dimension</span>
+<span class="p">:</span><span class="n">param</span> <span class="n">center</span><span class="p">:</span>  <span class="n">Center</span> <span class="n">of</span> <span class="n">the</span> <span class="n">radial</span> <span class="n">region</span>
+<span class="p">:</span><span class="n">param</span> <span class="n">radius</span><span class="p">:</span>  <span class="n">Radius</span> <span class="n">of</span> <span class="n">the</span> <span class="n">radial</span> <span class="n">region</span>
+<span class="p">:</span><span class="k">return</span><span class="p">:</span>        <span class="n">Boolean</span> <span class="n">array</span>
+<span class="n">File</span><span class="p">:</span>      <span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">Occ</span><span class="o">/</span><span class="n">occupy</span><span class="o">/</span><span class="n">occupy_lib</span><span class="o">/</span><span class="n">map_tools</span><span class="o">.</span><span class="n">py</span>
+<span class="n">Type</span><span class="p">:</span>      <span class="n">function</span>
+</code></pre></div>
+
+
+  
+
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 10.3 14 9.5 14.7 8 15.5 8s1.5.7 1.5 1.5m-5 7.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81Z"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10m-6.5-4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m2 4.5c1.75 0 3.29.72 4.19 1.81l-1.42 1.42C14.32 16.5 13.25 16 12 16s-2.32.5-2.77 1.23l-1.42-1.42C8.71 14.72 10.25 14 12 14Z"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1" hidden>
+              
+              
+                
+              
+              
+                Thanks for your feedback!
+              
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              
+                Thanks for your feedback! Help us improve this page by using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
+              
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Introduction" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Introduction
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../Troubleshooting/install_trbl/" class="md-footer__link md-footer__link--next" aria-label="Next: Install troubles" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Install troubles
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2022 - 2022 Björn Forsberg
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "search.highlight", "search.suggest", "content.tabs.link"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d6c3db9e.min.js"></script>
+      
+    
+  </body>
+</html>

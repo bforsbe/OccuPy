@@ -1,0 +1,1315 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for OccuPy, a fast and simple python module and program  to estimate local scaling of cryo-EM maps.">
+      
+      
+        <meta name="author" content="Bjoern Forsberg">
+      
+      
+        <link rel="canonical" href="https://github.com/bforsbe/OccuPy/Tutorials/intro/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.8">
+    
+    
+      
+        <title>Intro tutorial - OccuPy</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.20d9efc8.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.815d1a91.min.css">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../gallery/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#an-intro-tutorial" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OccuPy" class="md-header__button md-logo" aria-label="OccuPy" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.07 4.93C17.22 3 14.66 1.96 12 2c-2.66-.04-5.21 1-7.06 2.93C3 6.78 1.96 9.34 2 12c-.04 2.66 1 5.21 2.93 7.06C6.78 21 9.34 22.04 12 22c2.66.04 5.21-1 7.06-2.93C21 17.22 22.04 14.66 22 12c.04-2.66-1-5.22-2.93-7.07M17 12v6h-3.5v-5h-3v5H7v-6H5l7-7 7.5 7H17Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OccuPy
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Intro tutorial
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="blue-grey"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bforsbe/OccuPy" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bforsbe/OccuPy
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OccuPy" class="md-nav__button md-logo" aria-label="OccuPy" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.07 4.93C17.22 3 14.66 1.96 12 2c-2.66-.04-5.21 1-7.06 2.93C3 6.78 1.96 9.34 2 12c-.04 2.66 1 5.21 2.93 7.06C6.78 21 9.34 22.04 12 22c2.66.04 5.21-1 7.06-2.93C21 17.22 22.04 14.66 22 12c.04-2.66-1-5.22-2.93-7.07M17 12v6h-3.5v-5h-3v5H7v-6H5l7-7 7.5 7H17Z"/></svg>
+
+    </a>
+    OccuPy
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bforsbe/OccuPy" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bforsbe/OccuPy
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../install/" class="md-nav__link">
+        Install
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Troubleshooting
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Troubleshooting" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Troubleshooting
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Troubleshooting/install_trbl/" class="md-nav__link">
+        Install troubles
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Troubleshooting/chimX_trbl/" class="md-nav__link">
+        ChimeraX
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Troubleshooting/other_trbl/" class="md-nav__link">
+        Other
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Tutorials
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gui/" class="md-nav__link">
+        GUI overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Intro tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Intro tutorial
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-start-occupy" class="md-nav__link">
+    1. Start OccuPy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-open-a-map" class="md-nav__link">
+    2. Open a map
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-notice-the-kernel-settings" class="md-nav__link">
+    3. Notice the kernel settings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-estimate-resolution-mode-local-scale" class="md-nav__link">
+    4. Estimate resolution-mode local scale
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-assess-the-scale" class="md-nav__link">
+    5. Assess the scale
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-assess-the-solvent-model" class="md-nav__link">
+    6. Assess the solvent model
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-estimate-occupancy-mode-local-scale" class="md-nav__link">
+    7. Estimate occupancy-mode local scale
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-modify-by-local-scale" class="md-nav__link">
+    8. Modify by local scale
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-inspect-modification-in-chimerax" class="md-nav__link">
+    9. Inspect modification in ChimeraX
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-final-notes" class="md-nav__link">
+    10. Final notes
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_3" type="checkbox" id="__nav_4_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_3">
+          I want to
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="I want to" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          I want to
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../case/est_res/" class="md-nav__link">
+        Estimate relative resolution
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../case/est_occ/" class="md-nav__link">
+        Estimate occupancy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../case/modification/" class="md-nav__link">
+        Modify a map
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../case/supp_solv/" class="md-nav__link">
+        Supress solvent
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../case/sub_mask/" class="md-nav__link">
+        Make a subtraction mask
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../case/soldef/" class="md-nav__link">
+        Use a solvent definition
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Showcase/gallery
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Showcase/gallery" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Showcase/gallery
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gallery/" class="md-nav__link">
+        View all
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_2" type="checkbox" id="__nav_5_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_2">
+          Individual
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Individual" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          Individual
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_2_1" type="checkbox" id="__nav_5_2_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_2_1">
+          From the paper
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="From the paper" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          From the paper
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gallery/synthetic/" class="md-nav__link">
+        Synthetic
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gallery/mass/" class="md-nav__link">
+        Mass
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gallery/membrane/" class="md-nav__link">
+        Membrane
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gallery/modification/" class="md-nav__link">
+        Modification
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_2_2" type="checkbox" id="__nav_5_2_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_2_2">
+          From the team
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="From the team" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          From the team
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gallery/highres/" class="md-nav__link">
+        High-res
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-start-occupy" class="md-nav__link">
+    1. Start OccuPy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-open-a-map" class="md-nav__link">
+    2. Open a map
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-notice-the-kernel-settings" class="md-nav__link">
+    3. Notice the kernel settings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-estimate-resolution-mode-local-scale" class="md-nav__link">
+    4. Estimate resolution-mode local scale
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-assess-the-scale" class="md-nav__link">
+    5. Assess the scale
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-assess-the-solvent-model" class="md-nav__link">
+    6. Assess the solvent model
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-estimate-occupancy-mode-local-scale" class="md-nav__link">
+    7. Estimate occupancy-mode local scale
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-modify-by-local-scale" class="md-nav__link">
+    8. Modify by local scale
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-inspect-modification-in-chimerax" class="md-nav__link">
+    9. Inspect modification in ChimeraX
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-final-notes" class="md-nav__link">
+    10. Final notes
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <a href="https://github.com/bforsbe/OccuPy/edit/master/docs/Tutorials/intro.md" title="Edit this page" class="md-content__button md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+<h1 id="an-intro-tutorial">An intro tutorial</h1>
+<p>This is a general tutorial to get acquainted with the GUI and workflow.</p>
+<div class="admonition hint">
+<p class="admonition-title">There's something you should know</p>
+<p>
+It will be useful to read the GUI overview first, or refer to it through this tutorial.
+</p>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">The devil is in the details</p>
+<p>
+There are more instructive tutorials for individual use cases, which also clarify limitations and effects of 
+adjusting input parameters. It is recommended that you do this quick general tutorial first, then the specific 
+ones.
+</p>
+</div>
+
+<hr />
+<h2 id="1-start-occupy">1. Start OccuPy</h2>
+<ol>
+<li>
+<p>Open OccuPy by double-clicking the distributed binary or calling <code>occupy_gui</code> in a terminal. </p>
+</li>
+<li>
+<p>If you are unsure where the GUI will run and put output files, or want to change this, click "Session"-&gt;"Change 
+location" in the top menu.</p>
+</li>
+<li>
+<p>You will find three (3) large buttons above the ouput log, called "Estimate Scale", "Modify Map", and "Launch 
+chimeraX". These should all be greyed out. Check that the far-right 
+button to start ChimeraX does not indicate "(not found)". If ChimeraX was not found, you will not be able to invoke 
+ChimeraX from the OccuPy GUI. Please see the section for 
+<a href="../../Troubleshooting/chimX_trbl/">troubleshooting chimeraX</a> to remedy this, or use the workaround below. </p>
+</li>
+</ol>
+<div class="admonition hint">
+<p class="admonition-title">Workaround</p>
+<p>
+OccuPy writes a chimeraX command script (.cxc) every time you estimate the scale or modify a map. You can open 
+this through chimeraX instead of using OccuPy to launch chimeraX. <strong> Just make sure to use "File"->"close 
+session" in chimeraX before you open the .cxc-file written by OccuPy. </strong>
+</p>
+</div>
+
+<hr />
+<h2 id="2-open-a-map">2. Open a map</h2>
+<ol>
+<li>To open an input file we would normally click "browse" in the top-right corner of the OccuPy window. For this 
+   tutorial we will use a map from the emdb instead. Click the "emdb" button in the top-right corner of the OccuPy 
+   window. A small dialog should open asking to specify the unique ID of the map in the electron microscopy database. </li>
+<li>Enter the number 3061 and click "Fetch". This will download, unzip and open a relatively small map of the 
+   transmembrane protein gamma-secretase in the current working directory.</li>
+<li>In the "Input" tab of the viewer, the input map can be inspected. Just below the viewer, select the z-dimension and 
+   change the slice number to 96 to see the transmembrane helices across the light-grey detergent micelle, as well 
+   as the extracellular domain. </li>
+</ol>
+<hr />
+<h2 id="3-notice-the-kernel-settings">3. Notice the kernel settings</h2>
+<p>Based on the input, reasonable kernel settings were derived automatically. In this case, </p>
+<ul>
+<li>a low-pass of 8Å will be applied to make solvent estimation easier.</li>
+<li>a sphere with radius 2.86Å will be used to estimate the local scale. </li>
+<li>a cube of 5 pixels (voxels) in each dimension will hold a binary mask with the above radial cutoff. </li>
+<li>of all the pixels selected by the binary mask, the scale will be proportional to the bottom 96.47% percentile, or 
+  the top 3.53% percentile</li>
+<li>the above parameters results in 93 pixels (voxels) being sampled around each map pixel (voxel).</li>
+<li>a region of 12 pixels (voxels) in each dimension will be used to determine the scale-normalizing value. This value 
+  is always 12 by default, and not estimated. </li>
+</ul>
+<p><strong>Do not change these settings for this tutorial.</strong></p>
+<hr />
+<h2 id="4-estimate-resolution-mode-local-scale">4. Estimate resolution-mode local scale</h2>
+<ol>
+<li>
+<p>Make sure "resolution" is checked under the "Modification options". </p>
+</li>
+<li>
+<p>Run OccuPy by clicking the Big button labeled "Estimate scale" just above the output log. </p>
+</li>
+<li>
+<p>This should finish in a few seconds. Notice that the run is individually numbered as "1-1" in the output log. </p>
+</li>
+</ol>
+<div class="admonition attention">
+<p class="admonition-title">There's more to this</p>
+<p>
+To learn how parameter adjustment can help you get a better estimate, consult the 
+<a href="../case/est_res">tutorial on relative resolution estimation</a> later.
+</p>
+</div>
+
+<hr />
+<h2 id="5-assess-the-scale">5. Assess the scale</h2>
+<ol>
+<li>
+<p>You will find that the estimated scale has been added to the "scale map" drop-down and is thus also rendered in the 
+viewer tab "Scale". Click this viewer tab and drag the slider to check the estimated scale. </p>
+</li>
+<li>
+<p>To further inspect the local scale, click the big button labeled "Launch ChimeraX" to the far right above the output 
+log. This will launch chimeraX and run a command script written by OccuPy the last time you ran anything 
+through the GUI. In this case you should see the input map colored by the estimated scale, along with a color key.</p>
+</li>
+<li>
+<p>Change the color of map #1 to grey. Next, in the chimeraX command-line tool, run the command 
+<code>scale_color #1 #2</code>. This will re-color map #1 by the estimated scale (map #2), according to the color key. </p>
+</li>
+<li>
+<p>Close chimeraX.</p>
+</li>
+</ol>
+<hr />
+<h2 id="6-assess-the-solvent-model">6. Assess the solvent model</h2>
+<ol>
+<li>
+<p>The solvent model is ony used for modification, but it is nonetheless a good idea to check it. Click the tab 
+   "Solvent model" next to the "output log" tab at the bottom of the OccuPy GUI. The green line is the solvent model
+   fit as a gaussian to the map histogram. It appears parabolic since this is a log-plot. The red line is the 
+   confidence of voxel values above solvent. </p>
+</li>
+<li>
+<p>Because we have a solvent model, we also have a confidence map. This has been opened in the viewer tab "Conf.". 
+   Click  this tab and inspect what occupy thinks is solvent. You should find that the detergent is also identified 
+   as "stuff" (being white), as opposed to solvent (black). </p>
+</li>
+</ol>
+<hr />
+<h2 id="7-estimate-occupancy-mode-local-scale">7. Estimate occupancy-mode local scale</h2>
+<ol>
+<li>
+<p>Click on the "amplify" tab of modification options on the left. Enable it and drag the slider. The "plot" tab in the 
+viewer should update interactively, showing you how scale will be modified in the output compared to the input. </p>
+</li>
+<li>
+<p>Click on the "Preview" tab of the viewer. There should be a notice to the effect that this is a bad idea. This is 
+   because the scale we have estimated includes contrast degradation due to poor resolution and flexibility. OccuPy 
+   does not allow you to use this for modifying maps, because it can't "compensate" for flexibility.  The big button 
+   "modify map" should also be inactivated. </p>
+</li>
+<li>
+<p>When you enabled any modification, the scale-mode just below the modification options was changed to "occupancy" and 
+   can't be changed as long as you want to modify. This is again because OccuPy can't modify poor resolution, so 
+   it forces occupancy-mode. Click "Estimate scale" again to estimate the occupancy-mode local scale. This should 
+   take a few seconds and then the new scale should be selected in the "scale map" drop-down menu, now containing 
+   "occ" in its name. </p>
+</li>
+</ol>
+<div class="admonition attention">
+<p class="admonition-title">There's more to this</p>
+<p>
+To learn how parameter adjustment can help you get a better estimate, consult the 
+<a href="../case/est_occ">tutorial on occupancy estimation</a> later.
+</p>
+</div>
+<hr />
+<h2 id="8-modify-by-local-scale">8. Modify by local scale</h2>
+<ol>
+<li>
+<p>Click the "Preview" tab of the viewer. Note that this preview is rough. </p>
+</li>
+<li>
+<p>Try to remove the membrane by enabling attenuation and inspecting the preview as you alter the attenuation 
+   power by dragging the slider.</p>
+</li>
+<li>Try the same by sigmoid modification. Note that sigmoid has two parameters. </li>
+<li>Select the "plot" tab of the viewer to see how these modifications would alter the scale of the output compared to 
+   input. Where the colored line is below the dashed line, scale will be attenuated. Converesely, where the line is 
+   above the dashed line, scale will be amplified. </li>
+<li>Click the button "modify Map" to generate all desired modifications. </li>
+<li>When completed, <strong>the preview is still just a preview</strong>. To see the output, please click "Launch ChimeraX". This 
+   will open the original map and all modifications, but <strong>only the original is visible by default</strong>. Read on.</li>
+</ol>
+<div class="admonition attention">
+<p class="admonition-title">There's more to this</p>
+<p>
+To understand map modification, consult the 
+<a href="../case/modification">tutorial on map modification</a> later.
+</p>
+</div>
+<hr />
+<h2 id="9-inspect-modification-in-chimerax">9. Inspect modification in ChimeraX</h2>
+<ol>
+<li>Change the level (threshold) of the input and all modified maps to 0.06 by using the chimeraX command-line tool to 
+   run 
+   <code>occupy_level 0.06</code> .</li>
+<li>Check the difference between the modifications, comparing to the "plot" tab in the OccuPy GUI. </li>
+<li>Close ChimeraX </li>
+</ol>
+<h2 id="10-final-notes">10. Final notes</h2>
+<ol>
+<li>Click "Session-&gt;View full log" in the menu field. Note that all run setting have been saved according to the same 
+   unique run-ID that you saw in the output log. This log is persistent. If you close OccuPy and start it again, the 
+   numbers will be incremented, and everything you did before and do now will be in the full log. </li>
+<li>Maps are over-written by default. If you alter the input lowpass to 10Å and re-estimate local scale, the 
+   previously estimated scale is gone. But the parameters to re-generate it is in the full log, provided that you 
+   know the run ID. </li>
+<li>You might want to play with a few more instructive maps. Here are a few entries that might be interesting to test 
+   OccuPy. Remember to use the emdb-fetch button in the GUI, or the <code>--emdb &lt;ID&gt;</code> flag on the command-line.</li>
+</ol>
+<p>| Entry                                         | Sample                         | Box-size |
+---|-----------------------------------------------|--------------------------------|----------|
+   | <a href="https://www.ebi.ac.uk/emdb/EMD-27842">27842</a> | Twinkle helicase               | 320      |
+   | <a href="https://www.ebi.ac.uk/emdb/EMD-30185">30185</a> | F-actin                        | 320      |
+   | <a href="https://www.ebi.ac.uk/emdb/EMD-33437">33437</a> | RNA polymerase II + nucleosome | 240      |</p>
+
+
+  
+
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 10.3 14 9.5 14.7 8 15.5 8s1.5.7 1.5 1.5m-5 7.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81Z"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10m-6.5-4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m2 4.5c1.75 0 3.29.72 4.19 1.81l-1.42 1.42C14.32 16.5 13.25 16 12 16s-2.32.5-2.77 1.23l-1.42-1.42C8.71 14.72 10.25 14 12 14Z"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1" hidden>
+              
+              
+                
+              
+              
+                Thanks for your feedback!
+              
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              
+                Thanks for your feedback! Help us improve this page by using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
+              
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../gui/" class="md-footer__link md-footer__link--prev" aria-label="Previous: GUI overview" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              GUI overview
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../case/est_res/" class="md-footer__link md-footer__link--next" aria-label="Next: Estimate relative resolution" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Estimate relative resolution
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2022 - 2022 Björn Forsberg
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "search.highlight", "search.suggest", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d6c3db9e.min.js"></script>
+      
+    
+  </body>
+</html>
