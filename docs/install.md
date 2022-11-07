@@ -200,10 +200,11 @@ If you are a developer or prefer to download the [source code](https://github.co
 the cloned repo
 
 ```shell
-$ git clone https://github.com/bforsbe/OccuPy.git
-$ cd occupy 
-$ pip install -e . 
+git clone https://github.com/bforsbe/OccuPy.git
+cd occupy 
+pip install -e . 
 ```
+We recommend you do this in a virtual environment. More on this and specific dev use in the final section on this page.
 
 ---
 
@@ -234,7 +235,65 @@ $ occupy --version
 OccuPy: 0.1.5rc4.dev1+gfa0f2e9.d20220905
 ```
 
+## Developer use
+
+### Dev tools
+These are instructions to install the developer tools used to build documentation, build binaries, etc. **This is not 
+needed to use occupy.**
+
+1. clone the repo 
+```shell
+git clone https://github.com/bforsbe/OccuPy.git
+```
+2. make a clean [virtual environment](https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/)
+```shell
+mkdir occupy/occupy_venv
+python3 -m venv ocucpy/occupy_venv
+source ocucpy/occupy_venv/bin/activate
+```
+3. pip install occupy, deps and dev-deps in the virtual environment
+```shell
+pip install -e occupy/".[dev]"
+```
+
+4. build binary 
+```shell
+cd occupy 
+pyinstaller --onefile --windowed occupy_lib/occupy_gui.py 
+ls dist 
+```
+
+5. build docs and start a local serve to view them (interactive with changes)  
+```shell
+mkdocs serve 
+```
+
 ### The python module
-For development use, you can also import it as a python module, but this currently and unsupported  feature that we 
+For development use, you can also import it as a python module, but this currently and unsupported feature that we 
 will not prioritize as main functionality.
+
+```python
+In [1]: import occupy_lib
+In [2]: from occupy_lib.map_tools import create_radial_mask
+In [3]: create_radial_mask?
+Signature:
+create_radial_mask(
+    size: int,
+    dim: int,
+    center: int = None,
+    radius: float = None,
+)
+Docstring:
+Create a circular or spherical dimensional mask or kernel
+
+:param size:    Output array length
+:param dim:     Output array dimension
+:param center:  Center of the radial region
+:param radius:  Radius of the radial region
+:return:        Boolean array
+File:      ~/Documents/Occ/occupy/occupy_lib/map_tools.py
+Type:      function
+
+```
+
 
