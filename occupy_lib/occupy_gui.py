@@ -1515,9 +1515,9 @@ class Ui_MainWindow(object):
             #Keep this alive for now, but it hsould be safe to delete to make it more difficult tho cheat
             if not_found:
                 # String method as fallback
-                if "_occ_" in file_name:
+                if "scale_occ_" in file_name:
                     occ_mode = 'occ'
-                elif "_res_" in file_name:
+                elif "scale_res_" in file_name:
                     occ_mode = 'res'
 
             if not_found and nlabl == 10:
