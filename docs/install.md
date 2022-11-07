@@ -19,9 +19,9 @@ to wait for a new release of bug-fixes, install with pip from source, as describ
 </div>
 
 
-The GUI will be distributed as precompiled binaries that you can download and use. You just need to download and
-double-click the executable, and the OccuPy GUI should appear. Depending on your operating system, you might need to 
-"enable" it by adding permissions and assuring that it isn't a virus. Detailed instructions for this can be found in 
+The GUI will be distributed as precompiled binaries that you can download and use. Depending on your operating 
+system, you might need to "enable" it by adding permissions and assuring that it isn't a virus. 
+Detailed instructions for this can be found in 
 the <a href="../Troubleshooting/install_trbl/">troubleshooting section</a>.
 <br><br>
 Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha).
@@ -65,6 +65,31 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha).
     </div>
 
 </div>
+
+### Brief instructions to get going 
+
+=== "On Windows"
+
+    1. Download the binary installer.
+    2. Double-click the installer, which should guide you thorugh the simple process of installing OccuPy on your 
+    system.
+    3. In the start-menu, search for "occupy_gui". You should see the OccuPy Guppy. 
+
+=== "On Mac"
+
+    1. Download the executable program file. 
+    2. Open a terminal and navigate to the downloads directory. 
+    3. In the terminal, type `chmod a+x occupy_gui`.
+    4. In a file browser, go to the downloads directory and right-click the `occupy_gui` binary and select 'Open'. 
+    In the dialog that pops up, select 'Open again'. You can also type `./occupy_gui` in the terminal
+
+=== "On Linux (ubuntu)"
+    
+    1. Download the executable program file. 
+    2. Open a terminal and navigate to the downloads directory. 
+    3. In the terminal, type `chmod a+x occupy_gui`.
+    4. In a file browser, go to the downloads directory and double-click the `occupy_gui` binary. You can also type 
+    `./occupy_gui` in the terminal
 
 <br>
 If you have issues using the pre-compiled binaries, please check the 
