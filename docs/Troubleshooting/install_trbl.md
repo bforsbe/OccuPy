@@ -4,20 +4,10 @@
 
 === "On Windows"
 
-    1. Note that it can take ~1 min for it to start.
-    2. The OccuPy GUI may be recognized as coming from an untrusted or "unidentified developer", and produce a warning 
-    message the first time you run the program. You may need to choose to "keep", "trust" or otherwise confirm that 
-    it is ok to run it.  
-    3. If the above doesn’t work, and the binary is recognized as a vrius or security threat, you can either make an 
-    exception for it in your virus software or contact one of the OccuPy developers to resolve the issue.
-    4. If the program appears unresponsive, you can try to run it from a terminal. Use the file browser to find 
-    `occupy_gui.exe` (probably in the Downloads folder), then start a terminal as described 
-    <a href="https://superuser.com/questions/339997/how-to-open-a-terminal-quickly-from-a-file-explorer-at-a-folder-in-windows-7#:~:text=Hold,open%20the%20shell.">here</a>
-    . In the terminal, type `./occupy_gui.exe`. The program should start, or at least provide some information about 
-    what isn't working.   
-    5. If you still have not been able to resolve the issue, please look through existing 
-    <a href="https://github.com/bforsbe/OccuPy/issues">issues</a>, 
-    and submit a new issue/question if you still can't make it work.
+    <br>
+    We are not aware of how the installation might have failed on windows. Please submit an 
+    <a href="https://github.com/bforsbe/OccuPy/issues">issue</a>, describing your windows version, and 
+    any extra observations that might be helpful. 
 
 === "On Mac"
 
@@ -37,19 +27,10 @@
     and submit a new issue/question if you still can't make it work.
 
 === "On Linux (ubuntu)"
-    
-    1. Note that it can take ~1 min for it to start.
-    2. If you get a messsage saying "Could not display occupy_gui, thereis no application installed for 
-    executable files", then you may need to alter the "permissions". Click "OK", then right-click the binary and 
-    select "Properties". Under "Permissions", make sure "Allow to execute file as program" is checked. Alternatively, 
-    you can use a terminal to change the permisssions by typing `chmod a+x occupy_gui`. 
-    3. If the above doesn’t work, you can run the binary from the command line, which may provide some more info.
-    Open a terminal in the folder where the OccuPy GUI binary is located, and run it by typing `./occupy_gui`
-    4. If you still have not been able to resolve the issue, please look through existing 
-    <a href="https://github.com/bforsbe/OccuPy/issues">issues</a>, 
-    and submit a new issue/question if you still can't make it work.
-    
 
+    <br>
+    We are not aware of how the installation might have failed on linux. Please submit an 
+    <a href="https://github.com/bforsbe/OccuPy/issues">issue</a>, describing your system and observations.
 
 ## The GUI windows looks too big/small/...
 
