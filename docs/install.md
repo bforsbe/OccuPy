@@ -85,11 +85,11 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha).
 
 === "On Linux (ubuntu)"
     
-    1. Download the executable program file. 
+    1. Download the .deb file. 
     2. Open a terminal and navigate to the downloads directory. 
-    3. In the terminal, type `chmod a+x occupy_gui`.
-    4. In a file browser, go to the downloads directory and double-click the `occupy_gui` binary. You can also type 
-    `./occupy_gui` in the terminal
+    3. In the terminal, type `sudo dpkg -i occupy_0.1.8.deb`
+    4. Update the list of installed software by typing `sudo update-desktop-database` in the terminal.
+    5. Open the launcher menu and type "occupy". You should see the OccuPy Guppy.
 
 <br>
 If you have issues using the pre-compiled binaries, please check the 
