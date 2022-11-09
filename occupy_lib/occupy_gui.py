@@ -1304,6 +1304,8 @@ class Ui_MainWindow(object):
         # Clear output displays
         self.textEdit_log.clear()
 
+        self.new_session = True
+
     def fetch_emdb(self):
 
         self.Dialog_emdb = EMDB_dialog()
@@ -1348,7 +1350,8 @@ class Ui_MainWindow(object):
 
                 scale_mode = self.check_scale_mode(file_name)
                 if scale_mode is not None:
-                    self.occupy_warn(f'{file_name} appears to be a scale file, you should not use this as input.')
+                    self.occupy_warn(f'{file_name} appears to be a scale file, '
+                                     f'you should not use this as input.')
                     return
 
 
