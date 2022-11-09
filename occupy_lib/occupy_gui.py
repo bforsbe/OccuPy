@@ -2656,20 +2656,19 @@ class Ui_MainWindow(object):
         self.label_solventModel.setPixmap(pixmap)  # Set the pixmap onto the label
         self.label_solventModel.setAlignment(QtCore.Qt.AlignCenter)  # Align the label to center
 
-        # Dont enable for now, for some reason the full view only woks in debug mode
-        #self.toolButton_expandSolModel.setEnabled(True)
+        self.toolButton_expandSolModel.setEnabled(True)
 
     def window_solvent_model(self):
 
         self.MainWindow_solModel = ImageWindow()
-        app = QtWidgets.QApplication(sys.argv)
 
-        screen = app.primaryScreen()
-        #print('Screen: %s' % screen.name())
+        screen = QtWidgets.QApplication.primaryScreen()
         size = screen.size()
-        #print('Size: %d x %d' % (size.width(), size.height()))
         rect = screen.availableGeometry()
-        #print('Available: %d x %d' % (rect.width(), rect.height()))
+
+        self.occupy_log(f'AT: Screen: {screen.name()}')
+        self.occupy_log(f'AT: Screen w/h: {size.width()}/{size.height()}')
+        self.occupy_log(f'AT: Avail w/h: {rect.width()}/{rect.height()}')
 
         # The image will be 1200:252 pixels.
         # Assume width-limited and make as big as possible.
@@ -2678,11 +2677,13 @@ class Ui_MainWindow(object):
         window = QtWidgets.QLabel(self.MainWindow_solModel)
         pixmap = QtGui.QPixmap(self.solModel_file_name)
         pixmap = pixmap.scaled(
-            rect_width,
-            rect_height,
-            QtCore.Qt.KeepAspectRatio
+            rect_width-20,
+            rect_height-20,
+            QtCore.Qt.KeepAspectRatio,
+            QtCore.Qt.SmoothTransformation
         )  # Scale pixmap
         self.MainWindow_solModel.resize(rect_width,rect_height)
+        window.setGeometry(QtCore.QRect(10, 10, rect_width-20, rect_height-20))
         window.setPixmap(pixmap)
         self.MainWindow_solModel.show()
 
