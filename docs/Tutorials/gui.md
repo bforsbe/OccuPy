@@ -11,7 +11,7 @@ evaluation of map modification.
 The GUI also exposes tools to generate maks based on the estimated scale.
 
 ![image](https://drive.google.com/uc?export=view&id=10KrTBE-MLiQ4wu7kfjIKcupYLvydnxxu)
-
+https://drive.google.com/file/d/14w8wjEAvIQg9cP5gEMC4bzI0YHI4VPhJ/view?usp=share_link
 ---
 
 ## Input map

@@ -53,6 +53,11 @@ session" in chimeraX before you open the .cxc-file written by OccuPy. </strong>
    change the slice number to 96 to see the transmembrane helices across the light-grey detergent micelle, as well 
    as the extracellular domain. 
 
+<video class="center" width="400"  controls>
+  <source src="https://drive.google.com/uc?export=view&id=14w8wjEAvIQg9cP5gEMC4bzI0YHI4VPhJ" type="video/mp4">
+</video>
+
+
 ---
 
 ## 3. Notice the kernel settings 
@@ -78,6 +83,10 @@ Based on the input, reasonable kernel settings were derived automatically. In th
 
 3. This should finish in a few seconds. Notice that the run is individually numbered as "1-1" in the output log. 
 
+<video class="center" width="400"  controls>
+  <source src="https://drive.google.com/uc?export=view&id=1pRwqFaDtIcn2tSYHJ15UkQDiAEEjtzzg" type="video/mp4">
+</video>
+
 <div class="admonition attention">
 <p class="admonition-title">There's more to this</p>
 <p>
@@ -85,6 +94,7 @@ To learn how parameter adjustment can help you get a better estimate, consult th
 <a href="../case/est_res">tutorial on relative resolution estimation</a> later.
 </p>
 </div>
+
 
 ---
 
@@ -129,6 +139,12 @@ viewer should update interactively, showing you how scale will be modified in th
    it forces occupancy-mode. Click "Estimate scale" again to estimate the occupancy-mode local scale. This should 
    take a few seconds and then the new scale should be selected in the "scale map" drop-down menu, now containing 
    "occ" in its name. 
+
+
+<video class="center" width="400"  controls>
+  <source src="https://drive.google.com/uc?export=view&id=1jY_CfRcixJB3jTNyVp4cAfKYA8sScY5W" type="video/mp4">
+</video>
+
 <div class="admonition attention">
 <p class="admonition-title">There's more to this</p>
 <p>
@@ -136,6 +152,8 @@ To learn how parameter adjustment can help you get a better estimate, consult th
 <a href="../case/est_occ">tutorial on occupancy estimation</a> later.
 </p>
 </div>
+
+
 ---
 
 ## 8. Modify by local scale
@@ -151,6 +169,11 @@ To learn how parameter adjustment can help you get a better estimate, consult th
 5. Click the button "modify Map" to generate all desired modifications. 
 6. When completed, **the preview is still just a preview**. To see the output, please click "Launch ChimeraX". This 
    will open the original map and all modifications, but **only the original is visible by default**. Read on.
+
+<video class="center" width="400"  controls>
+  <source src="https://drive.google.com/uc?export=view&id=1UxNDz010KaN3hdFI0fOfOYFM14Cnq9pD" type="video/mp4">
+</video>
+
 <div class="admonition attention">
 <p class="admonition-title">There's more to this</p>
 <p>
@@ -158,6 +181,7 @@ To understand map modification, consult the
 <a href="../case/modification">tutorial on map modification</a> later.
 </p>
 </div>
+
 ---
 
 ## 9. Inspect modification in ChimeraX
@@ -168,17 +192,20 @@ To understand map modification, consult the
 3. Close ChimeraX 
 
 ## 10. Final notes 
-1. Click "Session->View full log" in the menu field. Note that all run setting have been saved according to the same 
+Click "Session->View full log" in the menu field. Note that all run setting have been saved according to the same 
    unique run-ID that you saw in the output log. This log is persistent. If you close OccuPy and start it again, the 
    numbers will be incremented, and everything you did before and do now will be in the full log. 
-2. Maps are over-written by default. If you alter the input lowpass to 10Å and re-estimate local scale, the 
+<br><br>
+Maps are over-written by default. If you alter the input lowpass to 10Å and re-estimate local scale, the 
    previously estimated scale is gone. But the parameters to re-generate it is in the full log, provided that you 
    know the run ID. 
-3. You might want to play with a few more instructive maps. Here are a few entries that might be interesting to test 
+<br><br>
+You might want to play with a few more instructive maps. Here are a few entries that might be interesting to test 
    OccuPy. Remember to use the emdb-fetch button in the GUI, or the `--emdb <ID>` flag on the command-line.
 
+
    | Entry                                         | Sample                         | Box-size |
----|-----------------------------------------------|--------------------------------|----------|
+   |-----------------------------------------------|--------------------------------|----------|
    | [27842](https://www.ebi.ac.uk/emdb/EMD-27842) | Twinkle helicase               | 320      |
    | [30185](https://www.ebi.ac.uk/emdb/EMD-30185) | F-actin                        | 320      |
    | [33437](https://www.ebi.ac.uk/emdb/EMD-33437) | RNA polymerase II + nucleosome | 240      |
