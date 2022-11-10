@@ -22,11 +22,14 @@ estimate the relative resolution, or occupancy. OccuPy also uses this scale as a
  <em>
   <br>
 In essence, OccuPy locates the region that exhibits the highest range of pixel values, and utilizes this to place 
-all other regions on a nominal scale between 0 and 1.
+all other regions on a nominal scale between 0 and 1. This very useful:
   <br>
  </em>
 </p>
-
+<br>
+<video class="center" width="800"  controls>
+  <source src="https://drive.google.com/uc?export=view&id=1Il4MPNbXCKr1RCEFbmLp2BDM8st7nen2" type="video/mp4">
+</video>
 
 
 ### Disclaimer
