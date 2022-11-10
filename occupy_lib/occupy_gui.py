@@ -2825,6 +2825,17 @@ class Ui_MainWindow(object):
         else:
             self.occupy_log(f'AT: staying in {os.getcwd()}')
 
+class MyWindow(QtWidgets.QMainWindow):
+    def closeEvent(self,event):
+        result = QtWidgets.QMessageBox.question(self,
+                      "Confirm exit",
+                      "\nClose OccuPy GUI?",
+                      QtWidgets.QMessageBox.Yes| QtWidgets.QMessageBox.Cancel)
+        event.ignore()
+
+        if result == QtWidgets.QMessageBox.Yes:
+            event.accept()
+
 class ImageWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(ImageWindow, self).__init__(parent)
@@ -2833,7 +2844,7 @@ class ImageWindow(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
+    MainWindow = MyWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
