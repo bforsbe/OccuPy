@@ -940,6 +940,10 @@ class Ui_MainWindow(object):
         self.actionabout.setObjectName("actionabout")
         self.actionabout.triggered.connect(self.window_about)
 
+        self.actionhelpchimx = QtWidgets.QAction(MainWindow)
+        self.actionhelpchimx.setObjectName("actionhelpchimx")
+        self.actionhelpchimx.triggered.connect(self.chimx_open)
+
         self.actionchange_location = QtWidgets.QAction(MainWindow)
         self.actionchange_location.setObjectName("actionchange_location")
         self.actionchange_location.triggered.connect(self.change_current_dir)
@@ -1027,14 +1031,23 @@ class Ui_MainWindow(object):
         self.action_verbose.setText("be verbose")
         self.action_print_command.setText("print command to log")
 
-
-
         self.detect_OS()
         self.have_chimerax()
-        extra_chimx=''
         if self.chimerax_name is None:
-            extra_chimx = '\n(not found)'
-        self.toolButton_chimerax.setText(f"  Launch\n  ChimeraX{extra_chimx}")
+            self.toolButton_chimerax.setText(f"  Launch\n  ChimeraX \n(not found)")
+            self.toolButton_chimerax.setToolTip("Chimerax was not found, the \n"
+                                                "OCCUPY_CHIMERAX environment \n"
+                                                "variable can be set to \n"
+                                                "point to your install location. \n\n "
+                                                "more info through the help menu.")
+            self.actionhelpchimx.setText("how to auto-detect chimeraX")
+            self.menu_help.addAction(self.actionhelpchimx)
+
+        else:
+            self.toolButton_chimerax.setText(f"  Launch\n  ChimeraX")
+            self.toolButton_chimerax.setToolTip("Run chimerax command script \n"
+                                                "to visualize the most recent  \n"
+                                                "output from occupy.")
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -1103,17 +1116,8 @@ class Ui_MainWindow(object):
         #self.toolButton_fullLog.setText(_translate("MainWindow", "Full log"))
         #self.toolButton_fullLog.clicked.connect(self.view_full_log)
 
-        extra_chimx=''
-        if self.chimerax_name is None:
-            extra_chimx = '\n(not found)'
-        self.toolButton_chimerax.setText(_translate("MainWindow", f"  Launch\n  ChimeraX{extra_chimx}"))
         self.toolButton_chimerax.clicked.connect(self.run_chimerax)
-        self.toolButton_chimerax.setWhatsThis("Run chimerax command script \n"
-                                              "to visualize the most recent  \n"
-                                              "output from occupy. \n\n"
-                                              "If chimerax was not found, the \n"
-                                              "OCCUPY_CHIMERAX environment \n"
-                                              "variable can be set.")
+
 
         # Viewport X / Y / Z --------------------------------------
         self.checkBox_viewX.setText(_translate("MainWindow", "x"))
@@ -1183,6 +1187,11 @@ class Ui_MainWindow(object):
     def tutorial_open(self):
         import webbrowser
         url = "https://occupy.readthedocs.io/en/latest/Tutorials/intro/"
+        webbrowser.open(url, new=0, autoraise=True)
+
+    def chimx_open(self):
+        import webbrowser
+        url = "https://occupy.readthedocs.io/en/latest/Troubleshooting/chimX_trbl/"
         webbrowser.open(url, new=0, autoraise=True)
 
     def update_scale_slider(self):
@@ -2684,8 +2693,10 @@ class Ui_MainWindow(object):
             QtCore.Qt.SmoothTransformation
         )  # Scale pixmap
         self.MainWindow_solModel.resize(rect_width,rect_height)
+        self.MainWindow_solModel.setFixedSize(rect_width,rect_height)
         window.setGeometry(QtCore.QRect(10, 10, rect_width-20, rect_height-20))
         window.setPixmap(pixmap)
+        self.MainWindow_solModel.setWindowTitle(f'{os.getcwd()}/{self.solModel_file_name}')
         self.MainWindow_solModel.show()
 
     def window_about(self):
