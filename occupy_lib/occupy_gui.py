@@ -266,7 +266,7 @@ class Ui_MainWindow(object):
         self.doubleSpinBox_amplPower.setObjectName("doubleSpinBox_amplPower")
         self.gridLayout_amplification.addWidget(self.doubleSpinBox_amplPower, 0, 2, 1, 1)
         self.label_amplPower = QtWidgets.QLabel(self.gridLayoutWidget_3)
-        self.label_amplPower.setEnabled(False)
+        self.label_amplPower.setEnabled(True)
         self.label_amplPower.setObjectName("label_amplPower")
         self.gridLayout_amplification.addWidget(self.label_amplPower, 0, 0, 1, 1)
         self.horizontalSlider_amplPower = QtWidgets.QSlider(self.gridLayoutWidget_3)
@@ -294,7 +294,7 @@ class Ui_MainWindow(object):
         self.gridLayout_attenuation.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_attenuation.setObjectName("gridLayout_attenuation")
         self.label_attnPower = QtWidgets.QLabel(self.gridLayoutWidget_4)
-        self.label_attnPower.setEnabled(False)
+        self.label_attnPower.setEnabled(True)
         self.label_attnPower.setObjectName("label_attnPower")
         self.gridLayout_attenuation.addWidget(self.label_attnPower, 0, 0, 1, 1)
         self.doubleSpinBox_attnPower = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_4)
@@ -350,11 +350,11 @@ class Ui_MainWindow(object):
         self.horizontalSlider_sigmoidPivot.setObjectName("horizontalSlider_sigmoidPivot")
         self.gridLayout_sigmoid.addWidget(self.horizontalSlider_sigmoidPivot, 1, 1, 1, 1)
         self.label_sigmoidPower = QtWidgets.QLabel(self.gridLayoutWidget_5)
-        self.label_sigmoidPower.setEnabled(False)
+        self.label_sigmoidPower.setEnabled(True)
         self.label_sigmoidPower.setObjectName("label_sigmoidPower")
         self.gridLayout_sigmoid.addWidget(self.label_sigmoidPower, 0, 0, 1, 1)
         self.label_sigmoidPivot = QtWidgets.QLabel(self.gridLayoutWidget_5)
-        self.label_sigmoidPivot.setEnabled(False)
+        self.label_sigmoidPivot.setEnabled(True)
         self.label_sigmoidPivot.setObjectName("label_sigmoidPivot")
         self.gridLayout_sigmoid.addWidget(self.label_sigmoidPivot, 1, 0, 1, 1)
         self.doubleSpinBox_sigmoidPower = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_5)
@@ -1045,7 +1045,7 @@ class Ui_MainWindow(object):
 
         else:
             self.toolButton_chimerax.setText(f"  Launch\n  ChimeraX")
-            self.toolButton_chimerax.setToolTip("Run chimerax command script \n"
+            self.toolButton_chimerax.setToolTip("Run the chimerax command script \n"
                                                 "to visualize the most recent  \n"
                                                 "output from occupy.")
 
@@ -1168,13 +1168,49 @@ class Ui_MainWindow(object):
         self.checkBox_scaleOcc.setText(_translate("MainWindow", "occupancy"))
         self.label_slash.setText(_translate("MainWindow", "      or"))
         self.checkBox_scaleRes.setText(_translate("MainWindow", "resolution"))
-        self.toolButton_inputScale_browse.setText(_translate("MainWindow", "browse"))
-        self.comboBox_inputScale.setToolTip(_translate("MainWindow", "pre-estimated local scale map "))
 
+        self.checkBox_histMatch.setToolTip(_translate("MainWindow", "When selected, the greyscale is matched\n"
+                                                                    "against the input. This will may distort \n"
+                                                                    "the continuity of the histogram. \n\n"
+                                                                    "Expert/trial feature."))
+        self.checkBox_S0.setToolTip(_translate("MainWindow", "When selected, the scale is normalized\n"
+                                                             "against individual pixels at the selected\n"
+                                                             "percentile. This makes the scale sensitive\n"
+                                                             "to outliers and high pixel values, like \n"
+                                                             "ions and high-mass object in high-res maps."))
+        self.checkBox_suppresSolvent.setToolTip(_translate("MainWindow", "Mask the output by the confidence\n"
+                                                                         "map shown in the conf tab of the viewer."))
+        self.checkBox_maxBox.setToolTip(_translate("MainWindow", "Reduce the size of the map during scale estimation\n"
+                                                                 "this cubic size. A smaller number reduces the time\n"
+                                                                 "and memory required, at some resolution loss in the\n"
+                                                                 "estimate."))
+        self.checkBox_outputLowpass.setToolTip(_translate("MainWindow", "Limit the resolution of modified maps. \n"
+                                                                        "This does not apply to scale maps."))
+        self.checkBox_scaleOcc.setToolTip(_translate("MainWindow", "Use this mode to remove resolution-dependent\n"
+                                                                   "contrast degradation, and approximately \n"
+                                                                   "isolate contrast degradation due to occupancy.\n\n"
+                                                                   "This is the mode used in map modification. "))
+        self.checkBox_scaleRes.setToolTip(_translate("MainWindow", "Use this mode to estimate contrast degradation\n"
+                                                                   "due to any factor, including flexibility and \n"
+                                                                   "other sources of variable resolution, including \n"
+                                                                   "occupancy.\n\n"
+                                                                   "This mode cannot be used to modify maps."))
+
+
+
+        self.toolButton_inputScale_browse.setText(_translate("MainWindow", "browse"))
+        self.toolButton_inputScale_browse.setToolTip(_translate("MainWindow", "Load a scale map from file"))
+        self.comboBox_inputScale.setToolTip(_translate("MainWindow", "The scale to display in the viewer \nand use for modification"))
+        self.comboBox_inputSolventDef.setToolTip(_translate("MainWindow", "The solvent definition to display \n"
+                                                                          "in the viewer and use for modification\n\n"
+                                                                          "Note that you can leave deselect it."))
         self.toolButton_inputSolventDef_browse.setText(_translate("MainWindow", "browse"))
+        self.toolButton_inputSolventDef_browse.setToolTip(_translate("MainWindow", "Load a solvent definition from file"))
         self.toolButton_estimateScale.setText(_translate("MainWindow", "  Estimate  \n  scale  "))#ɒk.jə.paɪ"))
+        self.toolButton_estimateScale.setToolTip(_translate("MainWindow", "Estimate the scale of the selected input map."))
         self.toolButton_estimateScale.clicked.connect(self.estimate_scale)
         self.toolButton_modify.setText(_translate("MainWindow", "  Modify  \n  Map  "))
+        self.toolButton_modify.setToolTip(_translate("MainWindow", "Perform ALL enabled modifications"))
         self.toolButton_modify.clicked.connect(self.run_cmd)
         self.label_inputScale.setText(_translate("MainWindow", "  scale map"))
         self.label_inputSolventDef.setText(_translate("MainWindow", " solvent def"))
@@ -2646,6 +2682,7 @@ class Ui_MainWindow(object):
         self.chimerax_file_name = f'chimX_{Path(new_name).stem}.cxc'
         if self.chimerax_name is not None:
             self.toolButton_chimerax.setEnabled(True)
+            self.toolButton_chimerax.setToolTip(f'Run the chimerax command script \n to visualize the most recent  \n output from occupy. \n\n ({self.chimerax_file_name})')
         self.toolButton_estimateScale.setEnabled(True)
         self.actionestimateScale.setEnabled(self.toolButton_estimateScale.isEnabled())
 
