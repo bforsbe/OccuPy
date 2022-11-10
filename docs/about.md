@@ -31,11 +31,19 @@ google scholar">:fontawesome-solid-graduation-cap:{ .scholar }</a>
 ---
 
 ## Primary citation
-If you find OccuPy useful for any purpose, plaese refer to it and formally cite it: 
+If you find OccuPy useful for any purpose, plaese refer to it and formally cite the paper: 
 
 ```
-TBD
+@article{Forbserg2022,
+author = {Forbserg, Bjoern O and Shah, Pranav NM and Burt, Alister},
+doi = {TBA},
+journal = {bioRxiv},
+pages = {1--24},
+title = {{OccuPy: Estimation of relative contrast in cryo-EM reconstructions}},
+year = {2022}
+}
 ```
+And do please read the <a href="https://www.biorxiv.org/" title="link to paper">paper on biorXiv</a>.
 
 ---
 
