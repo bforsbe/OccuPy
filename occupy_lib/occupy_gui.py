@@ -175,6 +175,7 @@ class Ui_MainWindow(object):
         MainWindow.setEnabled(True)
         MainWindow.resize(684, 821)
         MainWindow.setAcceptDrops(True)
+        MainWindow.setFixedSize(684, 821)
         self.icon_small = QtGui.QIcon()
         icon_image_small = f'{Path(__file__).parent.parent}/resources/occupy_icon_small.png'
         self.icon_small.addPixmap(QtGui.QPixmap(icon_image_small), QtGui.QIcon.Normal, QtGui.QIcon.Off)
