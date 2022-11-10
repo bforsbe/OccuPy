@@ -1718,13 +1718,11 @@ class Ui_MainWindow(object):
 
                     f_input.close()
 
-                self.horizontalSlider_viewSlice.setRange(1, n)
-                self.spinBox_viewSlice.setMaximum(n)
-
-
+                #self.horizontalSlider_viewSlice.setRange(1, n)
+                #self.spinBox_viewSlice.setMaximum(n)
 
                 # Safe-guards
-                if not slice or slice > n:
+                if slice < 0 or slice > n:
                     slice = n//2
 
                 # Render the selected dimension
