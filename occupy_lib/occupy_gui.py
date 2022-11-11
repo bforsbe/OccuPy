@@ -920,71 +920,74 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 849, 22))
         self.menubar.setObjectName("menubar")
-        self.menu_session = QtWidgets.QMenu(self.menubar)
+
+        self.menu_session = QtWidgets.QMenu("&Session",self.menubar)
         self.menu_session.setObjectName("menu_session")
-        self.menu_Run = QtWidgets.QMenu(self.menubar)
+
+        self.menu_Run = QtWidgets.QMenu("&Run",self.menubar)
         self.menu_Run.setObjectName("menu_Run")
-        self.menu_help = QtWidgets.QMenu(self.menubar)
+
+        self.menu_help = QtWidgets.QMenu("&Help",self.menubar)
         self.menu_help.setObjectName("menu_help")
+
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        self.actiontutorial = QtWidgets.QAction(MainWindow)
-        self.actiontutorial.setObjectName("actiontutorial")
+        self.actiontutorial = QtWidgets.QAction("&Tutorial",MainWindow)
         self.actiontutorial.triggered.connect(self.tutorial_open)
 
-        self.actionabout = QtWidgets.QAction(MainWindow)
+        self.actionabout = QtWidgets.QAction("&About",MainWindow)
         self.actionabout.setObjectName("actionabout")
         self.actionabout.triggered.connect(self.window_about)
 
-        self.actionhelpchimx = QtWidgets.QAction(MainWindow)
+        self.actionhelpchimx = QtWidgets.QAction("&Locate chimeraX",MainWindow)
         self.actionhelpchimx.setObjectName("actionhelpchimx")
         self.actionhelpchimx.triggered.connect(self.chimx_open)
 
-        self.actionchange_location = QtWidgets.QAction(MainWindow)
+        self.actionchange_location = QtWidgets.QAction("&Set location",MainWindow)
         self.actionchange_location.setObjectName("actionchange_location")
         self.actionchange_location.triggered.connect(self.change_current_dir)
-        self.actionclear_log = QtWidgets.QAction(MainWindow)
+        self.actionclear_log = QtWidgets.QAction("&Clear log",MainWindow)
         self.actionclear_log.setObjectName("actionclear_log")
         self.actionclear_log.triggered.connect(self.clear_log)
-        self.actionview_full_log = QtWidgets.QAction(MainWindow)
+        self.actionview_full_log = QtWidgets.QAction("&View full log",MainWindow)
         self.actionview_full_log.setObjectName("actionview_full_log")
         self.actionview_full_log.triggered.connect(self.view_full_log)
 
 
-        self.action_verbose = QtWidgets.QAction(MainWindow)
+        self.action_verbose = QtWidgets.QAction("&Be verbose in log",MainWindow)
         self.action_verbose.setObjectName("action_verbose")
         self.action_verbose.setCheckable(True)
 
-        self.action_print_command = QtWidgets.QAction(MainWindow)
+        self.action_print_command = QtWidgets.QAction("&Print command to log",MainWindow)
         self.action_print_command.setObjectName("action_print_command")
         self.action_print_command.triggered.connect(self.print_command)
 
 
-        self.actionreset = QtWidgets.QAction(MainWindow)
+        self.actionreset = QtWidgets.QAction("&Reset session",MainWindow)
         self.actionreset.setObjectName("actionreset")
         self.actionreset.triggered.connect(self.reset_session)
 
 
-        self.actionestimateScale = QtWidgets.QAction(MainWindow)
+        self.actionestimateScale = QtWidgets.QAction("&Estimate scale",MainWindow)
         self.actionestimateScale.setObjectName("actionestimateScale")
         self.actionestimateScale.setEnabled(False)
         self.actionestimateScale.triggered.connect(self.estimate_scale)
 
-        self.actionmodifyMap = QtWidgets.QAction(MainWindow)
+        self.actionmodifyMap = QtWidgets.QAction("&Modify Map",MainWindow)
         self.actionmodifyMap.setObjectName("actionmodifyMap")
         self.actionmodifyMap.setEnabled(False)
         self.actionmodifyMap.triggered.connect(self.run_cmd)
 
-        self.actionmakeSolDef = QtWidgets.QAction(MainWindow)
+        self.actionmakeSolDef = QtWidgets.QAction("&Generate solvent definition from scale",MainWindow)
         self.actionmakeSolDef.setObjectName("actionmakeSolDef")
         self.actionmakeSolDef.triggered.connect(self.generate_soldef_from_scale)
         self.actionmakeSolDef.setEnabled(False)
 
-        self.actionmakeSubtractionMask = QtWidgets.QAction(MainWindow)
+        self.actionmakeSubtractionMask = QtWidgets.QAction("Generate &subtraction mask",MainWindow)
         self.actionmakeSubtractionMask.setObjectName("actionsubtractionMask")
         self.actionmakeSubtractionMask.triggered.connect(self.generate_subtraction_mask)
         self.actionmakeSubtractionMask.setEnabled(False)
@@ -1012,24 +1015,6 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_session.menuAction())
         self.menubar.addAction(self.menu_Run.menuAction())
         self.menubar.addAction(self.menu_help.menuAction())
-
-        self.menu_session.setTitle("Session")
-        self.menu_Run.setTitle("Run")
-        self.menu_help.setTitle("Help")
-        self.actiontutorial.setText("tutorial")
-        self.actionabout.setText("about")
-        self.actionchange_location.setText("change location")
-        self.actionclear_log.setText("clear log")
-        self.actionview_full_log.setText("view full log")
-        self.actionreset.setText("reset")
-
-        self.actionestimateScale.setText("Estimate scale")
-        self.actionmodifyMap.setText("Modify map by scale")
-        self.actionmakeSolDef.setText("Generate solvent definiton from scale")
-        self.actionmakeSubtractionMask.setText("Generate subtraction mask")
-
-        self.action_verbose.setText("be verbose")
-        self.action_print_command.setText("print command to log")
 
         self.detect_OS()
         self.have_chimerax()
@@ -1219,6 +1204,7 @@ class Ui_MainWindow(object):
         self.toolButton_expandSolModel.clicked.connect(self.window_solvent_model)
 
         self.tabWidget_output.tabBarDoubleClicked.connect(self.view_full_log)
+
 
     def tutorial_open(self):
         import webbrowser
