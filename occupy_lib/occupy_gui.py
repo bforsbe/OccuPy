@@ -365,14 +365,7 @@ class Ui_MainWindow(object):
         self.doubleSpinBox_sigmoidPower.setObjectName("doubleSpinBox_sigmoidPower")
         self.gridLayout_sigmoid.addWidget(self.doubleSpinBox_sigmoidPower, 0, 2, 1, 1)
         self.tabWidget_modification.addTab(self.tab_sigmoid, "")
-        #self.checkBox_verbose = QtWidgets.QCheckBox(MainWindow)
-        #self.checkBox_verbose.setGeometry(QtCore.QRect(280, 600, 81, 41))
-        #self.checkBox_verbose.setObjectName("checkBox_verbose")
-        #self.checkBox_showCmd = QtWidgets.QCheckBox(MainWindow)
-        #self.checkBox_showCmd.setGeometry(QtCore.QRect(280, 630, 81, 41))
-        #self.checkBox_showCmd.setToolTip("")
-        #self.checkBox_showCmd.setAccessibleDescription("")
-        #self.checkBox_showCmd.setObjectName("checkBox_showCmd")
+
         self.tabWidget_view = QtWidgets.QTabWidget(MainWindow)
         self.tabWidget_view.setEnabled(True)
         self.tabWidget_view.setGeometry(QtCore.QRect(280, 70, 391, 421))
@@ -520,14 +513,7 @@ class Ui_MainWindow(object):
         self.textEdit_log.setObjectName("textEdit_log")
         self.gridLayout_log.addWidget(self.textEdit_log, 0, 0, 1, 1)
         self.tabWidget_output.addTab(self.tab_log, "")
-        #self.tab_hist = QtWidgets.QWidget()
-        #self.tab_hist.setObjectName("tab_hist")
-        #self.MplWidget_hist = MplWidget(self.tab_hist)
-        #self.MplWidget_hist.setGeometry(QtCore.QRect(0, 0, 671, 141))
-        #self.MplWidget_hist.setMinimumSize(QtCore.QSize(320, 100))
-        #self.MplWidget_hist.setMaximumSize(QtCore.QSize(1000, 400))
-        #self.MplWidget_hist.setObjectName("MplWidget_hist")
-        #self.tabWidget_output.addTab(self.tab_hist, "")
+
         self.tab_solventModel = QtWidgets.QWidget()
         self.tab_solventModel.setObjectName("tab_solventModel")
 
@@ -543,8 +529,6 @@ class Ui_MainWindow(object):
         self.toolButton_expandSolModel.setGeometry(QtCore.QRect(580, 10, 70, 20))
         self.toolButton_expandSolModel.setText("Full view")
         self.toolButton_expandSolModel.setEnabled(False)
-
-        #self.label_solventModel.setEnabled(False)
 
         self.tabWidget_output.addTab(self.tab_solventModel, "")
         self.gridLayoutWidget = QtWidgets.QWidget(MainWindow)
@@ -875,8 +859,6 @@ class Ui_MainWindow(object):
         self.tabWidget_output.raise_()
         self.toolButton_chimerax.raise_()
         self.tabWidget_modification.raise_()
-        #self.checkBox_verbose.raise_()
-        #self.checkBox_showCmd.raise_()
         self.tabWidget_view.raise_()
         self.gridLayoutWidget.raise_()
         self.gridLayoutWidget_2.raise_()
@@ -1089,8 +1071,6 @@ class Ui_MainWindow(object):
         self.checkBox_scaleAsSolDef.clicked.connect(self.update_scale_slider)
         self.slider_scaleAsSolDef.valueChanged.connect(self.update_scale_slider)
 
-        #self.checkBox_verbose.setText(_translate("MainWindow", "Verbose"))
-        #self.checkBox_showCmd.setText(_translate("MainWindow", "CmdLine"))
         self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewInput), _translate("MainWindow", "Input"))
         self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewScale), _translate("MainWindow", "Scale"))
         self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewConfidence), _translate("MainWindow", "Conf."))
@@ -1099,13 +1079,8 @@ class Ui_MainWindow(object):
         self.tabWidget_view.setTabText(self.tabWidget_view.indexOf(self.tab_viewOutput), _translate("MainWindow", "Preview"))
         self.textEdit_log.setPlaceholderText(_translate("MainWindow", "Output messages will go here...."))
         self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_log), _translate("MainWindow", "Output Log"))
-        #self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_hist), _translate("MainWindow", "Histogram"))
         self.tabWidget_output.setTabText(self.tabWidget_output.indexOf(self.tab_solventModel), _translate("MainWindow", "Solvent model"))
-        #self.toolButton_clearLog.setText(_translate("MainWindow", "Clear log"))
-        #self.toolButton_clearLog.clicked.connect(self.clear_log)
 
-        #self.toolButton_fullLog.setText(_translate("MainWindow", "Full log"))
-        #self.toolButton_fullLog.clicked.connect(self.view_full_log)
 
         self.toolButton_chimerax.clicked.connect(self.run_chimerax)
 
@@ -2226,7 +2201,7 @@ class Ui_MainWindow(object):
 
                     self.label_viewOutput.setPixmap(pixmap) # Set the pixmap onto the label
                     self.label_viewOutput.setAlignment(QtCore.Qt.AlignCenter) # Align the label to center
-                    #self.ho'rizontalSlider_4.setRange(1,n)
+
 
                     self.label_warnPreview.raise_()
                 else:
