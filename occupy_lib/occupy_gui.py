@@ -464,6 +464,12 @@ class Ui_MainWindow(object):
         self.MplWidget_viewModification.setMinimumSize(QtCore.QSize(320, 320))
         self.MplWidget_viewModification.setMaximumSize(QtCore.QSize(400, 400))
         self.MplWidget_viewModification.setObjectName("MplWidget_viewModification")
+        self.MplWidget_viewModification.setToolTip("Along the dashed line: \n"
+                                                   "input = output (no change) \n\n"
+                                                   "Modification above dashed line: \n"
+                                                   "local pixel values amplified\n\n"
+                                                   "Modification below dashed line: \n"
+                                                   "local pixel values attenuated")
 
         self.tabWidget_view.addTab(self.tab_viewModification, "")
         self.tab_viewOutput = QtWidgets.QWidget()
