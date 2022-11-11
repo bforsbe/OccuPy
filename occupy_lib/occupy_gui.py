@@ -2729,13 +2729,13 @@ class Ui_MainWindow(object):
     def window_about(self):
 
         self.MainWindow_about = ImageWindow()
-        self.MainWindow_about.resize(540, 160)
+        self.MainWindow_about.resize(580, 160)
         self.MainWindow_about.setWindowTitle("About OccuPy")
 
         self.centralwidget_about = QtWidgets.QWidget(self.MainWindow_about)
         self.centralwidget_about.setObjectName("centralwidget")
         self.horizontalLayoutWidget_about = QtWidgets.QWidget(self.centralwidget_about)
-        self.horizontalLayoutWidget_about.setGeometry(QtCore.QRect(10, 10, 500, 140))
+        self.horizontalLayoutWidget_about.setGeometry(QtCore.QRect(10, 10, 550, 140))
         self.horizontalLayoutWidget_about.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout_about = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_about)
 
@@ -2778,11 +2778,11 @@ class Ui_MainWindow(object):
         self.label_title_and_version.setText(f'OccuPy {__version__}')
         self.label_title_and_version.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
 
-        url_pub = "<a href=\"https://www.biorxiv.org/\">TBD</a>"
+        url_pub = "<a href=\"https://occupy.readthedocs.io/en/latest/about/\">the paper</a>"
         self.label_cite.setText(f'Please cite {url_pub}')
         self.label_cite.setOpenExternalLinks(True)
 
-        self.label_developers.setText("Developed by Bjoern O. Forsberg")
+        self.label_developers.setText("Developed by Bjoern Forsberg, Pranav Shah and Alister Burt")
 
         url_issues = "<a href=\"https://github.com/bforsbe/OccuPy/issues\">issues</a>"
         self.label_issues.setText(f'Report (and view known) {url_issues}')
