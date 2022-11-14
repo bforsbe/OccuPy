@@ -36,15 +36,47 @@
 
 On some (e.g. 4K) screens, the high resolution causes graphical elements to be re-scaled. OccuPy knows about this 
 and does its best to get it right, but we have not been able to test on a wide range of screen sizes and resolutions.  
-<br>
-<div class="admonition bug">
-<p class="admonition-title">Report any issues</p>
-<p>
-If your GUI does not look like the image in the "GUI overview" tutorial, please 
-<a href="https://github.com/bforsbe/OccuPy/issues">report</a> this to the developers so that we can make sure 
-that it doesn't happen in the future.
-</p>
-</div>
+
+
+=== "On Windows"
+
+    1. Locate the installed occupy.exe program file.  
+    2. Right-click the binary file and choose properties. 
+    3. Under "Compatability", Click "Change high DPI settings"
+    4. Select "Override high DPI scaling behaviour", and change the setting so that scaling is performed by "system". 
+    5. Apply and close.
+    6. Restart OccuPy.
+    
+    If the problem remains unresolved, please <a href="https://github.com/bforsbe/OccuPy/issues">report</a> this to 
+    the developers so that we can make sure that it doesn't happen in the future.
+
+=== "On Mac"
+
+    <br>
+    We have not had any reports of poor scaling of the GUI on Mac.
+    <br>
+    <div class="admonition bug">
+    <p class="admonition-title">Report any issues</p>
+    <p>
+    If your GUI does not look like the image in the "GUI overview" tutorial, please 
+    <a href="https://github.com/bforsbe/OccuPy/issues">report</a> this to the developers so that we can make sure 
+    that it doesn't happen in the future.
+    </p>
+    </div>
+
+=== "On Linux (ubuntu)"
+
+    <br>
+    We have not had any reports of poor scaling of the GUI on Linux systems.
+    <br>
+    <div class="admonition bug">
+    <p class="admonition-title">Report any issues</p>
+    <p>
+    If your GUI does not look like the image in the "GUI overview" tutorial, please 
+    <a href="https://github.com/bforsbe/OccuPy/issues">report</a> this to the developers so that we can make sure 
+    that it doesn't happen in the future.
+    </p>
+    </div>
 
 
 ## I'd like to install with pip but I don't know how
