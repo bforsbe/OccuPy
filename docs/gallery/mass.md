@@ -48,7 +48,7 @@ graphics silhouettes true
 
 1. Set extra option "Naive normalization" = **unchecked**
 2. Set input lowpass = 3Å
-3. Set scale_mode = occupancy
+3. Set occupancy = checked
 4. Estimate scale 
 5. Set sigmoid power = 30 , pivot = 0.05 
 6. Modify map

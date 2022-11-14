@@ -19,7 +19,7 @@ The following steps highlight factors influencing this, and how to make the nece
 
 ## 1. First pass estimate
 1. Open the input map. 
-2. Set the scale mode to "occupancy" and estimate the scale. 
+2. Make sure "occupancy" (just below the modification options is enabled, and estimate the scale. 
 3. Click the button "Launch ChimeraX" to view the output. 
 
 ---

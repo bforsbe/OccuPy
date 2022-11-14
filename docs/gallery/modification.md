@@ -9,7 +9,7 @@ ChimeraX 1.4 (2022-06-03)
 ## In OccuPy
 
 1. Fetch EMDB 14085. This may take a minute, as the map is 384px.
-2. Set scale mode = occupancy
+2. Set scale occupancy = checked
 3. Click "Estimate scale" 
 4. Enable amplification and set Power=30
 5. Enable Attenuation and set Power=2

@@ -12,7 +12,7 @@ ChimeraX 1.4 (2022-06-03)
 2. Set the input lowpass to 5Å. This is too low to provide a reasonable occupancy estimate, but it's the value used 
    in the paper to show modification when occupancy is under-estimated. A better value for fidelity is probably 
    around 10Å. 
-3. Set scale mode = occupancy
+3. Set scale occupancy = checked
 4. Click "Estimate scale" 
 5. Enable Amplification and set Power=3
 6. Enable Attenuation and set Power=3

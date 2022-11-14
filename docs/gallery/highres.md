@@ -11,7 +11,7 @@ ChimeraX 1.4 (2022-06-03)
 ## In OccuPy
 
 1. Fetch EMDB 33707
-2. Set scale mode = occupancy
+2. Set scale occupancy = checked
 3. Estimate scale 
 4. Launch ChimeraX (open chimX_emd_33707.cxc through ChimeraX)
 

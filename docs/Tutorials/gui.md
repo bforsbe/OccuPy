@@ -57,12 +57,12 @@ occupanvy and relative resolution, since they influence each case slightly diffe
 ## Modification options
 In some cases you may want to change the input map based on the scale estimate. This is where you do that. 
 <br><br>
-If the scale you have selected (below the viewer) is in "occupancy" mode (name has 'occ' in it), OccuPy will
-let you use it to modify. The active modification will be interactively approximated in the "preview" and "plot"
+If the scale you have selected (below the viewer) is in "occupancy" mode (has 'occ' in its name), OccuPy will
+let you use it to modify maps. The active modification will be interactively approximated in the "preview" and "plot"
 tab of the viewer.
 <br><br>
-If the scale you have selected (below the viewer) is in "resolution" mode (name has 'res' in it), OccuPy will *not* 
-let you use it to modify, which will inactivate the "preview" tab of the viewer and the "Modify Map" button.  
+If the scale you have selected (below the viewer) has 'res' in its name, OccuPy will *not* 
+let you use it to modify, and inactivate the "preview" tab of the viewer and the "Modify Map" button.  
 <div class="admonition hint">
 <p class="admonition-title">It's easier done than said</p>
 <p>

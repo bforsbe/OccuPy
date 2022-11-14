@@ -50,7 +50,7 @@ There are two principal strategies:
 ---
 
 ## 3. Estimate occupancy
-Make sure occupancy-mode is selected just below the modification tabs, and click "Estimate scale". This will 
+Make sure occupancy-mode (just below the modification tabs) is activated, and click "Estimate scale". This will 
 re-estimate and set the occupancy-mode estimate as active.
 
 ---

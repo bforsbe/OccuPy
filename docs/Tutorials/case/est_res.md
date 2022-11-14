@@ -29,7 +29,7 @@ score that tells you how well resolved each region is, compared to the best reso
 
 ## 1. First pass estimate
 1. Open the input map. 
-2. Set the scale mode to "resolution" and estimate the scale. 
+2. Make sure that "occupancy" (just below the modifications options) is **disabled**, and estimate the scale. 
 3. Click the button "Launch ChimeraX" to view the output. 
 
 ---

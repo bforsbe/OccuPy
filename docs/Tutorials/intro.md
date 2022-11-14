@@ -76,8 +76,8 @@ Based on the input, reasonable kernel settings were derived automatically. In th
 
 ---
 
-## 4. Estimate resolution-mode local scale 
-1. Make sure "resolution" is checked under the "Modification options". 
+## 4. Estimate local scale 
+1. Make sure "occupancy" (just below the modification options) is **not** selected. 
 
 2. Run OccuPy by clicking the Big button labeled "Estimate scale" just above the output log. 
 
@@ -134,8 +134,8 @@ viewer should update interactively, showing you how scale will be modified in th
    does not allow you to use this for modifying maps, because it can't "compensate" for flexibility.  The big button 
    "modify map" should also be inactivated. 
 
-3. When you enabled any modification, the scale-mode just below the modification options was changed to "occupancy" and 
-   can't be changed as long as you want to modify. This is again because OccuPy can't modify poor resolution, so 
+3. When you enabled any modification, the occupancy-mode just below the modification options was enabled and 
+   can't be disabled as long as you want to modify. Again, this is because OccuPy can't modify poor resolution, so 
    it forces occupancy-mode. Click "Estimate scale" again to estimate the occupancy-mode local scale. This should 
    take a few seconds and then the new scale should be selected in the "scale map" drop-down menu, now containing 
    "occ" in its name. 

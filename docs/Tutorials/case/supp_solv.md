@@ -15,7 +15,7 @@ The following steps highlight factors influencing this, and how to make the nece
 
 ## 1. Set up the run
 1. Open the input map. 
-2. Set the desired scale mode and estimate the scale. We don't need the scale at this point, but estimating it will 
+2. Estimate the scale. We don't need the scale at this point, but estimating it will 
    also generate the solvent model and confidence. 
 3. Check the solvent model tab next to the output log. You want to see that the green parabola coincides well with 
    the solvent peak around ~0, and that it drops significantly faster than the voxel intensity distribution in black.

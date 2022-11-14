@@ -31,7 +31,7 @@ For extensive information regarding input options, see the GUI overview tutorial
    scale, but does increase the granularity. Usually a kernel size of 5 or 7 is adequate, with nv-values in the 
    range 30-100. Low-pass defaults to 8 or 3*pixel-size, which ever is larger, but depending on resolution and 
    pixel-size this may be adjusted depending on the sought granularity.  
-3. **OccuPy** puts everything on a scale based on what it estimates as "full" through a non-exhaustive search. It 
+3. OccuPy puts everything on a scale based on what it estimates as "full" through a non-exhaustive search. It 
   is non-exhaustive because it's much faster. If the "full" scale is under-estimated, lots of regions will be 
   "over-full", i.e. over-estimated as full. YOu can reduce the `--tile-size ` from its default value 12 to reduce 
   the area of what defines "full" scale, which will narrow the definition and in general increase the value of full 
@@ -43,7 +43,7 @@ For extensive information regarding input options, see the GUI overview tutorial
    more. 10 is a reasonable value to try.
 5. Another possible reason for the confidence being over-estimated is that the solvent model mean and/or variance is 
    under-estimated. A typical reason for this is that the solvent has been flattened, such that the solvent is not 
-   gaussian. **OccuPy** was not designed for this type of reconstruction, since such flattening is typically enforced 
+   gaussian. OccuPy was not designed for this type of reconstruction, since such flattening is typically enforced 
    using a mask which has thus already delineated solvent vs non-solvent. 
 6. If the map is not solvent-flattened, and confidence-hedging does not alleviate solvent-amplification surrounding 
    the main map component, use `--solvent-def <mask.mrc>` where the mask is a conventional solvent-mask. This will 
@@ -51,25 +51,21 @@ For extensive information regarding input options, see the GUI overview tutorial
    not limit the modification to areas inside it_. 
 
 ## The estimated scale looks like my local resolution
-**OccuPy** estimates the scale. The scale decreases due to **both** lower resolution and lower occupancy. Since it 
+OccuPy estimates the scale. The scale decreases due to **both** lower resolution and lower occupancy. Since it 
 is not possible to trivially separate these factors, the current approach to estimate occupancy as separate from 
-lower resolution is to low-pass filter the input before estimating the local scale. This is turned on by default 
+lower resolution is to low-pass filter the input before estimating the local scale. This is turned on  
 when amplifying or attenuating the map, to minimize over-amplification of low-scale components that are simply low 
-resolution. If one is just estimating scale but wants to reduce resolution-dependent effects, the low-pass 
-filtration before scale-estimation can be activated by either --lp-scale or --occupancy. It should then be combined 
-with --lowpass/-lp or --resolution/-r to specify the worst resolution among the components for which occupancy is to 
+resolution. If one is just estimating scale, but still wants to reduce resolution-dependent effects, the low-pass 
+filtration before scale-estimation can be used. It should then be combined a low-pass filter 
+to specify the worst resolution among the components for which occupancy is to 
 be estimated. For membrane proteins, see [here](#my-membrane-or-detergent-looks-funny).
-
-In the absence of variable occupancy, local scale does actually approximate the local resolution. If you would like 
-to include resolution-dependent factors during amplification or attenuation (which is not recommended), you can do 
-so by using --raw_scale, which does the opposite of --lp-scale. 
 
 ## My membrane or detergent looks funny 
 Membranes are lower in resolution due to their amorphous nature which cannot be coherently averaged. Because this 
 reduces the local scale, membranes are estimated at low scale. The estimated scale of membranes are thus **not** a 
 measure of relative density or occupancy. The low-pass filtration intended to reduce influence of 
 resolution-dependent scale factors is only an approximate measure, so that the precise meaning of the local scale of 
-membrane and another amorphous regions (as estimated by **OccuPy**) is not well-defined. The lower scale generally 
+membrane and another amorphous regions (as estimated by OccuPy) is not well-defined. The lower scale generally 
 reflects intuition however, and permits weak attenuation to de-emphasize these regions to make visualization easier. 
 
 
