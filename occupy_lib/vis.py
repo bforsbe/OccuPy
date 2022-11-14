@@ -69,7 +69,7 @@ def chimx_viz(
         clr = turbo_l
 
         key_str = f'key {clr} '
-        key_str = f'{key_str} {key_labels} size 0.5, 0.04 pos 0.25, 0.08 ticks true tickThickness 2 \n'
+        key_str = f'{key_str} {key_labels} size 0.5, 0.04 pos 0.25, 0.08 ticks true tickThickness 2 fontSize 20\n'
 
         print(f'alias scale_color color sample $1 map $2 palette {clr} range {min_scale},1.0 \n', file=the_file)
 

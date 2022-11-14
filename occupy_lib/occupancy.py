@@ -433,6 +433,8 @@ def get_map_scale(
     # Perform max-filter normalisation
     scale_map = np.clip(scale_map / map_val_at_full_scale, 0, 1)
 
+    if s0:
+        scale_mode = f'naive_{scale_mode}'
     # Save the scale
     if save_occ_map is not None:
         map_tools.new_mrc(

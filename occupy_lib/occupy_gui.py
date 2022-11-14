@@ -2270,6 +2270,12 @@ class Ui_MainWindow(object):
         if self.groupBox_sigmoid.isChecked():
             modifying = True
 
+        if not modifying:
+            # Don't un-toggle if set
+            self.checkBox_scaleOcc.setEnabled(True)
+            if self.checkBox_scaleOcc:
+                return
+
         if modifying:
             self.checkBox_scaleOcc.setChecked(True)
             self.checkBox_scaleRes.setChecked(False)
@@ -2641,7 +2647,7 @@ class Ui_MainWindow(object):
         if self.checkBox_scaleOcc.isChecked():
             scale_mode = 'occ'
         if options.s0:
-            scale_mode = f'S0_{scale_mode}'
+            scale_mode = f'naive_{scale_mode}'
 
         self.add_scale_file(f'scale_{scale_mode}_{Path(new_name).stem}.mrc')
 

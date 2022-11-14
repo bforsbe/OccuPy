@@ -297,7 +297,7 @@ def occupy_run(options: args.occupy_options):
 
     scale_map = f'scale_{options.scale_mode}_{new_name}'
     if options.s0:
-        scale_map = f'scale_S0_{options.scale_mode}_{new_name}'
+        scale_map = f'scale_naive_{options.scale_mode}_{new_name}'
     scale, max_val, tiles_raw = occupancy.get_map_scale(
         scale_data,
         scale_kernel=scale_kernel,
@@ -357,11 +357,11 @@ def occupy_run(options: args.occupy_options):
 
     # Dirty check on the solvent model, could be more rigorous
     if lowest_confident_scale > 0.5:
-        warnings = "Solvent model fit is likely bad. Check terminal output and"
+        warnings = "Solvent model fit is likely bad. Check output log for warnings and"
         if not options.plot:
             warnings = f'{warnings} run with --plot and check solModel*.png'
         else:
-            warnings = f'{warnings} check the output solModel*.png '
+            warnings = f'{warnings} check the solvent model'
         solvent.warn_bad(lowest_confident_scale, file=f_log, verbose=options.verbose, kernel_warn=kernel_warn)
 
 
