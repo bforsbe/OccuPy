@@ -2315,6 +2315,25 @@ class Ui_MainWindow(object):
         self.textEdit_log.repaint()
         self.jump_to_end_of_log()
 
+        success = False
+        home = os.path.expanduser("~")
+        while not success:
+            current_dir = os.getcwd()
+            try:
+                t = open(self.log_file_name, "a")
+                t.close()
+                success=True
+            except: # PermissionError:
+                new_directory = QtWidgets.QFileDialog.getExistingDirectory(None, "Select Directory", home)
+                if os.path.isdir(new_directory):
+                    os.chdir(new_directory)
+                    self.reset_session()
+                elif new_directory == '':
+                    sys.exit()
+                else:
+                    pass
+
+
         with open(self.log_file_name, "a") as file_open:
             if self.new_session:
                 is_fetching_emdb = not (id is None or id == 0)
@@ -2332,6 +2351,7 @@ class Ui_MainWindow(object):
                     self.new_session = False
             if save:
                 file_open.write(f'{message}\n')
+
 
 
     def occupy_warn(self, message):
