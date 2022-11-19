@@ -81,3 +81,13 @@ Generate the pdb-file with altered b-factors, to be used as uinput to gemmi
 sed 's/1Bfac/200.0/g' 1UXI_bfac_template.pdb > 1UXI_bfac_200.pdb
 ```
 After this point, use the same procedure as described above for occupancy
+
+## Notes 
+
+Using sfcalc in gemmi with `--dimin=10` is compatible with reformatting the box to 100pixels @ 1.66Å/pix, using 
+relion.
+When doing e.g. the occupancy of the NAD cofactor alone, we need to have a realistic pixel size (Cryo-EM data would 
+never have 1.66Å/pix, but it makes the above examples run fast). It might then be better to use gemmi with 
+`--dmin=5` and resize the box to 144pixels @ 0.83Å/pix
+
+
