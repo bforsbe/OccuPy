@@ -2438,6 +2438,12 @@ class Ui_MainWindow(object):
         if self.os == "Windows":
             self.find_chimerax('C:\Program\" \"Files\ChimeraX\bin\ChimeraX.exe')
 
+        if self.os == "Mac":
+            import glob
+            app_dirs=glob.glob("/Applications/*app")
+            for dir in app_dirs:
+                self.find_chimerax(f'{dir}/chimerax')
+
         occupy_chimx_var = 'OCCUPY_CHIMERAX'
         if os.environ.get(occupy_chimx_var) != None:
             self.find_chimerax(os.environ.get(occupy_chimx_var))
