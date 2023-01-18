@@ -449,9 +449,16 @@ def fetch_EMDB(ID: str):
         file_name = wget.download(url)
         print(f'\n Done fetching {fetch_name}')
     except Exception as e:
-        print(f"EMDB entry {ID} could not be fetched through url: \n {url}")
-        print(f'Reason: {e}')
-        fail = True
+        try:
+            print(f'Failed, trying without ssl verification...')
+            import ssl
+            ssl._create_default_https_context = ssl._create_unverified_context
+            file_name = wget.download(url)
+        except:
+            print(f'Omitting ssl verification did not help.')
+            print(f"EMDB entry {ID} could not be fetched through url: \n {url}")
+            print(f'Reason: {e}')
+            fail = True
 
     if not fail:
         print(f'Unzipping {fetch_name}')
