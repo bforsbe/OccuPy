@@ -35,11 +35,11 @@ def chimx_viz(
     with open(file_name, 'w') as the_file:
 
         # -----MODELS --------------------------------------
-        print(f'open {input} ', file=the_file)
+        print(f'open \"{input}\"', file=the_file)
         if threshold_maps is not None:
             print(f'vol #1 level {threshold_maps}', file=the_file)
 
-        print(f'open {scale} ', file=the_file)
+        print(f'open \"{scale}\" ', file=the_file)
         if threshold_scale is not None:
             print(f'vol #2 level {threshold_scale}', file=the_file)
         print(f'hide #2 ', file=the_file)
@@ -85,7 +85,7 @@ def chimx_viz(
 
         if ampl_map is not None:
             c += 1
-            print(f'open {ampl_map} ', file=the_file)
+            print(f'open \"{ampl_map}\"', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
             if threshold_maps is not None:
                 print(f'vol #{c} level {threshold_maps}', file=the_file)
@@ -93,7 +93,7 @@ def chimx_viz(
 
         if attn_map is not None:
             c += 1
-            print(f'open {attn_map} ', file=the_file)
+            print(f'open \"{attn_map}\"', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
             if threshold_maps is not None:
                 print(f'vol #{c} level {threshold_maps}', file=the_file)
@@ -101,7 +101,7 @@ def chimx_viz(
 
         if sigm_map is not None:
             c += 1
-            print(f'open {sigm_map} ', file=the_file)
+            print(f'open \"{sigm_map}\"', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
             if threshold_maps is not None:
                 print(f'vol #{c} level {threshold_maps}', file=the_file)
@@ -109,7 +109,7 @@ def chimx_viz(
 
         if solExcl_only_map is not None:
             c += 1
-            print(f'open {solExcl_only_map} ', file=the_file)
+            print(f'open \"{solExcl_only_map}\"', file=the_file)
             print(f'scale_color #{c} #2 \n', file=the_file)
             if threshold_maps is not None:
                 print(f'vol #{c} level {threshold_maps}', file=the_file)

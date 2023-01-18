@@ -2458,9 +2458,9 @@ class Ui_MainWindow(object):
 
             cmd_to_run = ' '
             if self.os == "Windows":
-                cmd_to_run = f'{self.chimerax_name} {self.chimerax_file_name}'
+                cmd_to_run = f'{self.chimerax_name} \"{self.chimerax_file_name}\"'
             else:
-                cmd_to_run = f'{self.chimerax_name} {self.chimerax_file_name} &'
+                cmd_to_run = f'{self.chimerax_name} \"{self.chimerax_file_name}\" &'
 
             self.occupy_log(f'AT: Starting chimeraX: {cmd_to_run}')
 
