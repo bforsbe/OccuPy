@@ -9,7 +9,7 @@ Relion 4.0-beta-2-commit-c3ddd0
 ```
 ## Alter occupancy of pdb model
 Altered occupancy of one pdb model chain, generate theoretical density and estimate occupancy of the density using 
-OccuPp
+OccuPy
 ![image](https://drive.google.com/uc?export=view&id=1ZIJ7vKye1BXBjIPclJs8YbrR74W1VKQu)
 
 
@@ -87,7 +87,7 @@ After this point, use the same procedure as described above for occupancy
 Using sfcalc in gemmi with `--dimin=10` is compatible with reformatting the box to 100pixels @ 1.66Å/pix, using 
 relion.
 When doing e.g. the occupancy of the NAD cofactor alone, we need to have a realistic pixel size (Cryo-EM data would 
-never have 1.66Å/pix, but it makes the above examples run fast). It might then be better to use gemmi with 
+probably not be 1.66Å/pix, but it makes the above examples run faster). It might then be better to use gemmi with 
 `--dmin=5` and resize the box to 144pixels @ 0.83Å/pix
 
 

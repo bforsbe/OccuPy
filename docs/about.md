@@ -9,7 +9,7 @@ Bjoern O. Forsberg
 <a href="https://scholar.google.com/citations?user=8skHcycAAAAJ&hl=en" title="Bjoern on 
 google scholar">:fontawesome-solid-graduation-cap:{ .scholar }</a>
 <a href="https://github.com/bforsbe" title="Bjoern on github">:fontawesome-brands-github:{ .github }</a>
-<a href="https://github.com/bforsbe" title="email Bjoern">:fontawesome-solid-envelope:{ .mail }</a>
+<a href="mailto:bjorn.forsberg@ki.se" title="email Bjoern">:fontawesome-solid-envelope:{ .mail }</a>
 <br>
 
 Pranav Shah
@@ -39,7 +39,7 @@ author = {Forbserg, Bjoern O and Shah, Pranav NM and Burt, Alister},
 doi = {TBA},
 journal = {bioRxiv},
 pages = {1--24},
-title = {{OccuPy: Estimation of relative contrast in cryo-EM reconstructions}},
+title = {A robust normalized local filter to estimate occupancy directly from cryo-EM maps},
 year = {2022}
 }
 ```
