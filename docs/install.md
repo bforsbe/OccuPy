@@ -29,7 +29,7 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha).
 <div class="gallery-dl">
 
     <div class="dl-box">
-    <a class=nocolor href="https://drive.google.com/uc?export=download&id=1j30PKVwX8GpiqKPJQAhU7rAQ3BOGow1k">
+    <a class=nocolor href="https://sourceforge.net/projects/occupy/files/occupy_gui/download">
     <img src="../gallery/thumbs/mac_thumb.png" alt="" />
       <div class="transparent-box-dl">
         <div class="dl-caption">
@@ -41,7 +41,7 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha).
     </div>
 
     <div class="dl-box">
-    <a class=nocolor href="https://drive.google.com/uc?export=download&id=1El8D0hdCIkwcbVM_LXaRXA9bd9V8sNB6">
+    <a class=nocolor href="https://sourceforge.net/projects/occupy/files/install_OccuPy.msi.exe/download">
     <img src="../gallery/thumbs/win_thumb.png" alt="" />
       <div class="transparent-box-dl">
         <div class="dl-caption">
@@ -53,7 +53,7 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha).
     </div>
 
     <div class="dl-box">
-    <a class=nocolor href="https://drive.google.com/uc?export=download&id=1XZnk8YotHD0CO4LhEZK0_85xecG7Y2ps">
+    <a class=nocolor href="https://sourceforge.net/projects/occupy/files/occupy_0.1.9.deb/download">
     <img src="../gallery/thumbs/linux_thumb.png" alt="" />
       <div class="transparent-box-dl">
         <div class="dl-caption">
