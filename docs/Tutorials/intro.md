@@ -24,7 +24,7 @@ ones.
 ## 1. Start OccuPy 
 1. Open OccuPy by double-clicking the distributed binary or calling `occupy_gui` in a terminal. 
 
-2. If you are unsure where the GUI will run and put output files, or want to change this, click "Session"->"Change 
+2. If you are unsure where the GUI will run and put output files, or want to change this, click "Session"->"Set 
 location" in the top menu.
 
 3. You will find three (3) large buttons above the ouput log, called "Estimate Scale", "Modify Map", and "Launch 
@@ -77,15 +77,14 @@ Based on the input, reasonable kernel settings were derived automatically. In th
 ---
 
 ## 4. Estimate local scale 
+The scale is the raw estimate of relative contrast. This is due to variations in both resolution and occupancy. We 
+will try to separate these using occupy later, but for now, think of it just as a relative measure of local contrast. 
+
 1. Make sure "occupancy" (just below the modification options) is **not** selected. 
 
 2. Run OccuPy by clicking the Big button labeled "Estimate scale" just above the output log. 
 
-3. This should finish in a few seconds. Notice that the run is individually numbered as "1-1" in the output log. 
-
-<video class="center" width="400"  controls>
-  <source src="https://drive.google.com/uc?export=view&id=1pRwqFaDtIcn2tSYHJ15UkQDiAEEjtzzg" type="video/mp4">
-</video>
+3. This should finish in a few seconds. Notice that the run is individually numbered as "1-1" in the output log.
 
 <div class="admonition attention">
 <p class="admonition-title">There's more to this</p>
@@ -110,6 +109,10 @@ through the GUI. In this case you should see the input map colored by the estima
 `scale_color #1 #2`. This will re-color map #1 by the estimated scale (map #2), according to the color key. 
 
 4. Close chimeraX.
+
+<video class="center" width="400"  controls>
+  <source src="https://drive.google.com/uc?export=view&id=1pRwqFaDtIcn2tSYHJ15UkQDiAEEjtzzg" type="video/mp4">
+</video>
 
 ---
 
