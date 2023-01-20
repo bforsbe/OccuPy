@@ -66,17 +66,17 @@ solvent defintion.
 To evaluate a solvent definition, we inspect the solvent model and resulting confidence. 
 
 1. Make sure the appropriate input map is open and selected, then estimate the scale. 
-2. Insepct the "Solvent model" tab next to the output log. The green parabola is fitted to the maked data histogram 
+2. Inspect the "Solvent model" tab next to the output log. The green parabola is fitted to the masked data histogram 
    in black, whereas the original data histogram is shown in grey. 
 3. Click the "Conf." tab of the viewer and inspect is OccuPy can adequately tell low-scale stuff from solvent. 
-   **Notice especially that the confidence might differ from the solvent definition, becasue OccuPy might estimate 
+   **Notice especially that the confidence might differ from the solvent definition, because OccuPy might estimate 
    components as significant even though you said they might be solvent.**
 
 ---
 
 ## 5. Use the solvent definition
 
-1. Make sure the appropriate input map and solvent defintion are both selected.
+1. Make sure the appropriate input map and solvent definition are both selected.
 2. Set the desired modification parameters.  
 3. Click "Modify Map". 
 4. Visualize the output by clicking "Launch ChimeraX"

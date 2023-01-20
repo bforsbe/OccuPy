@@ -117,7 +117,7 @@ through the GUI. In this case you should see the input map colored by the estima
 ---
 
 ## 6. Assess the solvent model
-1. The solvent model is ony used for modification, but it is nonetheless a good idea to check it. Click the tab 
+1. The solvent model is only used for modification, but it is nonetheless a good idea to check it. Click the tab 
    "Solvent model" next to the "output log" tab at the bottom of the OccuPy GUI. The green line is the solvent model
    fit as a gaussian to the map histogram. It appears parabolic since this is a log-plot. The red line is the 
    confidence of voxel values above solvent. 
@@ -167,7 +167,7 @@ To learn how parameter adjustment can help you get a better estimate, consult th
    power by dragging the slider.
 3. Try the same by sigmoid modification. Note that sigmoid has two parameters. 
 4. Select the "plot" tab of the viewer to see how these modifications would alter the scale of the output compared to 
-   input. Where the colored line is below the dashed line, scale will be attenuated. Converesely, where the line is 
+   input. Where the colored line is below the dashed line, scale will be attenuated. Conversely, where the line is 
    above the dashed line, scale will be amplified. 
 5. Click the button "modify Map" to generate all desired modifications. 
 6. When completed, **the preview is still just a preview**. To see the output, please click "Launch ChimeraX". This 

@@ -8,7 +8,7 @@
 <p class="admonition-title">Pre-compiled binaries are not up-to-date during alpha/beta-testing</p>
 <p>
 When software is recently released, it is expected that users report bugs and that these get mended over time. This is 
-called (early) alpha-tesing and (later) beta-testing. OccuPy is in alpha.
+called (early) alpha-testing and (later) beta-testing. OccuPy is in alpha.
 <br><br>
 Compiled binaries will not be updated as new bugfixes get implemented. Once alpha/beta testing is over, new binaries 
 will be provided. 
@@ -24,7 +24,7 @@ system, you might need to "enable" it by adding permissions and assuring that it
 Detailed instructions for this can be found in 
 the <a href="../Troubleshooting/install_trbl/">troubleshooting section</a>.
 <br><br>
-Occupy GUI version :fontawesome-solid-tag: 0.1.7 (alpha).
+Occupy GUI version :fontawesome-solid-tag: 0.1.9 (alpha).
 <br><br>
 <div class="gallery-dl">
 
@@ -143,14 +143,15 @@ If you run into issues, check the <a href="../Troubleshooting/install_trbl/">tro
 
 === "Linux (ubuntu)"
 
-    Please follow [this guide](https://tecadmin.net/how-to-install-python-3-10-on-ubuntu-debian-linuxmint/),
+    To install pip (a python package manager that can then install occupy), you can e.g. follow 
+    [this guide](https://tecadmin.net/how-to-install-python-3-10-on-ubuntu-debian-linuxmint/),
     which also explains and verifies that pip is installed along with python.
 
 ### Install OccuPy
 
 === "Windows"
     
-    1. If you do not have on open, start a powershell as in step 1 of the previous section.
+    1. If you do not have one open, start a powershell as in step 1 of the previous section.
     2. In the powershell, run `py -m pip install occupy`.
     3. Verify the install, run `py -m pip show occupy`. 
     <br>You will either see `WARNING: Package(s) not found: occupy` 
@@ -250,7 +251,7 @@ If you downloaded a binary, simply double-click it.
 
 ### The command-line tool
 OccuPy is also a command-line tool, so that you can easily script its use if needed for bulk processing. This is 
-only available by installing using PIP, or from sourc code. 
+only available by installing using PIP, or from source code. 
 
 We recommend getting acquainted with OccuPy through the GUI, which also has an option to print the command it will run, 
 which can then be called on the command-line.  
