@@ -46,6 +46,7 @@ class occupy_options:
         min_vis_scale: float = 0.2,
         s0 : bool = False,
         lp_scale : bool = None,
+        omit_confidence : bool = False,
         emdb_id : str = None,
         verbose : bool = False,
         help_all : bool = False,
@@ -81,6 +82,7 @@ class occupy_options:
         self.min_vis_scale = min_vis_scale
         self.s0 = s0
         self.lp_scale = lp_scale
+        self.omit_confidence = omit_confidence
         self.emdb_id = emdb_id
         self.verbose = verbose
         self.help_all = help_all
@@ -239,6 +241,10 @@ def parse_and_run(
             "--lp-scale/--raw-scale","--occupancy",
             help="Use the low-passed input for scale estimation, or use the raw input map"
         ),
+        omit_confidence: bool = typer.Option(
+            False,
+            help="skip confidence filtering of map modification (not recommended)"
+        ),
         emdb_id: str = typer.Option(
             None,
             "--emdb","--emdb-id",
@@ -301,6 +307,7 @@ def parse_and_run(
         min_vis_scale,
         s0,
         lp_scale,
+        omit_confidence,
         emdb_id,
         verbose,
         help_all,

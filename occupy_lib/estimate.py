@@ -376,6 +376,9 @@ def occupy_run(options: args.occupy_options):
     attn_name = None
     sigm_name = None
 
+    if options.omit_confidence:
+        confidence = np.ones_like(confidence)
+
     if do_amplify:
         ampl = occupancy.modify(
             out_data,  # Amplify raw input data (no low-pass apart from down-scaling, if that)
