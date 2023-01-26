@@ -11,7 +11,7 @@ import typer
 
 
 if __name__ == '__main__':
-    options = typer.run(args.parse)
+    options = typer.run(args.parse_and_run)
     estimate.occupy_run(options)
 
 
