@@ -98,7 +98,8 @@ def new_mrc(
     factor = 1
 
     # Make sure the suffix is .mrc
-    file_name = f'{Path(file_name).stem}.mrc'
+    file_name = Path(file_name).with_suffix('')
+    file_name = f'{file_name}.mrc'
 
     # Open
     o_file = mf.new(file_name, overwrite=True)

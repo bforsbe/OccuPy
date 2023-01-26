@@ -37,6 +37,7 @@ class occupy_options:
         scale_mode: str = None,
         hist_match: bool = False,
         output_map: str = 'out_<input_file_name>',
+        keep_output_path: bool = False,
         plot : bool = False,
         save_all_maps : bool = False,
         chimerax : bool= True,
@@ -71,6 +72,7 @@ class occupy_options:
         self.scale_mode = scale_mode
         self.hist_match = hist_match
         self.output_map = output_map
+        self.keep_output_path = keep_output_path
         self.plot = plot
         self.save_all_maps = save_all_maps
         self.chimerax = chimerax
@@ -193,6 +195,12 @@ def parse_and_run(
             "--output-map", "-o",
             help="Output map name"
         ),
+
+        keep_output_path: bool = typer.Option(
+            False,
+            help="Output goes in the same directory as input map"
+        ),
+
         plot: bool = typer.Option(
             False,
             help="Plot a histogram showing solvent model fit and occupancy confidence?"
@@ -284,6 +292,7 @@ def parse_and_run(
         scale_mode,
         hist_match,
         output_map,
+        keep_output_path,
         plot,
         save_all_maps,
         chimerax,

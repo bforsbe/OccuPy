@@ -36,6 +36,10 @@ def occupy_run(options: args.occupy_options):
     new_name = f'{Path(new_name).stem}.mrc'
     doc = ''
 
+    output_prefix=''
+    if options.keep_output_path:
+        output_prefix = f'{Path(options.input_map).parent}/'
+
 
     do_amplify = options.amplify > 1
     do_attenuate = options.attenuate > 1
@@ -295,7 +299,7 @@ def occupy_run(options: args.occupy_options):
 
     # --------------- SCALE ESTIMATION ------------------------------------------------------
 
-    scale_map = f'scale_{options.scale_mode}_{new_name}'
+    scale_map = f'{output_prefix}scale_{options.scale_mode}_{new_name}'
     if options.s0:
         scale_map = f'scale_naive_{options.scale_mode}_{new_name}'
     scale, max_val, tiles_raw = occupancy.get_map_scale(
@@ -434,7 +438,7 @@ def occupy_run(options: args.occupy_options):
 
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
 
-        ampl_name = f'ampl_{options.amplify:.1f}_{base_out_name}'
+        ampl_name = f'{output_prefix}ampl_{options.amplify:.1f}_{base_out_name}'
         ampl_doc = f'ampl {options.amplify:.1f}, {doc}'
 
         map_tools.new_mrc(
@@ -515,7 +519,7 @@ def occupy_run(options: args.occupy_options):
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
 
         # Save amplified and/or solvent-suppressed output.
-        attn_name = f'attn_{options.attenuate:.1f}_{base_out_name}'
+        attn_name = f'{output_prefix}attn_{options.attenuate:.1f}_{base_out_name}'
         attn_doc = f'attn {options.attenuate:.1f}, {doc}'
 
         map_tools.new_mrc(
@@ -601,7 +605,7 @@ def occupy_run(options: args.occupy_options):
         # TODO  -  Test histogram-matching of low-occupancy regions with high-occupancy as reference?
 
         # Save amplified and/or solvent-suppressed output.
-        sigm_name = f'sigm_{options.sigmoid:.1f}-{options.pivot:.2f}_{base_out_name}'
+        sigm_name = f'{output_prefix}sigm_{options.sigmoid:.1f}-{options.pivot:.2f}_{base_out_name}'
         sigm_doc = f'sigm {options.sigmoid:.1f} {options.pivot:.2f}, {doc}'
 
         map_tools.new_mrc(
@@ -645,7 +649,7 @@ def occupy_run(options: args.occupy_options):
             )
 
         # Save solvent-suppressed output.
-        solExcl_only_name = f'{base_out_name}'
+        solExcl_only_name = f'{output_prefix}{base_out_name}'
         solExcl_only_doc = f'{doc}'
 
         map_tools.new_mrc(
@@ -662,7 +666,7 @@ def occupy_run(options: args.occupy_options):
     #if options.save_all_maps:
     map_tools.new_mrc(
         confidence.astype(np.float32),
-        f'conf_{new_name}',
+        f'{output_prefix}conf_{new_name}',
         parent=options.input_map,
         verbose=options.verbose,
         log=f_log
