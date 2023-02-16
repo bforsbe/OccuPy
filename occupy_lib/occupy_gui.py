@@ -1970,7 +1970,7 @@ class Ui_MainWindow(object):
             downscale_processing = n > max_box
             if downscale_processing:
                 n_proc = np.min([n,max_box])
-                self.inputMap.voxel_size_ori = self.inputMap.voxel_size_proc * n/np.float(n_proc)
+                self.inputMap.voxel_size_ori = self.inputMap.voxel_size_proc * n / n_proc
 
             lower_limit_default = 3 * self.inputMap.voxel_size_proc
             self.inputMap.lowpass = np.max([lower_limit_default,8.0])
