@@ -36,6 +36,7 @@ class occupy_options:
         scale_limit: float = 0.05,
         scale_mode: str = None,
         hist_match: bool = False,
+        target_mask: str = None,
         output_map: str = 'out_<input_file_name>',
         keep_output_path: bool = False,
         plot : bool = False,
@@ -49,6 +50,7 @@ class occupy_options:
         omit_confidence : bool = False,
         emdb_id : str = None,
         verbose : bool = False,
+        quiet: bool =False,
         help_all : bool = False,
         version : bool = False,
         gui = False
@@ -72,6 +74,7 @@ class occupy_options:
         self.scale_limit = scale_limit
         self.scale_mode = scale_mode
         self.hist_match = hist_match
+        self.target_mask = target_mask
         self.output_map = output_map
         self.keep_output_path = keep_output_path
         self.plot = plot
@@ -85,6 +88,7 @@ class occupy_options:
         self.omit_confidence = omit_confidence
         self.emdb_id = emdb_id
         self.verbose = verbose
+        self.quiet = quiet
         self.help_all = help_all
         self.version = version
         self.gui = gui
@@ -189,6 +193,11 @@ def parse_and_run(
             False,
             help="Histogram-match output (force equal greyscale as input)"
         ),
+        target_mask: str = typer.Option(
+            None,
+            "--target-mask",
+            help="Map with target kernel for specific occupancy estimate [.mrc NxNxN]"
+        ),
 
         # Output control -----------------------------------------------------------------------------------------------
 
@@ -252,8 +261,13 @@ def parse_and_run(
         ),
         verbose: bool = typer.Option(
             False,
-            "--verbose/--quiet",
+            "--verbose",
             help="Let me know what's going on"
+        ),
+        quiet: bool = typer.Option(
+            False,
+            "--quiet",
+            help="No extraneous output"
         ),
         #relion_classes: str = typer.Option(
         #    None,
@@ -297,6 +311,7 @@ def parse_and_run(
         scale_limit,
         scale_mode,
         hist_match,
+        target_mask,
         output_map,
         keep_output_path,
         plot,
@@ -310,6 +325,7 @@ def parse_and_run(
         omit_confidence,
         emdb_id,
         verbose,
+        quiet,
         help_all,
         version
     )

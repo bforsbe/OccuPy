@@ -88,7 +88,8 @@ def occupy_run(options: args.occupy_options):
     if not (options.max_box % 2 == 0) and (options.max_box < nd[0]):
         raise ValueError(f'** fail **  You specified an odd (not even) --max-box value ({options.max_box})')
 
-    print(f'Estimating local scale of {options.input_map}...')
+    if not options.quiet:
+        print(f'Estimating local scale of {options.input_map}...')
     # --------------- LIMIT PROCESSING SIZE ----------------------------------------------------
 
     downscale_processing = nd[0] > options.max_box
@@ -151,14 +152,16 @@ def occupy_run(options: args.occupy_options):
 
     kernel_warn = False
     if options.kernel_size < 5:
-        kernel_warn = True
-        print(
-            f'** warn ** Auto-calculated a very small kernel-size ({options.kernel_size} pixels). \n** warn ** This may lead to a bad solvent model \n** warn ** Suggest --kernel 5 or more, and/or --lowpass {int(options.lowpass_input * 2)} or more\n')
+        if not options.quiet:
+            kernel_warn = True
+            print(
+                f'** warn ** Auto-calculated a very small kernel-size ({options.kernel_size} pixels). \n** warn ** This may lead to a bad solvent model \n** warn ** Suggest --kernel 5 or more, and/or --lowpass {int(options.lowpass_input * 2)} or more\n')
 
     if options.kernel_radius < options.kernel_size / (2 * 2):
-        print(
-            f'** warn ** Auto-calculated a very small kernel radius ({options.kernel_radius:.2f} pixels). \n** warn ** This may lead to a bad solvent model \n** warn ** Suggest --lowpass {int(options.lowpass_input * 2)} or more\n')
-        kernel_warn = True
+        if not options.quiet:
+            print(
+                f'** warn ** Auto-calculated a very small kernel radius ({options.kernel_radius:.2f} pixels). \n** warn ** This may lead to a bad solvent model \n** warn ** Suggest --lowpass {int(options.lowpass_input * 2)} or more\n')
+            kernel_warn = True
 
     scale_kernel, tau_ana = occupancy.spherical_kernel(
         options.kernel_size,
@@ -313,6 +316,36 @@ def occupy_run(options: args.occupy_options):
         verbose=options.verbose
     )
     map_tools.adjust_to_parent(file_name=scale_map, parent=options.input_map)
+
+
+    # Specific occupancy estimation using pixel map
+    if options.target_mask!=None:
+        mask_spec_open = mf.open(options.target_mask)
+        mask_spec_data = np.copy(mask_spec_open.data)
+
+        # TODO check size etc
+        n_spec = np.shape(mask_spec_data)
+
+        # A custom pixel-wise mask must consider statistics, and a specific tau
+        sel_pix = scale_data[mask_spec_data>0.5]
+        n_spec_sel = len(sel_pix)
+        tau_spec = occupancy.set_tau(n_v=n_spec_sel)
+
+        # Dummy scale estimate to get the max val at this tau
+        scale_dummy, max_val_spec, raw_tiles_dummy = occupancy.get_map_scale(
+            scale_data,
+            scale_kernel=scale_kernel,
+            tau=tau_spec,
+            verbose=options.verbose
+        )
+
+        # Calculate the occupancy given the established max_val_spec given the tau_spec
+        spec_occ = np.max(sel_pix) / max_val_spec
+
+        print(f'Targeted occupancy estimated to {spec_occ:.3f} using tau={tau_spec} from n_spec={n_spec_sel} pixels in the target mask')
+
+
+
 
     tiles = None
     if tiles_raw is not None:
@@ -801,32 +834,33 @@ def occupy_run(options: args.occupy_options):
     if options.gui:
         print(f'\n  -*- Use chimeraX to view output -*- \n')
     else:
-        if do_modify:
-            print(f'Done estimating local scale and modifying input by local scale. ')
-        else:
-            print(f'Done estimating local scale')
-            print(
-                f'You *could* also modify according to estimated occupancy by using either amplify, attenuate, and/or sigmoid')
-
-        if not options.exclude_solvent:
-            print(
-                f'You *could* also exclude solvent ')
-
-        if options.chimerax and not options.gui:
-            if options.show_chimerax:
-                print(f'Opening {chimx_file} in chimeraX, this may take a moment. Please be patient.\n')
-                os.system(f'chimerax {chimx_file} & ')
+        if not options.quiet:
+            if do_modify:
+                print(f'Done estimating local scale and modifying input by local scale. ')
             else:
-                print(f'\nYou should run chimeraX to visualize the output, using this command: ')
-                print(f'chimerax {chimx_file}\n')
-                print(f'HINT: you could also auto-start chimeraX by using --show-chimerax')
+                print(f'Done estimating local scale')
+                print(
+                    f'You *could* also modify according to estimated occupancy by using either amplify, attenuate, and/or sigmoid')
 
-        if options.chimerax_silent:
-            if options.show_chimerax:
-                os.system(f'chimerax {chimx_file}')
-            else:
+            if not options.exclude_solvent:
+                print(
+                    f'You *could* also exclude solvent ')
 
-                print(f'\nTo generate thumbnails of your output, run: ')
-                print(f'\nchimerax --offscreen {chimx_file_silent}\n')
+            if options.chimerax and not options.gui:
+                if options.show_chimerax:
+                    print(f'Opening {chimx_file} in chimeraX, this may take a moment. Please be patient.\n')
+                    os.system(f'chimerax {chimx_file} & ')
+                else:
+                    print(f'\nYou should run chimeraX to visualize the output, using this command: ')
+                    print(f'chimerax {chimx_file}\n')
+                    print(f'HINT: you could also auto-start chimeraX by using --show-chimerax')
+
+            if options.chimerax_silent:
+                if options.show_chimerax:
+                    os.system(f'chimerax {chimx_file}')
+                else:
+
+                    print(f'\nTo generate thumbnails of your output, run: ')
+                    print(f'\nchimerax --offscreen {chimx_file_silent}\n')
 
     return 0
