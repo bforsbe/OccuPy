@@ -399,7 +399,7 @@ def occupy_run(options: args.occupy_options):
             warnings = f'{warnings} run with --plot and check solModel*.png'
         else:
             warnings = f'{warnings} check the solvent model'
-        solvent.warn_bad(lowest_confident_scale, file=f_log, verbose=options.verbose, kernel_warn=kernel_warn)
+        solvent.warn_bad(lowest_confident_scale, file=f_log, verbose=options.verbose, kernel_warn=kernel_warn, quiet=options.quiet)
 
 
 

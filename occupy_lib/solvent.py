@@ -231,8 +231,10 @@ def warn_bad(
         lowest_confident_scale,
         file=None,
         kernel_warn=False,
-        verbose=False
+        verbose=False,
+        quiet=False
 ):
+
     if file is not None and verbose:
         print(f"** warn ** Potentially bad solvent model ", file=file)
         print(f"** warn ** Lowest_confident_scale: {lowest_confident_scale:.2f} ", file=file)
@@ -241,12 +243,13 @@ def warn_bad(
         if kernel_warn:
             print(f" ** warn ** There were also warnings about your kernel size. Please check.", file=file)
     else:
-        print(f"** warn ** Potentially bad solvent model")
-        print(f"** warn ** Lowest_confident_scale: {lowest_confident_scale:.2f}")
-        print(f"** warn ** consider using --plot and check solModel*.png")
-        print(f"** warn ** consider using --solvent-def <solvent_mask.mrc>\n")
-        if kernel_warn:
-            print(f"** warn ** There were also warnings about your kernel size. Please check. ")
+        if not quiet:
+            print(f"** warn ** Potentially bad solvent model")
+            print(f"** warn ** Lowest_confident_scale: {lowest_confident_scale:.2f}")
+            print(f"** warn ** consider using --plot and check solModel*.png")
+            print(f"** warn ** consider using --solvent-def <solvent_mask.mrc>\n")
+            if kernel_warn:
+                print(f"** warn ** There were also warnings about your kernel size. Please check. ")
 
 def smallest_variance_region(
         data: np.ndarray,
