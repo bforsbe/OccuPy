@@ -317,6 +317,67 @@ def occupy_run(options: args.occupy_options):
     )
     map_tools.adjust_to_parent(file_name=scale_map, parent=options.input_map)
 
+    tiles = None
+    if tiles_raw is not None:
+        # Fix the tile coordinates found during percentiel serach, for plotting
+        tiles = np.copy(tiles_raw)
+
+        # Set tile coordinates according to axis order in input file
+        for i in np.arange(3):
+            tiles[:, 2 - i] = tiles_raw[:, axis_order[i] - 1]
+
+        # Add any offset in the input file coords (but not radius),  and make in original non-pix length.
+        tiles[:-1, :] = voxel_size_ori * (tiles[:-1, :] / factor + offset_ori)
+
+        # Set radius to original non-pix length as well
+        tiles[-1, :] = voxel_size_ori * tiles[-1, :] / factor
+
+        if options.verbose:
+            print(f'Corrected tile max: {tiles[0, :]}')
+
+    # Get the average pixel value across all regions with full scale
+    # This is an estimate of the density, which we can convert back to a scale,
+    # which in turn signifies the expected scale at full occupancy AND full variability/flex
+    # The varaibility limit is thus the expected scale if some thing at full occupancy is completely
+    # incoherent due to e.g. flexibility
+    variability_limit = np.mean(scale_data[scale == 1]) / max_val
+
+    # --------------- CONFIDENCE ESTIMATION ------------------------------------------------------
+
+    confidence, mapping = occupancy.estimate_confidence(
+        sol_data,
+        solvent_parameters,
+        hedge_confidence=options.hedge_confidence,
+        n_lev=levels
+    )
+
+    # clean sol_data asap
+    #if options.plot:
+    a, b = np.histogram(sol_data, bins=levels, density=True)
+    del sol_data
+
+    warnings = None
+
+    # Find the lowest primary scale value that we can be confident about given the noise variance estimate.
+    # This will be used to enforce a correction to the estimated scale.
+    confidence_limit_index = levels-np.sum(mapping>0.5)
+    confidece_limit = b[confidence_limit_index] / max_val
+
+    # Dirty check on the solvent model, could be more rigorous
+    if confidence_limit_index / levels > 0.5:
+        warnings = "Solvent model fit is likely bad. Check output log for warnings and"
+        if not options.plot:
+            warnings = f'{warnings} run with --plot and check solModel*.png'
+        else:
+            warnings = f'{warnings} check the solvent model'
+        solvent.warn_bad(confidence_limit_index / levels, file=f_log, verbose=options.verbose, kernel_warn=kernel_warn, quiet=options.quiet)
+
+    # Correct for noise distribution width.
+    # This effectively resamples the estimation from [confidence_limit,1] to [0,1]
+    scale = (scale - confidece_limit) / (1 - confidece_limit)
+    scale = np.clip(scale,0,1)
+
+
 
     # Specific occupancy estimation using pixel map
     if options.target_mask!=None:
@@ -342,64 +403,14 @@ def occupy_run(options: args.occupy_options):
         # Calculate the occupancy given the established max_val_spec given the tau_spec
         spec_occ = np.max(sel_pix) / max_val_spec
 
+        #Correct for noise distribution width.
+        spec_occ = (spec_occ - confidece_limit) / (1 - confidece_limit)
+        spec_occ = np.clip(spec_occ, 0, 1)
+
         print(f'Targeted occupancy estimated to {spec_occ:.3f} using tau={tau_spec} from n_spec={n_spec_sel} pixels in the target mask')
 
-
-
-
-    tiles = None
-    if tiles_raw is not None:
-        # Fix the tile coordinates found during percentiel serach, for plotting
-        tiles = np.copy(tiles_raw)
-
-        # Set tile coordinates according to axis order in input file
-        for i in np.arange(3):
-            tiles[:, 2 - i] = tiles_raw[:, axis_order[i] - 1]
-
-        # Add any offset in the input file coords (but not radius),  and make in original non-pix length.
-        tiles[:-1, :] = voxel_size_ori * (tiles[:-1, :] / factor + offset_ori)
-
-        # Set radius to original non-pix length as well
-        tiles[-1, :] = voxel_size_ori * tiles[-1, :] / factor
-
-        if options.verbose:
-            print(f'Corrected tile max: {tiles[0, :]}')
-
-    # Get the average pixel value across all regions with full scale
-    # This is an estimate of the density, which we can convert back to a scale,
-    # which in turn signifies the expected scale at full occupancy and full variability/flex
-    variability_limit = np.mean(scale_data[scale == 1]) / max_val
     del scale_data
 
-    # --------------- CONFIDENCE ESTIMATION ------------------------------------------------------
-
-    confidence, mapping = occupancy.estimate_confidence(
-        sol_data,
-        solvent_parameters,
-        hedge_confidence=options.hedge_confidence,
-        n_lev=levels
-    )
-
-    # clean sol_data asap
-    if options.plot:
-        a, b = np.histogram(sol_data, bins=levels, density=True)
-    del sol_data
-
-    warnings = None
-
-    # A high value of lowest confident scale means a wide solvent model compared to the overall histogram
-    lowest_confident_scale = sol_limits[3] / max_val
-    if options.verbose:
-        print(f'Min c.sc :\t[0,1]\t {lowest_confident_scale:.3f}', file=f_log)
-
-    # Dirty check on the solvent model, could be more rigorous
-    if lowest_confident_scale > 0.5:
-        warnings = "Solvent model fit is likely bad. Check output log for warnings and"
-        if not options.plot:
-            warnings = f'{warnings} run with --plot and check solModel*.png'
-        else:
-            warnings = f'{warnings} check the solvent model'
-        solvent.warn_bad(lowest_confident_scale, file=f_log, verbose=options.verbose, kernel_warn=kernel_warn, quiet=options.quiet)
 
 
 
