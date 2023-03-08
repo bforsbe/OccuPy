@@ -36,14 +36,14 @@ If you find OccuPy useful for any purpose, plaese refer to it and formally cite 
 ```
 @article{Forbserg2022,
 author = {Forbserg, Bjoern O and Shah, Pranav NM and Burt, Alister},
-doi = {TBA},
+doi = {https://doi.org/10.1101/2023.01.18.524529},
 journal = {bioRxiv},
 pages = {1--24},
 title = {A robust normalized local filter to estimate occupancy directly from cryo-EM maps},
 year = {2022}
 }
 ```
-And do please read the <a href="https://www.biorxiv.org/" title="link to paper">paper on biorXiv</a>.
+And do please read the <a href="https://www.biorxiv.org/content/10.1101/2023.01.18.524529v1" title="link to paper">paper on biorXiv</a>.
 
 ---
 
