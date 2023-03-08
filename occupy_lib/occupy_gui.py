@@ -202,6 +202,10 @@ class Ui_MainWindow(object):
         self.res_scale = None
         self.chimerax_name = None
 
+        self.soldef_size = None
+        self.targetmask_size = None
+
+
         self.cmd = []
         self.run_no = 0
 
@@ -1824,6 +1828,8 @@ class Ui_MainWindow(object):
             ny = f.header['ny']
             nz = f.header['nz']
 
+            self.soldef_size = n
+
             # Only permit cubic
             if n == ny == nz:
 
@@ -2603,11 +2609,22 @@ class Ui_MainWindow(object):
 
         if len(self.comboBox_inputSolventDef.currentText())>3:
             options.solvent_def = self.comboBox_inputSolventDef.currentText()
-            self.cmd.append(f'--solvent-def {options.solvent_def}')
+            if self.infile_size == self.soldef_size:
+                self.cmd.append(f'--solvent-def {options.solvent_def}')
+            else:
+                self.occupy_warn(f'solvent defintion has different size ({self.soldef_size}) than input map ({self.infile_size})')
+                return False
 
         if len(self.comboBox_targetMask.currentText())>3:
             options.target_mask = self.comboBox_targetMask.currentText()
-            self.cmd.append(f'--target-mask {options.target_mask}')
+            f = mf.mmap(options.target_mask)
+            self.targetmask_size = f.header['nx']
+
+            if self.infile_size == self.targetmask_size:
+                self.cmd.append(f'--target-mask {options.target_mask}')
+            else:
+                self.occupy_warn(f'target mask has different size ({self.targetmask_size}) than input map ({self.infile_size})')
+                return False
 
         # input options-------------------------------------------------------------------------
         options.lowpass_input = self.doubleSpinBox_inputLowpass.value()
@@ -2712,9 +2729,9 @@ class Ui_MainWindow(object):
 
         if len(self.comboBox_inputMap.currentText())>3:
             options = self.compose_cmd()
-
-            self.occupy_log(" Reporting command: \n")
-            self.occupy_log(f'{" ".join(self.cmd)}\n')
+            if options != False:
+                self.occupy_log(" Reporting command: \n")
+                self.occupy_log(f'{" ".join(self.cmd)}\n')
         else:
             self.occupy_log("provide an input file to print a working command",save=False)
 
@@ -2730,45 +2747,46 @@ class Ui_MainWindow(object):
 
         options = self.compose_cmd(only_estimate=only_estimate)
 
-        self.toolButton_chimerax.setEnabled(False)
-        self.toolButton_estimateScale.setEnabled(False)
-        self.actionestimateScale.setEnabled(self.toolButton_estimateScale.isEnabled())
-        self.log_new_run(start=True)
-        with Capturing() as output:
-            #self.occupy_log('Estimating local scale...')
-            estimate.occupy_run(options)
+        if options != False:
+            self.toolButton_chimerax.setEnabled(False)
+            self.toolButton_estimateScale.setEnabled(False)
+            self.actionestimateScale.setEnabled(self.toolButton_estimateScale.isEnabled())
+            self.log_new_run(start=True)
+            with Capturing() as output:
+                #self.occupy_log('Estimating local scale...')
+                estimate.occupy_run(options)
 
-        for i in output:
-            self.occupy_log(i)
+            for i in output:
+                self.occupy_log(i)
 
-        # Report details to gui log file even if not verbose.
-        if not options.verbose:
-            self.cat_log()
+            # Report details to gui log file even if not verbose.
+            if not options.verbose:
+                self.cat_log()
 
-        self.log_new_run(start=False)
+            self.log_new_run(start=False)
 
-        from pathlib import Path
-        new_name = Path(options.input_map).name
-        # Force .mrc for output
-        new_name = f'{Path(new_name).stem}.mrc'
-        self.confidence_file_name = f'conf_{Path(new_name).stem}.mrc'
+            from pathlib import Path
+            new_name = Path(options.input_map).name
+            # Force .mrc for output
+            new_name = f'{Path(new_name).stem}.mrc'
+            self.confidence_file_name = f'conf_{Path(new_name).stem}.mrc'
 
-        scale_mode = 'res'
-        if self.checkBox_scaleOcc.isChecked():
-            scale_mode = 'occ'
-        if options.s0:
-            scale_mode = f'naive_{scale_mode}'
+            scale_mode = 'res'
+            if self.checkBox_scaleOcc.isChecked():
+                scale_mode = 'occ'
+            if options.s0:
+                scale_mode = f'naive_{scale_mode}'
 
-        self.add_scale_file(f'scale_{scale_mode}_{Path(new_name).stem}.mrc')
+            self.add_scale_file(f'scale_{scale_mode}_{Path(new_name).stem}.mrc')
 
-        self.chimerax_file_name = f'chimX_{Path(new_name).stem}.cxc'
-        if self.chimerax_name is not None:
-            self.toolButton_chimerax.setEnabled(True)
-            self.toolButton_chimerax.setToolTip(f'Run the chimerax command script \n to visualize the most recent  \n output from occupy. \n\n ({self.chimerax_file_name})')
-        self.toolButton_estimateScale.setEnabled(True)
-        self.actionestimateScale.setEnabled(self.toolButton_estimateScale.isEnabled())
+            self.chimerax_file_name = f'chimX_{Path(new_name).stem}.cxc'
+            if self.chimerax_name is not None:
+                self.toolButton_chimerax.setEnabled(True)
+                self.toolButton_chimerax.setToolTip(f'Run the chimerax command script \n to visualize the most recent  \n output from occupy. \n\n ({self.chimerax_file_name})')
+            self.toolButton_estimateScale.setEnabled(True)
+            self.actionestimateScale.setEnabled(self.toolButton_estimateScale.isEnabled())
 
-        self.show_solvent_model()
+            self.show_solvent_model()
 
     def show_solvent_model(self):
         from pathlib import Path
