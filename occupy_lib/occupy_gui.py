@@ -235,7 +235,7 @@ class Ui_MainWindow(object):
         self.label_kernelTitle.setFont(bold)
 
         self.label_kernelTitle = QtWidgets.QLabel(MainWindow)
-        self.label_kernelTitle.setGeometry(QtCore.QRect(10, 466, 261, 30))
+        self.label_kernelTitle.setGeometry(QtCore.QRect(10, 456, 261, 30))
         self.label_kernelTitle.setText("Optional/extra options")
         self.label_kernelTitle.setFont(bold)
 
@@ -741,7 +741,7 @@ class Ui_MainWindow(object):
         self.gridLayout_kernelOptions.addWidget(self.label_tileSize_pix, 5, 2, 1, 1)
 
         self.gridLayoutWidget_6 = QtWidgets.QWidget(MainWindow)
-        self.gridLayoutWidget_6.setGeometry(QtCore.QRect(10, 500, 261, 130))
+        self.gridLayoutWidget_6.setGeometry(QtCore.QRect(10, 490, 261, 140))
         self.gridLayoutWidget_6.setObjectName("gridLayoutWidget_6")
         self.gridLayout_extraOptions = QtWidgets.QGridLayout(self.gridLayoutWidget_6)
         self.gridLayout_extraOptions.setContentsMargins(0, 0, 0, 0)
@@ -769,6 +769,12 @@ class Ui_MainWindow(object):
         self.checkBox_histMatch.setTristate(False)
         self.checkBox_histMatch.setObjectName("checkBox_histMatch")
         self.gridLayout_extraOptions.addWidget(self.checkBox_histMatch, 4, 0, 1, 2)
+        self.checkBox_nlrc = QtWidgets.QCheckBox(self.gridLayoutWidget_6)
+        self.checkBox_nlrc.setToolTip("")
+        self.checkBox_nlrc.setWhatsThis("")
+        self.checkBox_nlrc.setTristate(False)
+        self.checkBox_nlrc.setObjectName("checkBox_nlrc")
+        self.gridLayout_extraOptions.addWidget(self.checkBox_nlrc, 5, 0, 1, 2)
         self.checkBox_S0 = QtWidgets.QCheckBox(self.gridLayoutWidget_6)
         self.checkBox_S0.setObjectName("checkBox_S0")
         self.gridLayout_extraOptions.addWidget(self.checkBox_S0, 3, 0, 1, 2)
@@ -1128,6 +1134,7 @@ class Ui_MainWindow(object):
 
 
         self.checkBox_histMatch.setText(_translate("MainWindow", "Histogram-match to input"))
+        self.checkBox_nlrc.setText(_translate("MainWindow", "Noise-level re-calibration"))
         self.checkBox_S0.setText(_translate("MainWindow", "Naive normalization"))
         self.checkBox_suppresSolvent.setText(_translate("MainWindow", "Supress solvent"))
         self.checkBox_maxBox.setText(_translate("MainWindow", "Limit box size"))
@@ -2574,6 +2581,7 @@ class Ui_MainWindow(object):
             options.max_box = self.spinBox_maxBox.value()
             self.cmd.append(f'--max-box -1')
 
+
         modifying = False
         # modification options ---------------------------------------------------------------
         if not only_estimate:
@@ -2611,6 +2619,10 @@ class Ui_MainWindow(object):
         if self.checkBox_histMatch.isChecked():
             options.hist_match = True
             self.cmd.append(f'--hist-match')
+
+        if self.checkBox_nlrc.isChecked():
+            options.nlrc = True
+            self.cmd.append(f'--nlrc')
 
         if self.checkBox_scaleOcc.isChecked():
             options.scale_mode = 'occ'
