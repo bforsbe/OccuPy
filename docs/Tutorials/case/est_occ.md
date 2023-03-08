@@ -140,7 +140,24 @@ exaggerated occupancy, effectively over-compensated. This can be made evident by
    are working on a way to automate this feedback cycle to get a more accurate occupancy estimate, but for now it 
    might be prudent to alter the scale kernel settings as described above to better estimate the occupancy. 
 
-## 5. Final notes
+---
+
+## 5. Noise-level recalibration 
+OccuPy expects that the reconstruction is constructed from images which have been normalized such that the 
+background (solvent) noise has zero mean. In this case, it is natural to expect zero occupancy to coincide with a 
+pixel value of zero, which is thus implicitly assumed. This also makes the local scale estimate independent of the 
+solvent (noise) model. 
+
+However, one may want to redefine zero occupancy to coincide with the noise distribution, as zero occupancy is 
+expected to display solvent characteristics, especially when noise is high or occupancy is low. Since version 0.1.12,
+OccuPy implements a noise-level recalibration option, which takes this into account. **But this is not a one-stop 
+solution to improve estimation in a high noise setting**, since it demands an accurate solvent model, which may be 
+difficult precisely in this circumstance. 
+
+Noise-level recalibration is accessible in the gui under "Optional/extra options", or on the command flag by adding 
+the flag "--nlrc". Make sure to evaluate the solvent model and confidence estimate before relying on this option. 
+
+## 6. Final notes
 1. Because a reduced tile-size emphasizes variations in mass even when occupancy is the same, a much reduced tile 
    size is potentially useful to estimate relative mass or occupancy when the relative mass is known. There are 
    however better methods available for this purpose, which we recommend for accurate estimation. OccuPy simply 
