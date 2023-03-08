@@ -552,6 +552,11 @@ class Ui_MainWindow(object):
         self.gridLayout_scaleAndDef.addWidget(self.comboBox_inputSolventDef, 1, 1, 1, 1)
         self.comboBox_inputSolventDef.addItem(" ")
 
+        self.comboBox_targetMask = QtWidgets.QComboBox(self.gridLayoutWidget_scaleAndDef)
+        self.comboBox_targetMask.setObjectName("comboBox_targetMask")
+        self.gridLayout_scaleAndDef.addWidget(self.comboBox_targetMask, 2, 1, 1, 1)
+        self.comboBox_targetMask.addItem(" ")
+
         self.toolButton_inputScale_browse = QtWidgets.QToolButton(self.gridLayoutWidget_scaleAndDef)
         self.toolButton_inputScale_browse.setObjectName("toolButton_inputScale_browse")
         self.gridLayout_scaleAndDef.addWidget(self.toolButton_inputScale_browse, 0, 2, 1, 1)
@@ -559,6 +564,10 @@ class Ui_MainWindow(object):
         self.toolButton_inputSolventDef_browse = QtWidgets.QToolButton(self.gridLayoutWidget_scaleAndDef)
         self.toolButton_inputSolventDef_browse.setObjectName("toolButton_inputSolventDef_browse")
         self.gridLayout_scaleAndDef.addWidget(self.toolButton_inputSolventDef_browse, 1, 2, 1, 1)
+
+        self.toolButton_targetMask_browse = QtWidgets.QToolButton(self.gridLayoutWidget_scaleAndDef)
+        self.toolButton_targetMask_browse.setObjectName("toolButton_inputSolventDef_browse")
+        self.gridLayout_scaleAndDef.addWidget(self.toolButton_targetMask_browse, 2, 2, 1, 1)
 
         self.label_inputScale = QtWidgets.QLabel(self.gridLayoutWidget_scaleAndDef)
         self.label_inputScale.setEnabled(True)
@@ -573,6 +582,13 @@ class Ui_MainWindow(object):
         self.label_inputSolventDef.setObjectName("label_inputSolventDef")
         self.label_inputSolventDef.setMaximumWidth(80)
         self.gridLayout_scaleAndDef.addWidget(self.label_inputSolventDef,1,0,1,1)
+
+        self.label_targetMask = QtWidgets.QLabel(self.gridLayoutWidget_scaleAndDef)
+        self.label_targetMask.setEnabled(True)
+        self.label_targetMask.setAlignment(QtCore.Qt.AlignRight)
+        self.label_targetMask.setObjectName("label_targetMask")
+        self.label_targetMask.setMaximumWidth(80)
+        self.gridLayout_scaleAndDef.addWidget(self.label_targetMask,2,0,1,1)
 
         self.spinBox_viewSlice = QtWidgets.QSpinBox(self.gridLayoutWidget)
         self.spinBox_viewSlice.setEnabled(True)
@@ -1049,6 +1065,11 @@ class Ui_MainWindow(object):
         self.toolButton_inputSolventDef_browse.setText(_translate("MainWindow", "browse"))
         self.toolButton_inputSolventDef_browse.clicked.connect(self.set_solvent_file)
 
+
+        # Input target mask
+        self.toolButton_targetMask_browse.setText(_translate("MainWindow", "browse"))
+        self.toolButton_targetMask_browse.clicked.connect(self.set_targetmask_file)
+
         # Update when changing the input choice
         self.comboBox_inputMap.currentIndexChanged.connect(self.read_input_file)
         self.comboBox_inputScale.currentIndexChanged.connect(self.change_scale_file)
@@ -1180,6 +1201,8 @@ class Ui_MainWindow(object):
                                                                           "Note that you can leave deselect it."))
         self.toolButton_inputSolventDef_browse.setText(_translate("MainWindow", "browse"))
         self.toolButton_inputSolventDef_browse.setToolTip(_translate("MainWindow", "Load a solvent definition from file"))
+        self.toolButton_targetMask_browse.setText(_translate("MainWindow", "browse"))
+        self.toolButton_targetMask_browse.setToolTip(_translate("MainWindow", "Load a target mask from file"))
         self.toolButton_estimateScale.setText(_translate("MainWindow", "  Estimate  \n  scale  "))#ɒk.jə.paɪ"))
         self.toolButton_estimateScale.setToolTip(_translate("MainWindow", "Estimate the scale of the selected input map."))
         self.toolButton_estimateScale.clicked.connect(self.estimate_scale)
@@ -1188,6 +1211,7 @@ class Ui_MainWindow(object):
         self.toolButton_modify.clicked.connect(self.run_cmd)
         self.label_inputScale.setText(_translate("MainWindow", "  scale map"))
         self.label_inputSolventDef.setText(_translate("MainWindow", " solvent def"))
+        self.label_targetMask.setText(_translate("MainWindow", "target mask"))
         self.label_inputMap.setText(_translate("MainWindow", "  Input map"))
 
         self.toolButton_expandSolModel.clicked.connect(self.window_solvent_model)
@@ -1761,6 +1785,27 @@ class Ui_MainWindow(object):
                 # only read if its a browsed input
                 if not generate:
                     self.read_solvent_file()
+
+    def set_targetmask_file(self,target_mask_name=None,generate=False):
+        import os
+        if target_mask_name is None or target_mask_name is False:
+            target_mask_name, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", os.getcwd(),
+                                                                   "Image Files (*.mrc *.map);;All Files (*)")  # Ask for file
+        new_file = True
+        idx = None
+        for i in range(self.comboBox_inputSolventDef.count()):
+            if self.comboBox_inputSolventDef.itemText(i) == target_mask_name:
+                idx = i
+                new_file = False
+
+        if new_file:
+            if target_mask_name:
+                self.label_viewSolDef.setEnabled(True)
+                # TODO loop and set if new, otherwise change active
+                self.comboBox_targetMask.addItem(str(target_mask_name))
+                n = self.comboBox_targetMask.count()
+                self.comboBox_targetMask.setCurrentIndex(n-1)
+
 
     def read_solvent_file(self):
         # TODO check that file/map still exists
@@ -2559,6 +2604,10 @@ class Ui_MainWindow(object):
         if len(self.comboBox_inputSolventDef.currentText())>3:
             options.solvent_def = self.comboBox_inputSolventDef.currentText()
             self.cmd.append(f'--solvent-def {options.solvent_def}')
+
+        if len(self.comboBox_targetMask.currentText())>3:
+            options.target_mask = self.comboBox_targetMask.currentText()
+            self.cmd.append(f'--target-mask {options.target_mask}')
 
         # input options-------------------------------------------------------------------------
         options.lowpass_input = self.doubleSpinBox_inputLowpass.value()
