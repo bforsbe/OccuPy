@@ -35,6 +35,7 @@ class occupy_options:
         solvent_def: str = None,
         scale_limit: float = 0.05,
         scale_mode: str = None,
+        nlrc: bool = False,
         hist_match: bool = False,
         target_mask: str = None,
         output_map: str = 'out_<input_file_name>',
@@ -73,6 +74,7 @@ class occupy_options:
         self.solvent_def = solvent_def
         self.scale_limit = scale_limit
         self.scale_mode = scale_mode
+        self.nlrc = nlrc
         self.hist_match = hist_match
         self.target_mask = target_mask
         self.output_map = output_map
@@ -188,6 +190,10 @@ def parse_and_run(
             help="Hard limit below which map scale/occupancy will be considered unreliable for amplification",
             min=0.0,
             max=1.0
+        ),
+        nlrc: bool = typer.Option(
+          False,
+          help="Noise-level re-calibration of local scale, setting zero-point at the edge of noise distibution"
         ),
         hist_match: bool = typer.Option(
             False,
@@ -310,6 +316,7 @@ def parse_and_run(
         solvent_def,
         scale_limit,
         scale_mode,
+        nlrc,
         hist_match,
         target_mask,
         output_map,

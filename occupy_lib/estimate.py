@@ -374,10 +374,18 @@ def occupy_run(options: args.occupy_options):
 
     # Correct for noise distribution width.
     # This effectively resamples the estimation from [confidence_limit,1] to [0,1]
-    scale = (scale - confidece_limit) / (1 - confidece_limit)
-    scale = np.clip(scale,0,1)
-
-
+    if options.nlrc:
+        scale = (scale - confidece_limit) / (1 - confidece_limit)
+        scale = np.clip(scale,0,1)
+        if scale_map is not None:
+            map_tools.new_mrc(
+                scale,
+                scale_map,
+                vox_sz=1.0,
+                verbose=options.verbose,
+                extra_header=f'occupy scale: {options.scale_mode}'
+            )
+        map_tools.adjust_to_parent(file_name=scale_map, parent=options.input_map)
 
     # Specific occupancy estimation using pixel map
     if options.target_mask!=None:
@@ -403,9 +411,10 @@ def occupy_run(options: args.occupy_options):
         # Calculate the occupancy given the established max_val_spec given the tau_spec
         spec_occ = np.max(sel_pix) / max_val_spec
 
-        #Correct for noise distribution width.
-        spec_occ = (spec_occ - confidece_limit) / (1 - confidece_limit)
-        spec_occ = np.clip(spec_occ, 0, 1)
+        if options.nlrc:
+            # Correct for noise distribution width.
+            spec_occ = (spec_occ - confidece_limit) / (1 - confidece_limit)
+            spec_occ = np.clip(spec_occ, 0, 1)
 
         print(f'Targeted occupancy estimated to {spec_occ:.3f} using tau={tau_spec} from n_spec={n_spec_sel} pixels in the target mask')
 
@@ -834,7 +843,7 @@ def occupy_run(options: args.occupy_options):
     print(f'Solvent peak        \t    \t: \t {solvent_parameters[1]:.3f}', file=f_log)
     print(f'Full scale          \t    \t: \t {max_val:.3f}', file=f_log)
     print(f'Variability_limit   \t    \t: \t {variability_limit:.3f}', file=f_log)
-    print(f'Scale confidence limit    \t: \t {lowest_confident_scale:.3f}', file=f_log)
+    print(f'Primary conf. limit       \t: \t {confidece_limit:.3f}', file=f_log)
 
     f_log.close()
     if options.verbose:
