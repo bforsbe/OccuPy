@@ -2265,7 +2265,7 @@ class Ui_MainWindow(object):
                     output_t =  (output_t-tmin)/(tmax-tmin)
 
                     # Construct and render image
-                    im_data = np.copy(np.array((t * 255).astype(np.uint8)))
+                    im_data = np.copy(np.array((output_t * 255).astype(np.uint8)))
                     # get the shape of the array
                     height, width = np.shape(im_data)
 
@@ -2274,6 +2274,8 @@ class Ui_MainWindow(object):
 
                     # divide by the number of rows
                     bytesPerLine = int(totalBytes / height)
+
+                    n = np.shape(im_data)[0]
 
                     qimage = QtGui.QImage(im_data, n, n, bytesPerLine,
                                           QtGui.QImage.Format_Grayscale8)  # Setup pixmap with the provided image
