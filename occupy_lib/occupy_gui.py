@@ -1707,8 +1707,19 @@ class Ui_MainWindow(object):
                 #t = (t-tmin)/(tmax-tmin)
 
                 # Construct and render image
-                im_data = np.array((t*255).astype(np.uint8))
-                qimage = QtGui.QImage(im_data,n,n,QtGui.QImage.Format_Grayscale8)# Setup pixmap with the provided image
+                im_data = np.copy(np.array((t * 255).astype(np.uint8)))
+                # get the shape of the array
+                height, width = np.shape(im_data)
+
+                # calculate the total number of bytes in the frame
+                totalBytes = im_data.nbytes
+
+                # divide by the number of rows
+                bytesPerLine = int(totalBytes / height)
+
+                qimage = QtGui.QImage(im_data, n, n, bytesPerLine,
+                                      QtGui.QImage.Format_Grayscale8)  # Setup pixmap with the provided image
+
                 pixmap = QtGui.QPixmap(qimage) # Setup pixmap with the provided image
                 pixmap = pixmap.scaled(self.label_viewScale.width(), self.label_viewScale.height(), QtCore.Qt.KeepAspectRatio) # Scale pixmap
                 self.label_viewScale.setPixmap(pixmap) # Set the pixmap onto the label
@@ -2195,8 +2206,20 @@ class Ui_MainWindow(object):
                     output_t =  np.clip(output_t,tmin,tmax)
                     output_t =  (output_t-tmin)/(tmax-tmin)
 
-                    im_data = np.array((output_t*255).astype(np.uint8))
-                    qimage = QtGui.QImage(im_data,scale_n,scale_n,QtGui.QImage.Format_Grayscale8)
+                    # Construct and render image
+                    im_data = np.copy(np.array((t * 255).astype(np.uint8)))
+                    # get the shape of the array
+                    height, width = np.shape(im_data)
+
+                    # calculate the total number of bytes in the frame
+                    totalBytes = im_data.nbytes
+
+                    # divide by the number of rows
+                    bytesPerLine = int(totalBytes / height)
+
+                    qimage = QtGui.QImage(im_data, n, n, bytesPerLine,
+                                          QtGui.QImage.Format_Grayscale8)  # Setup pixmap with the provided image
+
                     pixmap = QtGui.QPixmap(qimage) # Setup pixmap with the provided image
                     pixmap = pixmap.scaled(self.label_viewOutput.width(), self.label_viewOutput.height(), QtCore.Qt.KeepAspectRatio) # Scale pixmap
 
