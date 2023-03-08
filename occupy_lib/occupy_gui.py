@@ -404,6 +404,22 @@ class Ui_MainWindow(object):
         self.label_viewScale.setAlignment(QtCore.Qt.AlignCenter)
         self.label_viewScale.setEnabled(False)
 
+        # set button context menu policy
+        self.tabWidget_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.tabWidget_view.customContextMenuRequested.connect(self.on_context_menu)
+
+        # create context menu
+        self.save_img = QtWidgets.QAction("Save image as...", MainWindow)
+        self.save_img_default = QtWidgets.QAction("Save image with default name", MainWindow)
+
+
+        self.popMenu = QtWidgets.QMenu(MainWindow)
+        self.popMenu.addAction(self.save_img)
+        self.save_img.triggered.connect(self.save_displayed_image)
+
+        self.popMenu.addAction(self.save_img_default)
+        self.save_img_default.triggered.connect(self.save_displayed_image_default)
+
         self.label_viewScale.setObjectName("label_viewScale")
         self.tabWidget_view.addTab(self.tab_viewScale, "")
         self.tab_viewConfidence = QtWidgets.QWidget()
@@ -1222,6 +1238,18 @@ class Ui_MainWindow(object):
 
         self.tabWidget_output.tabBarDoubleClicked.connect(self.view_full_log)
 
+    def on_context_menu(self, point):
+        # show context menu
+        current_idx = self.tabWidget_view.currentIndex()
+        show = 0
+        show += (current_idx == self.tabWidget_view.indexOf(self.tab_viewInput) and self.label_viewInput.isEnabled())
+        show += (current_idx == self.tabWidget_view.indexOf(self.tab_viewScale) and self.label_viewScale.isEnabled())
+        show += (current_idx == self.tabWidget_view.indexOf(self.tab_viewConfidence) and self.label_viewConfidence.isEnabled())
+        show += (current_idx == self.tabWidget_view.indexOf(self.tab_solvDef) and self.label_viewSolDef.isEnabled())
+        show += (current_idx == self.tabWidget_view.indexOf(self.tab_viewOutput) and self.label_viewOutput.isEnabled())
+
+        if show != 0:
+            self.popMenu.exec_(self.tabWidget_view.mapToGlobal(point))
 
     def tutorial_open(self):
         import webbrowser
@@ -1268,6 +1296,12 @@ class Ui_MainWindow(object):
                                       "run occupy to get accurate modification \n"
                                       "maps written to disk.")
         self.label_solventModel.setText("Run occupy to \n view the solvent model")
+
+        self.label_viewInput.setEnabled(False)
+        self.label_viewScale.setEnabled(False)
+        self.label_viewConfidence.setEnabled(False)
+        self.label_viewSolDef.setEnabled(False)
+        self.label_viewOutput.setEnabled(False)
 
     def generate_subtraction_mask(self):
 
@@ -1383,7 +1417,7 @@ class Ui_MainWindow(object):
         import os
 
         # Open dialog to choose file
-        file_name, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", os.getcwd(),
+        file_name, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Input reconstruction", os.getcwd(),
                                                             "Image Files (*.mrc *.map);;All Files (*)")  # Ask for file
 
         if file_name:
@@ -1804,7 +1838,6 @@ class Ui_MainWindow(object):
 
         if new_file:
             if target_mask_name:
-                self.label_viewSolDef.setEnabled(True)
                 # TODO loop and set if new, otherwise change active
                 self.comboBox_targetMask.addItem(str(target_mask_name))
                 n = self.comboBox_targetMask.count()
@@ -1848,7 +1881,7 @@ class Ui_MainWindow(object):
             self.slider_scaleAsSolDef.setEnabled(False)
 
     def render_solvent_slice(self,force=False):
-        self.label_viewSolDef.setEnabled(True)
+
         # Check if input view is active (currently viewed)
         # We don't want to read and render a slice that we're not viewing
         if self.tabWidget_view.currentIndex() == self.tabWidget_view.indexOf(self.tab_solvDef) or force:
@@ -1861,8 +1894,10 @@ class Ui_MainWindow(object):
                 # Get file name or object
                 solvent_file_name = self.comboBox_inputScale.currentText()
                 threshold = int( 255 * float(self.slider_scaleAsSolDef.value()) / 100.0 )
+                self.label_viewSolDef.setEnabled(True)
             else:
                 self.label_viewSolDef.clear()
+                self.label_viewSolDef.setEnabled(False)
 
                 # Get file name or object
                 solvent_file_name = self.comboBox_inputSolventDef.currentText()
@@ -1872,6 +1907,7 @@ class Ui_MainWindow(object):
 
             # If there is something to render
             if len(solvent_file_name) > 3:
+                self.label_viewSolDef.setEnabled(True)
 
                 # Open memory-solvent_file_name (much faster than open)
                 f = mf.mmap(solvent_file_name)
@@ -2928,6 +2964,72 @@ class Ui_MainWindow(object):
                 self.occupy_warn(f' Cannot change directory to {new_directory}')
         else:
             self.occupy_log(f'AT: staying in {os.getcwd()}')
+
+
+    def save_displayed_image(self, default=False):
+        if hasattr(self,'textEdit_log'):
+            current_idx = self.tabWidget_view.currentIndex()
+            saveLbl = None
+
+            mod_spec=''
+            if current_idx == self.tabWidget_view.indexOf(self.tab_viewInput):
+                saveLbl = self.label_viewInput
+            if current_idx == self.tabWidget_view.indexOf(self.tab_viewScale):
+                saveLbl = self.label_viewScale
+            if current_idx == self.tabWidget_view.indexOf(self.tab_viewConfidence):
+                saveLbl = self.label_viewConfidence
+            if current_idx == self.tabWidget_view.indexOf(self.tab_solvDef):
+                saveLbl = self.label_viewSolDef
+            if current_idx == self.tabWidget_view.indexOf(self.tab_viewOutput):
+                saveLbl = self.label_viewOutput
+                if self.tabWidget_modification.currentIndex() == 0:
+                    mod_spec = f'_ampl_{self.doubleSpinBox_amplPower.value():.1f}'
+                elif self.tabWidget_modification.currentIndex() == 1:
+                    mod_spec = f'_attn_{self.doubleSpinBox_attnPower.value():.1f}'
+                if self.tabWidget_modification.currentIndex() == 2:
+                    mod_spec = f'_sigm_{self.doubleSpinBox_sigmoidPower.value():.1f}_{self.doubleSpinBox_sigmoidPivot.value():.2f}'
+
+
+            pixmap = saveLbl.pixmap()
+
+            filename=''
+            if default:
+                from pathlib import Path
+                base = Path(str(self.comboBox_inputMap.currentText())).stem
+
+                mode=''
+                if self.label_viewInput.isVisible():
+                    mode='input'
+                if self.label_viewScale.isVisible():
+                    mode='scale'
+                if self.label_viewConfidence.isVisible():
+                    mode='conf'
+                if self.label_viewSolDef.isVisible():
+                    mode='soldef'
+                if self.label_viewOutput.isVisible():
+                    mode=f'mod{mod_spec}'
+
+                ortho = ''
+                if self.checkBox_viewX.isChecked():
+                        ortho = 'x'
+                elif self.checkBox_viewY.isChecked():
+                        ortho = 'y'
+                else:
+                        ortho = 'z'
+
+                slice = self.spinBox_viewSlice.value()
+
+                filename=f'{base}_{mode}_{ortho}_{slice}.png'
+            else:
+                filename = QtWidgets.QFileDialog.getSaveFileName(None, "Save image as...", os.getcwd())[0]
+
+            if pixmap is not None and filename != '':
+                pixmap.save(filename)
+                self.occupy_log(f"Saved image as {filename}.")
+
+
+    def save_displayed_image_default(self):
+        self.save_displayed_image(default=True)
 
 class MyWindow(QtWidgets.QMainWindow):
     def closeEvent(self,event):

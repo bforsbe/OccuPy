@@ -843,7 +843,7 @@ def occupy_run(options: args.occupy_options):
     print(f'Solvent peak        \t    \t: \t {solvent_parameters[1]:.3f}', file=f_log)
     print(f'Full scale          \t    \t: \t {max_val:.3f}', file=f_log)
     print(f'Variability_limit   \t    \t: \t {variability_limit:.3f}', file=f_log)
-    print(f'Primary conf. limit       \t: \t {confidece_limit:.3f}', file=f_log)
+    print(f'Primary conf. limit \t    \t: \t {confidece_limit:.3f}', file=f_log)
 
     f_log.close()
     if options.verbose:
