@@ -136,7 +136,7 @@ pixel value of zero, which is thus implicitly assumed. This also makes the local
 solvent (noise) model. 
 
 However, one may want to redefine zero scale to coincide with the noise distribution, as zero scale is 
-expected to display solvent characteristics, especially when noise is high or resolution is low. Since version 0.1.12,
+expected to display solvent characteristics, especially when noise is high or resolution is low. Since version 0.1.11,
 OccuPy implements a noise-level recalibration option, which takes this into account. **But this is not a one-stop 
 solution to improve estimation in a high noise setting**, since it demands an accurate solvent model, which may be 
 difficult precisely in 

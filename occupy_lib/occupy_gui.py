@@ -2993,35 +2993,36 @@ class Ui_MainWindow(object):
             pixmap = saveLbl.pixmap()
 
             filename=''
-            if default:
-                from pathlib import Path
-                base = Path(str(self.comboBox_inputMap.currentText())).stem
+            from pathlib import Path
 
-                mode=''
-                if self.label_viewInput.isVisible():
-                    mode='input'
-                if self.label_viewScale.isVisible():
-                    mode='scale'
-                if self.label_viewConfidence.isVisible():
-                    mode='conf'
-                if self.label_viewSolDef.isVisible():
-                    mode='soldef'
-                if self.label_viewOutput.isVisible():
-                    mode=f'mod{mod_spec}'
-
-                ortho = ''
-                if self.checkBox_viewX.isChecked():
-                        ortho = 'x'
-                elif self.checkBox_viewY.isChecked():
-                        ortho = 'y'
+            base=''
+            if self.label_viewInput.isVisible():
+                base=Path(str(self.comboBox_inputMap.currentText())).stem
+            if self.label_viewScale.isVisible():
+                base=Path(str(self.comboBox_inputScale.currentText())).stem
+            if self.label_viewConfidence.isVisible():
+                base=Path(str(self.confidence_file_name)).stem
+            if self.label_viewSolDef.isVisible():
+                if len(self.comboBox_inputSolventDef.currentText())>3:
+                    base=Path(str(self.comboBox_inputSolventDef.currentText())).stem
                 else:
-                        ortho = 'z'
+                    base=f'soldef_by_scale_0.{self.slider_scaleAsSolDef.value()}'
+            if self.label_viewOutput.isVisible():
+                base=f'mod{mod_spec}'
 
-                slice = self.spinBox_viewSlice.value()
-
-                filename=f'{base}_{mode}_{ortho}_{slice}.png'
+            ortho = ''
+            if self.checkBox_viewX.isChecked():
+                    ortho = 'x'
+            elif self.checkBox_viewY.isChecked():
+                    ortho = 'y'
             else:
-                filename = QtWidgets.QFileDialog.getSaveFileName(None, "Save image as...", os.getcwd())[0]
+                    ortho = 'z'
+
+            slice = self.spinBox_viewSlice.value()
+
+            filename=f'{base}_{ortho}_{slice}.png'
+            if not default:
+                filename = QtWidgets.QFileDialog.getSaveFileName(parent=None, caption="Save image as...", filter="*.png",directory=f'{os.getcwd()}/{filename}')[0]
 
             if pixmap is not None and filename != '':
                 pixmap.save(filename)
