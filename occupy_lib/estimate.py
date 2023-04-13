@@ -460,8 +460,8 @@ def occupy_run(options: args.occupy_options):
         if options.lowpass_output is not None:
             ampl, _ = map_tools.lowpass(
                 ampl,
-                options.lowpass_output,
-                voxel_size
+                resolution=options.lowpass_output,
+                voxel_size=voxel_size
             )
 
         # If the input map was larger than the maximum processing size, we need to get back the bigger size as output

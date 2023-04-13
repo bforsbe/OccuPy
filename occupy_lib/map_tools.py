@@ -334,7 +334,7 @@ def lowpass(
         # Pad instead
         if not resample:
             # Padding without resampling is not possible
-            return in_data
+            return in_data, out_voxel_size
         t = np.zeros((2 * keep_shells, 2 * keep_shells, keep_shells + 1), dtype=np.complex64)
         edge = int((2 * keep_shells - n) / 2)
         t[edge:edge + n, edge:edge + n, :-edge] = f_data
