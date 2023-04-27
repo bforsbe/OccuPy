@@ -253,6 +253,7 @@ def occupy_run(options: args.occupy_options):
     if options.plot:
         interactive_plot = False  # TODO sort this in flags, or omit.
         global f, ax1, ax2
+        plt.close('all')
         f = plt.figure()
 
     # --------------- SOLVENT ESTIMATION -------------------------------------------------------
