@@ -68,14 +68,14 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.9 (alpha).
 
 ### Brief instructions to get going 
 
-=== "On Windows"
+=== "Windows"
 
     1. Download the binary installer.
     2. Double-click the installer, which should guide you thorugh the simple process of installing OccuPy on your 
     system.
     3. In the start-menu, search for "occupy_gui". You should see the OccuPy Guppy. 
 
-=== "On Mac"
+=== "Mac"
 
     1. Download the executable program file. 
     2. Open a terminal and navigate to the downloads directory. 
@@ -83,7 +83,7 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.9 (alpha).
     4. In a file browser, go to the downloads directory and right-click the `occupy_gui` binary and select 'Open'. 
     In the dialog that pops up, select 'Open again'. You can also type `./occupy_gui` in the terminal
 
-=== "On Linux (ubuntu)"
+=== "Linux (ubuntu)"
     
     1. Download the .deb file. 
     2. Open a terminal and navigate to the downloads directory. 
@@ -171,8 +171,25 @@ If you run into issues, check the <a href="../Troubleshooting/install_trbl/">tro
 
 === "Linux (ubuntu)"
 
+    It is recommended that you install occupy using a clean conda or other virtual environment, as this will avoid potential 
+    conflict with pre-existing packages and specifically their conflicint dependencies on pyqt.
+
     1. Open a terminal.
-    2. In the terminal, call `pip install occupy`.
+    2. In the terminal, call `pip install occupy[pyqt5]`.
+    3. Verify the install by calling `pip show occupy`. You will either see `WARNING: Package(s) not found: occupy` 
+    or a description of the installation. If successfully installed, continue. 
+    4. In the terminal, call `occupy_gui`. If you get the error 
+    `command not found: occupy_gui`
+    then you need to add the pip path to your environment variables, or restart the terminal. Otherwise, the occupy GUI 
+    should start. 
+    5. Note also that calling `occupy` in the terminal will invoke the non-GUI tool. 
+    Call `occupy --help` for a list of input options.
+
+=== "Mac"
+
+    1. Open a terminal.
+    2. In the terminal, call `pip install occupy` if your mac has an M1 chip. Otherwise you will likely need to instead
+    need to call `pip install occupy[pyqt5]`
     3. Verify the install by calling `pip show occupy`. You will either see `WARNING: Package(s) not found: occupy` 
     or a description of the installation. If successfully installed, continue. 
     4. In the terminal, call `occupy_gui`. If you get the error 
