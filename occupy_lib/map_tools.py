@@ -320,7 +320,10 @@ def lowpass(
     with spfft.set_workers(workers):
         # FFT forward
         f_data = spfft.rfftn(in_data)  # *2*np.pi/n
-        f_data = spfft.fftshift(f_data, axes=(0, 1))
+        if ndim==3:
+            f_data = spfft.fftshift(f_data, axes=(0, 1))
+        else:
+            f_data = spfft.fftshift(f_data, axes=(0,))
 
     # If we are resampling, then we may be able to provide the output voxel size
     if resample and voxel_size is not None:
@@ -363,7 +366,11 @@ def lowpass(
     out_data = []
     with spfft.set_workers(workers):
         # FFT reverse
-        t = spfft.ifftshift(t, axes=(0, 1))
+        if ndim==3:
+            t = spfft.ifftshift(t, axes=(0, 1))
+        else:
+            t = spfft.ifftshift(t, axes=(0,))
+
         t = spfft.irfftn(t)
 
     # The FFT must be normalized
