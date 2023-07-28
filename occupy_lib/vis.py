@@ -37,7 +37,7 @@ def chimx_viz(
         # -----MODELS --------------------------------------
         print(f'open \"{input}\"', file=the_file)
         if threshold_maps is not None:
-            print(f'vol #1 level {threshold_maps}', file=the_file)
+            print(f'vol #1 style surface region all level {threshold_maps}', file=the_file)
 
         print(f'open \"{scale}\" ', file=the_file)
         if threshold_scale is not None:
