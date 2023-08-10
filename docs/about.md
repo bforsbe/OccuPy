@@ -1,5 +1,5 @@
 # About 
-
+[![DOI](https://zenodo.org/badge/503896983.svg)](https://zenodo.org/badge/latestdoi/503896983)
 ## Developers
 
 Bjoern O. Forsberg

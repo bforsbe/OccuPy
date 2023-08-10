@@ -1,4 +1,5 @@
 # OccuPy
+[![DOI](https://zenodo.org/badge/503896983.svg)](https://zenodo.org/badge/latestdoi/503896983)
 
 A fast and simple python module and program to estimate local scaling of cryo-EM maps, to approximate relative
 occupancy and/or resolution, and optionally also equalise the map according to occupancy while suppressing solvent 
