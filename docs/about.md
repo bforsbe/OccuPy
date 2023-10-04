@@ -31,19 +31,18 @@ google scholar">:fontawesome-solid-graduation-cap:{ .scholar }</a>
 ---
 
 ## Primary citation
-If you find OccuPy useful for any purpose, plaese refer to it and formally cite the paper: 
+If you find OccuPy useful for any purpose, please refer to it and formally cite the paper: 
 
 ```
-@article{Forbserg2022,
-author = {Forbserg, Bjoern O and Shah, Pranav NM and Burt, Alister},
-doi = {https://doi.org/10.1101/2023.01.18.524529},
-journal = {bioRxiv},
-pages = {1--24},
-title = {A robust normalized local filter to estimate occupancy directly from cryo-EM maps},
-year = {2022}
+@article{Forbserg2023,
+author = {Forsberg, Bjoern O and Shah, Pranav NM and Burt, Alister},
+doi = {https://doi.org/10.1038/s41467-023-41478-1},
+journal = {Nature Communications},
+title = {A robust normalized local filter to estimate compositional heterogeneity directly from cryo-EM maps},
+year = {2023}
 }
 ```
-And do please read the <a href="https://www.biorxiv.org/content/10.1101/2023.01.18.524529v1" title="link to paper">paper on biorXiv</a>.
+And do please read the <a href="https://www.nature.com/articles/s41467-023-41478-1" title="link to paper">paper in Nature Communications</a>.
 
 ---
 
