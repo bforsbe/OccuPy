@@ -3051,6 +3051,9 @@ class ImageWindow(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+    custom_font = QtGui.QFont()
+    custom_font.setPointSize(10)
+    app.setFont(custom_font)
     MainWindow = MyWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
