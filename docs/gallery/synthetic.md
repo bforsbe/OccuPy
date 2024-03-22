@@ -10,7 +10,7 @@ Relion 4.0-beta-2-commit-c3ddd0
 ## Alter occupancy of pdb model
 Altered occupancy of one pdb model chain, generate theoretical density and estimate occupancy of the density using 
 OccuPy
-![image](https://drive.google.com/uc?export=view&id=1ZIJ7vKye1BXBjIPclJs8YbrR74W1VKQu)
+![image](https://drive.google.com/thumbnail?sz=w1920&id=1ZIJ7vKye1BXBjIPclJs8YbrR74W1VKQu)
 
 
 # Setup
@@ -64,7 +64,7 @@ hide #7
 
 ## Alter B-factors of pdb model
 To alter B-factors (to 200Å) of the chain A of the model instead of occupancy:
-![image](https://drive.google.com/uc?export=view&id=1lnzmjYM_fZ5W8paQOEm_GKip5hVlrdBX)
+![image](https://drive.google.com/thumbnail?sz=w1920&id=1lnzmjYM_fZ5W8paQOEm_GKip5hVlrdBX)
 
 
 ```commandline

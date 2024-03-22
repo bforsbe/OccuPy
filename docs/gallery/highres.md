@@ -21,7 +21,7 @@ ChimeraX 1.4 (2022-06-03)
 vol gaussian #1 sdev 0.8 
 scale_color #5 #2
 ```
-![image](https://drive.google.com/uc?export=view&id=1mBboZQPoh3VRZIN0gtoc2hRQNHW8M1Ss)
+![image](https://drive.google.com/thumbnail?sz=w1920&id=1mBboZQPoh3VRZIN0gtoc2hRQNHW8M1Ss)
 
 # Other views
 
@@ -33,4 +33,4 @@ show #1
 vol #1 level 0.0454
 surface dust #1 
 ```
-![image](https://drive.google.com/uc?export=view&id=1KlfD5cigkqpyLaSsQRsiPfXWHsS_UNMk)
+![image](https://drive.google.com/thumbnail?sz=w1920&id=1KlfD5cigkqpyLaSsQRsiPfXWHsS_UNMk)

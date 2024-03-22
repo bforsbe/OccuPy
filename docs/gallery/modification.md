@@ -29,8 +29,8 @@ show #3
 ```
 
 <div class="c-compare" style="--value:20%;">
-  <img class="c-compare__left" src="https://drive.google.com/uc?export=view&id=1g4D7AUyeZXfROoukWvzAkdQoZ6Fvnf1z" alt="Input" />
-  <img class="c-compare__right" src="https://drive.google.com/uc?export=view&id=1pRrOUqs0EiJXvQGC3saxbbG66VhV7XAZ" alt="Amplified" />
+  <img class="c-compare__left" src="https://drive.google.com/thumbnail?sz=w1920&id=1g4D7AUyeZXfROoukWvzAkdQoZ6Fvnf1z" alt="Input" />
+  <img class="c-compare__right" src="https://drive.google.com/thumbnail?sz=w1920&id=1pRrOUqs0EiJXvQGC3saxbbG66VhV7XAZ" alt="Amplified" />
   <input type="range" class="c-rng c-compare__range" min="0" max="100" value="20" oninput="this.parentNode.style.
 setProperty('--value', `${this.value}%`)" />
 </div>
@@ -46,8 +46,8 @@ show #4
 ```
 
 <div class="c-compare" style="--value:20%;">
-  <img class="c-compare__left" src="https://drive.google.com/uc?export=view&id=1Fk7jg2dkRzQ133XJ-x_FTaOEgQe_xJ2V" alt="Input" />
-  <img class="c-compare__right" src="https://drive.google.com/uc?export=view&id=1XETOdONDIepffDYYNNg2WXEuPz4Tv7FX" alt="Attenuation" />
+  <img class="c-compare__left" src="https://drive.google.com/thumbnail?sz=w1920&id=1Fk7jg2dkRzQ133XJ-x_FTaOEgQe_xJ2V" alt="Input" />
+  <img class="c-compare__right" src="https://drive.google.com/thumbnail?sz=w1920&id=1XETOdONDIepffDYYNNg2WXEuPz4Tv7FX" alt="Attenuation" />
   <input type="range" class="c-rng c-compare__range" min="0" max="100" value="20" oninput="this.parentNode.style.
 setProperty('--value', `${this.value}%`)" />
 </div>
@@ -62,8 +62,8 @@ show #5
 ```
 
 <div class="c-compare" style="--value:20%;">
-  <img class="c-compare__left" src="https://drive.google.com/uc?export=view&id=1R6nveLCd1cnjrglXIh4Chd6vvRV6F7qq" alt="Input" />
-  <img class="c-compare__right" src="https://drive.google.com/uc?export=view&id=19h52QHCc5gIAUffw8bngUOiyTYdqyT0E" alt="Sigmoid" />
+  <img class="c-compare__left" src="https://drive.google.com/thumbnail?sz=w1920&id=1R6nveLCd1cnjrglXIh4Chd6vvRV6F7qq" alt="Input" />
+  <img class="c-compare__right" src="https://drive.google.com/thumbnail?sz=w1920&id=19h52QHCc5gIAUffw8bngUOiyTYdqyT0E" alt="Sigmoid" />
   <input type="range" class="c-rng c-compare__range" min="0" max="100" value="20" oninput="this.parentNode.style.
 setProperty('--value', `${this.value}%`)" />
 </div>

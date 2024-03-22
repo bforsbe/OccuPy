@@ -1,8 +1,8 @@
 # Overview
 <div class="c-compare" style="--value:20%; --h:4.6; --w:16;">
-  <img class="c-compare__left" src="https://drive.google.com/uc?export=view&id=1ztTefAhILu648oBNr9bFB1sZD31tNH3a" 
+  <img class="c-compare__left" src="https://drive.google.com/thumbnail?sz=w1920&id=1ztTefAhILu648oBNr9bFB1sZD31tNH3a"
 alt="Synthetic occupancy model" />
-  <img class="c-compare__right" src="https://drive.google.com/uc?export=view&id=19U1PaDpn6e4dVtVMC91QXVy3JUtrPfOW" 
+  <img class="c-compare__right" src="https://drive.google.com/thumbnail?sz=w1920&id=19U1PaDpn6e4dVtVMC91QXVy3JUtrPfOW" 
 alt="Synthetic map estimate" />
   <input type="range" class="c-rng c-compare__range" min="0" max="100" value="20" oninput="this.parentNode.style.
 setProperty('--value', `${this.value}%`)" />
@@ -27,9 +27,10 @@ all other regions on a nominal scale between 0 and 1. This very useful:
  </em>
 </p>
 <br>
-<video class="center" width="800"  controls>
-  <source src="https://drive.google.com/uc?export=view&id=1Il4MPNbXCKr1RCEFbmLp2BDM8st7nen2" type="video/mp4">
-</video>
+
+<iframe src="https://drive.google.com/file/d/1Il4MPNbXCKr1RCEFbmLp2BDM8st7nen2/preview" allowfullscreen="" width="800" height="440"></iframe>
+
+
 
 
 ### Disclaimer

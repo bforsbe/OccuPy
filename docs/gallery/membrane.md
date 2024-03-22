@@ -28,9 +28,9 @@ occupy_level 0.65
 ```
 
 <div class="c-compare" style="--value:25%; --w:16; --h:5.9;">
-  <img class="c-compare__left" src="https://drive.google.com/uc?export=view&id=1UoLxteGSdJy41iaam88mAKJQ178FUCf4" 
+  <img class="c-compare__left" src="https://drive.google.com/thumbnail?sz=w1920&id=1UoLxteGSdJy41iaam88mAKJQ178FUCf4" 
 alt="level 0.65" />
-  <img class="c-compare__right" src="https://drive.google.com/uc?export=view&id=1OC8Rnba3PaWSEeY77yE3dExJYiywSGMi" 
+  <img class="c-compare__right" src="https://drive.google.com/thumbnail?sz=w1920&id=1OC8Rnba3PaWSEeY77yE3dExJYiywSGMi" 
 alt="level 0.30" />
   <input type="range" class="c-rng c-compare__range" min="0" max="100" value="25" oninput="this.parentNode.style.
 setProperty('--value', `${this.value}%`)" />

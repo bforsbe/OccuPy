@@ -53,9 +53,7 @@ session" in chimeraX before you open the .cxc-file written by OccuPy. </strong>
    change the slice number to 96 to see the transmembrane helices across the light-grey detergent micelle, as well 
    as the extracellular domain. 
 
-<video class="center" width="400"  controls>
-  <source src="https://drive.google.com/uc?export=view&id=14w8wjEAvIQg9cP5gEMC4bzI0YHI4VPhJ" type="video/mp4">
-</video>
+<iframe src="https://drive.google.com/file/d/14w8wjEAvIQg9cP5gEMC4bzI0YHI4VPhJ/preview" allowfullscreen="" width="800" height="440"></iframe>
 
 
 ---
@@ -110,9 +108,7 @@ through the GUI. In this case you should see the input map colored by the estima
 
 4. Close chimeraX.
 
-<video class="center" width="400"  controls>
-  <source src="https://drive.google.com/uc?export=view&id=1pRwqFaDtIcn2tSYHJ15UkQDiAEEjtzzg" type="video/mp4">
-</video>
+<iframe src="https://drive.google.com/file/d/1pRwqFaDtIcn2tSYHJ15UkQDiAEEjtzzg/preview" allowfullscreen="" width="800" height="440"></iframe>
 
 ---
 
@@ -144,9 +140,8 @@ viewer should update interactively, showing you how scale will be modified in th
    "occ" in its name. 
 
 
-<video class="center" width="400"  controls>
-  <source src="https://drive.google.com/uc?export=view&id=1jY_CfRcixJB3jTNyVp4cAfKYA8sScY5W" type="video/mp4">
-</video>
+<iframe src="https://drive.google.com/file/d/1jY_CfRcixJB3jTNyVp4cAfKYA8sScY5W/preview" allowfullscreen="" width="800" height="440"></iframe>
+
 
 <div class="admonition attention">
 <p class="admonition-title">There's more to this</p>
@@ -173,9 +168,7 @@ To learn how parameter adjustment can help you get a better estimate, consult th
 6. When completed, **the preview is still just a preview**. To see the output, please click "Launch ChimeraX". This 
    will open the original map and all modifications, but **only the original is visible by default**. Read on.
 
-<video class="center" width="400"  controls>
-  <source src="https://drive.google.com/uc?export=view&id=1UxNDz010KaN3hdFI0fOfOYFM14Cnq9pD" type="video/mp4">
-</video>
+<iframe src="https://drive.google.com/file/d/1UxNDz010KaN3hdFI0fOfOYFM14Cnq9pD/preview" allowfullscreen="" width="800" height="440"></iframe>
 
 <div class="admonition attention">
 <p class="admonition-title">There's more to this</p>

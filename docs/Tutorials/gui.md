@@ -8,7 +8,7 @@ evaluation of map modification.
 <br><br>
 The GUI also exposes tools to generate masks based on the estimated scale.
 <br><br>
-![image](https://drive.google.com/uc?export=view&id=10KrTBE-MLiQ4wu7kfjIKcupYLvydnxxu)
+![image](https://drive.google.com/thumbnail?sz=w1920&id=10KrTBE-MLiQ4wu7kfjIKcupYLvydnxxu)
 ---
 
 ## Input map
