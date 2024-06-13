@@ -5,12 +5,14 @@ on:
     branches:
       - master
       - main
+      - test_build
     tags:
       - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
   pull_request:
     branches:
       - master
       - main
+      - test_build
   workflow_dispatch:
 
 jobs:
@@ -89,7 +91,7 @@ jobs:
     # github secrets (see readme for details)
     needs: [ test ]
     runs-on: ubuntu-latest
-    if: contains(github.ref, 'tags')
+    #if: contains(github.ref, 'tags')
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
@@ -107,4 +109,4 @@ jobs:
         run: |
           git tag
           python -m build
-          twine upload dist/*
+        # twine upload dist/*
