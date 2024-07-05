@@ -9,7 +9,7 @@ Bjoern O. Forsberg
 <a href="https://scholar.google.com/citations?user=8skHcycAAAAJ&hl=en" title="Bjoern on 
 google scholar">:fontawesome-solid-graduation-cap:{ .scholar }</a>
 <a href="https://github.com/bforsbe" title="Bjoern on github">:fontawesome-brands-github:{ .github }</a>
-<a href="mailto:bjorn.forsberg@ki.se" title="email Bjoern">:fontawesome-solid-envelope:{ .mail }</a>
+<a href="mailto:bjorn.forsberg@liu.se" title="email Bjoern">:fontawesome-solid-envelope:{ .mail }</a>
 <br>
 
 Pranav Shah
