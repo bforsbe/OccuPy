@@ -190,7 +190,7 @@ def percentile_filter_tiled(
         )
 
         # Index of the smallest element in the percentile Tau
-        n_tau = int(np.floor(tau * np.product(tile_sz)))
+        n_tau = int(np.floor(tau * np.prod(tile_sz)))
 
         # Prepare the output array
         # s_tau_tiles = np.zeros(n_tiles * np.ones(dim).astype(int), dtype=np.float32)

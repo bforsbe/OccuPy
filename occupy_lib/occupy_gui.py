@@ -9,7 +9,10 @@ from matplotlib.figure import Figure
 # Ensure using PyQt5 backend
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
-matplotlib.use('QT5Agg')
+try:
+    matplotlib.use("Qt5Agg")
+except Exception:
+    matplotlib.use("Agg")
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
