@@ -13,16 +13,16 @@ setProperty('--value', `${this.value}%`)" />
 The primary purpose of OccuPy is to estimate the local scale of cryo-EM maps. 
 <br><br>
 What does the 'local scale' 
-mean? In simple terms, think of it as the range of pixels values. In well-resolved regions, contrast is high, and we 
+mean? In simple terms, think of it as the range of pixel values. In well-resolved regions, contrast is high, and we 
 expect very bright and very dark pixels. If that region has decreased resolution or occupancy, we expect decreased 
-contrast and a narrower range of pixel values. The limit is solvent, which has Gaussian distribution. OccuPy was built to estimate this 'scale', to quantify relative contrast degradation. This means that it can 
+contrast and a narrower range of pixel values. The limit is solvent, which has a Gaussian distribution. OccuPy was built to estimate this 'scale', to quantify relative contrast degradation. This means that it can 
 estimate the relative resolution, or occupancy. OccuPy also uses this scale as a tool for map modification. 
 
 <p>
  <em>
   <br>
-In essence, OccuPy locates the region that exhibits the highest range of pixel values, and utilizes this to place 
-all other regions on a nominal scale between 0 and 1. This very useful:
+In essence, OccuPy locates the region that exhibits the widest range of pixel values, and utilizes this to place 
+all other regions on a nominal scale between 0 and 1. This is very useful:
   <br>
  </em>
 </p>
@@ -79,8 +79,8 @@ use that it needs no input other than a cryo-EM map.
 
 ## The gist 
 OccuPy is currently implemented as a GUI and command-line tool using open-source python libraries, to facilitate 
-visualization of partial occupancy and the relative resolution of cryo-EM reconstructions by e.g  implementing map 
+visualization of partial occupancy and the relative resolution of cryo-EM reconstructions by e.g. implementing map 
 modification as spatial filtering based on the estimated partial occupancy of local map components. 
-This is intended to create maps that emulate reconstruction expected if the input (image) data was more 
+This is intended to create maps that emulate the reconstruction expected if the input (image) data was more 
 homogenous at lower or higher occupancy.
 

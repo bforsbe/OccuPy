@@ -3,7 +3,7 @@
 <div class="admonition attention">
 <p class="admonition-title">You need an occupancy estimate</p>
 <p>
-Please conduct the tutorial to estimate occupancy before this toturial.
+Please conduct the tutorial to estimate occupancy before this tutorial.
 You will use the same parameters to modify as accurately as possible
 </p>
 </div>
@@ -61,7 +61,7 @@ maps. The effect of multiple modification types are not additive, i.e. they are 
 
 === "Amplify"
 
-    Amplification will effectively make low-occupancy components higher. The output map scale will be mapped by a 
+    Amplification will effectively make low-occupancy components higher. The output map scale will be mapped by 
     an inverse power-scaling, which the user specifies. A power of 1 thus means that the output scale is the same as 
     the input, which would leave the output map identical to the input. Higher values signify stronger amplification, 
     and values in the range 2-5 are typically useful. Higher values approach equalization, which emulates full 
@@ -108,7 +108,7 @@ maps. The effect of multiple modification types are not additive, i.e. they are 
 1. Click the selected modification type tab under "Modification options", and enable it. 
 2. Increase the power of the modification to a value above 1. This will alter 
     - the "plot" tab of the viewer. This shows how the output map scale will depend on the estimated (input) scale. 
-      It is useful to look at this tab while changing the parameters to get a sense of sensitive the modification is 
+      It is useful to look at this tab while changing the parameters to get a sense of how sensitive the modification is 
       to changing the modification settings.  
     - the "preview" tab of the viewer. This will show a rough preview of what the output will be. It is not as 
      accurate, and does not consider the confidence map. It will therefore look fairly noisy. It is very useful to 

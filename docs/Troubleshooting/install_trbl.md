@@ -32,7 +32,7 @@
     We are not aware of how the installation might have failed on linux. Please submit an 
     <a href="https://github.com/bforsbe/OccuPy/issues">issue</a>, describing your system and observations.
 
-## The GUI windows looks too big/small/...
+## The GUI window looks too big/small/...
 
 On some (e.g. 4K) screens, the high resolution causes graphical elements to be re-scaled. OccuPy knows about this 
 and does its best to get it right, but we have not been able to test on a wide range of screen sizes and resolutions.  
@@ -91,7 +91,7 @@ Let's first confirm that it was in fact installed.
 
     1. In the main menu search bar, type "powershell", and open a text-based interface to your system. 
     2. Type `py -m pip show occupy` and hit enter. If you see details regarding occupy, then we're good. If not, try 
-    writing out "python" instan of just "py": `python -m pip show occupy`. 
+    writing out "python" instead of just "py": `python -m pip show occupy`. 
     3. If you still don't see details like version and location, then occupy probably wasn't installed properly.
     You need to try to install it according to the install procedures, 
     and <a href="https://form.jotform.com/223012138013033" target="_blank" rel="noopener noreferrer">ask for help</a>
@@ -109,7 +109,7 @@ Let's first confirm that it was in fact installed.
     version and location, then occupy probably wasn't installed properly. If you used a virtual environment when 
     installing, make sure to activate it like you did before, and try again.
 
-If OccuPy you managed to confirm that OccuPy was installed, Pip may have installed OccuPy in a location that is 
+If you managed to confirm that OccuPy was installed, Pip may have installed OccuPy in a location that is 
 not universally known to your system.
 You can either tell your system where to look when searching for installed applications, or 
 create a shortcut to it that you can find easily. 
@@ -134,7 +134,7 @@ In either case, we need to find where occupy was installed.
 
 === "On Mac"
     
-    1. In a terminal where pip is avaialble, call ```pip show occupy```. The reported location is a good indication 
+    1. In a terminal where pip is available, call ```pip show occupy```. The reported location is a good indication 
     of where occupy was installed. If the locaton is ```/home/bjornf/.local/lib/python3.8/site-packages```, then the 
     location of the program is likely ```/home/bjornf/.local/bin```
 
@@ -143,12 +143,12 @@ In either case, we need to find where occupy was installed.
 
     3. The PATH variable is a colon-separated list. Add the ```occupy_gui``` path as new entry in this list.
 
-    4. If you do mot have the access rights to to this system-wide, you can add the following to your session 
+    4. If you do not have the access rights to do this system-wide, you can add the following to your session 
     startup file: ```export PATH=$PATH:</path/to/occupy/program>```
 
 === "On Linux (ubuntu)"
     
-    1. In a terminal where pip is avaialble, call ```pip show occupy```. The reported location is a good indication 
+    1. In a terminal where pip is available, call ```pip show occupy```. The reported location is a good indication 
     of where occupy was installed. If the locaton is ```/home/bjornf/.local/lib/python3.8/site-packages```, then the 
     location of the program is likely ```/home/bjornf/.local/bin```
 
@@ -157,5 +157,5 @@ In either case, we need to find where occupy was installed.
 
     3. The PATH variable is a colon-separated list. Add the ```occupy_gui``` path as new entry in this list.
 
-    4. If you do mot have the access rights to to this system-wide, you can add the following to your session 
+    4. If you do not have the access rights to do this system-wide, you can add the following to your session 
     startup file: ```export PATH=$PATH:</path/to/occupy/program>```

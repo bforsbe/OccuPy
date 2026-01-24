@@ -1,9 +1,9 @@
 # GUI overview
-The GUI of OccuPy allows you to open maps and view them as sliced 2D images. OccuPy is not meant to visualize the 
+The GUI of OccuPy allows you to open maps and view them as images of 2D slices. OccuPy is not meant to visualize the 
 map in any great detail, this is for you to make appropriate consistency checks. For fine analysis, the GUI will 
 call out to open ChimeraX, a much more sophisticated visualization tool.
 <br><br>
-The GUI automatically calculates and adjusts kernel settings per the users direction, and permits interactive 
+The GUI automatically calculates and adjusts kernel settings per the user's direction, and permits interactive 
 evaluation of map modification. 
 <br><br>
 The GUI also exposes tools to generate masks based on the estimated scale.
@@ -12,7 +12,7 @@ The GUI also exposes tools to generate masks based on the estimated scale.
 ---
 
 ## Input map
-The map to be used as input. When you run OccuPy through the GUI it will the currently selected map. 
+The map to be used as input. When you run OccuPy through the GUI it will indicate the currently selected map. 
 OccuPy supports cubic .map and .mrc files. Occasionally, .ccp4 files cause issues. 
 
 <div class="admonition attention">
@@ -40,15 +40,15 @@ There is also an "emdb" button to fetch and unzip the main map of any EMD entry.
 When you provide an input map, OccuPy checks the box dimensions and voxel size. Based on this, it calculates 
 suggested parameters to estimate the local scale with accuracy and confidence. 
 
-If you change these parameters, parameters below may be updated. Changing some of these parameters will alter the 
+If you change these parameters, other parameters below may be updated. Changing some of these parameters will alter the 
 local scale estimate, so leave them unchanged until you have gone through one of the specific tutorials and 
 understand what they do. 
 
 <div class="admonition hint">
 <p class="admonition-title">Details depend on use</p>
 <p>
-More detailed specification of the scale kernel settings are described in the tuorials that describe estimation of 
-occupanvy and relative resolution, since they influence each case slightly differently. 
+More detailed specification of the scale kernel settings are described in the tutorials about estimation of 
+occupancy and relative resolution, since they influence each case slightly differently. 
 </p>
 </div>
 
@@ -67,7 +67,7 @@ let you use it to modify, and inactivate the "preview" tab of the viewer and the
 <p class="admonition-title">It's easier done than said</p>
 <p>
 If you try it out and follow one or more tutorials, this will make more sense than any explanation. More detailed 
-specification of the modification options are e.g. described in the tutorial on map modification.
+specification of the modification options are described in the tutorial on map modification.
 </p>
 </div>
 
@@ -100,8 +100,8 @@ the input anyway.
 ### Input 
 The map currently selected in the "input map" drop-down menu above. 
 ### Scale
-The map currently selected in the "scale map" drop-down menu **below** the viewer. You can either add files to this 
-drop-down 
+The map currently selected in the "scale map" drop-down menu **below** the viewer. You can add files to this 
+drop-down either
 by browsing or by running OccuPy. 
 ### Conf. 
 The estimated solvent confidence from the previous time OccuPy was run. This is based on the estimated solvent model,
@@ -112,12 +112,12 @@ The map currently selected in the "solvent def" drop-down menu below. The solven
 estimation of a solvent model. This is not typically required. 
 ### Preview
 If you have an input and occupancy-mode scale selected, this will show a preview of the modification. **This does 
-not account for confidence and solvent compensation, and will look worse than the actual output**. 
+not account for confidence and solvent compensation, and the actual output will look better.** 
 
 ---
 
 ## The output log 
-This will document what is happening, for our convenience. But everything is also documented in the full log, which 
+This will document what is happening, for your convenience. But everything is also documented in the full log, which 
 you can access either through the menu or by double-clicking the output log *tab*. 
 
 <div class="admonition attention">

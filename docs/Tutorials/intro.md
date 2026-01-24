@@ -37,7 +37,7 @@ ChimeraX from the OccuPy GUI. Please see the section for
 <p>
 OccuPy writes a chimeraX command script (.cxc) every time you estimate the scale or modify a map. You can open 
 this through chimeraX instead of using OccuPy to launch chimeraX. <strong> Just make sure to use "File"->"close 
-session" in chimeraX before you open the .cxc-file written by OccuPy. </strong>
+session" in chimeraX before you open the .cxc file written by OccuPy. </strong>
 </p>
 </div>
 
@@ -66,7 +66,7 @@ Based on the input, reasonable kernel settings were derived automatically. In th
 - a cube of 5 pixels (voxels) in each dimension will hold a binary mask with the above radial cutoff. 
 - of all the pixels selected by the binary mask, the scale will be proportional to the bottom 96.47% percentile, or 
   the top 3.53% percentile
-- the above parameters results in 93 pixels (voxels) being sampled around each map pixel (voxel).
+- the above parameters result in 93 pixels (voxels) being sampled around each map pixel (voxel).
 - a region of 12 pixels (voxels) in each dimension will be used to determine the scale-normalizing value. This value 
   is always 12 by default, and not estimated. 
 
@@ -188,12 +188,12 @@ To understand map modification, consult the
 3. Close ChimeraX 
 
 ## 10. Final notes 
-Click "Session->View full log" in the menu field. Note that all run setting have been saved according to the same 
+Click "Session->View full log" in the menu field. Note that all run settings have been saved according to the same 
    unique run-ID that you saw in the output log. This log is persistent. If you close OccuPy and start it again, the 
    numbers will be incremented, and everything you did before and do now will be in the full log. 
 <br><br>
 Maps are over-written by default. If you alter the input lowpass to 10Å and re-estimate local scale, the 
-   previously estimated scale is gone. But the parameters to re-generate it is in the full log, provided that you 
+   previously estimated scale is gone. But the parameters to re-generate it are in the full log, provided that you 
    know the run ID. 
 <br><br>
 You might want to play with a few more instructive maps. Here are a few entries that might be interesting to test 

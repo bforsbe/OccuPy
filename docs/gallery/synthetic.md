@@ -14,7 +14,7 @@ OccuPy
 
 
 # Setup
-Use a bash terminal to make a tamplate for occupancy and b-factor modification.
+Use a bash terminal to make a template for occupancy and b-factor modification.
 
 ## Get and prep files 
 ```commandline

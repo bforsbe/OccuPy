@@ -8,7 +8,7 @@ Please read the GUI overview and conduct the intro tutorial first.
 </div>
 
 
-To accurately suppress solvent you primarily have to make sure that the solvent model and confidence is accurate. 
+To accurately suppress solvent you primarily have to make sure that the solvent model and confidence are accurate. 
 The following steps highlight factors influencing this, and how to make the necessary adjustments. 
 
 ---
@@ -48,7 +48,7 @@ prominent.
 
 ## Final notes 
 
-1. The confidence map is written as an auxiliary file. You Can open it manually in the chimeraX-session to have a loof 
+1. The confidence map is written as an auxiliary file. You can open it manually in the chimeraX-session to have a look 
 at it if you want. You can modify and use it as a mask for other purposes as well. But beware that it will be 
 over-written the next time you estimate the scale or modify any map, unless you change its name. 
 2. There is no way to 

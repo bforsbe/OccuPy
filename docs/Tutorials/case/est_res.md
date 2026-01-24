@@ -41,11 +41,11 @@ score that tells you how well resolved each region is, compared to the best reso
 
 ## 3. Evaluate Kernel settings
 Strong scatterers, variations in resolution, or any of a number of other factors may cause strong contrast. This 
-means that the signal-to-noise ratio (SNR) is higher, which according to typical cryo-EM estimates more confidence in 
+means that the signal-to-noise ratio (SNR) is higher, which according to typical cryo-EM estimates also means more confidence in 
 the estimated resolution, but not necessarily higher resolution. OccuPy evaluates contrast, which will be in 
 proportion to SNR, which is thus not ideal for estimating resolution. It is thus prudent to be cautious, but OccuPy was 
-built to be robust to outliers so with caution everything should be fine. Some settings may need be adjusted, nearly 
-identically to that described in the tuorial to estimate occupancy. When you explore settings to increase the 
+built to be robust to outliers so with caution everything should be fine. Some settings may need to be adjusted, nearly 
+identically to that described in the tutorial to estimate occupancy. When you explore settings to increase the 
 utility (and possibly also the fidelity) of the resolution estimate, note that this creates confirmation bias in 
 the results based on your expectations. **Always report the kernel settings** used, which are documented in the full 
 GUI log, or through command line by using `--verbose`. 
@@ -63,9 +63,9 @@ The input lowpass is inconsequential for the resolution estimation.
 ---
 
 ### 3.2 The Kernel radius and size
-These define the region around each pixel where OccuPy determines the local scale. That is, the define what "local" 
+These define the region around each pixel where OccuPy determines the local scale. That is, they define what "local" 
 means. The kernel size is the maximum box dimension, and the radius is that of a spherical mask placed at the center 
-of that box. The kernel is determined as the intersection of these. the number of voxels in this intersection is 
+of that box. The kernel is determined as the intersection of these. The number of voxels in this intersection is 
 shown as the number of samples. 
 
 <div class="admonition tip">
@@ -89,7 +89,7 @@ Look at the "Scale" tab of the Occupy viewer. If your scale estimate...
 To reduce the influence of voxel-value outliers in the scale estimate, some voxel values are always "rejected". The tau 
 percentile defines how many sample values should be rejected. The value of tau is optimally calculated based on your 
 kernel settings (to reduce the probability of over- and under-estimating the scale), so you should not change it 
-unless you have good reason to do so. **Always report the kernel settings**
+unless you have good reason to do so. **Always report the kernel settings.**
 
 <div class="admonition tip">
 <p class="admonition-title">Gist</p>
@@ -102,7 +102,7 @@ Tau is automatically calculated to minimize both over- and under-estimation.
 Look at the "Scale" tab of the viewer. In your scale estimate...
 
 1. is homogeneous and nearly all white, then you might have a very homogeneous resolution. If you want to push the 
-   relative resolution into a range where you might tell components apart, try increasing the tau percentile an 
+   relative resolution into a range where you might tell components apart, try increasing the tau percentile and 
    re-estimate the scale.
 2. is only white for a very small region that does not correspond to what you would expect to be at "best resolution", 
    try reducing the tau percentile. It might also be better to adjust the tile-size as we will soon discuss, and use 
@@ -110,7 +110,7 @@ Look at the "Scale" tab of the viewer. In your scale estimate...
 
 ### 3.4 Tile size
 OccuPy normalizes the estimated scale against a region of the map where it in some sense finds maximal contrast. The 
-size of this region defines the size of the "best resolution" region. This region can be chosen smaller than you 
+size of this region defines the size of the "best resolution" region. This region can be chosen smaller than your 
 "best-resolution component", but if you make it too small then variations in atomic mass might start to affect the 
 estimate. 
 
@@ -139,15 +139,15 @@ However, one may want to redefine zero scale to coincide with the noise distribu
 expected to display solvent characteristics, especially when noise is high or resolution is low. Since version 0.1.11,
 OccuPy implements a noise-level recalibration option, which takes this into account. **But this is not a one-stop 
 solution to improve estimation in a high noise setting**, since it demands an accurate solvent model, which may be 
-difficult precisely in 
+difficult to determine precisely in 
 this circumstance. 
 
-Noise-level recalibration is accessible in the gui under "Optional/extra options", or on the command flag by adding 
+Noise-level recalibration is accessible in the gui under "Optional/extra options", or on the command-line by adding 
 the flag "--nlrc". Make sure to evaluate the solvent model and confidence estimate before relying on this option. 
 
 ---
 
 ## 5. Final notes
 1. Because a reduced tile-size emphasizes variations in mass even when resolution is the same, a much reduced tile 
-   size is potentially useful to estimate relative mass or occupancy when the relative mass is known, but for 
+   size is potentially useful to estimate relative mass, or occupancy when the relative mass is known, but for 
    resolution estimation it does not make much sense to reduce it too far.

@@ -11,8 +11,8 @@ Please read the GUI overview and conduct the intro tutorial first.
 <div class="admonition attention">
 <p class="admonition-title">Be lazy</p>
 <p>
-The solvent model is only used for map modification and solvent suppression, so if you are not doing any of these, e.
-g. if you just need to estimate the scale, you need <strong>not</strong> do this tutorial.
+The solvent model is only used for map modification and solvent suppression, so if you are not doing any of these, e.g.
+if you just need to estimate the scale, you need <strong>not</strong> do this tutorial.
 </p>
 </div>
 
@@ -23,7 +23,7 @@ In some cases, the solvent peak is not dominant in the input map histogram. Comm
 3. reconstructions of partial regions like viral capsids, where little to no solvent is included
 
 In these cases, OccuPy can make use of a solvent mask, that instructs it where to look for the solvent peak. However, it
-is **not used a mask for the modification or output**. There are benefits to this, like being able to find something 
+is **not used as a mask for the modification or output**. There are benefits to this, like being able to find something 
 significant outside your mask and amplifying or attenuating it as well. 
 
 --- 
@@ -34,7 +34,7 @@ This is the simple approach, and if it works satisfactorily, use it.
 1. Open the input map and estimate the scale.
 2. Inspect the "Solvent model" tab next to the output log.
 3. Increase the input lowpass and estimate the scale again, and note if the solvent model estimation improves. 
-4. Click the "Conf." tab of the viewer and inspect is OccuPy can adequately tell low-scale stuff from solvent. 
+4. Click the "Conf." tab of the viewer and inspect if OccuPy can adequately tell low-scale stuff from solvent. 
 
 ---
 
@@ -49,8 +49,8 @@ size as you input map.
 ---
 
 ## 3. Generate a solvent definition in the GUI
-The scale is estimated independently form the solvent model, and can be thresholded or binarized to provide a 
-solvent defintion. 
+The scale is estimated independently from the solvent model, and can be thresholded or binarized to provide a 
+solvent definition. 
 
 1. Make sure the appropriate input map is open and selected
 2. Estimate the scale.
@@ -68,7 +68,7 @@ To evaluate a solvent definition, we inspect the solvent model and resulting con
 1. Make sure the appropriate input map is open and selected, then estimate the scale. 
 2. Inspect the "Solvent model" tab next to the output log. The green parabola is fitted to the masked data histogram 
    in black, whereas the original data histogram is shown in grey. 
-3. Click the "Conf." tab of the viewer and inspect is OccuPy can adequately tell low-scale stuff from solvent. 
+3. Click the "Conf." tab of the viewer and inspect if OccuPy can adequately tell low-scale stuff from solvent. 
    **Notice especially that the confidence might differ from the solvent definition, because OccuPy might estimate 
    components as significant even though you said they might be solvent.**
 
@@ -84,5 +84,5 @@ To evaluate a solvent definition, we inspect the solvent model and resulting con
 ---
 
 ## Final Notes
-1. You can unselect a solvent definition by selecting the empty filed in the "solvent def" dropdown. A subsequent 
+1. You can unselect a solvent definition by selecting the empty field in the "solvent def" dropdown. A subsequent 
    run will not use any solvent definition.

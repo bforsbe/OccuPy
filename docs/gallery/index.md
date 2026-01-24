@@ -2,7 +2,7 @@
 
 Here you will find different examples of how Occupy has been used, and helped to visualise and analyze cryo-EM maps. 
 The first section details how to use OccuPy to reproduce the images in the paper. If you have cases where it has 
-been useful, please consider letting one of the developer know so that we can showcase it here. 
+been useful, please consider letting one of the developers know so that we can showcase it here. 
 
 ---
 

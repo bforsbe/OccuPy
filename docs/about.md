@@ -55,7 +55,7 @@ The sigmoid function originates from [Prof. Werner Antweiler](https://wernerantw
 The documentation format is [readthedocs](https://readthedocs.org/), using 
 [MkDocs-material](https://squidfunk.github.io/mkdocs-material/), based on a configuration by Talley Lambert. 
 
-OccuPy is built purely in python. At it's core, it uses [numpy](https://numpy.org/), [scipy](https://scipy.org/) and 
+OccuPy is built purely in python. At its core, it uses [numpy](https://numpy.org/), [scipy](https://scipy.org/) and 
 [matplotlib](https://matplotlib.org/). 
 
 Additional features utilize [scikit-image](https://scikit-image.org/). 

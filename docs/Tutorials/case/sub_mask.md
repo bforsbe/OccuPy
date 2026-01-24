@@ -20,7 +20,7 @@ A subtraction mask is to be used in e.g. RELION. Any other use should be conside
 <div class="admonition attention">
 <p class="admonition-title">Subtraction is only remove components</p>
 <p>
-A subtraction mask can only achieve attenuation of the input data. and because it will be applied uniformly to all 
+A subtraction mask can only achieve attenuation of the input data. And because it will be applied uniformly to all 
 input data, it is only appropriate for full-occupancy components. Its use is therefore currently limited to e.g. 
 detergent regions of membrane proteins and reducing the influence of flexible regions. 
 </p>
@@ -31,7 +31,7 @@ detergent regions of membrane proteins and reducing the influence of flexible re
 ## 1. Estimate occupancy-mode local scale
 
 1. Open the input map
-2. Select occupancy-model local scale just below the modification options
+2. Select occupancy-mode local scale just below the modification options
 3. Estimate the scale
 
 ---

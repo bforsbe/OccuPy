@@ -19,7 +19,7 @@ The following steps highlight factors influencing this, and how to make the nece
 
 ## 1. First pass estimate
 1. Open the input map. 
-2. Make sure "occupancy" (just below the modification options is enabled, and estimate the scale. 
+2. Make sure "occupancy" (just below the modification options) is enabled, and estimate the scale. 
 3. Click the button "Launch ChimeraX" to view the output. 
 
 ---
@@ -27,8 +27,8 @@ The following steps highlight factors influencing this, and how to make the nece
 ## 2. Sanity check
 1. Check that the output log does not show any warnings (or errors).
 2. Check the "Conf." tab in the viewer. It should be white where there is "stuff", and black where there is solvent. 
-   If this si not the case, your solvent model might be bad. This is not an issue for occupancy estimation, but it 
-   will be if you want to modify later. If ypu just want to estimate occupancy, go to step 3. Otherwise, check the 
+   If this is not the case, your solvent model might be incorrect. This is not an issue for occupancy estimation, but it 
+   will be if you want to modify later. If you just want to estimate occupancy, go to step 3. Otherwise, check the 
    solvent model on the tab next to the output log. The green parabola should fit the histogram solvent peak near 0 
    quite well and drop faster than the histogram. If not, you may need to increase the input lowpass cutoff in the 
    kernel settings, or even use a solvent definition. There  is a dedicated tutorial for this, that you should do 
@@ -60,9 +60,9 @@ correlation, so that the local occupancy is averaged. If your **input map**...
 ---
 
 ### 3.2 The Kernel radius and size
-These define the region around each pixel where OccuPy determines the local scale. That is, the define what "local" 
+These define the region around each pixel where OccuPy determines the local scale. That is, they define what "local" 
 means. The kernel size is the maximum box dimension, and the radius is that of a spherical mask placed at the center 
-of that box. The kernel is determined as the intersection of these. the number of voxels in this intersection is 
+of that box. The kernel is determined as the intersection of these. The number of voxels in this intersection is 
 shown as the number of samples. 
 
 <div class="admonition tip">
@@ -98,8 +98,8 @@ unless you have good reason to do so. **Always report the kernel settings**
 Look at the "Scale" tab of the viewer. In your scale estimate...
 
 1. is homogeneous and nearly all white, then you might have a very homogeneous occupancy. If you want to push the 
-   relative occupancy into a range where you might tell components apart, try increasing the tau percentile an 
-   re-estimate the scale. **This is no longer a good approximation of absolute occupancy**
+   relative occupancy into a range where you might tell components apart, try increasing the tau percentile and 
+   re-estimate the scale. **This is no longer a good approximation of absolute occupancy.**
 2. is only white for a very small region that does not correspond to what you would expect to be at full occupancy, 
    try reducing the tau percentile. It might also be better to adjust the tile-size as we will soon discuss, and use 
    the theoretically derived value for tau.
@@ -108,7 +108,7 @@ Look at the "Scale" tab of the viewer. In your scale estimate...
 
 ### 3.4 Tile size
 OccuPy normalizes the estimated scale against a region of the map where it in some sense finds maximal contrast. The 
-size of this region defines the size of the "full occupancy" region. This region can be chosen smaller than you 
+size of this region defines the size of the "full occupancy" region. This region can be chosen smaller than your 
 full-occupancy component, but if you make it too small then variations in atomic mass might start to affect the 
 estimate. 
 
@@ -119,7 +119,7 @@ Increasing the tile size will reduce the influence of high local mass, and vice 
 Setting the tile-size too large will cause systematic over-estimation of local scale. 
 </p>
 </div>
-Look at the "Scale" tab of the viewer. In your scale estimate...
+Look at the "Scale" tab of the viewer. If your scale estimate...
 
 1. is only white for a very small region that does not correspond to what you would expect to be at full occupancy, 
    try increasing the tile-size. 
@@ -136,7 +136,7 @@ exaggerated occupancy, effectively over-compensated. This can be made evident by
 2. Select the "Amplify" tab under modification options. Enable it and set the power to 30. 
 3. Click "Modify Map" 
 4. Click "Launch chimeraX", hide the input map and show the modified map. If regions colored by lower scale appear 
-   at lower threshold values than regions at high scale, then the occupancy appears to have been under-estimated. WE 
+   at lower threshold values than regions at high scale, then the occupancy appears to have been under-estimated. We 
    are working on a way to automate this feedback cycle to get a more accurate occupancy estimate, but for now it 
    might be prudent to alter the scale kernel settings as described above to better estimate the occupancy. 
 
@@ -152,14 +152,14 @@ However, one may want to redefine zero occupancy to coincide with the noise dist
 expected to display solvent characteristics, especially when noise is high or occupancy is low. Since version 0.1.11,
 OccuPy implements a noise-level recalibration option, which takes this into account. **But this is not a one-stop 
 solution to improve estimation in a high noise setting**, since it demands an accurate solvent model, which may be 
-difficult precisely in this circumstance. 
+difficult to determine precisely in this circumstance. 
 
 Noise-level recalibration is accessible in the gui under "Optional/extra options", or on the command flag by adding 
 the flag "--nlrc". Make sure to evaluate the solvent model and confidence estimate before relying on this option. 
 
 ## 6. Final notes
 1. Because a reduced tile-size emphasizes variations in mass even when occupancy is the same, a much reduced tile 
-   size is potentially useful to estimate relative mass or occupancy when the relative mass is known. There are 
+   size is potentially useful to estimate relative mass, or occupancy when the relative mass is known. There are 
    however better methods available for this purpose, which we recommend for accurate estimation. OccuPy simply 
    exposes these methods where they might be relevant for fast and highly resolved estimation in the absence of 
    ground-truth mass. 

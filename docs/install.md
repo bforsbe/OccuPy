@@ -14,7 +14,7 @@ Compiled binaries will not be updated as new bugfixes get implemented. Once alph
 will be provided. 
 <br><br>
 Using pip install, you can get bugfixes at any time, and update according to the latest changes. If you don't want 
-to wait for a new release of bug-fixes, install with pip from source, as described below).
+to wait for a new release of bug-fixes, install with pip from source (as described below).
 </p>
 </div>
 
@@ -71,7 +71,7 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.9 (alpha).
 === "Windows"
 
     1. Download the binary installer.
-    2. Double-click the installer, which should guide you thorugh the simple process of installing OccuPy on your 
+    2. Double-click the installer, which should guide you through the simple process of installing OccuPy on your 
     system.
     3. In the start-menu, search for "occupy_gui". You should see the OccuPy Guppy. 
 
@@ -81,7 +81,7 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.9 (alpha).
     2. Open a terminal and navigate to the downloads directory. 
     3. In the terminal, type `chmod a+x occupy_gui`.
     4. In a file browser, go to the downloads directory and right-click the `occupy_gui` binary and select 'Open'. 
-    In the dialog that pops up, select 'Open again'. You can also type `./occupy_gui` in the terminal
+    In the dialog that pops up, select 'Open' again. You can also type `./occupy_gui` in the terminal
 
 === "Linux (ubuntu)"
     
@@ -95,7 +95,7 @@ Occupy GUI version :fontawesome-solid-tag: 0.1.9 (alpha).
 If you have issues using the pre-compiled binaries, please check the 
 <a href="../Troubleshooting/install_trbl/">troubleshooting section</a>. 
 <br><br>
-Previous versions of OccuPy are **not** available as binaries, but only though [PIP](https://pypi.
+Previous versions of OccuPy are **not** available as binaries, but only through [PIP](https://pypi.
 org/project/OccuPy/) and 
 [github](https://github.com/bforsbe/OccuPy). The same goes for the command-line tool. Installation through PIP is 
 described below.
@@ -121,12 +121,12 @@ If you run into issues, check the <a href="../Troubleshooting/install_trbl/">tro
     The following contains elements of
     [this](https://www.digitalocean.com/community/tutorials/install-python-windows-10) guide to installing python on 
     windows, and 
-    [this](https://pip.pypa.io/en/stable/installation/#get-pip-py) guide to install pip using python. 
+    [this](https://pip.pypa.io/en/stable/installation/#get-pip-py) guide to installing pip using python. 
     
     1. In the start-menu, type "Powershell". Open a powershell, which is a text-based interface to run system commands.
     2. Check if python is installed by running the command `python --version` in the powershell. If you see a version 
     number, python is installed. 
-    If not, download and click the python3.10 installer for windows, which you can get thorugh 
+    If not, download and click the python3.10 installer for windows, which you can get through 
     [this link](https://www.python.org/ftp/python/3.10.8/python-3.10.8-amd64.exe). 
     Follow the instructions on screen to install.     
     3. Close the powershell and reopen it once python is installed.
@@ -171,8 +171,8 @@ If you run into issues, check the <a href="../Troubleshooting/install_trbl/">tro
 
 === "Linux (ubuntu)"
 
-    It is recommended that you install occupy using a clean conda or other virtual environment, as this will avoid potential 
-    conflict with pre-existing packages and specifically their conflicint dependencies on pyqt.
+    It is recommended that you install occupy using a clean conda or other virtual environment, as this will prevent potential 
+    conflict with pre-existing packages and specifically their conflicting dependencies on pyqt.
 
     1. Open a terminal.
     2. In the terminal, call `pip install occupy[pyqt5]`.
@@ -189,7 +189,7 @@ If you run into issues, check the <a href="../Troubleshooting/install_trbl/">tro
 
     1. Open a terminal.
     2. In the terminal, call `pip install occupy` if your mac has an M1 chip. Otherwise you will likely need to instead
-    need to call `pip install occupy[pyqt5]`
+    call `pip install occupy[pyqt5]`
     3. Verify the install by calling `pip show occupy`. You will either see `WARNING: Package(s) not found: occupy` 
     or a description of the installation. If successfully installed, continue. 
     4. In the terminal, call `occupy_gui`. If you get the error 
@@ -254,7 +254,7 @@ We recommend you do this in a virtual environment. More on this and specific dev
 ## Usage
 ### The GUI
 Occupy has a GUI that is recommended to use, because it makes the processing steps more intuitive, presents the 
-options plainly, and offer easy ways to check your input and processing results for consistency. 
+options plainly, and offers easy ways to check your input and processing results for consistency. 
 
 To **start the GUI** from the command-line (terminal) and it is in your path (e.g. if you used pip install), simply call
 
@@ -306,13 +306,13 @@ pyinstaller --onefile --windowed occupy_lib/occupy_gui.py
 ls dist 
 ```
 
-5. build docs and start a local serve to view them (interactive with changes)  
+5. build docs and start a local server to view them (interactive with changes)  
 ```shell
 mkdocs serve 
 ```
 
 ### The python module
-For development use, you can also import it as a python module, but this currently and unsupported feature that we 
+For development use, you can also import it as a python module, but this is currently an unsupported feature that we 
 will not prioritize as main functionality.
 
 ```python
